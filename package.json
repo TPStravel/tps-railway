@@ -1,15 +1,11 @@
 {
   "name": "canal-vivo",
   "version": "1.0.0",
-  "type": "module",  // Adicione esta linha
+  "type": "module",
   "scripts": {
     "build": "vite build",
     "dev": "vite"
   },
-  "dependencies": {
-    // suas dependências
-  },
-  "devDependencies": {
-    // suas dependências de desenvolvimento
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
