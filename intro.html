@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canal Vivo - Introdução</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+
+    h1 {
+      font-size: 2em;
+    }
+
+    p {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="welcome-message">Aguarde...</h1>
+  <p id="intro-text">Carregando conteúdo...</p>
+
+  <script>
+    // Obter o idioma armazenado no LocalStorage
+    const language = localStorage.getItem('language') || 'pt'; // 'pt' é o padrão
+
+    // Função para traduzir o conteúdo conforme o idioma
+    function translatePage() {
+      const welcomeMessage = document.getElementById('welcome-message');
+      const introText = document.getElementById('intro-text');
+
+      if (language === 'en') {
+        welcomeMessage.textContent = 'Welcome to Canal Vivo!';
+        introText.textContent = 'We are loading the content in English...';
+      } else if (language === 'es') {
+        welcomeMessage.textContent = '¡Bienvenido a Canal Vivo!';
+        introText.textContent = 'Estamos cargando el contenido en español...';
+      } else if (language === 'fr') {
+        welcomeMessage.textContent = 'Bienvenue sur Canal Vivo!';
+        introText.textContent = 'Nous chargeons le contenu en français...';
+      } else if (language === 'pt') {
+        welcomeMessage.textContent = 'Bem-vindo ao Canal Vivo!';
+        introText.textContent = 'Estamos carregando o conteúdo em português...';
+      } else {
+        welcomeMessage.textContent = 'Welcome to Canal Vivo!';
+        introText.textContent = 'Loading content in the selected language...';
+      }
+    }
+
+    // Chamar a função de tradução
+    translatePage();
+  </script>
+
+</body>
+</html>
