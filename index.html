@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canal Vivo</title>
-    <style>
-      /* Para a página inicial */
-      body {
-        background-color: white; /* Garantindo fundo branco */
-        color: black; /* Texto preto */
-        margin: 0;
-        font-family: Arial, sans-serif;
-      }
-    </style>
-  </head>
-  <body>
-
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+    <link rel="stylesheet" href="styles.css"> <!-- Certifique-se de ter o CSS -->
+</head>
+<body class="bg-black text-white">
+    <header class="flex justify-center p-4">
+        <img src="/logo-canal-vivo.png" alt="Canal Vivo Logo" class="w-32">
+    </header>
+    <main class="flex flex-col items-center justify-center space-y-8 p-6">
+        <h1>Bem-vindo ao Canal Vivo</h1>
+        <p>Escolha o idioma para começar</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+            <button class="bg-gray-800 hover:bg-gray-700 p-4 rounded-2xl text-xl">Português</button>
+            <button class="bg-gray-800 hover:bg-gray-700 p-4 rounded-2xl text-xl">Inglês</button>
+            <button class="bg-gray-800 hover:bg-gray-700 p-4 rounded-2xl text-xl">Espanhol</button>
+        </div>
+    </main>
+    <footer class="text-center p-4">
+        <p>© 2025 Canal Vivo. Todos os direitos reservados.</p>
+    </footer>
+</body>
 </html>
