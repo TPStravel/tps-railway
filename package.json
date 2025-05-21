@@ -1,7 +1,7 @@
 {
   "name": "canal-vivo",
   "version": "1.0.0",
-  "type": "module",
+  "type": "module",  // Adicione esta linha
   "scripts": {
     "build": "vite build",
     "dev": "vite"
