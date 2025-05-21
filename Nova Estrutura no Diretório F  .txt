@@ -1,0 +1,15 @@
+Nova Estrutura no Diretório F:
+
+
+F:/
+    /canal-vivo        # Website do Canal Vivo
+    /tps               # Todos os arquivos relacionados ao TPS
+        /tps-website   # Arquivos do site do TPS
+        /temp_tps      # Código do TPS
+        /temp_tps_ready # Versão pronta do TPS
+        /tps-deploy     # Arquivos para deploy do TPS
+    /public             # Imagens, vídeos, ícones e recursos estáticos
+    /styles             # CSS, SCSS, etc
+    /scripts            # Arquivos JavaScript
+
+
