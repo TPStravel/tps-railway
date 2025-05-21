@@ -1,6 +1,21 @@
 export default function App() {
+  // Defina a variável idiomas antes de usá-la
+  const idiomas = [
+    { nome: 'Português', bandeira: '🇧🇷' },
+    { nome: 'Inglês', bandeira: '🇬🇧' },
+    { nome: 'Espanhol', bandeira: '🇪🇸' },
+    // Adicione outros idiomas conforme necessário
+  ];
+
+  // Função que será chamada ao selecionar um idioma
   function onSelectIdioma(nome) {
     alert(`Idioma selecionado: ${nome}`);
+  }
+
+  // Verificação para garantir que a variável idiomas está definida
+  if (!idiomas || idiomas.length === 0) {
+    console.error("A variável 'idiomas' não foi definida corretamente ou está vazia.");
+    return <div>Erro: A lista de idiomas não está disponível!</div>;
   }
 
   return (
@@ -28,3 +43,4 @@ export default function App() {
     </div>
   );
 }
+

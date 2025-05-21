@@ -3,7 +3,7 @@
   "builds": [
     {
       "src": "postcss.config.js",
-      "use": "@vercel/node"
+      "use": "@vercel/postcss"
     },
     {
       "src": "*.html",
