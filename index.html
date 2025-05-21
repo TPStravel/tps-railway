@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Canal Vivo</title>
+    <style>
+      body {
+        background-color: #111;
+        color: white;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .logo {
+        width: 150px;
+        height: auto;
+        margin-bottom: 20px;
+      }
+      .idiomas {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .idioma {
+        background-color: #333;
+        color: white;
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        width: 100px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .idioma:hover {
+        background-color: #555;
+      }
+      .idioma img {
+        width: 50px;
+        height: auto;
+        margin-bottom: 10px;
+      }
+      footer {
+        margin-top: 30px;
+        font-size: 12px;
+        text-align: center;
+        color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <img class="logo" src="/logo-canal-vivo.png" alt="Canal Vivo Logo" />
+
+    <div class="idiomas">
+      <!-- Lista de Idiomas -->
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=pt'">
+        <img src="path-to-flag/portugal-flag.png" alt="Português" />
+        <p>Português</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=en'">
+        <img src="path-to-flag/usa-flag.png" alt="English" />
+        <p>English</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=es'">
+        <img src="path-to-flag/spain-flag.png" alt="Español" />
+        <p>Español</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=fr'">
+        <img src="path-to-flag/france-flag.png" alt="Français" />
+        <p>Français</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=de'">
+        <img src="path-to-flag/germany-flag.png" alt="Deutsch" />
+        <p>Alemão</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=it'">
+        <img src="path-to-flag/italy-flag.png" alt="Italiano" />
+        <p>Italiano</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=ja'">
+        <img src="path-to-flag/japan-flag.png" alt="Japonês" />
+        <p>Japonês</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=cn'">
+        <img src="path-to-flag/china-flag.png" alt="Chinês" />
+        <p>Chinês</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=ru'">
+        <img src="path-to-flag/russia-flag.png" alt="Russo" />
+        <p>Russo</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=ar'">
+        <img src="path-to-flag/saudi-arabia-flag.png" alt="Árabe" />
+        <p>Árabe</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=hi'">
+        <img src="path-to-flag/india-flag.png" alt="Hindi" />
+        <p>Hindi</p>
+      </div>
+      <div class="idioma" onclick="window.location.href='/intro.html?lang=ko'">
+        <img src="path-to-flag/south-korea-flag.png" alt="Coreano" />
+        <p>Coreano</p>
+      </div>
+    </div>
+
+    <footer>
+      © 2025 Canal Vivo. Todos os direitos reservados.
+    </footer>
+  </body>
+</html>
