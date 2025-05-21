@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Canal Vivo - Abertura</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000 url('bg-mistico.mp4') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .intro {
+      max-width: 800px;
+      text-align: center;
+      font-size: 1.6rem;
+      line-height: 1.8;
+    }
+
+    .fade {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 2s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 1s; }
+    .delay-2 { animation-delay: 4s; }
+    .delay-3 { animation-delay: 8s; }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .button {
+      margin-top: 40px;
+      padding: 14px 28px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border: 1px solid white;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      animation: fadeIn 2s ease forwards;
+      animation-delay: 12s;
+      opacity: 0;
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <audio autoplay loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/10/31/audio_1f9b53e4ae.mp3?filename=heavenly-ambient-126206.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="intro">
+    <p class="fade delay-1">Bem-vindo ao Canal Vivo.</p>
+    <p class="fade delay-2">Este não é um site comum. É um portal simbólico com quatro mundos — cada um um espelho para você.</p>
+    <p class="fade delay-3">Sinta. Escolha por onde começar. E atravesse.</p>
+    <button class="button" onclick="window.location.href='portais.html'">Explorar os Mundos</button>
+  </div>
+</body>
+</html>

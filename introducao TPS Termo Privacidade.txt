@@ -1,0 +1,110 @@
+1. Introdução ao TPS - O Que É e Como Funciona
+Título: Bem-vindo ao TPS – Travel Personally Secretary
+
+Texto:
+O TPS (Travel Personally Secretary) é uma plataforma inteligente criada para transformar a maneira como você planeja suas viagens. Através do nosso sistema personalizado, oferecemos recomendações de voos, hotéis, aluguel de carros, e seguros com base nas suas preferências pessoais e necessidades específicas.
+
+Nosso objetivo é simplificar o planejamento de viagens, permitindo que você organize todos os aspectos de sua viagem em um só lugar, sem precisar recorrer a vários sites.
+
+Como Funciona:
+
+Pesquisa de Voos: O TPS permite que você pesquise voos com base em suas preferências de destino, datas de viagem e orçamento. Utilizamos dados em tempo real para fornecer as melhores opções de voos.
+
+Hotéis: Além de voos, o TPS oferece recomendações de hotéis, levando em consideração a sua escolha de destino e o estilo de viagem desejado (luxo, econômico, familiar, etc.).
+
+Aluguel de Carros: Se você precisar de um carro para sua viagem, o TPS irá sugerir opções de aluguel de veículos com base na sua localização e nas preferências de viagem.
+
+Seguro Viagem: O sistema também sugere seguros de viagem personalizados, cobrindo suas necessidades e garantindo mais segurança durante o processo de planejamento.
+
+Ao usar o TPS, você nos permite acessar dados como suas preferências de viagem e histórico de pesquisas para que possamos personalizar ainda mais a sua experiência, economizando seu tempo e oferecendo as melhores opções disponíveis.
+
+2. Termos de Uso do TPS
+Título: Termos de Uso
+
+Texto:
+Antes de acessar e utilizar os serviços do TPS, é essencial que você leia atentamente os Termos de Uso. Ao utilizar a plataforma, você concorda com as seguintes condições:
+
+Coleta de Dados Pessoais:
+O TPS coleta informações pessoais como nome, e-mail, histórico de viagem, preferências de voo, hotéis, carros e seguros para oferecer recomendações personalizadas. Todos os dados são coletados de maneira transparente e com o seu consentimento.
+
+Uso de Dados:
+Os dados coletados serão usados exclusivamente para:
+
+Personalização de sua experiência, como sugestões de voos, hotéis, carros e seguros.
+
+Melhoria da plataforma e dos serviços oferecidos, com base no comportamento e nas preferências dos usuários.
+
+Cookies e Tecnologias de Rastreamento:
+Utilizamos cookies para melhorar a experiência do usuário, armazenando preferências e personalizando conteúdo.
+
+Você pode escolher não aceitar cookies ou personalizar suas configurações, mas isso pode afetar a experiência de uso.
+
+Segurança e Proteção de Dados:
+O TPS implementa medidas rigorosas de segurança para proteger seus dados pessoais e garantir que todas as transações ocorram de forma segura. Isso inclui o uso de criptografia para proteger suas informações.
+
+Limitações de Responsabilidade:
+O TPS oferece recomendações com base em dados coletados, mas não é responsável pela disponibilidade ou preços dos serviços de terceiros (como companhias aéreas, hotéis e locadoras de veículos). O usuário é responsável por verificar as condições de reserva antes de confirmar qualquer transação.
+
+3. Política de Privacidade do TPS
+Título: Política de Privacidade
+
+Texto:
+A privacidade e segurança dos seus dados são de extrema importância para nós. Esta política detalha como coletamos, usamos, armazenamos e protegemos suas informações ao utilizar o TPS.
+
+Informações Coletadas:
+Dados Pessoais: Nome, e-mail, dados de pagamento (caso você faça reservas), preferências de viagem (destinos, datas, etc.).
+
+Comportamento de Navegação: Como você interage com a plataforma, páginas visitadas, tempo gasto em cada página, entre outros.
+
+Uso dos Dados:
+Seus dados serão usados para:
+
+Personalizar sua experiência com sugestões de voos, hotéis, carros e seguros.
+
+Analisar o uso da plataforma para melhorar os serviços.
+
+Realizar transações diretamente com parceiros de viagem (ex: reservas de hotéis, passagens aéreas).
+
+Cookies e Tecnologias de Rastreio:
+Utilizamos cookies para melhorar a experiência de navegação e personalizar o conteúdo. Os cookies são usados para armazenar preferências e informações sobre a sua navegação.
+
+Cookies Essenciais são necessários para o funcionamento da plataforma, enquanto cookies de marketing e desempenho podem ser utilizados para personalizar anúncios e melhorar a experiência do usuário.
+
+Segurança dos Dados:
+Implementamos medidas como criptografia de dados, firewalls e controle de acesso para garantir que suas informações estejam seguras.
+
+No entanto, nenhuma tecnologia é 100% infalível, e não podemos garantir a segurança absoluta de suas informações.
+
+Compartilhamento de Dados:
+Não compartilhamos seus dados pessoais com terceiros para fins publicitários.
+
+Seus dados podem ser compartilhados com parceiros de serviços de viagem necessários para processar reservas (ex: companhias aéreas, hotéis, locadoras de veículos), sempre de forma segura e conforme as leis de proteção de dados.
+
+Seus Direitos:
+Você tem o direito de acessar, corrigir ou excluir seus dados pessoais a qualquer momento.
+
+Também pode desativar cookies ou limitar a coleta de dados nas configurações do seu navegador.
+
+4. GDPR e Compliance de Proteção de Dados
+Título: Compliance com GDPR e Proteção de Dados
+
+Texto:
+O TPS está em conformidade com o Regulamento Geral de Proteção de Dados (GDPR), que é a regulamentação da União Europeia para a proteção de dados pessoais. Isso significa que:
+
+Você tem controle sobre os seus dados: pode acessar, corrigir ou excluir suas informações a qualquer momento.
+
+Consentimento explícito: Ao utilizar o TPS, você está fornecendo seu consentimento para o uso de seus dados conforme descrito em nossos Termos de Uso e Política de Privacidade.
+
+Transparência: Mantemos a transparência sobre como seus dados são usados, e você tem o direito de ser informado sobre quaisquer alterações na forma como tratamos suas informações.
+
+5. Aceitação dos Termos e Continuar
+Título: Aceitação dos Termos
+
+Texto:
+Para utilizar o TPS e acessar as recomendações personalizadas, você precisa aceitar os Termos de Uso e a Política de Privacidade. Ao clicar no botão abaixo, você concorda com todos os termos e condições descritos.
+
+Botão: Aceitar e Continuar
+
+6. Rodapé
+Texto do rodapé:
+© 2025 TPS - Travel Personally Secretary

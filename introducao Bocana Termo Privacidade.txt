@@ -1,0 +1,102 @@
+Conteúdo para a Página de Bocana
+1. Introdução ao Bocana
+Título: Bem-vindo ao Bocana – Nutrição com Presença
+
+Texto:
+O Bocana é uma plataforma personalizada que recomenda experiências sensoriais e nutricionais com base no seu estado emocional, humor e energia. Através de uma série de perguntas e interações, o Bocana oferece sugestões de alimentos, bebidas e atividades que ajudam a promover equilíbrio emocional e físico.
+
+Objetivo:
+O objetivo do Bocana é utilizar dados sobre o seu estado emocional e suas preferências alimentares para sugerir experiências que promovam bem-estar, equilíbrio e prazer sensorial.
+
+Como Funciona:
+O Bocana coleta dados sobre o seu humor, energia e preferências alimentares e utiliza essas informações para fazer sugestões de:
+
+Alimentos e Bebidas: Com base no seu estado emocional e físico, sugerimos alimentos que possam melhorar o seu humor ou energizar seu corpo.
+
+Experiências Sensorias: Além de alimentos, sugerimos experiências como aromas, sons ou ambientes que complementem seu estado emocional, criando um ambiente de bem-estar.
+
+2. Funcionamento do Bocana
+Título: Como Funciona o Bocana
+
+Texto:
+
+O Bocana foi desenvolvido para ajudar você a se sentir bem, explorando sua alimentação e experiências sensoriais com base nas suas emoções. Aqui está como funciona:
+
+1. Coleta de Dados Pessoais:
+O Bocana coleta informações sobre o seu humor, energia e preferências alimentares. Isso é feito através de uma série de perguntas que você responderá durante a interação com a plataforma.
+
+2. Personalização das Recomendações:
+Com base nas respostas coletadas, o Bocana recomenda:
+
+Alimentos e Bebidas: Se você estiver se sentindo cansado ou com baixo astral, ele pode sugerir alimentos energéticos ou reconfortantes. Se estiver em um estado de energia elevada, pode sugerir alimentos leves e frescos.
+
+Experiências Sensorias: Além de alimentos, o Bocana pode sugerir atividades sensoriais (como escutar uma música calma ou respirar aromas relaxantes) que ajudam a equilibrar suas emoções e melhorar seu bem-estar.
+
+3. Benefícios das Recomendações Personalizadas:
+Equilíbrio Emocional: Ajudamos você a alinhar sua alimentação com o seu estado emocional, promovendo o equilíbrio entre corpo e mente.
+
+Melhora da Energia: As sugestões são feitas para aumentar sua energia ou promover um momento de relaxamento, dependendo de como você está se sentindo.
+
+3. Termos de Uso do Bocana
+Título: Termos de Uso
+
+Texto:
+
+Antes de utilizar o Bocana, é importante que você leia e aceite os Termos de Uso. Ao acessar e utilizar a plataforma, você concorda com as seguintes condições:
+
+1. Coleta de Dados:
+Coletamos dados relacionados ao seu humor, energia e preferências alimentares para personalizar as recomendações. Esses dados são tratados com confidencialidade e não são compartilhados com terceiros.
+
+2. Uso dos Dados:
+Os dados coletados são usados exclusivamente para personalizar sua experiência de recomendação de alimentos, bebidas e experiências sensoriais. O Bocana não compartilha suas informações com nenhum terceiro para fins comerciais.
+
+3. Cookies e Tecnologias:
+Utilizamos cookies para armazenar suas preferências e melhorar sua experiência na plataforma. Os cookies são essenciais para lembrar suas escolhas anteriores e personalizar as recomendações.
+
+4. Segurança e Confidencialidade:
+Garantimos que todas as informações fornecidas serão armazenadas de forma segura e tratadas com total confidencialidade, em conformidade com as regulamentações de privacidade aplicáveis.
+
+5. Limitações de Responsabilidade:
+As recomendações feitas pelo Bocana são baseadas nas suas respostas e no seu estado emocional. No entanto, as sugestões de alimentos e experiências sensoriais não substituem o aconselhamento nutricional ou médico profissional. Se você tiver questões de saúde, recomendamos que consulte um especialista.
+
+4. Política de Privacidade do Bocana
+Título: Política de Privacidade
+
+Texto:
+A privacidade das suas informações é fundamental para nós. O Bocana coleta e utiliza suas respostas e dados para personalizar sua jornada sensorial e nutricional. Aqui estão os principais pontos de nossa política de privacidade:
+
+1. Informações Coletadas:
+Dados Pessoais: Coletamos seu nome, e-mail e dados relacionados ao seu estado emocional e preferências alimentares.
+
+Dados de Navegação: Como você interage com a plataforma, por exemplo, tempo gasto nas páginas e respostas fornecidas.
+
+2. Uso de Dados:
+Seus dados são usados exclusivamente para personalizar suas recomendações de alimentos, bebidas e experiências sensoriais.
+
+O Bocana utiliza esses dados para criar uma experiência única e otimizada para você.
+
+3. Cookies:
+Usamos cookies para manter a continuidade de suas preferências e para melhorar sua experiência de navegação.
+
+Você tem a opção de desativar cookies em seu navegador, mas isso pode afetar a personalização das recomendações.
+
+4. Segurança:
+Todos os dados são protegidos por criptografia e armazenados de forma segura. Nenhuma informação pessoal será compartilhada com terceiros sem o seu consentimento explícito.
+
+5. Compartilhamento de Dados:
+Não compartilhamos suas informações com terceiros para fins publicitários. Seus dados são mantidos confidenciais e usados apenas para aprimorar sua experiência no Bocana.
+
+6. Seus Direitos:
+Você tem o direito de acessar, corrigir ou excluir seus dados pessoais a qualquer momento, garantindo o controle total sobre suas informações.
+
+5. Consentimento e Aceitação dos Termos
+Título: Aceitação dos Termos
+
+Texto:
+Para utilizar o Bocana e acessar suas recomendações personalizadas de alimentos e experiências sensoriais, você precisa aceitar os Termos de Uso e a Política de Privacidade. Ao clicar no botão abaixo, você concorda com os termos descritos.
+
+Botão: Aceitar e Continuar
+
+6. Rodapé
+Texto do rodapé:
+© 2025 Bocana – Nutrição com Presença

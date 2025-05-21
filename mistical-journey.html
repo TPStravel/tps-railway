@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Canal Vivo - Jornada Mística</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      padding: 0 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .message {
+      font-size: 24px;
+      max-width: 600px;
+      line-height: 1.6;
+      z-index: 10;
+      position: absolute;
+      animation: fadein 3s ease-out;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #45a049;
+    }
+
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Efeito de partículas de neblina (CSS) */
+    .particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+      animation: moveParticles 4s linear infinite;
+    }
+
+    @keyframes moveParticles {
+      0% {
+        transform: translate(0, 0);
+      }
+      100% {
+        transform: translate(100px, 100px);
+      }
+    }
+
+    /* Efeito do vídeo místico */
+    video.background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.5;  /* Reduz a opacidade do vídeo para dar o efeito místico */
+      z-index: 1;
+    }
+
+  </style>
+  <script>
+    // Função para redirecionar após o processo de jornada mística
+    function nextStep() {
+      window.location.href = "choose-worlds.html"; // Substitua com o caminho correto para a página de escolha dos 4 mundos
+    }
+
+    window.onload = function() {
+      // Inicia a música ambiente
+      var audio = new Audio('path_to_music.mp3'); // Substitua com o caminho correto para a música ambiente
+      audio.loop = true;
+      audio.play();
+
+      // Exibindo as mensagens místicas uma por uma
+      const frases = [
+        "Bem-vindo ao Canal Vivo.",
+        "Isso não é um site. É um portal simbólico.",
+        "Há quatro mundos esperando por você.",
+        "Sinta. Escolha. Atravesse."
+      ];
+
+      let index = 0;
+      const messageElement = document.getElementById('message');
+
+      // Exibindo cada frase com um atraso de 4 segundos
+      const showMessage = () => {
+        if (index < frases.length) {
+          messageElement.innerText = frases[index];
+          index++;
+          setTimeout(showMessage, 4000); // Aguarda 4 segundos para mostrar a próxima frase
+        } else {
+          // Quando terminar as frases, redireciona para a página de escolha dos mundos
+          setTimeout(nextStep, 2000); // Aguarda 2 segundos antes de redirecionar
+        }
+      };
+
+      showMessage();
+    };
+  </script>
+</head>
+<body>
+  <!-- Vídeo místico de fundo -->
+  <video class="background" autoplay muted loop>
+    <source src="bg-mistico.mp4" type="video/mp4"> <!-- Caminho para o vídeo de fundo -->
+    Seu navegador não suporta vídeo.
+  </video>
+
+  <!-- Partículas de neblina (CSS) -->
+  <div class="particles"></div>
+
+  <!-- Mensagens exibidas -->
+  <div class="message" id="message">Aguarde enquanto a jornada se desenrola...</div>
+
+  <!-- Música Ambiente -->
+  <audio id="background-music" loop autoplay>
+    <source src="path_to_music.mp3" type="audio/mp3"> <!-- Caminho para sua música -->
+    Seu navegador não suporta a reprodução de áudio.
+  </audio>
+</body>
+</html>
