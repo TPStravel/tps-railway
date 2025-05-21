@@ -1,26 +1,116 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canal Vivo</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Certifique-se de ter o CSS -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Canal Vivo - Seleção de Idioma</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212; /* Fundo escuro */
+      color: white;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .logo {
+      max-width: 250px;
+      margin-bottom: 40px;
+      transition: transform 0.3s ease;
+    }
+
+    .logo:hover {
+      transform: scale(1.05);
+    }
+
+    .flags {
+      display: grid;
+      grid-template-columns: repeat(4, 120px); /* 4 bandeiras por linha */
+      gap: 30px;
+      grid-template-rows: repeat(3, auto); /* 3 linhas de bandeiras */
+      justify-content: center;
+      padding: 0 20px;
+    }
+
+    .flag {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .flag:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .flag img {
+      width: 80px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .flag span {
+      margin-top: 10px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #f2f2f2;
+      text-transform: capitalize;
+    }
+  </style>
 </head>
-<body class="bg-black text-white">
-    <header class="flex justify-center p-4">
-        <img src="/logo-canal-vivo.png" alt="Canal Vivo Logo" class="w-32">
-    </header>
-    <main class="flex flex-col items-center justify-center space-y-8 p-6">
-        <h1>Bem-vindo ao Canal Vivo</h1>
-        <p>Escolha o idioma para começar</p>
-        <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
-            <button class="bg-gray-800 hover:bg-gray-700 p-4 rounded-2xl text-xl">Português</button>
-            <button class="bg-gray-800 hover:bg-gray-700 p-4 rounded-2xl text-xl">Inglês</button>
-            <button class="bg-gray-800 hover:bg-gray-700 p-4 rounded-2xl text-xl">Espanhol</button>
-        </div>
-    </main>
-    <footer class="text-center p-4">
-        <p>© 2025 Canal Vivo. Todos os direitos reservados.</p>
-    </footer>
+<body>
+
+  <!-- Logo -->
+  <img src="img/logo-canal-vivo.png" alt="Canal Vivo Logo" class="logo" />
+
+  <!-- Seleção de Idioma -->
+  <div class="flags">
+    <a class="flag" href="#" onclick="selectLanguage('en')">
+      <img src="https://flagcdn.com/w320/us.png" alt="English" />
+      <span>English</span>
+    </a>
+    <a class="flag" href="#" onclick="selectLanguage('es')">
+      <img src="https://flagcdn.com/w320/es.png" alt="Español" />
+      <span>Español</span>
+    </a>
+    <a class="flag" href="#" onclick="selectLanguage('fr')">
+      <img src="https://flagcdn.com/w320/fr.png" alt="Français" />
+      <span>Français</span>
+    </a>
+    <a class="flag" href="#" onclick="selectLanguage('pt')">
+      <img src="https://flagcdn.com/w320/pt.png" alt="Português" />
+      <span>Português</span>
+    </a>
+    <!-- Adicione mais idiomas conforme necessário -->
+  </div>
+
+  <script>
+    // Definindo os idiomas disponíveis
+    const idiomas = [
+      { nome: "English", bandeira: "🇺🇸", langCode: "en" },
+      { nome: "Español", bandeira: "🇪🇸", langCode: "es" },
+      { nome: "Français", bandeira: "🇫🇷", langCode: "fr" },
+      { nome: "Deutsch", bandeira: "🇩🇪", langCode: "de" },
+      { nome: "Italiano", bandeira: "🇮🇹", langCode: "it" },
+      { nome: "Português", bandeira: "🇧🇷", langCode: "pt" }
+    ];
+
+    // Função para selecionar o idioma
+    function selectLanguage(language) {
+      // Armazenar o idioma no LocalStorage
+      localStorage.setItem('language', language);
+      // Redirecionar para a página de introdução (intro.html)
+      window.location.href = 'intro.html';
+    }
+  </script>
+
 </body>
 </html>
