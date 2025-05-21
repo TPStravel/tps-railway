@@ -33,6 +33,7 @@
     }
   </style>
   <script>
+    // Função para pegar a mensagem com base no idioma
     function getMessageByLang(lang) {
       const messages = {
         en: "Now your journey begins. Stay connected.",
@@ -48,19 +49,21 @@
         ko: "이제 여행이 시작됩니다. 연결을 유지하세요。",
         nl: "Nu begint je reis. Blijf verbonden."
       };
-      return messages[lang] || messages['en'];
+      return messages[lang] || messages['en']; // Se não encontrar o idioma, vai usar o inglês como padrão.
     }
 
+    // Quando a página carregar
     window.onload = function() {
+      // Pega o parâmetro 'lang' da URL
       const params = new URLSearchParams(window.location.search);
-      const lang = params.get('lang') || 'en'; // Pega o parâmetro 'lang' da URL
-      const message = getMessageByLang(lang); // Obtém a mensagem com base no idioma
+      const lang = params.get('lang') || 'en'; // Se não encontrar, o padrão será 'en'
+      const message = getMessageByLang(lang); // Obtém a mensagem para o idioma escolhido
       document.getElementById('message').innerText = message; // Exibe a mensagem na tela
 
-      // Redirecionamento automático após 3 segundos
+      // Redirecionamento automático após 3 segundos para a próxima página com o mesmo idioma
       setTimeout(function() {
         window.location.href = "nextpage.html?lang=" + lang; // Redireciona para a próxima página com o idioma
-      }, 3000); // Tempo de 3 segundos
+      }, 3000); // 3 segundos de espera
     };
   </script>
 </head>

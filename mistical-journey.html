@@ -50,25 +50,33 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Efeito de partículas de neblina (CSS) */
+    /* Efeito de partículas de névoa (CSS) */
     .particles {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
-      background-size: 20px 20px;
-      animation: moveParticles 4s linear infinite;
+      pointer-events: none;  /* Garante que as partículas não interferem na interação */
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.1); /* Partículas semi-transparentes */
+      animation: moveParticles 10s linear infinite, fadeInOut 5s ease-in-out infinite;
     }
 
     @keyframes moveParticles {
-      0% {
-        transform: translate(0, 0);
-      }
-      100% {
-        transform: translate(100px, 100px);
-      }
+      0% { transform: translateX(0) translateY(0); }
+      100% { transform: translateX(100vw) translateY(100vh); }
+    }
+
+    @keyframes fadeInOut {
+      0% { opacity: 0; }
+      50% { opacity: 1; }
+      100% { opacity: 0; }
     }
 
     /* Efeito do vídeo místico */
@@ -80,17 +88,21 @@
       height: 100%;
       object-fit: cover;
       opacity: 0.5;  /* Reduz a opacidade do vídeo para dar o efeito místico */
-      z-index: 1;
+      z-index: 0;
     }
 
   </style>
   <script>
     // Função para redirecionar após o processo de jornada mística
-    function nextStep() {
-      window.location.href = "choose-worlds.html"; // Substitua com o caminho correto para a página de escolha dos 4 mundos
+    function nextStep(lang) {
+      window.location.href = "choose-worlds.html?lang=" + lang; // Substitua com o caminho correto para a página de escolha dos 4 mundos
     }
 
     window.onload = function() {
+      // Pega o parâmetro 'lang' da URL
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get('lang') || 'en'; // Se não encontrar, o padrão será 'en'
+
       // Inicia a música ambiente
       var audio = new Audio('path_to_music.mp3'); // Substitua com o caminho correto para a música ambiente
       audio.loop = true;
@@ -115,11 +127,42 @@
           setTimeout(showMessage, 4000); // Aguarda 4 segundos para mostrar a próxima frase
         } else {
           // Quando terminar as frases, redireciona para a página de escolha dos mundos
-          setTimeout(nextStep, 2000); // Aguarda 2 segundos antes de redirecionar
+          setTimeout(() => nextStep(lang), 2000); // Aguarda 2 segundos antes de redirecionar
         }
       };
 
       showMessage();
+
+      // Função para criar partículas de névoa
+      const createParticles = () => {
+        const particlesContainer = document.createElement('div');
+        particlesContainer.classList.add('particles');
+        document.body.appendChild(particlesContainer);
+
+        // Número de partículas
+        const numParticles = 30; // Você pode ajustar o número conforme necessário
+        for (let i = 0; i < numParticles; i++) {
+          const particle = document.createElement('div');
+          particle.classList.add('particle');
+          particlesContainer.appendChild(particle);
+
+          // Atribuindo posições aleatórias e tamanhos variáveis
+          const size = Math.random() * 10 + 5;  // Tamanho das partículas
+          const x = Math.random() * 100;  // Posição aleatória no eixo X
+          const y = Math.random() * 100;  // Posição aleatória no eixo Y
+
+          // Definir tamanho e posição inicial
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+          particle.style.left = `${x}vw`;
+          particle.style.top = `${y}vh`;
+
+          // Animar a partícula
+          particle.style.animationDuration = `${Math.random() * 10 + 5}s`;  // Duração aleatória para movimento
+        }
+      };
+
+      createParticles();  // Chama a função para criar as partículas
     };
   </script>
 </head>
@@ -130,7 +173,7 @@
     Seu navegador não suporta vídeo.
   </video>
 
-  <!-- Partículas de neblina (CSS) -->
+  <!-- Partículas de névoa (CSS) -->
   <div class="particles"></div>
 
   <!-- Mensagens exibidas -->
