@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canal Vivo - Cards</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #18181c;
+      color: #fff;
+      font-family: 'Montserrat', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    .container {
+      flex: 1 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+      justify-content: center;
+      padding: 0 20px;
+    }
+    .logo {
+      font-size: 96px;
+      font-weight: bold;
+      color: #2ea6ff;
+      line-height: 1;
+      letter-spacing: -10px;
+    }
+    .title-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .main-title {
+      font-size: 48px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000;
+      text-align: center;
+    }
+    .subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #e2cba7;
+      margin-top: 8px;
+      margin-bottom: 24px;
+      text-align: center;
+      font-style: italic;
+      max-width: 900px;
+    }
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      width: 100%;
+      max-width: 1200px;
+    }
+    .card {
+      background: #23232b;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      width: 260px;
+      padding: 0 0 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: transform 0.4s ease, box-shadow 0.3s ease;
+      min-height: 410px;
+      border: 2px solid transparent;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-12px) scale(1.05);
+      box-shadow: 0 8px 32px rgba(46,166,255,0.2);
+      border-color: #2ea6ff;
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 20px 20px 0 0;
+      margin-bottom: 18px;
+      display: block;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+      font-style: italic;
+      font-weight: bold;
+    }
+    .card-text {
+      font-size: 16px;
+      color: #c3c3c3;
+      margin-bottom: 18px;
+      text-align: center;
+      padding: 0 10px;
+      min-height: 40px;
+    }
+    .card-btn {
+      background: #2ea6ff;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      cursor: pointer;
+      margin-top: auto;
+      transition: background 0.3s ease, transform 0.3s ease;
+      font-weight: bold;
+      border-radius: 50px;
+    }
+    .card-btn:hover {
+      background: #1d7bb8;
+      transform: scale(1.05);
+    }
+    @media (max-width: 1100px) {
+      .cards-container {
+        gap: 20px;
+      }
+      .card {
+        width: 44vw;
+        max-width: 340px;
+      }
+    }
+    @media (max-width: 900px) {
+      .cards-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+      }
+      .card {
+        width: 90vw;
+        max-width: 370px;
+      }
+    }
+    @media (max-width: 600px) {
+      .main-title {
+        font-size: 28px;
+      }
+      .logo {
+        font-size: 60px;
+      }
+      .subtitle {
+        font-size: 16px;
+      }
+      .card {
+        min-height: 350px;
+      }
+    }
+    footer {
+      flex-shrink: 0;
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      padding: 16px 0 8px 0;
+      margin-top: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="logo">V</span>
+      <div class="title-group">
+        <div class="main-title">CANAL VIVO</div>
+      </div>
+    </div>
+    <div class="subtitle">
+      O canal ao vivo. Tudo ao alcance agora.<br>
+      <b>Descubra vários conteúdos incríveis de atualidade, entretenimento e cultura.</b>
+    </div>
+    <div class="cards-container">
+      <!-- TPS - Aviação -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?auto=format&fit=crop&w=400&q=80" alt="Avião decolando ao pôr do sol">
+        <div class="card-title">TPS</div>
+        <div class="card-text">Viaje para qualquer destino com conforto e segurança. Compre sua passagem aérea aqui!</div>
+        <button class="card-btn">Comprar Ticket</button>
+      </div>
+      <!-- Temarix - Terapia espiritual -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Terapia espiritual">
+        <div class="card-title">Temarix</div>
+        <div class="card-text">Cuidado, autoconhecimento e equilíbrio interior. Terapia espiritual para sua jornada.</div>
+        <button class="card-btn">Conheça Temarix</button>
+      </div>
+      <!-- Bocana - Gastronomia -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Prato de comida">
+        <div class="card-title">Bocana</div>
+        <div class="card-text">Sabores e receitas do mundo. Gastronomia para todos os gostos.</div>
+        <button class="card-btn">Experimente</button>
+      </div>
+      <!-- Liminax - Livros e aprendizado -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=400&q=80" alt="Livros abertos">
+        <div class="card-title">Liminax</div>
+        <div class="card-text">Livros, leitura e aprendizado contínuo. Descubra novos conhecimentos.</div>
+        <button class="card-btn">Saiba mais</button>
+      </div>
+    </div>
+  </div>
+  <footer>
+    &copy; 2025 Canal Vivo. Todos os direitos reservados.
+  </footer>
+</body>
+</html>

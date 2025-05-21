@@ -1,114 +1,214 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Canal Vivo - Seleção de Idioma</title>
-    <style>
-      body {
-        margin: 0;
-        background-color: #121212; /* Fundo escuro */
-        color: white;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        text-align: center;
+<head>
+  <meta charset="UTF-8">
+  <title>CANAL VIVO - Idiomas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Fontes para título e manuscrito -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: #18181c;
+      color: #fff;
+      font-family: 'Montserrat', Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 44px;
+      margin-bottom: 18px;
+    }
+    .logo {
+      font-size: 90px;
+      font-weight: bold;
+      color: #2ea6ff;
+      line-height: 0.8;
+      letter-spacing: -10px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      user-select: none;
+    }
+    .main-title {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      color: #fff;
+      text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000;
+      margin-top: 8px;
+      font-family: 'Montserrat', Arial, sans-serif;
+      text-align: center;
+      user-select: none;
+    }
+    .destaque {
+      font-family: 'Pacifico', cursive;
+      font-size: 2em;
+      color: #fbe7c6;
+      text-align: center;
+      font-weight: bold;
+      font-style: italic;
+      line-height: 1.2;
+      text-shadow: 1px 2px 4px #000;
+      letter-spacing: 0.5px;
+      max-width: 700px;
+      margin: 24px auto 8px auto;
+      background: transparent;
+      user-select: none;
+    }
+    .flags-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 28px 20px;
+      width: 100%;
+      max-width: 1080px;
+      margin: 30px auto 30px auto;
+      justify-items: center;
+    }
+    .flag-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      transition: transform 0.18s;
+      text-decoration: none;
+    }
+    .flag-img {
+      width: 78px;
+      height: 52px;
+      border-radius: 10px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.18);
+      object-fit: cover;
+      margin-bottom: 8px;
+      background: #fff;
+      border: 2px solid #23232b;
+      transition: border 0.2s, transform 0.2s;
+      display: block;
+    }
+    .flag-card:hover .flag-img {
+      border: 2px solid #2ea6ff;
+      transform: scale(1.06);
+    }
+    .flag-label {
+      font-size: 16px;
+      color: #fff;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-align: center;
+      font-family: 'Montserrat', Arial, sans-serif;
+      text-shadow: 1px 1px 3px #000;
+      user-select: none;
+      text-decoration: none;
+    }
+    @media (max-width: 1100px) {
+      .flags-grid {
+        max-width: 98vw;
+        gap: 18px 8px;
       }
-
+      .flag-img {
+        width: 60px;
+        height: 40px;
+      }
+      .flag-label {
+        font-size: 13px;
+      }
+    }
+    @media (max-width: 900px) {
+      .flags-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px 8px;
+      }
+    }
+    @media (max-width: 600px) {
       .logo {
-        max-width: 250px;
-        margin-bottom: 40px;
-        transition: transform 0.3s ease;
+        font-size: 48px;
       }
-
-      .logo:hover {
-        transform: scale(1.05);
+      .main-title {
+        font-size: 18px;
       }
-
-      .flags {
-        display: grid;
-        grid-template-columns: repeat(4, 120px); /* 4 bandeiras por linha */
-        gap: 30px;
-        grid-template-rows: repeat(3, auto); /* 3 linhas de bandeiras */
-        justify-content: center;
-        padding: 0 20px;
+      .destaque {
+        font-size: 1em;
+        margin: 16px auto 6px auto;
+        max-width: 98vw;
       }
-
-      .flag {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-decoration: none;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      .flags-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px 6px;
+        margin-top: 18px;
       }
-
-      .flag:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      .flag-img {
+        width: 38px;
+        height: 26px;
       }
-
-      .flag img {
-        width: 80px;
-        height: 50px;
-        object-fit: cover;
-        border-radius: 4px;
+      .flag-label {
+        font-size: 10px;
       }
-
-      .flag span {
-        margin-top: 10px;
-        font-size: 16px;
-        font-weight: 500;
-        color: #f2f2f2;
-        text-transform: capitalize;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Logo -->
-    <img src="img/logo-canal-vivo.png" alt="Canal Vivo Logo" class="logo" />
-
-    <!-- Seleção de Idioma -->
-    <div class="flags">
-      <a class="flag" href="#" onclick="selectLanguage('en')">
-        <img src="https://flagcdn.com/w320/us.png" alt="English" />
-        <span>English</span>
-      </a>
-      <a class="flag" href="#" onclick="selectLanguage('es')">
-        <img src="https://flagcdn.com/w320/es.png" alt="Español" />
-        <span>Español</span>
-      </a>
-      <a class="flag" href="#" onclick="selectLanguage('fr')">
-        <img src="https://flagcdn.com/w320/fr.png" alt="Français" />
-        <span>Français</span>
-      </a>
-      <a class="flag" href="#" onclick="selectLanguage('pt')">
-        <img src="https://flagcdn.com/w320/pt.png" alt="Português" />
-        <span>Português</span>
-      </a>
-      <!-- Adicione mais idiomas conforme necessário -->
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span class="logo">V</span>
+    <div class="main-title">CANAL VIVO</div>
+    <div class="destaque">
+      Quatro mundos. Um só caminho interior.<br>
+      Onde a tecnologia encontra sua alma.<br>
+      Escolha por onde começar... e atravesse...<br>
+      É seu destino!
     </div>
-
-    <script>
-      // Definindo os idiomas disponíveis
-      const idiomas = [
-        { nome: "English", bandeira: "🇺🇸", langCode: "en" },
-        { nome: "Español", bandeira: "🇪🇸", langCode: "es" },
-        { nome: "Français", bandeira: "🇫🇷", langCode: "fr" },
-        { nome: "Deutsch", bandeira: "🇩🇪", langCode: "de" },
-        { nome: "Italiano", bandeira: "🇮🇹", langCode: "it" },
-        { nome: "Português", bandeira: "🇧🇷", langCode: "pt" }
-      ];
-
-      // Função para selecionar o idioma
-      function selectLanguage(language) {
-        // Armazenar o idioma no LocalStorage
-        localStorage.setItem('language', language);
-        // Redirecionar para a página de introdução (intro.html)
-        window.location.href = 'intro.html';
-      }
-    </script>
-  </body>
+  </div>
+  <div class="flags-grid">
+    <a class="flag-card" href="pt.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" alt="Português">
+      <div class="flag-label">Português</div>
+    </a>
+    <a class="flag-card" href="en.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="English">
+      <div class="flag-label">English</div>
+    </a>
+    <a class="flag-card" href="es.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg" alt="Español">
+      <div class="flag-label">Español</div>
+    </a>
+    <a class="flag-card" href="de.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg" alt="Deutsch">
+      <div class="flag-label">Deutsch</div>
+    </a>
+    <a class="flag-card" href="it.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg" alt="Italiano">
+      <div class="flag-label">Italiano</div>
+    </a>
+    <a class="flag-card" href="nl.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/2/20/Flag_of_the_Netherlands.svg" alt="Nederlands">
+      <div class="flag-label">Nederlands</div>
+    </a>
+    <a class="flag-card" href="ru.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/f/f3/Flag_of_Russia.svg" alt="Русский">
+      <div class="flag-label">Русский</div>
+    </a>
+    <a class="flag-card" href="zh.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_the_People%27s_Republic_of_China.svg" alt="中文">
+      <div class="flag-label">中文</div>
+    </a>
+    <a class="flag-card" href="ko.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg" alt="한국어">
+      <div class="flag-label">한국어</div>
+    </a>
+    <a class="flag-card" href="ja.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/9/9e/Flag_of_Japan.svg" alt="日本語">
+      <div class="flag-label">日本語</div>
+    </a>
+    <a class="flag-card" href="hi.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg" alt="हिन्दी">
+      <div class="flag-label">हिन्दी</div>
+    </a>
+    <a class="flag-card" href="fr.html">
+      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg" alt="Français">
+      <div class="flag-label">Français</div>
+    </a>
+  </div>
+</body>
 </html>
