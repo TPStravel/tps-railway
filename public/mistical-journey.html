@@ -7,8 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet" />
   <style>
     html, body {
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       height: 100%;
       font-family: 'Montserrat', Arial, sans-serif;
       background: #000;
@@ -21,15 +20,13 @@
       position: fixed;
       width: 100vw;
       height: 100vh;
-      top: 0;
-      left: 0;
+      top: 0; left: 0;
       overflow: hidden;
       z-index: 0;
     }
     video {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       min-width: 100vw;
       min-height: 100vh;
       width: auto;
@@ -112,8 +109,47 @@
           "Feel the silence that transforms.",
           "Allow yourself to cross and find your desired destiny."
         ]
+      ],
+      es: [
+        ["Cuatro mundos: TPS, TEMARIX, BOCANA, LIMINAX.", "Un solo camino interior.", "Donde la tecnología encuentra tu alma."],
+        ["Respira hondo y cálmate.", "Siente el silencio que transforma.", "Atraviésalo y encuentra tu destino."]
+      ],
+      fr: [
+        ["Quatre mondes : TPS, TEMARIX, BOCANA, LIMINAX.", "Un seul chemin intérieur.", "Là où la technologie rencontre votre âme."],
+        ["Respirez profondément et calmez-vous.", "Sentez le silence qui transforme.", "Traversez et trouvez votre destin."]
+      ],
+      de: [
+        ["Vier Welten: TPS, TEMARIX, BOCANA, LIMINAX.", "Ein innerer Weg.", "Wo Technologie deine Seele trifft."],
+        ["Atme tief durch und beruhige dich.", "Spüre die Stille, die verwandelt.", "Geh hindurch und finde dein Ziel."]
+      ],
+      it: [
+        ["Quattro mondi: TPS, TEMARIX, BOCANA, LIMINAX.", "Un solo cammino interiore.", "Dove la tecnologia incontra la tua anima."],
+        ["Respira profondamente e calmati.", "Senti il silenzio che trasforma.", "Attraversa e trova il tuo destino."]
+      ],
+      ko: [
+        ["네 개의 세계: TPS, TEMARIX, BOCANA, LIMINAX.", "하나의 내면 길.", "기술이 당신의 영혼을 만나는 곳."],
+        ["깊게 숨 쉬고 진정하세요.", "변화를 일으키는 침묵을 느껴보세요.", "스스로를 허락해 지나가고 운명을 찾으세요."]
+      ],
+      ja: [
+        ["4つの世界: TPS、TEMARIX、BOCANA、LIMINAX。", "1つの内なる道。", "テクノロジーが魂と出会う場所。"],
+        ["深く息を吸い、落ち着いてください。", "変容をもたらす静寂を感じてください。", "越えて望む運命を見つけてください。"]
+      ],
+      zh: [
+        ["四个世界：TPS、TEMARIX、BOCANA、LIMINAX。", "一条内心之路。", "科技遇见你的灵魂。"],
+        ["深呼吸并冷静下来。", "感受沉静带来的转变。", "穿越并找到你渴望的命运。"]
+      ],
+      ru: [
+        ["Четыре мира: TPS, TEMARIX, BOCANA, LIMINAX.", "Один внутренний путь.", "Где технологии встречают душу."],
+        ["Глубоко вдохните и успокойтесь.", "Почувствуйте трансформирующую тишину.", "Пройдите через это и найдите свою судьбу."]
+      ],
+      tr: [
+        ["Dört dünya: TPS, TEMARIX, BOCANA, LIMINAX.", "Tek bir iç yol.", "Teknolojinin ruhunla buluştuğu yer."],
+        ["Derin bir nefes alın ve sakinleşin.", "Dönüştüren sessizliği hissedin.", "Geçin ve kaderinizi bulun."]
+      ],
+      hi: [
+        ["चार दुनिया: TPS, TEMARIX, BOCANA, LIMINAX.", "एक आंतरिक मार्ग.", "जहां तकनीक आपकी आत्मा से मिलती है।"],
+        ["गहराई से सांस लें और शांत हो जाएं।", "उस शांति को महसूस करें जो रूपांतरित करती है।", "उस पार जाएं और अपनी नियति खोजें।"]
       ]
-      // Adicione outras traduções aqui se quiser
     };
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -128,15 +164,21 @@
       setTimeout(() => {
         textOverlay.innerHTML = frasesIdioma[bloco].map(line => `<div>${line}</div>`).join('');
         textOverlay.style.opacity = 1;
-      }, 1000);
+      }, 500);
     }
 
     mostrarBloco(blocoAtual);
 
-    setInterval(() => {
-      blocoAtual = (blocoAtual + 1) % frasesIdioma.length;
-      mostrarBloco(blocoAtual);
-    }, 6000);
+    const interval = setInterval(() => {
+      blocoAtual++;
+      if (blocoAtual >= frasesIdioma.length) {
+        clearInterval(interval);
+        const langParam = lang ? `?lang=${lang}` : '';
+        window.location.href = `pagina-4.html${langParam}`;
+      } else {
+        mostrarBloco(blocoAtual);
+      }
+    }, 6000); // 6 segundos por bloco = 12s total
   </script>
 </body>
 </html>
