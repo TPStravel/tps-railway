@@ -123,7 +123,9 @@
 
   <script>
     function continuar() {
-      window.location.href = "liminax-inicio.html"; // Substitua pelo destino real
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get("lang") || "pt";
+      window.location.href = "liminax-inicio.html?lang=" + lang;
     }
   </script>
 </body>

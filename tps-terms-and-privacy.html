@@ -101,7 +101,9 @@
 
   <script>
     function aceitar() {
-      window.location.href = "choose-worlds.html"; // Substitua com o caminho real
+      const params = new URLSearchParams(window.location.search);
+      const lang = params.get("lang") || "pt";
+      window.location.href = "choose-worlds.html?lang=" + lang;
     }
   </script>
 </body>
