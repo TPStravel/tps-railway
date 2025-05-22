@@ -7,7 +7,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet" />
   <style>
     html, body {
-      margin: 0; padding: 0;
+      margin: 0;
+      padding: 0;
       height: 100%;
       font-family: 'Montserrat', Arial, sans-serif;
       background: #000;
@@ -20,13 +21,15 @@
       position: fixed;
       width: 100vw;
       height: 100vh;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       overflow: hidden;
       z-index: 0;
     }
     video {
       position: absolute;
-      top: 50%; left: 50%;
+      top: 50%;
+      left: 50%;
       min-width: 100vw;
       min-height: 100vh;
       width: auto;
@@ -77,10 +80,10 @@
 </head>
 <body>
   <div class="video-container">
-    <video id="bgVideo" autoplay muted playsinline>
-  <source src="/Mistic-Video.mp4" type="video/mp4" />
-  Seu navegador não suporta vídeo.
-</video>
+    <video autoplay muted loop playsinline>
+      <source src="Mistic-Video.mp4" type="video/mp4" />
+      Seu navegador não suporta vídeo.
+    </video>
     <div id="textOverlay" class="text-overlay"></div>
   </div>
 
@@ -109,8 +112,8 @@
           "Feel the silence that transforms.",
           "Allow yourself to cross and find your desired destiny."
         ]
-      ],
-      // (as outras traduções seguem aqui como antes)
+      ]
+      // Adicione outras traduções aqui se quiser
     };
 
     const urlParams = new URLSearchParams(window.location.search);
@@ -134,12 +137,6 @@
       blocoAtual = (blocoAtual + 1) % frasesIdioma.length;
       mostrarBloco(blocoAtual);
     }, 6000);
-
-    // Redirecionar após o fim do vídeo
-    const video = document.getElementById('bgVideo');
-    video.addEventListener('ended', () => {
-      window.location.href = 'pagina-4.html?lang=' + lang;
-    });
   </script>
 </body>
 </html>
