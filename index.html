@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>CANAL VIVO - Idiomas</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Fontes para título e manuscrito -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Pacifico&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <title>CANAL VIVO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet" />
   <style>
     body {
       background: #18181c;
@@ -16,199 +15,151 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-    .header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 44px;
-      margin-bottom: 18px;
+      padding: 40px 20px;
     }
     .logo {
       font-size: 90px;
       font-weight: bold;
       color: #2ea6ff;
-      line-height: 0.8;
       letter-spacing: -10px;
-      font-family: 'Montserrat', Arial, sans-serif;
+      margin-bottom: 12px;
       user-select: none;
     }
     .main-title {
       font-size: 32px;
       font-weight: 900;
-      letter-spacing: 2px;
-      color: #fff;
       text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000;
-      margin-top: 8px;
-      font-family: 'Montserrat', Arial, sans-serif;
-      text-align: center;
+      margin-bottom: 20px;
       user-select: none;
     }
-    .destaque {
-      font-family: 'Pacifico', cursive;
-      font-size: 2em;
-      color: #fbe7c6;
+    .slogan {
+      font-size: 1.2em;
+      font-weight: 500;
+      color: #cccccc;
+      max-width: 720px;
       text-align: center;
-      font-weight: bold;
-      font-style: italic;
-      line-height: 1.2;
-      text-shadow: 1px 2px 4px #000;
-      letter-spacing: 0.5px;
-      max-width: 700px;
-      margin: 24px auto 8px auto;
-      background: transparent;
+      line-height: 1.6;
+      margin-bottom: 60px;
       user-select: none;
     }
     .flags-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      gap: 28px 20px;
+      gap: 30px;
+      max-width: 720px;
       width: 100%;
-      max-width: 1080px;
-      margin: 30px auto 30px auto;
+      justify-content: end;
       justify-items: center;
     }
     .flag-card {
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
-      cursor: pointer;
-      transition: transform 0.18s;
-      text-decoration: none;
+      user-select: none;
+      transition: transform 0.2s;
+    }
+    .flag-card:hover {
+      transform: scale(1.1);
     }
     .flag-img {
-      width: 78px;
-      height: 52px;
-      border-radius: 10px;
-      box-shadow: 0 2px 14px rgba(0,0,0,0.18);
+      width: 90px;
+      height: 60px;
       object-fit: cover;
-      margin-bottom: 8px;
-      background: #fff;
-      border: 2px solid #23232b;
-      transition: border 0.2s, transform 0.2s;
-      display: block;
-    }
-    .flag-card:hover .flag-img {
+      border-radius: 10px;
       border: 2px solid #2ea6ff;
-      transform: scale(1.06);
     }
     .flag-label {
-      font-size: 16px;
-      color: #fff;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-align: center;
-      font-family: 'Montserrat', Arial, sans-serif;
-      text-shadow: 1px 1px 3px #000;
-      user-select: none;
-      text-decoration: none;
+      margin-top: 8px;
+      font-size: 14px;
     }
-    @media (max-width: 1100px) {
-      .flags-grid {
-        max-width: 98vw;
-        gap: 18px 8px;
-      }
-      .flag-img {
-        width: 60px;
-        height: 40px;
-      }
-      .flag-label {
-        font-size: 13px;
-      }
+    .click-message {
+      margin-top: 30px;
+      font-size: 1em;
+      color: #2ea6ff;
+      font-weight: 600;
+      user-select: none;
+      text-align: center;
+      max-width: 720px;
     }
     @media (max-width: 900px) {
       .flags-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 18px 8px;
+        grid-template-columns: repeat(4, 1fr);
       }
     }
     @media (max-width: 600px) {
-      .logo {
-        font-size: 48px;
-      }
-      .main-title {
-        font-size: 18px;
-      }
-      .destaque {
-        font-size: 1em;
-        margin: 16px auto 6px auto;
-        max-width: 98vw;
-      }
       .flags-grid {
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px 6px;
-        margin-top: 18px;
-      }
-      .flag-img {
-        width: 38px;
-        height: 26px;
-      }
-      .flag-label {
-        font-size: 10px;
+        justify-content: center;
       }
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <span class="logo">V</span>
-    <div class="main-title">CANAL VIVO</div>
-    <div class="destaque">
-      Quatro mundos. Um só caminho interior.<br>
-      Onde a tecnologia encontra sua alma.<br>
-      Escolha por onde começar... e atravesse...<br>
-      É seu destino!
-    </div>
+  <div class="logo">V</div>
+  <div class="main-title">CANAL VIVO</div>
+  <div class="slogan">
+    Four worlds. One inner path.<br />
+    Where technology meets your soul.<br />
+    Choose your start... and cross over.
   </div>
+
   <div class="flags-grid">
-    <a class="flag-card" href="intro.html?lang=pt">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg" alt="Português">
+    <a class="flag-card" href="mistical-journey.html?lang=pt" title="Português">
+      <img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" />
       <div class="flag-label">Português</div>
     </a>
-    <a class="flag-card" href="intro.html?lang=en">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/a/a4/Flag_of_the_United_States.svg" alt="English">
+    <a class="flag-card" href="mistical-journey.html?lang=en" title="English">
+      <img class="flag-img" src="https://flagcdn.com/w320/us.png" alt="English" />
       <div class="flag-label">English</div>
     </a>
-    <a class="flag-card" href="intro.html?lang=es">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/9/9a/Flag_of_Spain.svg" alt="Español">
+    <a class="flag-card" href="mistical-journey.html?lang=es" title="Español">
+      <img class="flag-img" src="https://flagcdn.com/w320/es.png" alt="Español" />
       <div class="flag-label">Español</div>
     </a>
-    <a class="flag-card" href="intro.html?lang=de">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/b/ba/Flag_of_Germany.svg" alt="Deutsch">
-      <div class="flag-label">Deutsch</div>
-    </a>
-    <a class="flag-card" href="intro.html?lang=it">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg" alt="Italiano">
-      <div class="flag-label">Italiano</div>
-    </a>
-    <a class="flag-card" href="intro.html?lang=nl">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/2/20/Flag_of_the_Netherlands.svg" alt="Nederlands">
-      <div class="flag-label">Nederlands</div>
-    </a>
-    <a class="flag-card" href="intro.html?lang=ru">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/f/f3/Flag_of_Russia.svg" alt="Русский">
-      <div class="flag-label">Русский</div>
-    </a>
-    <a class="flag-card" href="intro.html?lang=zh">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/f/fa/Flag_of_the_People%27s_Republic_of_China.svg" alt="中文">
-      <div class="flag-label">中文</div>
-    </a>
-    <a class="flag-card" href="intro.html?lang=ko">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/commons/0/09/Flag_of_South_Korea.svg" alt="한국어">
-      <div class="flag-label">한국어</div>
-    </a>
-    <a class="flag-card" href="intro.html?lang=ja">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/9/9e/Flag_of_Japan.svg" alt="日本語">
-      <div class="flag-label">日本語</div>
-    </a>
-    <a class="flag-card" href="intro.html?lang=hi">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/4/41/Flag_of_India.svg" alt="हिन्दी">
-      <div class="flag-label">हिन्दी</div>
-    </a>
-    <a class="flag-card" href="intro.html?lang=fr">
-      <img class="flag-img" src="https://upload.wikimedia.org/wikipedia/en/c/c3/Flag_of_France.svg" alt="Français">
+    <a class="flag-card" href="mistical-journey.html?lang=fr" title="Français">
+      <img class="flag-img" src="https://flagcdn.com/w320/fr.png" alt="Français" />
       <div class="flag-label">Français</div>
     </a>
+    <a class="flag-card" href="mistical-journey.html?lang=de" title="Deutsch">
+      <img class="flag-img" src="https://flagcdn.com/w320/de.png" alt="Deutsch" />
+      <div class="flag-label">Deutsch</div>
+    </a>
+    <a class="flag-card" href="mistical-journey.html?lang=ko" title="한국어">
+      <img class="flag-img" src="https://flagcdn.com/w320/kr.png" alt="한국어" />
+      <div class="flag-label">한국어</div>
+    </a>
+    <a class="flag-card" href="mistical-journey.html?lang=it" title="Italiano">
+      <img class="flag-img" src="https://flagcdn.com/w320/it.png" alt="Italiano" />
+      <div class="flag-label">Italiano</div>
+    </a>
+    <a class="flag-card" href="mistical-journey.html?lang=ja" title="日本語">
+      <img class="flag-img" src="https://flagcdn.com/w320/jp.png" alt="日本語" />
+      <div class="flag-label">日本語</div>
+    </a>
+    <a class="flag-card" href="mistical-journey.html?lang=zh" title="中文">
+      <img class="flag-img" src="https://flagcdn.com/w320/cn.png" alt="中文" />
+      <div class="flag-label">中文</div>
+    </a>
+    <a class="flag-card" href="mistical-journey.html?lang=ru" title="Русский">
+      <img class="flag-img" src="https://flagcdn.com/w320/ru.png" alt="Русский" />
+      <div class="flag-label">Русский</div>
+    </a>
+    <a class="flag-card" href="mistical-journey.html?lang=hi" title="हिन्दी">
+      <img class="flag-img" src="https://flagcdn.com/w320/in.png" alt="हिन्दी" />
+      <div class="flag-label">हिन्दी</div>
+    </a>
+    <a class="flag-card" href="mistical-journey.html?lang=nl" title="Nederlands">
+      <img class="flag-img" src="https://flagcdn.com/w320/nl.png" alt="Nederlands" />
+      <div class="flag-label">Nederlands</div>
+    </a>
+  </div>
+
+  <div class="click-message">
+    Click on a flag to continue your journey
   </div>
 </body>
 </html>

@@ -1,120 +1,258 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Canal Vivo - Jornada Mística</title>
+  <title>Canal Vivo - Jornada</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet" />
   <style>
-    body {
-      margin: 0;
-      background-color: #121212;
-      color: white;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-      padding: 0 20px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .message {
-      font-size: 24px;
-      max-width: 600px;
-      line-height: 1.6;
-      z-index: 10;
-      position: absolute;
-      color: white;
-      text-shadow: 0 0 10px rgba(0,0,0,0.5), 0 0 20px rgba(0,0,0,0.5);
-      animation: fadein 2s ease-out;
-    }
-
-    @keyframes fadein {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    video.background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
+    html, body {
+      margin: 0; padding: 0;
       height: 100%;
-      object-fit: cover;
-      opacity: 0.7;
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: #000;
+      overflow: hidden;
+      color: #2ea6ff;
+      width: 100vw;
+      height: 100vh;
+    }
+    .video-container {
+      position: fixed;
+      width: 100vw;
+      height: 100vh;
+      top: 0; left: 0;
+      overflow: hidden;
       z-index: 0;
     }
-
-    .smog {
+    video {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.15);
-      filter: blur(8px);
-      z-index: 1;
-      animation: smogEffect 14s infinite alternate;
+      top: 50%; left: 50%;
+      min-width: 100vw;
+      min-height: 100vh;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      z-index: 0;
+      filter: brightness(0.5);
+      background: #000;
     }
-
-    @keyframes smogEffect {
-      0% { opacity: 0.2; }
-      100% { opacity: 0.5; }
+    .text-overlay {
+      position: absolute;
+      top: 30%;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 720px;
+      z-index: 2;
+      font-weight: 700;
+      font-size: 2em;
+      line-height: 1.4;
+      user-select: none;
+      opacity: 1;
+      transition: opacity 1s ease-in-out;
+      color: #2ea6ff;
+      text-shadow:
+        2px 2px 8px rgba(0,0,0,0.8),
+        0 0 10px #2ea6ff;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .text-overlay div {
+      margin: 0.2em 0;
+    }
+    @media (max-width: 768px) {
+      .text-overlay {
+        font-size: 1.2em;
+        max-width: 95vw;
+        top: 18%;
+      }
+    }
+    @media (max-width: 480px) {
+      .text-overlay {
+        font-size: 1em;
+        top: 12%;
+      }
     }
   </style>
-
-  <script>
-    function nextStep(lang) {
-      window.location.href = "choose-worlds.html?lang=" + lang;
-    }
-
-    window.onload = function() {
-      const params = new URLSearchParams(window.location.search);
-      const lang = params.get('lang') || 'en';
-
-      const audio = new Audio('public/path_to_music.mp3'); // troque o nome se necessário
-      audio.loop = true;
-      audio.play();
-
-      const frases = [
-        "Bem-vindo ao Canal Vivo.",
-        "Isso não é um site. É um portal simbólico.",
-        "Há quatro mundos esperando por você.",
-        "Sinta. Escolha. Atravesse."
-      ];
-
-      let index = 0;
-      const messageElement = document.getElementById('message');
-
-      const showMessage = () => {
-        if (index < frases.length) {
-          messageElement.innerText = frases[index];
-          index++;
-          setTimeout(showMessage, 4000);
-        } else {
-          setTimeout(() => nextStep(lang), 2000);
-        }
-      };
-
-      showMessage();
-    };
-  </script>
 </head>
 <body>
-  <video class="background" autoplay muted loop>
-    <source src="public/bg-mistico.mp4" type="video/mp4">
-    Seu navegador não suporta vídeo.
-  </video>
+  <div class="video-container">
+    <video autoplay muted loop playsinline>
+      <source src="Mistic-Video.mp4" type="video/mp4" />
+      Seu navegador não suporta vídeo.
+    </video>
+    <div id="textOverlay" class="text-overlay"></div>
+  </div>
 
-  <div class="smog"></div>
+  <script>
+    const frases = {
+      pt: [
+        [
+          "Quatro mundos de TPS, TEMARIX, BOCANA, LIMINAX.",
+          "Um só caminho interior.",
+          "Onde a tecnologia encontra sua alma."
+        ],
+        [
+          "Respire fundo e acalme-se.",
+          "Sinta o silêncio que transforma.",
+          "Permita-se atravessar e encontre seu destino desejado."
+        ]
+      ],
+      en: [
+        [
+          "Four worlds of TPS, TEMARIX, BOCANA, LIMINAX.",
+          "One inner path.",
+          "Where technology meets your soul."
+        ],
+        [
+          "Breathe deeply and calm yourself.",
+          "Feel the silence that transforms.",
+          "Allow yourself to cross and find your desired destiny."
+        ]
+      ],
+      es: [
+        [
+          "Cuatro mundos de TPS, TEMARIX, BOCANA, LIMINAX.",
+          "Un solo camino interior.",
+          "Donde la tecnología encuentra tu alma."
+        ],
+        [
+          "Respira profundo y cálmate.",
+          "Siente el silencio que transforma.",
+          "Permítete atravesar y encontrar tu destino deseado."
+        ]
+      ],
+      fr: [
+        [
+          "Quatre mondes de TPS, TEMARIX, BOCANA, LIMINAX.",
+          "Un seul chemin intérieur.",
+          "Où la technologie rencontre votre âme."
+        ],
+        [
+          "Respirez profondément et calmez-vous.",
+          "Sentez le silence qui transforme.",
+          "Permettez-vous de traverser et de trouver votre destin désiré."
+        ]
+      ],
+      de: [
+        [
+          "Vier Welten von TPS, TEMARIX, BOCANA, LIMINAX.",
+          "Ein innerer Weg.",
+          "Wo Technologie deine Seele berührt."
+        ],
+        [
+          "Atme tief ein und beruhige dich.",
+          "Fühle die Stille, die verwandelt.",
+          "Erlaube dir zu überqueren und dein gewünschtes Schicksal zu finden."
+        ]
+      ],
+      it: [
+        [
+          "Quattro mondi di TPS, TEMARIX, BOCANA, LIMINAX.",
+          "Un solo cammino interiore.",
+          "Dove la tecnologia incontra la tua anima."
+        ],
+        [
+          "Respira profondamente e calmati.",
+          "Senti il silenzio che trasforma.",
+          "Permettiti di attraversare e trovare il tuo destino desiderato."
+        ]
+      ],
+      ko: [
+        [
+          "TPS, TEMARIX, BOCANA, LIMINAX의 네 세계.",
+          "하나의 내면의 길.",
+          "기술이 당신의 영혼을 만나는 곳."
+        ],
+        [
+          "깊게 숨쉬고 마음을 가라앉히세요.",
+          "변화를 가져오는 침묵을 느끼세요.",
+          "건너가서 원하는 운명을 찾으세요."
+        ]
+      ],
+      ja: [
+        [
+          "TPS、TEMARIX、BOCANA、LIMINAXの四つの世界。",
+          "ひとつの内なる道。",
+          "テクノロジーがあなたの魂に出会う場所。"
+        ],
+        [
+          "深呼吸して落ち着いてください。",
+          "変化をもたらす静けさを感じてください。",
+          "渡り、望む運命を見つけてください。"
+        ]
+      ],
+      zh: [
+        [
+          "TPS、TEMARIX、BOCANA、LIMINAX的四个世界。",
+          "一个内在的路径。",
+          "科技与你的灵魂相遇之地。"
+        ],
+        [
+          "深呼吸，平静下来。",
+          "感受改变的寂静。",
+          "允许自己跨越，找到你渴望的命运。"
+        ]
+      ],
+      ru: [
+        [
+          "Четыре мира TPS, TEMARIX, BOCANA, LIMINAX.",
+          "Один внутренний путь.",
+          "Где технологии встречают твою душу."
+        ],
+        [
+          "Глубоко вдохните и успокойтесь.",
+          "Почувствуйте тишину, которая преобразует.",
+          "Позвольте себе пройти и найти желаемую судьбу."
+        ]
+      ],
+      hi: [
+        [
+          "TPS, TEMARIX, BOCANA, LIMINAX के चार संसार।",
+          "एक आंतरिक मार्ग।",
+          "जहाँ तकनीक आपकी आत्मा से मिलती है।"
+        ],
+        [
+          "गहरी सांस लें और शांत हों।",
+          "उस शांति को महसूस करें जो परिवर्तन लाती है।",
+          "आत्मा के केंद्र तक पहुँचें और अपना भाग्य खोजें।"
+        ]
+      ],
+      nl: [
+        [
+          "Vier werelden van TPS, TEMARIX, BOCANA, LIMINAX.",
+          "Één innerlijk pad.",
+          "Waar technologie je ziel ontmoet."
+        ],
+        [
+          "Adem diep in en kalmeer.",
+          "Voel de stilte die transformeert.",
+          "Laat jezelf oversteken en vind je gewenste bestemming."
+        ]
+      ]
+    };
 
-  <div class="message" id="message">Aguarde enquanto a jornada se desenrola...</div>
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('lang') || 'pt';
+    const frasesIdioma = frases[lang] || frases['pt'];
 
-  <audio id="background-music" loop autoplay>
-    <source src="public/path_to_music.mp3" type="audio/mp3">
-    Seu navegador não suporta a reprodução de áudio.
-  </audio>
+    const textOverlay = document.getElementById('textOverlay');
+    let blocoAtual = 0;
+
+    function mostrarBloco(bloco) {
+      textOverlay.style.opacity = 0;
+      setTimeout(() => {
+        textOverlay.innerHTML = frasesIdioma[bloco].map(line => `<div>${line}</div>`).join('');
+        textOverlay.style.opacity = 1;
+      }, 1000);
+    }
+
+    mostrarBloco(blocoAtual);
+
+    setInterval(() => {
+      blocoAtual = (blocoAtual + 1) % frasesIdioma.length;
+      mostrarBloco(blocoAtual);
+    }, 6000);
+  </script>
 </body>
 </html>
