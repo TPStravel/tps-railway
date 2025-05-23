@@ -1,21 +1,129 @@
 
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title data-key="titulo">TPS – Termos e Privacidade</title>
+  <title data-key="titulo">Liminax – Termos e Privacidade</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.jsdelivr.net/gh/tps-labs/lang-switch@latest/lang-switch.min.js"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2ea6ff;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .btn {
+      background-color: #2ea6ff;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      display: block;
+      margin: 40px auto;
+    }
+    .btn:hover {
+      background-color: #1a90d5;
+    }
+  </style>
 </head>
 <body>
-  <h1 data-key="titulo">TPS – Termos e Privacidade</h1>
-  <p data-key="introducao">O TPS é uma plataforma personalizada que ajuda você a planejar suas viagens.</p>
-  <button onclick="continuar()" data-key="botao">Aceitar e Continuar</button>
+  <h1 data-key="titulo">Liminax – Termos e Privacidade</h1>
+  <div class="container">
+    <p><strong>O Liminax</strong> é uma plataforma de apoio simbólico e emocional para quem enfrenta crises existenciais, pensamentos suicidas ou vícios. É um espaço silencioso, onde palavras cuidam. Mas não substituímos psicólogos nem serviços médicos.</p>
+
+    <p><strong>Objetivo:</strong> Acolher. Refletir. Não julgar. Conduzir por caminhos simbólicos de escuta e reconexão.</p>
+
+    <p><strong>Como funciona:</strong> Você interage com frases, imagens e palavras geradas por IA simbólica. Se houver risco real, a plataforma redireciona você a serviços humanos de emergência.</p>
+
+    <h2>Como Funciona o Liminax</h2>
+    <ul>
+      <li><strong>Respostas simbólicas:</strong> As interações são anônimas. As frases adaptam-se ao que você sente.</li>
+      <li><strong>Escuta ativa:</strong> Utilizamos IA para compreender sua dor e devolver presença simbólica.</li>
+      <li><strong>Recursos externos:</strong> Se necessário, você será guiado para ajuda humana: CVV, linhas de apoio e plataformas de psicoterapia.</li>
+      <li><strong>Privacidade:</strong> Nenhuma informação sua é compartilhada. Seus dados são invisíveis para todos, exceto para você.</li>
+    </ul>
+
+    <h2>Termos de Uso</h2>
+    <ul>
+      <li><strong>Coleta de Dados:</strong> Apenas estado emocional e palavras simbólicas escritas.</li>
+      <li><strong>Uso dos Dados:</strong> Para adaptar as frases de cuidado e detectar risco emergencial.</li>
+      <li><strong>Cookies:</strong> Apenas para manter seu estado entre sessões.</li>
+      <li><strong>Segurança:</strong> Seus dados não saem do sistema. São criptografados e protegidos.</li>
+      <li><strong>Limitações:</strong> O Liminax não é terapia. Se você estiver em risco, procure ajuda humana.</li>
+    </ul>
+
+    <h2>Política de Privacidade</h2>
+    <ul>
+      <li><strong>Informações coletadas:</strong> Nenhum dado pessoal identificável.</li>
+      <li><strong>Uso simbólico:</strong> As respostas são guardadas para a sua própria jornada, e só você pode acessá-las.</li>
+      <li><strong>Segurança:</strong> Utilizamos criptografia e não rastreamos seus dados fora do Liminax.</li>
+    </ul>
+
+    <p>Você não está sozinho. O Liminax é um espelho simbólico, mas a vida pede também mãos humanas.</p>
+
+    <button class="btn" onclick="aceitarEAvancarFirestore('liminax-inicio.html', 'liminax')" data-key="botao">
+      Aceitar e Iniciar Apoio
+    </button>
+  </div>
 
   <script>
     const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
     loadLang(lang);
-    function continuar() {
-      window.location.href = 'choose-worlds.html?lang=' + lang;
+  </script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCzO9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+      projectId: "canal-vivo-4cd4a",
+      storageBucket: "canal-vivo-4cd4a.appspot.com",
+      messagingSenderId: "1083445191655",
+      appId: "1:1083445191655:web:c6c7915bf02979c10af342"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    function aceitarEAvancarFirestore(destino, mundo) {
+      let user_id = localStorage.getItem('user_id');
+      if (!user_id) {
+        user_id = 'user-' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('user_id', user_id);
+      }
+      const data = {
+        user_id: user_id,
+        idioma: lang,
+        mundo: mundo,
+        data_consentimento: new Date().toISOString()
+      };
+      db.collection("usuarios").add(data)
+        .then(() => {
+          window.location.href = destino + '?lang=' + lang;
+        })
+        .catch((error) => {
+          alert("Erro ao salvar os dados.");
+          console.error(error);
+        });
     }
   </script>
 </body>

@@ -4,18 +4,117 @@
 <head>
   <meta charset="UTF-8" />
   <title data-key="titulo">Temarix – Termos e Privacidade</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.jsdelivr.net/gh/tps-labs/lang-switch@latest/lang-switch.min.js"></script>
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      line-height: 1.6;
+      text-align: center;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: left;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #2ea6ff;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    .btn {
+      background-color: #2ea6ff;
+      color: white;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      display: block;
+      margin: 40px auto;
+    }
+    .btn:hover {
+      background-color: #1a90d5;
+    }
+  </style>
 </head>
 <body>
   <h1 data-key="titulo">Temarix – Termos e Privacidade</h1>
-  <p data-key="introducao">O Temarix ajuda você a explorar emoções profundas por meio de símbolos.</p>
-  <button onclick="continuar()" data-key="botao">Aceitar e Iniciar Jornada</button>
+  <div class="container">
+    <p><strong>O Temarix</strong> é uma plataforma simbólica que o ajuda a explorar suas emoções mais profundas por meio de perguntas reflexivas e provocadoras. Ele não busca diagnósticos, apenas autoconhecimento.</p>
+
+    <p><strong>Objetivo:</strong> Guiar você por uma jornada simbólica de autodescoberta, em que cada etapa desperta um novo nível de consciência emocional.</p>
+
+    <p><strong>Como funciona:</strong> Ao interagir com o Temarix, você responde perguntas simbólicas e avança por fases. Nenhum dado é compartilhado. As respostas servem apenas para guiar sua travessia interior.</p>
+
+    <h2>Termos de Uso</h2>
+    <ul>
+      <li><strong>Coleta de Dados:</strong> Suas respostas são armazenadas localmente (ou no sistema da plataforma) apenas para continuidade da jornada.</li>
+      <li><strong>Uso dos Dados:</strong> São usados exclusivamente para personalizar sua jornada emocional. Nada será compartilhado ou publicado.</li>
+      <li><strong>Cookies:</strong> Utilizados apenas para manter sua sessão e progresso simbólico entre versões.</li>
+      <li><strong>Segurança:</strong> Seus dados são criptografados e tratados com cuidado. O Temarix respeita sua vulnerabilidade emocional.</li>
+      <li><strong>Limitações:</strong> O Temarix não é terapia. Se você está em sofrimento emocional real, busque apoio humano profissional.</li>
+    </ul>
+
+    <h2>Política de Privacidade</h2>
+    <ul>
+      <li><strong>Informações coletadas:</strong> Apenas suas respostas internas. Nenhuma informação identificável é obrigatória.</li>
+      <li><strong>Armazenamento:</strong> Seus dados permanecem em segurança, visíveis apenas por você (ou pela inteligência simbólica que o guia).</li>
+      <li><strong>Compartilhamento:</strong> Nunca. A travessia é sua e apenas sua.</li>
+    </ul>
+
+    <p>Ao continuar, você concorda com os termos acima e está pronto para atravessar.</p>
+
+    <button class="btn" onclick="aceitarEAvancarFirestore('temarix-v1.html', 'temarix')" data-key="botao">
+      Aceitar e Iniciar Jornada
+    </button>
+  </div>
 
   <script>
     const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
     loadLang(lang);
-    function continuar() {
-      window.location.href = 'temarix-v1.html?lang=' + lang;
+  </script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCzO9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+      projectId: "canal-vivo-4cd4a",
+      storageBucket: "canal-vivo-4cd4a.appspot.com",
+      messagingSenderId: "1083445191655",
+      appId: "1:1083445191655:web:c6c7915bf02979c10af342"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    function aceitarEAvancarFirestore(destino, mundo) {
+      let user_id = localStorage.getItem('user_id');
+      if (!user_id) {
+        user_id = 'user-' + Math.random().toString(36).substring(2, 10);
+        localStorage.setItem('user_id', user_id);
+      }
+      const data = {
+        user_id: user_id,
+        idioma: lang,
+        mundo: mundo,
+        data_consentimento: new Date().toISOString()
+      };
+      db.collection("usuarios").add(data)
+        .then(() => {
+          window.location.href = destino + '?lang=' + lang;
+        })
+        .catch((error) => {
+          alert("Erro ao salvar os dados.");
+          console.error(error);
+        });
     }
   </script>
 </body>
