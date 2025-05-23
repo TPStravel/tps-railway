@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>temarix - GPT Portal</title>
+</head>
+<body style="font-family: Arial, sans-serif; background: #101010; color: white; padding: 30px;">
+  <h1>Bem-vindo ao mundo de Temarix</h1>
+  <p>O conteúdo GPT será ativado aqui para Temarix.</p>
+  <p>Idioma detectado: <span id="lang"></span></p>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('lang') || 'pt';
+    document.getElementById("lang").innerText = lang;
+    console.log("GPT simbólico ativado para: Temarix");
+  </script>
+</body>
+</html>

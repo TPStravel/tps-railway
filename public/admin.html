@@ -1,78 +1,83 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel de Consentimentos</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin - Canal Vivo</title>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; background: #121212; color: #fff; padding: 20px; }
-    h1 { text-align: center; color: #2ea6ff; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { padding: 10px; border: 1px solid #444; text-align: left; }
-    th { background-color: #2ea6ff; }
-    tr:nth-child(even) { background-color: #1e1e1e; }
-    .filters { margin-top: 20px; display: flex; gap: 20px; }
-    .filters select { padding: 6px; border-radius: 4px; border: none; }
-    .export { margin-top: 20px; }
-    button { padding: 10px 16px; background-color: #2ea6ff; border: none; color: white; border-radius: 4px; cursor: pointer; }
-    #senhaModal { background: #111; padding: 40px; max-width: 400px; margin: 100px auto; border-radius: 8px; text-align: center; }
-    #senhaModal input { padding: 10px; width: 80%; border-radius: 4px; border: none; margin-top: 20px; }
+    body {
+      background: #18181c;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      padding: 20px;
+    }
+    h1, h2 {
+      color: #00ffc8;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+      background: #24242a;
+    }
+    th, td {
+      border: 1px solid #444;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background: #333;
+    }
+    canvas {
+      background: #1f1f25;
+      margin-top: 20px;
+      border-radius: 8px;
+      padding: 10px;
+      max-width: 100%;
+    }
+    @media (max-width: 600px) {
+      body {
+        padding: 10px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+      h2 {
+        font-size: 18px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div id="senhaModal">
-    <h2>🔒 Acesso restrito</h2>
-    <p>Digite a senha para visualizar o painel:</p>
-    <input type="password" id="senhaInput" placeholder="Senha" />
-    <br><br>
-    <button onclick="verificarSenha()">Acessar</button>
-    <p id="erroSenha" style="color: red; display: none;">Senha incorreta.</p>
-  </div>
+  <h1>Painel de Consentimentos</h1>
 
-  <div id="painel" style="display:none">
-    <h1>Painel de Consentimentos - Canal Vivo</h1>
-    <div class="filters">
-      <select id="filterLang">
-        <option value="">Todos os Idiomas</option>
-        <option value="pt">Português</option>
-        <option value="en">English</option>
-        <option value="es">Español</option>
-        <option value="fr">Français</option>
-        <option value="de">Deutsch</option>
-        <option value="ko">한국어</option>
-        <option value="ja">日本語</option>
-        <option value="zh">中文</option>
-        <option value="ru">Русский</option>
-        <option value="hi">हिन्दी</option>
-        <option value="it">Italiano</option>
-        <option value="nl">Nederlands</option>
-      </select>
-      <select id="filterMundo">
-        <option value="">Todos os Mundos</option>
-        <option value="temarix">Temarix</option>
-        <option value="tps">TPS</option>
-        <option value="bocana">Bocana</option>
-        <option value="liminax">Liminax</option>
-      </select>
-      <button onclick="filtrar()">Filtrar</button>
-      <div class="export">
-        <button onclick="exportarCSV()">Exportar CSV</button>
-      </div>
-    </div>
-    <table>
+  <div class="table-wrapper">
+    <table id="consentTable">
       <thead>
-        <tr><th>Data</th><th>Idioma</th><th>Mundo</th><th>Origem</th></tr>
+        <tr>
+          <th>Data</th>
+          <th>Idioma</th>
+          <th>Mundo</th>
+          <th>IP</th>
+        </tr>
       </thead>
-      <tbody id="tabelaConsentimentos">
-        <tr><td colspan="4">Carregando...</td></tr>
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <h2>Gráficos de Consentimento</h2>
+  <canvas id="chartPorDia" height="200"></canvas>
+  <canvas id="chartPorIdioma" height="200"></canvas>
+  <canvas id="chartPorMundo" height="200"></canvas>
 
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
       authDomain: "canal-vivo-4cd4a.firebaseapp.com",
@@ -81,73 +86,71 @@
       messagingSenderId: "1003445191655",
       appId: "1:1003445191655:web:c6c7915bf02979c10af342"
     };
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    let todos = [];
 
-    async function carregarDados() {
-      const tabela = document.getElementById("tabelaConsentimentos");
-      tabela.innerHTML = "<tr><td colspan='4'>Carregando...</td></tr>";
-      const querySnapshot = await getDocs(collection(db, "consentimentos"));
-      todos = [];
-      querySnapshot.forEach((doc) => todos.push(doc.data()));
-      renderizar(todos);
-    }
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    function renderizar(dados) {
-      const tabela = document.getElementById("tabelaConsentimentos");
-      if (!dados.length) return tabela.innerHTML = "<tr><td colspan='4'>Nenhum dado encontrado.</td></tr>";
-      dados.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-      tabela.innerHTML = dados.map(d => `
-        <tr>
-          <td>${new Date(d.timestamp).toLocaleString()}</td>
-          <td>${d.lang || '-'}</td>
-          <td>${(d.origem || '').includes('temarix') ? 'temarix' : (d.origem || '').includes('bocana') ? 'bocana' : (d.origem || '').includes('liminax') ? 'liminax' : 'tps'}</td>
-          <td>${d.origem || '-'}</td>
-        </tr>
-      `).join('');
-    }
+    const tbody = document.querySelector("#consentTable tbody");
+    let todosDadosFirestore = [];
 
-    window.filtrar = function() {
-      const lang = document.getElementById("filterLang").value;
-      const mundo = document.getElementById("filterMundo").value;
-      const filtrados = todos.filter(d => {
-        const mundoDetectado = (d.origem || '').includes('temarix') ? 'temarix' : (d.origem || '').includes('bocana') ? 'bocana' : (d.origem || '').includes('liminax') ? 'liminax' : 'tps';
-        return (!lang || d.lang === lang) && (!mundo || mundoDetectado === mundo);
+    db.collection("usuarios").orderBy("data_consentimento", "desc").get().then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        todosDadosFirestore.push(data);
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${(data.data_consentimento || '').split('T')[0]}</td>
+          <td>${data.idioma || ''}</td>
+          <td>${data.mundo || ''}</td>
+          <td>${data.ip || ''}</td>
+        `;
+        tbody.appendChild(tr);
       });
-      renderizar(filtrados);
-    }
 
-    window.exportarCSV = function() {
-      const headers = ["Data", "Idioma", "Mundo", "Origem"];
-      const linhas = [headers.join(",")];
-      todos.forEach(d => {
-        const linha = [
-          new Date(d.timestamp).toLocaleString(),
-          d.lang || '-',
-          (d.origem || '').includes('temarix') ? 'temarix' : (d.origem || '').includes('bocana') ? 'bocana' : (d.origem || '').includes('liminax') ? 'liminax' : 'tps',
-          d.origem || '-'
-        ];
-        linhas.push(linha.join(","));
+      const dados = todosDadosFirestore.map(d => ({
+        ...d,
+        data: (d.data_consentimento || '').split('T')[0] || 'desconhecido'
+      }));
+
+      gerarGrafico('chartPorDia', 'Consentimentos por Dia', agruparPorCampo(dados, 'data'));
+      gerarGrafico('chartPorIdioma', 'Consentimentos por Idioma', agruparPorCampo(dados, 'idioma'));
+      gerarGrafico('chartPorMundo', 'Consentimentos por Mundo', agruparPorCampo(dados, 'mundo'));
+    });
+
+    function agruparPorCampo(dados, campo) {
+      const contagem = {};
+      dados.forEach(d => {
+        const valor = d[campo] || 'desconhecido';
+        contagem[valor] = (contagem[valor] || 0) + 1;
       });
-      const blob = new Blob([linhas.join("\n")], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = "consentimentos.csv";
-      a.click();
-      URL.revokeObjectURL(url);
+      return contagem;
     }
 
-    window.verificarSenha = function() {
-      const senha = document.getElementById("senhaInput").value;
-      if (senha === "Ricoji@8959") {
-        document.getElementById("senhaModal").style.display = "none";
-        document.getElementById("painel").style.display = "block";
-        carregarDados();
-      } else {
-        document.getElementById("erroSenha").style.display = "block";
-      }
+    function gerarGrafico(idCanvas, titulo, dados) {
+      const ctx = document.getElementById(idCanvas).getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(dados),
+          datasets: [{
+            label: titulo,
+            data: Object.values(dados),
+            backgroundColor: 'rgba(0, 255, 200, 0.6)'
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            title: { display: true, text: titulo, color: '#fff' }
+          },
+          scales: {
+            x: { ticks: { color: '#fff' } },
+            y: { ticks: { color: '#fff' }, beginAtZero: true }
+          }
+        }
+      });
     }
   </script>
 </body>

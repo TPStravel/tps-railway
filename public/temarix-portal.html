@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>temarix - Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+    }
+    video.background {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -1;
+      opacity: 0.6;
+    }
+    .content {
+      padding: 40px;
+      text-align: center;
+    }
+    .btn {
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #444;
+      color: white;
+      border: none;
+      margin: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <video class="background" autoplay muted loop>
+    <source src="videos/temarix.mp4" type="video/mp4">
+  </video>
+  <div class="content">
+    <h1 data-translate="title_temarix">Temarix</h1>
+    <p data-translate="intro_temarix">Este é o mundo simbólico de Temarix. Aqui você descobrirá...</p>
+    <button class="btn" onclick="window.location.href='temarix-gpt.html?lang=' + lang">Entrar no portal</button>
+    <br/>
+    <button class="btn" onclick="window.location.href='pagina-4.html?lang=' + lang">Voltar aos 4 mundos</button>
+    <button class="btn" onclick="window.location.href='index.html?lang=' + lang">Voltar à origem</button>
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const lang = urlParams.get('lang') || 'pt';
+
+    // Simulação do registro Firestore
+    console.log("Registrando acesso ao portal: temarix, idioma:", lang);
+
+    const translations = {
+      pt: {
+        title_temarix: "Temarix",
+        intro_temarix: "Este é o mundo simbólico de Temarix. Aqui você descobrirá..."
+      },
+      en: {
+        title_temarix: "Temarix World",
+        intro_temarix: "This is the symbolic world of Temarix. Here you will discover..."
+      }
+    };
+    document.querySelectorAll('[data-translate]').forEach(el => {
+      const key = el.getAttribute('data-translate');
+      el.innerText = translations[lang]?.[key] || el.innerText;
+    });
+  </script>
+</body>
+</html>

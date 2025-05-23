@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TPS – Suporte ao Viajante</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background-color: #121212;
+      color: white;
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    #suporte-container {
+      background:#1f1f1f;
+      padding:20px;
+      border-radius:10px;
+      max-width:500px;
+      margin:40px auto;
+      color:white;
+    }
+    #suporte-container input,
+    #suporte-container textarea {
+      width:100%;
+      padding:8px;
+      margin-bottom:10px;
+      border-radius:5px;
+      border: none;
+    }
+    #suporte-container button {
+      background:#4caf50;
+      color:white;
+      padding:10px 20px;
+      border:none;
+      border-radius:5px;
+      cursor:pointer;
+    }
+    #suporte-feedback {
+      margin-top:15px;
+      color:#90ee90;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>✈️ TPS – Suporte ao Viajante</h1>
+  <p>Se algo não funcionou como deveria, estamos aqui para te ajudar. Preencha o formulário abaixo.</p>
+
+  <!-- 🔧 FORMULÁRIO DE SUPORTE AO USUÁRIO (TPS-SUPORTE) -->
+  <div id="suporte-container">
+    <h3>📩 Falar com Suporte</h3>
+    <p>Conte para nós o que aconteceu e nossa equipe irá analisar sua situação com atenção.</p>
+    <form id="suporte-form">
+      <label>Nome</label><br/>
+      <input type="text" id="suporte-nome" required><br/>
+      <label>Email</label><br/>
+      <input type="email" id="suporte-email" required><br/>
+      <label>Descreva o problema</label><br/>
+      <textarea id="suporte-msg" rows="4" required></textarea><br/>
+      <button type="submit">Enviar</button>
+    </form>
+    <div id="suporte-feedback"></div>
+  </div>
+
+  <script type="module">
+    // 🔧 SCRIPT PARA ENVIO AO FIRESTORE
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SEU_DOMINIO.firebaseapp.com",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_BUCKET.appspot.com",
+      messagingSenderId: "SEU_SENDER_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    document.getElementById("suporte-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const nome = document.getElementById("suporte-nome").value;
+      const email = document.getElementById("suporte-email").value;
+      const msg = document.getElementById("suporte-msg").value;
+      const user = auth.currentUser;
+      const uid = user ? user.uid : "anonimo";
+
+      try {
+        await addDoc(collection(db, "suporte"), {
+          nome,
+          email,
+          mensagem: msg,
+          data: new Date(),
+          uid
+        });
+        document.getElementById("suporte-feedback").innerText = "✨ Mensagem enviada com sucesso. Um guia entrará em contato em breve.";
+        document.getElementById("suporte-form").reset();
+      } catch (error) {
+        document.getElementById("suporte-feedback").innerText = "❌ Erro ao enviar. Tente novamente.";
+      }
+    });
+  </script>
+</body>
+</html>
