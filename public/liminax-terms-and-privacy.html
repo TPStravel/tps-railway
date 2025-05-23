@@ -1,131 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Liminax – Termos e Privacidade</title>
-  <style>
-    body {
-      background-color: #121212;
-      color: white;
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      line-height: 1.6;
-      overflow-y: auto;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: auto;
-      padding-bottom: 60px;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 2.4rem;
-      margin-bottom: 30px;
-    }
-
-    h2 {
-      color: #4caf50;
-      margin-top: 40px;
-    }
-
-    p, li {
-      font-size: 1.05rem;
-    }
-
-    ul {
-      padding-left: 20px;
-    }
-
-    a {
-      color: #4caf50;
-      text-decoration: underline;
-    }
-
-    .btn {
-      display: block;
-      margin: 40px auto 20px;
-      padding: 12px 24px;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .btn:hover {
-      background-color: #45a049;
-    }
-
-    footer {
-      text-align: center;
-      font-size: 0.8rem;
-      margin-top: 50px;
-    }
-  </style>
+  <title data-key="titulo">TPS – Termos e Privacidade</title>
+  <script src="https://cdn.jsdelivr.net/gh/tps-labs/lang-switch@latest/lang-switch.min.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Liminax – Apoio para Dor Silenciosa</h1>
-
-    <h2>Introdução</h2>
-    <p>O <strong>Liminax</strong> é uma plataforma de apoio simbólico e emocional para quem enfrenta crises existenciais, pensamentos suicidas ou vícios. É um espaço silencioso, onde palavras cuidam. Mas não substituímos psicólogos nem serviços médicos.</p>
-
-    <p><strong>Objetivo:</strong> Acolher. Refletir. Não julgar. Conduzir por caminhos simbólicos de escuta e reconexão.</p>
-
-    <p><strong>Como funciona:</strong> Você interage com frases, imagens e palavras geradas por IA simbólica. Se houver risco real, a plataforma redireciona você a serviços humanos de emergência.</p>
-
-    <h2>Como Funciona o Liminax</h2>
-    <ul>
-      <li><strong>Respostas simbólicas:</strong> As interações são anônimas. As frases adaptam-se ao que você sente.</li>
-      <li><strong>Escuta ativa:</strong> Utilizamos IA para compreender sua dor e devolver presença simbólica.</li>
-      <li><strong>Recursos externos:</strong> Se necessário, você será guiado para ajuda humana: CVV, linhas de apoio e plataformas de psicoterapia.</li>
-      <li><strong>Privacidade:</strong> Nenhuma informação sua é compartilhada. Seus dados são invisíveis para todos, exceto para você.</li>
-    </ul>
-
-    <h2>Termos de Uso</h2>
-    <ul>
-      <li><strong>Coleta de Dados:</strong> Apenas estado emocional e palavras simbólicas escritas.</li>
-      <li><strong>Uso dos Dados:</strong> Para adaptar as frases de cuidado e detectar risco emergencial.</li>
-      <li><strong>Cookies:</strong> Apenas para manter seu estado entre sessões.</li>
-      <li><strong>Segurança:</strong> Seus dados não saem do sistema. São criptografados e protegidos.</li>
-      <li><strong>Limitações:</strong> O Liminax não é terapia. Se você estiver em risco, procure ajuda humana.</li>
-    </ul>
-
-    <h2>Política de Privacidade</h2>
-    <ul>
-      <li><strong>Informações coletadas:</strong> Nenhum dado pessoal identificável.</li>
-      <li><strong>Uso simbólico:</strong> As respostas são guardadas para a sua própria jornada, e só você pode acessá-las.</li>
-      <li><strong>Segurança:</strong> Utilizamos criptografia e não rastreamos seus dados fora do Liminax.</li>
-    </ul>
-
-    <h2>Recursos de Apoio Emergencial</h2>
-    <p>Se você está em sofrimento intenso ou risco iminente, por favor procure ajuda humana. Você pode entrar em contato com:</p>
-    <ul>
-      <li><a href="https://www.cvv.org.br" target="_blank">CVV – 188 (Brasil)</a></li>
-      <li><a href="https://www.samaritans.org" target="_blank">Samaritans (Reino Unido)</a></li>
-      <li><a href="https://www.7cups.com" target="_blank">7 Cups – Suporte emocional gratuito</a></li>
-      <li><a href="https://www.suicide.org/international-suicide-hotlines.html" target="_blank">Hotlines internacionais</a></li>
-    </ul>
-
-    <p>Você não está sozinho. O Liminax é um espelho simbólico, mas a vida pede também mãos humanas.</p>
-
-    <button class="btn" onclick="continuar()">Aceitar e Iniciar Apoio</button>
-  </div>
-
-  <footer>
-    &copy; 2025 Liminax – Apoio para Dor Silenciosa
-  </footer>
+  <h1 data-key="titulo">TPS – Termos e Privacidade</h1>
+  <p data-key="introducao">O TPS é uma plataforma personalizada que ajuda você a planejar suas viagens.</p>
+  <button onclick="continuar()" data-key="botao">Aceitar e Continuar</button>
 
   <script>
+    const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+    loadLang(lang);
     function continuar() {
-      const params = new URLSearchParams(window.location.search);
-      const lang = params.get("lang") || "pt";
-      window.location.href = "liminax-inicio.html?lang=" + lang;
+      window.location.href = 'choose-worlds.html?lang=' + lang;
     }
   </script>
 </body>
