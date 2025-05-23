@@ -56,7 +56,7 @@
       padding-bottom: 40px;
       text-align: center;
       box-sizing: border-box;
-      pointer-events: none;
+      z-index: 2;
     }
 
     .logo {
@@ -88,7 +88,7 @@
       justify-content: center;
       flex-wrap: wrap;
       gap: 28px;
-      pointer-events: auto;
+      z-index: 3;
     }
 
     .card {
@@ -136,8 +136,14 @@
       border-radius: 50px;
       padding: 10px 24px;
       font-weight: bold;
-      text-decoration: none;
+      font-family: 'Montserrat', sans-serif;
       cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+
+    .card-btn:hover {
+      background-color: #1a90d5;
     }
   </style>
 </head>
@@ -151,77 +157,52 @@
   <div class="overlay">
     <div class="logo">V</div>
     <div class="main-title">CANAL VIVO</div>
-    <div class="subtitle"
-         data-pt="Quatro mundos. Quatro caminhos simbólicos. Escolha por onde começar sua jornada."
-         data-en="Four worlds. Four symbolic paths. Choose where to begin your journey."
-         data-es="Cuatro mundos. Cuatro caminos simbólicos. Elige por dónde empezar tu viaje."
-         data-fr="Quatre mondes. Quatre chemins symboliques. Choisissez par où commencer votre voyage."
-         data-it="Quattro mondi. Quattro percorsi simbolici. Scegli da dove iniziare il tuo viaggio."
-         data-de="Vier Welten. Vier symbolische Wege. Wähle, wo du deine Reise beginnst."
-         data-ko="네 개의 세계. 네 개의 상징적 길. 여정의 시작을 선택하세요."
-         data-zh="四个世界，四条象征之路。选择你的旅程起点。"
-         data-ja="4つの世界。4つの象徴的な道。旅を始める場所を選んでください。"
-         data-tr="Dört dünya. Dört sembolik yol. Yolculuğuna nereden başlayacağını seç."
-         data-ru="Четыре мира. Четыре символических пути. Выберите, с чего начать путь."
-         data-ar="أربعة عوالم. أربعة طرق رمزية. اختر من أين تبدأ رحلتك.">
-      Quatro mundos. Quatro caminhos simbólicos. Escolha por onde começar sua jornada.
-    </div>
+    <div class="subtitle">Quatro mundos. Quatro caminhos simbólicos. Escolha por onde começar sua jornada.</div>
 
     <div class="cards-container">
       <!-- TPS -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?auto=format&fit=crop&w=400&q=80" alt="TPS" />
         <div class="card-title">TPS</div>
-        <div class="card-text"
-             data-pt="Ticket Aérea, Hotel, Rent Cars e Seguro. O mundo físico em transição."
-             data-en="Flight, Hotel, Rental Cars and Insurance. The physical world in transition.">
-          Ticket Aérea, Hotel, Rent Cars e Seguro. O mundo físico em transição.
-        </div>
-        <a class="card-btn" href="intro.html">Entrar</a>
+        <div class="card-text">Ticket Aéreo, Hotel, Rent Cars e Seguro. O mundo físico em transição.</div>
+        <a href="tps-terms-and-privacy.html" class="card-btn">Entrar</a>
       </div>
 
       <!-- Temarix -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Temarix" />
         <div class="card-title">Temarix</div>
-        <div class="card-text"
-             data-pt="Jornada emocional. Encontro com o que vibra dentro de você."
-             data-en="Emotional journey. Encounter what vibrates inside you.">
-          Jornada emocional. Encontro com o que vibra dentro de você.
-        </div>
-        <a class="card-btn" href="temarix-terms-and-privacy.html">Entrar</a>
+        <div class="card-text">Jornada emocional. Encontro com o que vibra dentro de você.</div>
+        <a href="temarix-terms-and-privacy.html" class="card-btn">Entrar</a>
       </div>
 
       <!-- Bocana -->
       <div class="card">
         <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Bocana" />
         <div class="card-title">Bocana</div>
-        <div class="card-text"
-             data-pt="Sabores, culturas e sentidos. Um portal pela alimentação."
-             data-en="Flavors, cultures and senses. A gateway through food.">
-          Sabores, culturas e sentidos. Um portal pela alimentação.
-        </div>
-        <a class="card-btn" href="bocana-terms-and-privacy.html">Entrar</a>
+        <div class="card-text">Sabores, culturas e sentidos. Um portal pela alimentação.</div>
+        <a href="bocana-terms-and-privacy.html" class="card-btn">Entrar</a>
       </div>
 
       <!-- Liminax -->
       <div class="card">
         <img src="https://cdn.pixabay.com/photo/2022/08/02/18/29/lifestyle-7361023_1280.jpg" alt="Liminax" />
         <div class="card-title">Liminax</div>
-        <div class="card-text"
-             data-pt="Conhecimento, silêncio, transição. Reflexões profundas."
-             data-en="Knowledge, silence, transition. Deep reflections.">
-          Conhecimento, silêncio, transição. Reflexões profundas.
-        </div>
-        <a class="card-btn" href="liminax-terms-and-privacy.html">Entrar</a>
+        <div class="card-text">Conhecimento, silêncio, transição. Reflexões profundas.</div>
+        <a href="liminax-terms-and-privacy.html" class="card-btn">Entrar</a>
       </div>
     </div>
   </div>
 
   <script>
-    const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
-    document.querySelectorAll("[data-" + lang + "]").forEach(el => {
-      el.textContent = el.getAttribute("data-" + lang);
+    // Adiciona ?lang=... aos links se a URL atual tiver esse parâmetro
+    document.querySelectorAll('.card-btn').forEach(btn => {
+      const lang = new URLSearchParams(window.location.search).get('lang');
+      if (lang) {
+        const currentHref = btn.getAttribute('href');
+        const separator = currentHref.includes('?') ? '&' : '?';
+        btn.setAttribute('href', `${currentHref}${separator}lang=${lang}`);
+      }
     });
   </script>
 </body>
