@@ -96,6 +96,21 @@
         justify-content: center;
       }
     }
+    @media (max-width: 600px) {
+  .slogan {
+    font-size: 14px;
+    padding: 0 12px;
+  }
+
+  .flag-label {
+    font-size: 13px;
+  }
+
+  .flag-img {
+    width: 80px;
+    height: 52px;
+  }
+}
   </style>
 </head>
 <body>
@@ -106,7 +121,6 @@
     Where technology meets your soul.<br />
     Choose your start... and cross over.
   </div>
-
   <div class="flags-grid">
     <a class="flag-card" href="mistical-journey.html?lang=pt" title="Português">
       <img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" />
@@ -157,9 +171,19 @@
       <div class="flag-label">Nederlands</div>
     </a>
   </div>
-
   <div class="click-message">
     Click on a flag to continue your journey
   </div>
 </body>
+<script type="module" src="firebase-init.js"></script>
+<script type="module">
+  import { db } from './firebase-init.js';
+  import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-lite.js";
+
+  const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+  await addDoc(collection(db, 'acessos_index'), {
+    lang,
+    timestamp: serverTimestamp()
+  });
+</script>
 </html>
