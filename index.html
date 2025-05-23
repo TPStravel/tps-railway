@@ -5,11 +5,52 @@
   <title>CANAL VIVO</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet" />
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+      projectId: "canal-vivo-4cd4a",
+      storageBucket: "canal-vivo-4cd4a.appspot.com",
+      messagingSenderId: "1003445191655",
+      appId: "1:1003445191655:web:c6c7915bf02979c10af342"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.registerAccess = async function(lang) {
+      try {
+        await addDoc(collection(db, "acessos_index"), {
+          timestamp: new Date().toISOString(),
+          lang,
+          consent: localStorage.getItem("cookieConsent") === "true"
+        });
+      } catch (e) {
+        console.error("Erro ao registrar acesso:", e);
+      }
+    };
+
+    window.submitLead = async function() {
+      const lang = new URLSearchParams(window.location.search).get("lang") || "en";
+      const name = document.getElementById("leadName").value;
+      const phone = document.getElementById("leadPhone").value;
+      const email = document.getElementById("leadEmail").value;
+      if (!name || !phone || !email) return alert("Fill all fields");
+      try {
+        await addDoc(collection(db, "leads_index"), { name, phone, email, lang, timestamp: new Date().toISOString() });
+        alert("Thank you!");
+        document.getElementById("leadForm").reset();
+      } catch (e) {
+        alert("Error");
+        console.error("Erro ao salvar lead:", e);
+      }
+    };
+  </script>
+  <style>
+    * { box-sizing: border-box; }
     html, body {
       margin: 0;
       padding: 0;
@@ -19,7 +60,6 @@
       width: 100%;
       overflow-x: hidden;
     }
-
     body {
       display: flex;
       flex-direction: column;
@@ -27,7 +67,6 @@
       justify-content: start;
       min-height: 100vh;
     }
-
     .container {
       display: flex;
       flex-direction: column;
@@ -36,107 +75,49 @@
       width: 100%;
       max-width: 1080px;
     }
-
-    .logo {
-      font-size: 100px;
-      font-weight: bold;
-      color: #2ea6ff;
-      letter-spacing: -8px;
-      margin-bottom: 10px;
-      user-select: none;
-    }
-
-    .main-title {
-      font-size: 34px;
-      font-weight: 900;
-      text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000;
-      margin-bottom: 20px;
-      user-select: none;
-      text-align: center;
-    }
-
-    .slogan {
-      font-size: 1.25em;
-      font-weight: 500;
-      color: #cccccc;
-      max-width: 760px;
-      text-align: center;
-      line-height: 1.6;
-      margin-bottom: 50px;
-      user-select: none;
-    }
-
+    .logo { font-size: 100px; font-weight: bold; color: #2ea6ff; letter-spacing: -8px; margin-bottom: 10px; user-select: none; }
+    .main-title { font-size: 34px; font-weight: 900; text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000; margin-bottom: 20px; text-align: center; }
+    .slogan { font-size: 1.25em; font-weight: 500; color: #cccccc; max-width: 760px; text-align: center; margin-bottom: 50px; line-height: 1.6; }
     .flags-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
       gap: 25px;
-      width: 100%;
       max-width: 720px;
-      justify-items: center;
       margin-bottom: 40px;
     }
-
     .flag-card {
-      text-align: center;
-      cursor: pointer;
-      text-decoration: none;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      user-select: none;
+      text-align: center; cursor: pointer; text-decoration: none; color: white;
+      display: flex; flex-direction: column; align-items: center;
       transition: transform 0.2s;
     }
-
-    .flag-card:hover {
-      transform: scale(1.1);
+    .flag-card:hover { transform: scale(1.1); }
+    .flag-img { width: 90px; height: 60px; object-fit: cover; border-radius: 10px; border: 2px solid #2ea6ff; }
+    .flag-label { margin-top: 8px; font-size: 14px; }
+    .click-message { margin-top: 20px; font-size: 1em; color: #2ea6ff; font-weight: 600; text-align: center; max-width: 720px; }
+    .lead-form {
+      margin-top: 40px;
+      background: rgba(255,255,255,0.05);
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 100%;
     }
-
-    .flag-img {
-      width: 90px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 2px solid #2ea6ff;
+    .lead-form h3 { margin-bottom: 15px; color: #2ea6ff; text-align: center; }
+    .lead-form input {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
     }
-
-    .flag-label {
-      margin-top: 8px;
-      font-size: 14px;
-    }
-
-    .click-message {
-      margin-top: 20px;
-      font-size: 1em;
-      color: #2ea6ff;
-      font-weight: 600;
-      user-select: none;
-      text-align: center;
-      max-width: 720px;
-    }
-
-    @media (max-width: 600px) {
-      .logo {
-        font-size: 64px;
-      }
-
-      .main-title {
-        font-size: 24px;
-      }
-
-      .slogan {
-        font-size: 14px;
-        padding: 0 12px;
-      }
-
-      .flag-img {
-        width: 80px;
-        height: 52px;
-      }
-
-      .flag-label {
-        font-size: 13px;
-      }
+    .lead-form button {
+      width: 100%;
+      padding: 10px;
+      background: #2ea6ff;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -145,27 +126,53 @@
     <div class="logo">V</div>
     <div class="main-title">CANAL VIVO</div>
     <div class="slogan">
-      Four worlds. One inner path.<br />
-      Where technology meets your soul.<br />
-      Choose your start... and cross over.
+      Four worlds. One inner path.<br />Where technology meets your soul.<br />Choose your start... and cross over.
     </div>
-
     <div class="flags-grid">
-      <a class="flag-card" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" /><div class="flag-label">Português</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" alt="English" /><div class="flag-label">English</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=es"><img class="flag-img" src="https://flagcdn.com/w320/es.png" alt="Español" /><div class="flag-label">Español</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=fr"><img class="flag-img" src="https://flagcdn.com/w320/fr.png" alt="Français" /><div class="flag-label">Français</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=de"><img class="flag-img" src="https://flagcdn.com/w320/de.png" alt="Deutsch" /><div class="flag-label">Deutsch</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=ko"><img class="flag-img" src="https://flagcdn.com/w320/kr.png" alt="한국어" /><div class="flag-label">한국어</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=it"><img class="flag-img" src="https://flagcdn.com/w320/it.png" alt="Italiano" /><div class="flag-label">Italiano</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=ja"><img class="flag-img" src="https://flagcdn.com/w320/jp.png" alt="日本語" /><div class="flag-label">日本語</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=zh"><img class="flag-img" src="https://flagcdn.com/w320/cn.png" alt="中文" /><div class="flag-label">中文</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=ru"><img class="flag-img" src="https://flagcdn.com/w320/ru.png" alt="Русский" /><div class="flag-label">Русский</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" alt="हिन्दी" /><div class="flag-label">हिन्दी</div></a>
-      <a class="flag-card" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" alt="Nederlands" /><div class="flag-label">Nederlands</div></a>
+      <a class="flag-card" onclick="registerAccess('pt')" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" /><div class="flag-label">Português</div></a>
+      <a class="flag-card" onclick="registerAccess('en')" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" /><div class="flag-label">English</div></a>
+      <a class="flag-card" onclick="registerAccess('es')" href="mistical-journey.html?lang=es"><img class="flag-img" src="https://flagcdn.com/w320/es.png" /><div class="flag-label">Español</div></a>
+      <a class="flag-card" onclick="registerAccess('fr')" href="mistical-journey.html?lang=fr"><img class="flag-img" src="https://flagcdn.com/w320/fr.png" /><div class="flag-label">Français</div></a>
+      <a class="flag-card" onclick="registerAccess('de')" href="mistical-journey.html?lang=de"><img class="flag-img" src="https://flagcdn.com/w320/de.png" /><div class="flag-label">Deutsch</div></a>
+      <a class="flag-card" onclick="registerAccess('ko')" href="mistical-journey.html?lang=ko"><img class="flag-img" src="https://flagcdn.com/w320/kr.png" /><div class="flag-label">한국어</div></a>
+      <a class="flag-card" onclick="registerAccess('it')" href="mistical-journey.html?lang=it"><img class="flag-img" src="https://flagcdn.com/w320/it.png" /><div class="flag-label">Italiano</div></a>
+      <a class="flag-card" onclick="registerAccess('ja')" href="mistical-journey.html?lang=ja"><img class="flag-img" src="https://flagcdn.com/w320/jp.png" /><div class="flag-label">日本語</div></a>
+      <a class="flag-card" onclick="registerAccess('zh')" href="mistical-journey.html?lang=zh"><img class="flag-img" src="https://flagcdn.com/w320/cn.png" /><div class="flag-label">中文</div></a>
+      <a class="flag-card" onclick="registerAccess('ru')" href="mistical-journey.html?lang=ru"><img class="flag-img" src="https://flagcdn.com/w320/ru.png" /><div class="flag-label">Русский</div></a>
+      <a class="flag-card" onclick="registerAccess('hi')" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" /><div class="flag-label">हिन्दी</div></a>
+      <a class="flag-card" onclick="registerAccess('nl')" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" /><div class="flag-label">Nederlands</div></a>
     </div>
-
     <div class="click-message">Click on a flag to continue your journey</div>
+    <form id="leadForm" class="lead-form">
+      <h3 id="leadTitle">Leave your contact</h3>
+      <input id="leadName" type="text" placeholder="Name" />
+      <input id="leadPhone" type="text" placeholder="Phone" />
+      <input id="leadEmail" type="email" placeholder="Email" />
+      <button type="button" onclick="submitLead()">Submit</button>
+    </form>
   </div>
+  <script>
+    const translations = {
+      "pt": {"form_title":"Deixe seu contato","name":"Nome","phone":"Celular","email":"E-mail","submit":"Enviar"},
+      "en": {"form_title":"Leave your contact","name":"Name","phone":"Phone","email":"Email","submit":"Submit"},
+      "es": {"form_title":"Deja tu contacto","name":"Nombre","phone":"Teléfono","email":"Correo electrónico","submit":"Enviar"},
+      "fr": {"form_title":"Laissez votre contact","name":"Nom","phone":"Téléphone","email":"E-mail","submit":"Envoyer"},
+      "de": {"form_title":"Hinterlassen Sie Ihre Kontaktdaten","name":"Name","phone":"Telefon","email":"E-Mail","submit":"Absenden"},
+      "ko": {"form_title":"연락처를 남겨주세요","name":"이름","phone":"전화번호","email":"이메일","submit":"제출"},
+      "it": {"form_title":"Lascia il tuo contatto","name":"Nome","phone":"Telefono","email":"Email","submit":"Invia"},
+      "ja": {"form_title":"連絡先を残してください","name":"名前","phone":"電話番号","email":"メールアドレス","submit":"送信"},
+      "zh": {"form_title":"留下您的联系方式","name":"姓名","phone":"电话","email":"电子邮件","submit":"提交"},
+      "ru": {"form_title":"Оставьте свои контакты","name":"Имя","phone":"Телефон","email":"Электронная почта","submit":"Отправить"},
+      "hi": {"form_title":"अपना संपर्क छोड़ें","name":"नाम","phone":"फ़ोन","email":"ईमेल","submit":"जमा करें"},
+      "nl": {"form_title":"Laat uw contactgegevens achter","name":"Naam","phone":"Telefoon","email":"E-mail","submit":"Verzenden"}
+    };
+    const lang = new URLSearchParams(window.location.search).get("lang") || "en";
+    const t = translations[lang] || translations["en"];
+    document.getElementById("leadTitle").innerText = t.form_title;
+    document.getElementById("leadName").placeholder = t.name;
+    document.getElementById("leadPhone").placeholder = t.phone;
+    document.getElementById("leadEmail").placeholder = t.email;
+    document.querySelector(".lead-form button").innerText = t.submit;
+  </script>
 </body>
 </html>

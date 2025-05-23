@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bocana – Termos e Privacidade</title>
+  <style>
+    body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; overflow-y: auto; }
+    .container { max-width: 900px; margin: auto; padding-bottom: 60px; }
+    h1 { text-align: center; font-size: 2.4rem; margin-bottom: 30px; }
+    h2 { color: #4caf50; margin-top: 40px; }
+    p, li { font-size: 1.05rem; }
+    ul { padding-left: 20px; }
+    .btn { display: block; margin: 40px auto 20px; padding: 12px 24px; background-color: #4caf50; color: white; border: none; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+    .btn:hover { background-color: #45a049; }
+    footer { text-align: center; font-size: 0.8rem; margin-top: 50px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Bocana – Nutrição com Presença</h1>
+
+    <h2>Introdução</h2>
+    <p>O <strong>Bocana</strong> é uma plataforma que recomenda experiências sensoriais e nutricionais com base no seu estado emocional, humor e energia.</p>
+
+    <p><strong>Objetivo:</strong> Sugerir alimentos, bebidas e estímulos sensoriais que promovam equilíbrio emocional e bem-estar.</p>
+    <p><strong>Como funciona:</strong> Você informa como está se sentindo, e o Bocana usa esses dados para entregar sugestões adaptadas ao seu estado atual.</p>
+
+    <h2>Como Funciona</h2>
+    <ul>
+      <li><strong>Alimentos e Bebidas:</strong> Para melhorar humor, energia, foco ou relaxamento.</li>
+      <li><strong>Experiências Sensorias:</strong> Sons, aromas e texturas que acompanham seu estado emocional.</li>
+    </ul>
+
+    <h2>Termos de Uso</h2>
+    <ul>
+      <li><strong>Coleta de Dados:</strong> Apenas humor, energia e preferências alimentares.</li>
+      <li><strong>Uso dos Dados:</strong> Para personalizar suas recomendações e acompanhar seu estado ao longo do tempo.</li>
+      <li><strong>Cookies:</strong> Usados para salvar preferências locais e manter seu estado entre sessões.</li>
+      <li><strong>Segurança:</strong> Dados criptografados e tratados com responsabilidade.</li>
+      <li><strong>Limitações:</strong> O Bocana não substitui orientação médica, nutricional ou psicológica.</li>
+    </ul>
+
+    <h2>Política de Privacidade</h2>
+    <ul>
+      <li><strong>Informações coletadas:</strong> Apenas as necessárias para recomendação alimentar e emocional.</li>
+      <li><strong>Uso interno:</strong> Nenhum dado é compartilhado com terceiros.</li>
+      <li><strong>Controle total:</strong> Você pode limpar ou excluir seus dados a qualquer momento.</li>
+    </ul>
+
+    <p>Ao continuar, você concorda com os termos acima e está pronto para sentir com presença.</p>
+
+    <button class="btn" onclick="aceitarTermos('bocana-inicio.html')">Aceitar e Continuar</button>
+  </div>
+
+  <footer>&copy; 2025 Bocana – Nutrição com Presença</footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+      projectId: "canal-vivo-4cd4a",
+      storageBucket: "canal-vivo-4cd4a.appspot.com",
+      messagingSenderId: "1003445191655",
+      appId: "1:1003445191655:web:c6c7915bf02979c10af342"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window.aceitarTermos = async function(proximaUrl) {
+      localStorage.setItem("cookieConsent", "true");
+      const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+      try {
+        await addDoc(collection(db, "consentimentos"), {
+          timestamp: new Date().toISOString(),
+          lang,
+          consentido: true,
+          origem: window.location.pathname
+        });
+        window.location.href = `${proximaUrl}?lang=${lang}`;
+      } catch (e) {
+        alert("Erro ao registrar consentimento. Tente novamente.");
+        console.error(e);
+      }
+    };
+  </script>
+</body>
+</html>

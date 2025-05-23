@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temarix – Termos e Privacidade</title>
+  <style>
+    body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; overflow-y: auto; }
+    .container { max-width: 900px; margin: auto; padding-bottom: 60px; }
+    h1 { text-align: center; font-size: 2.4rem; margin-bottom: 30px; }
+    h2 { color: #4caf50; margin-top: 40px; }
+    p, li { font-size: 1.05rem; }
+    ul { padding-left: 20px; }
+    .btn { display: block; margin: 40px auto 20px; padding: 12px 24px; background-color: #4caf50; color: white; border: none; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
+    .btn:hover { background-color: #45a049; }
+    footer { text-align: center; font-size: 0.8rem; margin-top: 50px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Temarix – Jornada Emocional Simbólica</h1>
+    <h2>Introdução</h2>
+    <p>O <strong>Temarix</strong> é uma plataforma simbólica que o ajuda a explorar suas emoções mais profundas por meio de perguntas reflexivas e provocadoras. Ele não busca diagnósticos, apenas autoconhecimento.</p>
+    <p><strong>Objetivo:</strong> Guiar você por uma jornada simbólica de autodescoberta, em que cada etapa desperta um novo nível de consciência emocional.</p>
+    <p><strong>Como funciona:</strong> Ao interagir com o Temarix, você responde perguntas simbólicas e avança por fases. Nenhum dado é compartilhado. As respostas servem apenas para guiar sua travessia interior.</p>
+    <h2>Termos de Uso</h2>
+    <ul>
+      <li><strong>Coleta de Dados:</strong> Suas respostas são armazenadas localmente (ou no sistema da plataforma) apenas para continuidade da jornada.</li>
+      <li><strong>Uso dos Dados:</strong> São usados exclusivamente para personalizar sua jornada emocional. Nada será compartilhado ou publicado.</li>
+      <li><strong>Cookies:</strong> Utilizados apenas para manter sua sessão e progresso simbólico entre versões.</li>
+      <li><strong>Segurança:</strong> Seus dados são criptografados e tratados com cuidado. O Temarix respeita sua vulnerabilidade emocional.</li>
+      <li><strong>Limitações:</strong> O Temarix não é terapia. Se você está em sofrimento emocional real, busque apoio humano profissional.</li>
+    </ul>
+    <h2>Política de Privacidade</h2>
+    <ul>
+      <li><strong>Informações coletadas:</strong> Apenas suas respostas internas. Nenhuma informação identificável é obrigatória.</li>
+      <li><strong>Armazenamento:</strong> Seus dados permanecem em segurança, visíveis apenas por você (ou pela inteligência simbólica que o guia).</li>
+      <li><strong>Compartilhamento:</strong> Nunca. A travessia é sua e apenas sua.</li>
+    </ul>
+    <p>Ao continuar, você concorda com os termos acima e está pronto para atravessar.</p>
+    <button class="btn" onclick="aceitarTermos('temarix-v1.html')">Aceitar e Iniciar Jornada</button>
+  </div>
+  <footer>&copy; 2025 Temarix – Jornada Emocional Simbólica</footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+      projectId: "canal-vivo-4cd4a",
+      storageBucket: "canal-vivo-4cd4a.appspot.com",
+      messagingSenderId: "1003445191655",
+      appId: "1:1003445191655:web:c6c7915bf02979c10af342"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    window.aceitarTermos = async function(proximaUrl) {
+      localStorage.setItem("cookieConsent", "true");
+      const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+      try {
+        await addDoc(collection(db, "consentimentos"), {
+          timestamp: new Date().toISOString(),
+          lang,
+          consentido: true,
+          origem: window.location.pathname
+        });
+        window.location.href = `${proximaUrl}?lang=${lang}`;
+      } catch (e) {
+        alert("Erro ao registrar consentimento. Tente novamente.");
+        console.error(e);
+      }
+    };
+  </script>
+</body>
+</html>
