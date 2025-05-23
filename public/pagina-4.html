@@ -131,7 +131,6 @@
   </style>
 </head>
 <body>
-  <div id="map"></div>
   <div class="logo">V</div>
   <div class="main-title">CANAL VIVO</div>
   <div class="slogan">
@@ -139,7 +138,6 @@
     Where technology meets your soul.<br />
     Choose your start... and cross over.
   </div>
-
   <div class="flags-grid">
     <a class="flag-card" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" /><div class="flag-label">Português</div></a>
     <a class="flag-card" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" alt="English" /><div class="flag-label">English</div></a>
@@ -154,21 +152,7 @@
     <a class="flag-card" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" alt="हिन्दी" /><div class="flag-label">हिन्दी</div></a>
     <a class="flag-card" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" alt="Nederlands" /><div class="flag-label">Nederlands</div></a>
   </div>
-
   <div class="click-message">Click on a flag to continue your journey</div>
-
-  <script>
-    function initMap() {
-      const location = { lat: -23.55052, lng: -46.633308 };
-      const map = new google.maps.Map(document.getElementById("map"), {
-        zoom: 12,
-        center: location,
-      });
-      new google.maps.Marker({ position: location, map: map });
-    }
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBAfZyJ-8L6SgQI7Y7rBd_ZbwVhshrUC5Q&callback=initMap" async defer></script>
-
   <script type="module" src="firebase-init.js"></script>
   <script type="module">
     import { db } from './firebase-init.js';
