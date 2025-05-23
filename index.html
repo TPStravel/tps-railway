@@ -7,16 +7,25 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet" />
   <style>
     body {
+      margin: 0;
       background: #18181c;
       color: #fff;
       font-family: 'Montserrat', Arial, sans-serif;
-      margin: 0;
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 40px 20px;
+      min-height: 100vh;
     }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      padding: 40px 20px 20px;
+    }
+
     .logo {
       font-size: 90px;
       font-weight: bold;
@@ -25,13 +34,16 @@
       margin-bottom: 12px;
       user-select: none;
     }
+
     .main-title {
       font-size: 32px;
       font-weight: 900;
       text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000;
       margin-bottom: 20px;
       user-select: none;
+      text-align: center;
     }
+
     .slogan {
       font-size: 1.2em;
       font-weight: 500;
@@ -42,15 +54,17 @@
       margin-bottom: 60px;
       user-select: none;
     }
+
     .flags-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       gap: 30px;
       max-width: 720px;
       width: 100%;
-      justify-content: end;
       justify-items: center;
+      margin-bottom: 40px;
     }
+
     .flag-card {
       text-align: center;
       cursor: pointer;
@@ -62,9 +76,11 @@
       user-select: none;
       transition: transform 0.2s;
     }
+
     .flag-card:hover {
       transform: scale(1.1);
     }
+
     .flag-img {
       width: 90px;
       height: 60px;
@@ -72,12 +88,14 @@
       border-radius: 10px;
       border: 2px solid #2ea6ff;
     }
+
     .flag-label {
       margin-top: 8px;
       font-size: 14px;
     }
+
     .click-message {
-      margin-top: 30px;
+      margin-bottom: 30px;
       font-size: 1em;
       color: #2ea6ff;
       font-weight: 600;
@@ -85,105 +103,60 @@
       text-align: center;
       max-width: 720px;
     }
+
     @media (max-width: 900px) {
       .flags-grid {
         grid-template-columns: repeat(4, 1fr);
       }
     }
+
     @media (max-width: 600px) {
       .flags-grid {
         grid-template-columns: repeat(2, 1fr);
-        justify-content: center;
+      }
+
+      .slogan {
+        font-size: 14px;
+        padding: 0 12px;
+      }
+
+      .flag-label {
+        font-size: 13px;
+      }
+
+      .flag-img {
+        width: 80px;
+        height: 52px;
       }
     }
-    @media (max-width: 600px) {
-  .slogan {
-    font-size: 14px;
-    padding: 0 12px;
-  }
-
-  .flag-label {
-    font-size: 13px;
-  }
-
-  .flag-img {
-    width: 80px;
-    height: 52px;
-  }
-}
   </style>
 </head>
 <body>
-  <div class="logo">V</div>
-  <div class="main-title">CANAL VIVO</div>
-  <div class="slogan">
-    Four worlds. One inner path.<br />
-    Where technology meets your soul.<br />
-    Choose your start... and cross over.
-  </div>
-  <div class="flags-grid">
-    <a class="flag-card" href="mistical-journey.html?lang=pt" title="Português">
-      <img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" />
-      <div class="flag-label">Português</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=en" title="English">
-      <img class="flag-img" src="https://flagcdn.com/w320/us.png" alt="English" />
-      <div class="flag-label">English</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=es" title="Español">
-      <img class="flag-img" src="https://flagcdn.com/w320/es.png" alt="Español" />
-      <div class="flag-label">Español</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=fr" title="Français">
-      <img class="flag-img" src="https://flagcdn.com/w320/fr.png" alt="Français" />
-      <div class="flag-label">Français</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=de" title="Deutsch">
-      <img class="flag-img" src="https://flagcdn.com/w320/de.png" alt="Deutsch" />
-      <div class="flag-label">Deutsch</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=ko" title="한국어">
-      <img class="flag-img" src="https://flagcdn.com/w320/kr.png" alt="한국어" />
-      <div class="flag-label">한국어</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=it" title="Italiano">
-      <img class="flag-img" src="https://flagcdn.com/w320/it.png" alt="Italiano" />
-      <div class="flag-label">Italiano</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=ja" title="日本語">
-      <img class="flag-img" src="https://flagcdn.com/w320/jp.png" alt="日本語" />
-      <div class="flag-label">日本語</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=zh" title="中文">
-      <img class="flag-img" src="https://flagcdn.com/w320/cn.png" alt="中文" />
-      <div class="flag-label">中文</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=ru" title="Русский">
-      <img class="flag-img" src="https://flagcdn.com/w320/ru.png" alt="Русский" />
-      <div class="flag-label">Русский</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=hi" title="हिन्दी">
-      <img class="flag-img" src="https://flagcdn.com/w320/in.png" alt="हिन्दी" />
-      <div class="flag-label">हिन्दी</div>
-    </a>
-    <a class="flag-card" href="mistical-journey.html?lang=nl" title="Nederlands">
-      <img class="flag-img" src="https://flagcdn.com/w320/nl.png" alt="Nederlands" />
-      <div class="flag-label">Nederlands</div>
-    </a>
-  </div>
-  <div class="click-message">
-    Click on a flag to continue your journey
+  <div class="container">
+    <div class="logo">V</div>
+    <div class="main-title">CANAL VIVO</div>
+    <div class="slogan">
+      Four worlds. One inner path.<br />
+      Where technology meets your soul.<br />
+      Choose your start... and cross over.
+    </div>
+
+    <div class="flags-grid">
+      <a class="flag-card" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" /><div class="flag-label">Português</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" alt="English" /><div class="flag-label">English</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=es"><img class="flag-img" src="https://flagcdn.com/w320/es.png" alt="Español" /><div class="flag-label">Español</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=fr"><img class="flag-img" src="https://flagcdn.com/w320/fr.png" alt="Français" /><div class="flag-label">Français</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=de"><img class="flag-img" src="https://flagcdn.com/w320/de.png" alt="Deutsch" /><div class="flag-label">Deutsch</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=ko"><img class="flag-img" src="https://flagcdn.com/w320/kr.png" alt="한국어" /><div class="flag-label">한국어</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=it"><img class="flag-img" src="https://flagcdn.com/w320/it.png" alt="Italiano" /><div class="flag-label">Italiano</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=ja"><img class="flag-img" src="https://flagcdn.com/w320/jp.png" alt="日本語" /><div class="flag-label">日本語</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=zh"><img class="flag-img" src="https://flagcdn.com/w320/cn.png" alt="中文" /><div class="flag-label">中文</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=ru"><img class="flag-img" src="https://flagcdn.com/w320/ru.png" alt="Русский" /><div class="flag-label">Русский</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" alt="हिन्दी" /><div class="flag-label">हिन्दी</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" alt="Nederlands" /><div class="flag-label">Nederlands</div></a>
+    </div>
+
+    <div class="click-message">Click on a flag to continue your journey</div>
   </div>
 </body>
-<script type="module" src="firebase-init.js"></script>
-<script type="module">
-  import { db } from './firebase-init.js';
-  import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-lite.js";
-
-  const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
-  await addDoc(collection(db, 'acessos_index'), {
-    lang,
-    timestamp: serverTimestamp()
-  });
-</script>
 </html>
