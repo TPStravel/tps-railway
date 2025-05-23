@@ -1,11 +1,171 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="refresh" content="0; url=pagina-4.html?lang=pt">
-  <title>Redirecionando...</title>
+  <meta charset="UTF-8" />
+  <title>CANAL VIVO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #18181c;
+      color: #fff;
+      font-family: 'Montserrat', Arial, sans-serif;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      min-height: 100vh;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px 40px;
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    .logo {
+      font-size: 100px;
+      font-weight: bold;
+      color: #2ea6ff;
+      letter-spacing: -8px;
+      margin-bottom: 10px;
+      user-select: none;
+    }
+
+    .main-title {
+      font-size: 34px;
+      font-weight: 900;
+      text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000;
+      margin-bottom: 20px;
+      user-select: none;
+      text-align: center;
+    }
+
+    .slogan {
+      font-size: 1.25em;
+      font-weight: 500;
+      color: #cccccc;
+      max-width: 760px;
+      text-align: center;
+      line-height: 1.6;
+      margin-bottom: 50px;
+      user-select: none;
+    }
+
+    .flags-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      gap: 25px;
+      width: 100%;
+      max-width: 720px;
+      justify-items: center;
+      margin-bottom: 40px;
+    }
+
+    .flag-card {
+      text-align: center;
+      cursor: pointer;
+      text-decoration: none;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      user-select: none;
+      transition: transform 0.2s;
+    }
+
+    .flag-card:hover {
+      transform: scale(1.1);
+    }
+
+    .flag-img {
+      width: 90px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 2px solid #2ea6ff;
+    }
+
+    .flag-label {
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .click-message {
+      margin-top: 20px;
+      font-size: 1em;
+      color: #2ea6ff;
+      font-weight: 600;
+      user-select: none;
+      text-align: center;
+      max-width: 720px;
+    }
+
+    @media (max-width: 600px) {
+      .logo {
+        font-size: 64px;
+      }
+
+      .main-title {
+        font-size: 24px;
+      }
+
+      .slogan {
+        font-size: 14px;
+        padding: 0 12px;
+      }
+
+      .flag-img {
+        width: 80px;
+        height: 52px;
+      }
+
+      .flag-label {
+        font-size: 13px;
+      }
+    }
+  </style>
 </head>
 <body>
-  Redirecionando para página principal...
+  <div class="container">
+    <div class="logo">V</div>
+    <div class="main-title">CANAL VIVO</div>
+    <div class="slogan">
+      Four worlds. One inner path.<br />
+      Where technology meets your soul.<br />
+      Choose your start... and cross over.
+    </div>
+
+    <div class="flags-grid">
+      <a class="flag-card" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" /><div class="flag-label">Português</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" alt="English" /><div class="flag-label">English</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=es"><img class="flag-img" src="https://flagcdn.com/w320/es.png" alt="Español" /><div class="flag-label">Español</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=fr"><img class="flag-img" src="https://flagcdn.com/w320/fr.png" alt="Français" /><div class="flag-label">Français</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=de"><img class="flag-img" src="https://flagcdn.com/w320/de.png" alt="Deutsch" /><div class="flag-label">Deutsch</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=ko"><img class="flag-img" src="https://flagcdn.com/w320/kr.png" alt="한국어" /><div class="flag-label">한국어</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=it"><img class="flag-img" src="https://flagcdn.com/w320/it.png" alt="Italiano" /><div class="flag-label">Italiano</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=ja"><img class="flag-img" src="https://flagcdn.com/w320/jp.png" alt="日本語" /><div class="flag-label">日本語</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=zh"><img class="flag-img" src="https://flagcdn.com/w320/cn.png" alt="中文" /><div class="flag-label">中文</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=ru"><img class="flag-img" src="https://flagcdn.com/w320/ru.png" alt="Русский" /><div class="flag-label">Русский</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" alt="हिन्दी" /><div class="flag-label">हिन्दी</div></a>
+      <a class="flag-card" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" alt="Nederlands" /><div class="flag-label">Nederlands</div></a>
+    </div>
+
+    <div class="click-message">Click on a flag to continue your journey</div>
+  </div>
 </body>
 </html>
