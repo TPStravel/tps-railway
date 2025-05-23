@@ -222,5 +222,25 @@
   </script>
 
   <script type="module" src="firebase-init.js"></script>
+  <!-- Bloco do Mapa Google -->
+<div id="map" style="width: 100%; height: 500px; margin-top: 60px; border-radius: 20px; z-index: 3;"></div>
+
+<script>
+  function initMap() {
+    const local = { lat: -23.55052, lng: -46.633308 }; // Exemplo: São Paulo
+    const map = new google.maps.Map(document.getElementById("map"), {
+      zoom: 12,
+      center: local,
+    });
+    new google.maps.Marker({
+      position: local,
+      map: map,
+    });
+  }
+</script>
+
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDPSKyQWW3YagIZAYZmtLVCDCETp3b3KRs&callback=initMap"
+  async defer></script>
 </body>
 </html>
