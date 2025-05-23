@@ -1,12 +1,10 @@
 
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8" />
-  <title data-key="titulo">Bocana – Termos e Privacidade</title>
+  <title data-key="titulo">BOCANA – Termos e Privacidade</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.jsdelivr.net/gh/tps-labs/lang-switch@latest/lang-switch.min.js"></script>
   <style>
     body {
       background-color: #121212;
@@ -46,44 +44,22 @@
   </style>
 </head>
 <body>
-  <h1 data-key="titulo">Bocana – Termos e Privacidade</h1>
+  <h1 data-key="titulo">BOCANA – Termos e Privacidade</h1>
   <div class="container">
-    <p><strong>O Bocana</strong> é uma plataforma que recomenda experiências sensoriais e nutricionais com base no seu estado emocional, humor e energia.</p>
-
-    <p><strong>Objetivo:</strong> Sugerir alimentos, bebidas e estímulos sensoriais que promovam equilíbrio emocional e bem-estar.</p>
-    <p><strong>Como funciona:</strong> Você informa como está se sentindo, e o Bocana usa esses dados para entregar sugestões adaptadas ao seu estado atual.</p>
-
-    <h2>Termos de Uso</h2>
-    <ul>
-      <li><strong>Coleta de Dados:</strong> Apenas humor, energia e preferências alimentares.</li>
-      <li><strong>Uso dos Dados:</strong> Para personalizar suas recomendações e acompanhar seu estado ao longo do tempo.</li>
-      <li><strong>Cookies:</strong> Usados para salvar preferências locais e manter seu estado entre sessões.</li>
-      <li><strong>Segurança:</strong> Dados criptografados e tratados com responsabilidade.</li>
-      <li><strong>Limitações:</strong> O Bocana não substitui orientação médica, nutricional ou psicológica.</li>
-    </ul>
-
-    <h2>Política de Privacidade</h2>
-    <ul>
-      <li><strong>Informações coletadas:</strong> Apenas as necessárias para recomendação alimentar e emocional.</li>
-      <li><strong>Uso interno:</strong> Nenhum dado é compartilhado com terceiros.</li>
-      <li><strong>Controle total:</strong> Você pode limpar ou excluir seus dados a qualquer momento.</li>
-    </ul>
-
-    <p>Ao continuar, você concorda com os termos acima e está pronto para sentir com presença.</p>
-
+    <p>O <strong>Bocana</strong> oferece recomendações sensoriais com base no seu estado emocional e experiências alimentares simbólicas.</p>
     <button class="btn" onclick="aceitarEAvancarFirestore('bocana-inicio.html', 'bocana')" data-key="botao">
       Aceitar e Continuar
     </button>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/gh/tps-labs/lang-switch@latest/lang-switch.min.js"></script>
   <script>
     const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
     loadLang(lang);
   </script>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBCzO9jhE9Fz7Lkn_VFObc135sPaacpZJU",
@@ -95,6 +71,7 @@
     };
     const app = firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
     function aceitarEAvancarFirestore(destino, mundo) {
       let user_id = localStorage.getItem('user_id');
       if (!user_id) {
