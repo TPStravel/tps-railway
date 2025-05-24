@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Simulação TPS - Canal Vivo</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      text-align: center;
+      padding-top: 80px;
+    }
+    .container {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 40px;
+      margin: auto;
+      max-width: 700px;
+      border-radius: 20px;
+    }
+    input {
+      width: 80%;
+      padding: 12px;
+      font-size: 16px;
+      margin-top: 20px;
+      border-radius: 10px;
+      border: none;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 30px;
+      font-size: 16px;
+      background-color: #2ea6ff;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1a90d5;
+    }
+    #resposta {
+      margin-top: 30px;
+      font-size: 18px;
+      white-space: pre-wrap;
+      color: #e2e2e2;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simule sua necessidade de viagem</h1>
+    <p>Exemplo: “Preciso de hotel barato em Lisboa por 3 noites.”</p>
+    <input type="text" id="mensagem" placeholder="Descreva sua viagem aqui...">
+    <br>
+    <button onclick="enviarMensagem()">Simular agora</button>
+    <div id="resposta"></div>
+  </div>
+
+  <script>
+    async function enviarMensagem() {
+      const input = document.getElementById('mensagem');
+      const mensagem = input.value.trim();
+      const respostaEl = document.getElementById('resposta');
+
+      if (!mensagem) {
+        respostaEl.innerText = "Por favor, escreva algo.";
+        return;
+      }
+
+      respostaEl.innerText = "⏳ Processando sua simulação...";
+
+      try {
+        const res = await fetch('/api/gpt', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: mensagem })
+        });
+
+        const data = await res.json();
+        respostaEl.innerText = data.reply || "❌ Nenhuma resposta recebida.";
+      } catch (err) {
+        respostaEl.innerText = "❌ Erro ao se conectar com o servidor.";
+      }
+    }
+  </script>
+</body>
+</html>
