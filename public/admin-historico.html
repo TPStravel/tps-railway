@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Admin - Histórico GPT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: #121212;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      color: #00ffff;
+    }
+    input, button {
+      padding: 8px;
+      margin: 5px;
+      border-radius: 4px;
+      border: none;
+    }
+    input {
+      width: 250px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #333;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: #333;
+    }
+    tr:nth-child(even) {
+      background-color: #1e1e1e;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+  </style>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+  apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+  authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+  projectId: "canal-vivo-4cd4a",
+  storageBucket: "canal-vivo-4cd4a.appspot.com",
+  messagingSenderId: "1003445191655",
+  appId: "1:1003445191655:web:c6c7915bf02979c10af342"
+};
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function carregarHistorico() {
+      const tabela = document.getElementById('tabela');
+      tabela.innerHTML = '';
+      const filtro = document.getElementById('filtro').value.toLowerCase();
+
+      const q = query(collection(db, "historicoGPT"), orderBy("data", "desc"));
+      const snapshot = await getDocs(q);
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (
+          data.mensagem.toLowerCase().includes(filtro) ||
+          data.resposta.toLowerCase().includes(filtro)
+        ) {
+          const row = tabela.insertRow();
+          row.insertCell().textContent = new Date(data.data.toDate()).toLocaleString();
+          row.insertCell().textContent = data.mensagem;
+          row.insertCell().textContent = data.resposta;
+        }
+      });
+    }
+
+    window.carregarHistorico = carregarHistorico;
+
+    window.exportarJSON = async function () {
+      const q = query(collection(db, "historicoGPT"), orderBy("data", "desc"));
+      const snapshot = await getDocs(q);
+      const dados = snapshot.docs.map(doc => doc.data());
+      const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'historicoGPT.json';
+      a.click();
+    }
+  </script>
+</head>
+<body>
+  <h1>Painel de Histórico GPT</h1>
+  <div class="controls">
+    <input type="text" id="filtro" placeholder="Filtrar por palavra-chave">
+    <button onclick="carregarHistorico()">🔍 Filtrar</button>
+    <button onclick="exportarJSON()">⬇️ Exportar JSON</button>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Data</th>
+        <th>Mensagem</th>
+        <th>Resposta</th>
+      </tr>
+    </thead>
+    <tbody id="tabela"></tbody>
+  </table>
+</body>
+</html>
