@@ -1,5 +1,5 @@
 {
-  "framework": "other",
+  "framework": "vite",
   "functions": {
     "api/**/*.js": {
       "runtime": "nodejs18.x"
