@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Histórico de Simulações - TPS</title>
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    h1 {
+      color: #00ffd0;
+    }
+    .entry {
+      background: #1e1e1e;
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 10px;
+    }
+    .entry time {
+      font-size: 12px;
+      color: #ccc;
+    }
+    .mensagem {
+      color: #58a6ff;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .resposta {
+      margin-top: 5px;
+    }
+    #limpar {
+      background: #ff4444;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Histórico de Simulações</h1>
+  <div id="historicoContainer"></div>
+  <button id="limpar">🗑️ Limpar histórico</button>
+
+  <script>
+    const container = document.getElementById("historicoContainer");
+    const historico = JSON.parse(localStorage.getItem("gptHistorico") || "[]").reverse();
+
+    if (historico.length === 0) {
+      container.innerHTML = "<p>Nenhuma simulação encontrada.</p>";
+    } else {
+      historico.forEach(entry => {
+        const div = document.createElement("div");
+        div.className = "entry";
+        div.innerHTML = `
+          <time>${new Date(entry.data).toLocaleString()}</time>
+          <div class="mensagem">🟢 ${entry.mensagem}</div>
+          <div class="resposta">💬 ${entry.resposta}</div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById("limpar").addEventListener("click", () => {
+      if (confirm("Deseja realmente apagar todo o histórico?")) {
+        localStorage.removeItem("gptHistorico");
+        location.reload();
+      }
+    });
+  </script>
+</body>
+</html>
