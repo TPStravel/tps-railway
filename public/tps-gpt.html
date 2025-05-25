@@ -49,6 +49,36 @@
       color: #e2e2e2;
     }
   </style>
+
+  <!-- Firebase (opcional) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "SUA_API_KEY",
+      authDomain: "SUA_AUTH_DOMAIN",
+      projectId: "SEU_PROJECT_ID",
+      storageBucket: "SEU_BUCKET",
+      messagingSenderId: "SEU_ID",
+      appId: "SEU_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.salvarHistorico = async function (mensagem, resposta) {
+      try {
+        await addDoc(collection(db, "historicoGPT"), {
+          mensagem: mensagem,
+          resposta: resposta,
+          data: new Date().toISOString()
+        });
+      } catch (e) {
+        console.error("Erro ao salvar no Firestore", e);
+      }
+    }
+  </script>
 </head>
 <body>
   <div class="container">
@@ -81,9 +111,27 @@
         });
 
         const data = await res.json();
+
         respostaEl.innerText = data.reply || "❌ Nenhuma resposta recebida.";
+
+        // ✅ Mensagem final de sucesso
+        if (data.reply) {
+          const sucesso = document.createElement('div');
+          sucesso.innerText = "✅ Simulação concluída com sucesso.";
+          sucesso.style.color = "#00ff99";
+          sucesso.style.fontWeight = "bold";
+          sucesso.style.marginTop = "20px";
+          respostaEl.prepend(sucesso);
+        }
+
+        // 🟡 Salvar no Firebase (opcional)
+        if (window.salvarHistorico && data.reply) {
+          window.salvarHistorico(mensagem, data.reply);
+        }
+
       } catch (err) {
         respostaEl.innerText = "❌ Erro ao se conectar com o servidor.";
+        console.error(err);
       }
     }
   </script>

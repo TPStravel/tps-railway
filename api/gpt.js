@@ -56,7 +56,7 @@ export default async function handler(req, res) {
 
     setCachedResponse(message, reply);
 
-    return res.status(200).json({ reply });
+    return res.status(200).json({ resultado: reply });
 
   } catch (error) {
     if (error.name === 'AbortError') {

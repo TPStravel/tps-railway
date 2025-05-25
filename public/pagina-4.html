@@ -1,18 +1,206 @@
-<!-- ... todo seu código acima permanece igual -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Canal Vivo - Escolha seu Caminho</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet" />
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    </div> <!-- fim de .cards-container -->
-    
-    <!-- BLOCO GPT INTEGRADO -->
-    <div style="margin-top: 40px; text-align: center;">
-      <input type="text" id="mensagem" placeholder="Digite sua dúvida..." style="width: 60%; padding: 10px; font-size: 16px;">
-      <br><br>
-      <button onclick="enviarMensagem()" style="padding: 10px 20px; font-size: 16px; cursor: pointer;">Simular agora</button>
-      <div id="resposta" style="margin-top: 20px; color: white; font-size: 18px;"></div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+      projectId: "canal-vivo-4cd4a",
+      storageBucket: "canal-vivo-4cd4a.appspot.com",
+      messagingSenderId: "1003445191655",
+      appId: "1:1003445191655:web:c6c7915bf02979c10af342"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+    addDoc(collection(db, "acessos_pagina4"), {
+      timestamp: new Date().toISOString(),
+      lang,
+      consent: localStorage.getItem("cookieConsent") === "true"
+    });
+  </script>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      background: #18181c;
+      font-family: 'Montserrat', Arial, sans-serif;
+      color: white;
+    }
+    video.background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.6;
+      z-index: 0;
+    }
+    .smog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.15);
+      filter: blur(8px);
+      z-index: 1;
+      animation: smogEffect 14s infinite alternate;
+    }
+    @keyframes smogEffect {
+      0% { opacity: 0.2; }
+      100% { opacity: 0.5; }
+    }
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 40px;
+      text-align: center;
+      box-sizing: border-box;
+      z-index: 2;
+    }
+    .logo {
+      font-size: 96px;
+      font-weight: bold;
+      color: #2ea6ff;
+      letter-spacing: -10px;
+    }
+    .main-title {
+      font-size: 42px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000;
+      margin-top: 8px;
+    }
+    .subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: #e2cba7;
+      margin: 16px 0 40px;
+      font-style: italic;
+      max-width: 900px;
+    }
+    .cards-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 28px;
+      z-index: 3;
+    }
+    .card {
+      background: #23232b;
+      border-radius: 20px;
+      width: 230px;
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+    }
+    .card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-style: italic;
+      font-weight: bold;
+      margin: 16px 0 8px;
+    }
+    .card-text {
+      font-size: 14px;
+      color: #ccc;
+      padding: 0 16px;
+      flex-grow: 1;
+    }
+    .card-btn {
+      display: inline-block;
+      margin: 16px auto 20px;
+      background: #2ea6ff;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      padding: 10px 24px;
+      font-weight: bold;
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+    }
+    .card-btn:hover {
+      background-color: #1a90d5;
+    }
+  </style>
+</head>
+<body>
+  <video class="background" autoplay muted loop preload="metadata" playsinline>
+    <source src="bg-mistico.mp4" type="video/mp4" />
+    Seu navegador não suporta vídeo.
+  </video>
+  <div class="smog"></div>
+  <div class="overlay">
+    <div class="logo">V</div>
+    <div class="main-title">CANAL VIVO</div>
+    <div class="subtitle">Quatro mundos. Quatro caminhos simbólicos. Escolha por onde começar sua jornada.</div>
+    <div class="cards-container">
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?auto=format&fit=crop&w=400&q=80" alt="TPS" loading="lazy" />
+        <div class="card-title">TPS</div>
+        <div class="card-text">Viagens aéreas, hotéis, aluguel de carros e seguros. O mundo físico em transição.</div>
+        <!-- GPT INTERAÇÃO TPS (oculto por padrão) -->
+<div id="gpt-box" style="display: none; padding: 0 16px; margin-top: 8px;">
+  <input type="text" id="mensagem" placeholder="Digite sua dúvida..." style="width: 100%; padding: 8px; margin-bottom: 8px;" />
+  <button onclick="enviarMensagem()" style="width: 100%; padding: 8px; background: #1a90d5; color: white; border: none; border-radius: 8px; cursor: pointer;">
+    Simular agora
+  </button>
+  <div id="resposta" style="margin-top: 12px; color: #ccc; font-size: 14px;"></div>
+</div>
+<!-- FIM GPT -->
+        <a href="tps-terms-and-privacy.html" class="card-btn">Entrar</a>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Temarix" />
+        <div class="card-title">Temarix</div>
+        <div class="card-text">Jornada emocional. Encontro com o que vibra dentro de você.</div>
+        <a href="temarix-terms-and-privacy.html" class="card-btn">Entrar</a>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Bocana" />
+        <div class="card-title">Bocana</div>
+        <div class="card-text">Sabores, culturas e sentidos. Um portal pela alimentação.</div>
+        <a href="bocana-terms-and-privacy.html" class="card-btn">Entrar</a>
+      </div>
+      <div class="card">
+        <img src="https://cdn.pixabay.com/photo/2022/08/02/18/29/lifestyle-7361023_1280.jpg" alt="Liminax" />
+        <div class="card-title">Liminax</div>
+        <div class="card-text">Conhecimento, silêncio, transição. Reflexões profundas.</div>
+        <a href="liminax-terms-and-privacy.html" class="card-btn">Entrar</a>
+      </div>
     </div>
-    <!-- FIM BLOCO GPT -->
-    
-  </div> <!-- fim de .overlay -->
-
+  </div>
   <script>
     document.querySelectorAll('.card-btn').forEach(btn => {
       const lang = new URLSearchParams(window.location.search).get('lang');
@@ -22,32 +210,31 @@
         btn.setAttribute('href', `${currentHref}${separator}lang=${lang}`);
       }
     });
-
     async function enviarMensagem() {
-      const input = document.getElementById('mensagem');
-      const mensagem = input.value.trim();
-      const respostaEl = document.getElementById('resposta');
+  const input = document.getElementById('mensagem');
+  const respostaEl = document.getElementById('resposta');
+  const mensagem = input.value.trim();
 
-      if (!mensagem) {
-        respostaEl.innerText = "Por favor, escreva algo.";
-        return;
-      }
+  if (!mensagem) {
+    respostaEl.innerText = "Por favor, escreva algo.";
+    return;
+  }
 
-      respostaEl.innerText = "⏳ Simulando...";
+  respostaEl.innerText = "⏳ Simulando...";
 
-      try {
-        const res = await fetch('/api/gpt', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: mensagem })
-        });
+  try {
+    const res = await fetch('/api/gpt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: mensagem })
+    });
 
-        const data = await res.json();
-        respostaEl.innerText = data.reply || "❌ Nenhuma resposta recebida.";
-      } catch (err) {
-        respostaEl.innerText = "❌ Erro ao se conectar com o servidor.";
-      }
-    }
+    const data = await res.json();
+    respostaEl.innerText = data.reply || "❌ Nenhuma resposta recebida.";
+  } catch (err) {
+    respostaEl.innerText = "❌ Erro ao se conectar com o servidor.";
+  }
+}
   </script>
 </body>
 </html>
