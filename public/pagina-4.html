@@ -236,5 +236,23 @@
   }
 }
   </script>
-</body>
-</html>
+<body>
+ <div id="admin-btn" style="display: none; position: absolute; top: 20px; right: 20px; z-index: 10;">
+  <a href="painel-admin-v3.html" target="_blank" style="
+    background: #2ea6ff;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    font-family: 'Montserrat', sans-serif;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  ">⚙️ Admin</a>
+</div>
+
+<script>
+  const url = new URLSearchParams(window.location.search);
+  if (url.get("admin") === "true") {
+    document.getElementById("admin-btn").style.display = "block";
+  }
+</script>
