@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+// Caminho: /api/gpt.js
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -19,17 +19,23 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4', // ou "gpt-3.5-turbo"
         messages: [{ role: 'user', content: message }],
         temperature: 0.7
       })
     });
 
     const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || 'Sem resposta do modelo.';
-    res.status(200).json({ reply });
+
+    if (data.error) {
+      return res.status(500).json({ error: data.error.message });
+    }
+
+    const reply = data.choices?.[0]?.message?.content || 'Resposta não disponível.';
+    res.status(200).json({ response: reply });
 
   } catch (error) {
-    res.status(500).json({ error: 'Erro: ' + error.message });
+    console.error('Erro na requisição ao GPT:', error);
+    res.status(500).json({ error: 'Erro interno no servidor.' });
   }
 }

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chat Tela Preta Ajustado</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background-color: #0d0d0d;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #eee;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .tela-preta {
+      background: #111;
+      width: 90vw;
+      max-width: 600px;
+      height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 12px;
+      box-shadow: 0 0 25px #000;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+
+    #chat-container {
+      flex: 1 1 auto;
+      background: #000;
+      border-radius: 10px;
+      padding: 10px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+      border: 1px solid #222;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .message {
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      line-height: 1.4;
+      display: inline-block;
+    }
+
+    .user {
+      align-self: flex-end;
+      background-color: #1a2634;
+      color: #66d9ef;
+      text-align: right;
+    }
+
+    .bot {
+      align-self: flex-start;
+      background-color: #233417;
+      color: #a6e22e;
+      text-align: left;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+      background-color: #1c1c1c;
+      color: white;
+      min-height: 40px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+      flex-shrink: 0;
+      min-height: 40px;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+
+    #clear-history {
+      margin-top: 12px;
+      align-self: center;
+      background-color: #222;
+      font-size: 14px;
+      padding: 10px 20px;
+      min-width: 140px;
+    }
+
+    @media (max-width: 600px) {
+      .tela-preta {
+        width: 95vw;
+        height: 90vh;
+        padding: 12px;
+      }
+
+      input[type="text"], button, #clear-history {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tela-preta">
+    <div id="chat-container"></div>
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Digite sua mensagem..." autocomplete="off" />
+      <button id="send-button">Enviar</button>
+    </div>
+    <button id="clear-history">🧼 Limpar histórico</button>
+  </div>
+
+  <script>
+    const chatContainer = document.getElementById("chat-container");
+    const userInput = document.getElementById("user-input");
+    const sendButton = document.getElementById("send-button");
+    const clearButton = document.getElementById("clear-history");
+
+    function loadHistory() {
+      chatContainer.innerHTML = "";
+      const history = JSON.parse(localStorage.getItem("chatHistory")) || [];
+      history.forEach(({ message, response }) => {
+        addMessage(message, "user");
+        addMessage(response, "bot");
+      });
+    }
+
+    function saveToLocalStorage(message, response) {
+      const history = JSON.parse(localStorage.getItem("chatHistory")) || [];
+      history.push({ message, response });
+      localStorage.setItem("chatHistory", JSON.stringify(history));
+    }
+
+    function simulateBotResponse(message) {
+      return "Você disse: " + message;
+    }
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (!message) return;
+
+      addMessage(message, "user");
+      userInput.value = "";
+
+      const botReply = simulateBotResponse(message);
+      addMessage(botReply, "bot");
+
+      saveToLocalStorage(message, botReply);
+    }
+
+    function addMessage(text, sender) {
+      const msg = document.createElement("div");
+      msg.className = `message ${sender}`;
+      msg.textContent = text;
+      chatContainer.appendChild(msg);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+
+    clearButton.addEventListener("click", () => {
+      localStorage.removeItem("chatHistory");
+      chatContainer.innerHTML = "";
+    });
+
+    sendButton.addEventListener("click", sendMessage);
+    userInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    loadHistory();
+  </script>
+</body>
+</html>

@@ -1,163 +1,315 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="utf-8"/>
-  <title>TPSGPT – Tela Preta com Texto Logo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <title>TPS – Travel Personally Secretary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #1a1a3d;
+      color: white;
       display: flex;
       height: 100vh;
       overflow: hidden;
-      color: white;
     }
     .sidebar {
       width: 230px;
       background-color: #2c2c5d;
-      padding: 10px;
-    }
-    .welcome {
-      position: absolute;
-      top: 0;
-      left: 230px;
-      right: 300px;
-      height: 65vh;
-      background-color: #000;
+      padding: 20px;
       box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h2 { font-size: 20px; margin-bottom: 20px; }
+    .item { margin-bottom: 16px; cursor: pointer; transition: transform 0.3s ease; }
+    .item:hover { transform: scale(1.03); }
+    .item img {
+      width: 100%; height: 120px; object-fit: cover;
+      border-radius: 8px; margin-bottom: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .item span { font-size: 14px; text-align: center; display: block; }
+    .main {
+      flex: 1;
+      background-color: #000;
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
-      padding: 20px;
-      overflow: hidden;
-    }
-    .logo-text {
-      font-size: 48px;
-      font-weight: bold;
-      color: #3fa3ff;
-      margin-bottom: 20px;
-      letter-spacing: 2px;
-    }
-    .intro-text {
-      text-align: center;
-      font-size: 16px;
-      line-height: 1.6;
-      margin-bottom: 20px;
-      max-width: 600px;
-    }
-    .chat {
-      width: 100%;
-      max-width: 600px;
-      flex: 1;
+      padding: 40px 20px 100px;
       overflow-y: auto;
     }
-    .input-area {
-      display: flex;
-      gap: 10px;
-      width: 100%;
+    .logo { font-size: 36px; font-weight: bold; color: #3fa3ff; margin-bottom: 10px; }
+    .slogan {
+      font-size: 18px;
+      text-align: center;
       max-width: 600px;
-      padding-top: 10px;
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
+      color: #ccc;
+      line-height: 1.5;
+      margin-top: 15px;
     }
-    input[type="text"] {
-      flex: 1;
+    .mensagem-social {
+      font-size: 14px;
+      text-align: center;
+      max-width: 600px;
+      color: #ffd700;
+      line-height: 1.5;
+      margin: 16px 0 20px 0;
+    }
+    /* Chat log da area preta */
+    #chatLogMain {
+      width: 100%;
+      height: 300px;
+      overflow-y: auto;
+      background: #000;
       padding: 10px;
       border-radius: 5px;
-      border: none;
+      margin-bottom: 20px;
+      color: white;
+    }
+    #chatLogMain div {
+      margin-bottom: 10px;
       font-size: 14px;
-      background-color: #222;
-      color: white;
+      line-height: 1.4;
     }
-    button {
-      background-color: #4f46e5;
-      border: none;
-      padding: 10px 16px;
-      color: white;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .portfolio {
+    .input-area {
       position: absolute;
-      top: 65vh;
-      left: 230px;
-      right: 300px;
-      height: 35vh;
-      background-color: #2b2b5c;
-      padding: 20px;
-      overflow-y: auto;
+      bottom: 20px;
+      left: 250px;  /* sidebar width + padding */
+      right: 320px; /* chat width + padding */
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    textarea {
+      flex: 1; padding: 10px; min-height: 50px; max-height: 70px;
+      resize: none; border-radius: 5px; border: none;
+      font-size: 14px; background-color: #222; color: white;
+    }
+    button.send-message {
+      background-color: #4f46e5; border: none; padding: 10px 16px;
+      color: white; font-weight: bold; border-radius: 5px; cursor: pointer;
     }
     .discord {
       width: 300px;
-      height: 100vh;
       background-color: #14142b;
-      border-left: 1px solid #222;
       padding: 20px;
       box-sizing: border-box;
+      border-left: 1px solid #222;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-log {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      background-color: #1e1e3f;
+      padding: 10px;
+      border-radius: 5px;
+      color: white;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .chat-input {
+      display: flex;
+      gap: 6px;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      background-color: #2b2b4f;
+      color: white;
+    }
+    .chat-input button {
+      padding: 8px 12px;
+      background-color: #4f46e5;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
     }
   </style>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Firebase config do projeto canal-vivo-chat
+    const firebaseConfig = {
+      apiKey: "AIzaSyDReBGhb2gZNv7KA86HJXTeiLimWTrurp8",
+      authDomain: "canal-vivo-chat.firebaseapp.com",
+      projectId: "canal-vivo-chat"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
 </head>
 <body>
   <div class="sidebar">
-    <h2>🔍 Experiências</h2>
-    <div class="experience">📌 Experiência 1</div>
-    <div class="experience">📌 Experiência 2</div>
+    <div>
+      <h2>🔍 Explorar</h2>
+      <div class="item"><img src="https://images.unsplash.com/photo-1500916434205-0c77489c6cf7?w=400&h=300&fit=crop" alt="Paris" /><span>Paris, França</span></div>
+      <div class="item"><img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop" alt="New York" /><span>New York, EUA</span></div>
+      <div class="item"><img src="https://images.unsplash.com/photo-1549693578-d683be217e58?w=400&h=300&fit=crop" alt="Seoul" /><span>Seoul, Coreia do Sul</span></div>
+      <div class="item"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=300&fit=crop" alt="Tóquio" /><span>Tóquio, Japão</span></div>
+      <div class="item"><img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop" alt="Londres" /><span>Londres, Inglaterra</span></div>
+    </div>
+    <div style="font-size: 11px; color: #ccc;">Versão TPS-GPT</div>
   </div>
 
-  <div class="welcome">
-    <div class="logo-text">TPS</div>
-    <div class="intro-text">
-      🛫 <strong>Bem-vindo ao seu assistente de viagem pessoal.</strong><br><br>
-      ✈️ Para te ajudar melhor, posso saber:<br>
-      📍 Cidade de origem<br>
-      📍 Destino desejado<br>
-      📅 Data da sua viagem<br><br>
-      Ou, se preferir, digite abaixo qualquer dúvida que tiver sobre voos, hotéis ou aluguel de carros.
+  <div class="main">
+    <div class="logo">TPS</div>
+    <div class="mensagem-social">
+      🌱 Cada viagem através do TPS contribui para ações sociais reais.<br>
+      Obrigado por fazer a diferença.
     </div>
-    <div class="chat" id="chatBox"></div>
-    <div class="input-area" id="inputArea">
-      <input id="userInput" placeholder="Ex: Voo barato de São Paulo para Nova York em julho" type="text"/>
-      <button onclick="enviarPergunta()">Enviar</button>
+    <div class="slogan" id="sloganText">
+      ✈️ Bem-vindo ao seu assistente de viagem pessoal.<br />
+      Me diga de onde você sai, para onde vai e quando pretende viajar.
     </div>
-  </div>
 
-  <div class="portfolio">
-    <h2>📁 Seu Portfólio</h2>
-    <div class="exploration-box">Exploração 1</div>
-    <div class="exploration-box">Exploração 2</div>
+    <!-- Chat principal na área preta -->
+    <div id="chatLogMain"></div>
+
+    <div class="input-area">
+      <textarea id="userInput" placeholder="Digite sua mensagem..."></textarea>
+      <button onclick="enviarPergunta()" class="send-message" id="sendBtn">Enviar</button>
+    </div>
   </div>
 
   <div class="discord">
-    <h3>🎧 Canal TPS – Discord</h3>
-    <div class="channel"># geral</div>
-    <div class="channel"># suporte</div>
-    <div class="channel"># comunidade</div>
-    <br>
-    <div class="user"><div class="avatar"></div> richard<span class="status"></span></div>
-    <div class="user"><div class="avatar"></div> julia<span class="status"></span></div>
-    <div class="user"><div class="avatar"></div> bot-gpt<span class="status"></span></div>
+    <div class="chat-log" id="chatLog">
+      <div><strong>🤖:</strong> Bem-vindo ao chat lateral.</div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="chatInput" placeholder="Digite aqui..." />
+      <button onclick="enviarChat()">Enviar</button>
+    </div>
   </div>
 
   <script>
-    function enviarPergunta() {
+    async function enviarPergunta() {
       const input = document.getElementById("userInput");
-      const chat = document.getElementById("chatBox");
-      const userMsg = document.createElement("div");
-      userMsg.className = "bot-msg";
-      userMsg.style.backgroundColor = "#2d2d5f";
-      userMsg.style.textAlign = "right";
-      userMsg.style.marginTop = "10px";
-      userMsg.textContent = input.value;
-      chat.appendChild(userMsg);
+      const text = input.value.trim();
+      const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+      if (!text) return;
+
+      // Exibir mensagem do usuário no chat principal (tela preta)
+      const divPergunta = document.createElement("div");
+      divPergunta.innerHTML = "<strong>👤:</strong> " + text;
+      document.getElementById("chatLogMain").appendChild(divPergunta);
+
+      // Salvar no Firebase
+      await db.collection("mensagens_tps").add({
+        mensagem: text,
+        remetente: "user",
+        idioma: lang,
+        timestamp: new Date()
+      });
+
+      // Mostrar "Digitando..."
+      const loading = document.createElement("div");
+      loading.innerHTML = "<strong>🤖:</strong> Digitando...";
+      loading.id = "loadingGPT";
+      document.getElementById("chatLogMain").appendChild(loading);
+
+      // Enviar para API GPT (endpoint /api/gpt)
+      try {
+        const res = await fetch("/api/gpt", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, lang })
+        });
+        const data = await res.json();
+
+        loading.remove();
+
+        // Mostrar resposta GPT na área preta
+        const divBot = document.createElement("div");
+        divBot.innerHTML = "<strong>🤖:</strong> " + (data.reply || "Sem resposta");
+        document.getElementById("chatLogMain").appendChild(divBot);
+      } catch (err) {
+        loading.remove();
+        const errDiv = document.createElement("div");
+        errDiv.innerHTML = "<strong>🤖:</strong> Erro na API.";
+        document.getElementById("chatLogMain").appendChild(errDiv);
+      }
+
       input.value = "";
+      // Rolagem para baixo no chat principal
+      const chat = document.getElementById("chatLogMain");
+      chat.scrollTop = chat.scrollHeight;
     }
+
+    function enviarChat() {
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+      if (!text) return;
+      const log = document.getElementById("chatLog");
+      const div = document.createElement("div");
+      div.innerHTML = "<strong>👤:</strong> " + text;
+      log.appendChild(div);
+      input.value = "";
+      log.scrollTop = log.scrollHeight;
+    }
+
+    document.getElementById("userInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        enviarPergunta();
+      }
+    });
+
+    document.getElementById("chatInput").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        enviarChat();
+      }
+    });
+  </script>
+
+  <script>
+    const translations = {
+      pt: {
+        placeholder: "Digite sua mensagem...",
+        send: "Enviar",
+        greeting: "Para começar, posso saber de qual cidade você está saindo?",
+        slogan: "✈️ Bem-vindo ao seu assistente de viagem pessoal.<br />Me diga de onde você sai, para onde vai e quando pretende viajar.",
+        social: "🌱 Cada viagem através do TPS contribui para ações sociais reais.<br>Obrigado por fazer a diferença."
+      },
+      en: {
+        placeholder: "Type your message...",
+        send: "Send",
+        greeting: "To begin, can you tell me which city you're departing from?",
+        slogan: "✈️ Welcome to your personal travel assistant.<br />Tell me where you're leaving from, where you're going, and when.",
+        social: "🌱 Each trip through TPS contributes to real social action.<br>Thank you for making a difference."
+      },
+      es: {
+        placeholder: "Escribe tu mensaje...",
+        send: "Enviar",
+        greeting: "Para empezar, ¿puedes decirme desde qué ciudad sales?",
+        slogan: "✈️ Bienvenido a tu asistente personal de viajes.<br />Dime desde dónde sales, adónde vas y cuándo viajas.",
+        social: "🌱 Cada viaje con TPS contribuye a acciones sociales reales.<br>Gracias por marcar la diferencia."
+      }
+    };
+
+    const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+    const t = translations[lang] || translations.pt;
+
+    window.onload = () => {
+      document.getElementById("userInput").placeholder = t.placeholder;
+      document.getElementById("sendBtn").textContent = t.send;
+      document.getElementById("sloganText").innerHTML = t.slogan;
+      document.querySelector(".mensagem-social").innerHTML = t.social;
+    };
   </script>
 </body>
 </html>
