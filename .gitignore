@@ -1,6 +1,21 @@
+# Ignorar variáveis secretas
+.env
+.env.local
+.env.*.local
+
+# Node.js
 node_modules/
-.vercel/
+npm-debug.log*
+
+# Vercel/Next.js
 .next/
+out/
+.vercel/
+dist/
 
+# Logs
+*.log
 
-.vercel
+# Sistema operacional
+.DS_Store
+Thumbs.db
