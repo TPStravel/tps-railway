@@ -89,12 +89,11 @@
     .main-title { font-size: 34px; font-weight: 900; text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000; margin-bottom: 20px; text-align: center; }
     .slogan { font-size: 1.25em; font-weight: 500; color: #cccccc; max-width: 760px; text-align: center; margin-bottom: 50px; line-height: 1.6; }
     .flags-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
-      gap: 25px;
-      max-width: 720px;
-      margin-bottom: 40px;
-    }
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+  justify-items: center;
+}
     .flag-card {
       text-align: center; cursor: pointer; text-decoration: none; color: white;
       display: flex; flex-direction: column; align-items: center;
@@ -137,21 +136,22 @@
     <div class="main-title">CANAL VIVO</div>
     <div class="slogan">
       Four worlds. One inner path.<br />Where technology meets your soul.<br />Choose your start... and cross over.
-    </div>
     <div class="flags-grid">
-      <a class="flag-card" onclick="registerAccess('pt')" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" /><div class="flag-label">Português</div></a>
-      <a class="flag-card" onclick="registerAccess('en')" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" /><div class="flag-label">English</div></a>
-      <a class="flag-card" onclick="registerAccess('es')" href="mistical-journey.html?lang=es"><img class="flag-img" src="https://flagcdn.com/w320/es.png" /><div class="flag-label">Español</div></a>
-      <a class="flag-card" onclick="registerAccess('fr')" href="mistical-journey.html?lang=fr"><img class="flag-img" src="https://flagcdn.com/w320/fr.png" /><div class="flag-label">Français</div></a>
-      <a class="flag-card" onclick="registerAccess('de')" href="mistical-journey.html?lang=de"><img class="flag-img" src="https://flagcdn.com/w320/de.png" /><div class="flag-label">Deutsch</div></a>
-      <a class="flag-card" onclick="registerAccess('ko')" href="mistical-journey.html?lang=ko"><img class="flag-img" src="https://flagcdn.com/w320/kr.png" /><div class="flag-label">한국어</div></a>
-      <a class="flag-card" onclick="registerAccess('it')" href="mistical-journey.html?lang=it"><img class="flag-img" src="https://flagcdn.com/w320/it.png" /><div class="flag-label">Italiano</div></a>
-      <a class="flag-card" onclick="registerAccess('ja')" href="mistical-journey.html?lang=ja"><img class="flag-img" src="https://flagcdn.com/w320/jp.png" /><div class="flag-label">日本語</div></a>
-      <a class="flag-card" onclick="registerAccess('zh')" href="mistical-journey.html?lang=zh"><img class="flag-img" src="https://flagcdn.com/w320/cn.png" /><div class="flag-label">中文</div></a>
-      <a class="flag-card" onclick="registerAccess('ru')" href="mistical-journey.html?lang=ru"><img class="flag-img" src="https://flagcdn.com/w320/ru.png" /><div class="flag-label">Русский</div></a>
-      <a class="flag-card" onclick="registerAccess('hi')" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" /><div class="flag-label">हिन्दी</div></a>
-      <a class="flag-card" onclick="registerAccess('nl')" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" /><div class="flag-label">Nederlands</div></a>
-    </div>
+  <a class="flag-card" onclick="registerAccess('en')" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" /><div class="flag-label">English</div></a>
+  <a class="flag-card" onclick="registerAccess('es')" href="mistical-journey.html?lang=es"><img class="flag-img" src="https://flagcdn.com/w320/es.png" /><div class="flag-label">Español</div></a>
+  <a class="flag-card" onclick="registerAccess('fr')" href="mistical-journey.html?lang=fr"><img class="flag-img" src="https://flagcdn.com/w320/fr.png" /><div class="flag-label">Français</div></a>
+  <a class="flag-card" onclick="registerAccess('de')" href="mistical-journey.html?lang=de"><img class="flag-img" src="https://flagcdn.com/w320/de.png" /><div class="flag-label">Deutsch</div></a>
+
+  <a class="flag-card" onclick="registerAccess('ja')" href="mistical-journey.html?lang=ja"><img class="flag-img" src="https://flagcdn.com/w320/jp.png" /><div class="flag-label">日本語</div></a>
+  <a class="flag-card" onclick="registerAccess('zh')" href="mistical-journey.html?lang=zh"><img class="flag-img" src="https://flagcdn.com/w320/cn.png" /><div class="flag-label">中文</div></a>
+  <a class="flag-card" onclick="registerAccess('ru')" href="mistical-journey.html?lang=ru"><img class="flag-img" src="https://flagcdn.com/w320/ru.png" /><div class="flag-label">Русский</div></a>
+  <a class="flag-card" onclick="registerAccess('hi')" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" /><div class="flag-label">हिन्दी</div></a>
+
+  <a class="flag-card" onclick="registerAccess('pt')" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" /><div class="flag-label">Português</div></a>
+  <a class="flag-card" onclick="registerAccess('ko')" href="mistical-journey.html?lang=ko"><img class="flag-img" src="https://flagcdn.com/w320/kr.png" /><div class="flag-label">한국어</div></a>
+  <a class="flag-card" onclick="registerAccess('it')" href="mistical-journey.html?lang=it"><img class="flag-img" src="https://flagcdn.com/w320/it.png" /><div class="flag-label">Italiano</div></a>
+  <a class="flag-card" onclick="registerAccess('nl')" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" /><div class="flag-label">Nederlands</div></a>
+</div>
       <!--
 <form id="leadForm">
   <input type="text" id="leadName" placeholder="Name" />
