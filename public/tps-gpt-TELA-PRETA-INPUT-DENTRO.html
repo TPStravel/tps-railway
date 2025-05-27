@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <title>TPS – Tela Preta Corrigida</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a3d;
+      color: white;
+      overflow: hidden;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 230px;
+      height: 100vh;
+      background-color: #2c2c5d;
+      padding: 20px;
+    }
+    .discord {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 300px;
+      height: 100vh;
+      background-color: #14142b;
+      border-left: 1px solid #222;
+      padding: 20px;
+    }
+    .welcome {
+      position: absolute;
+      top: 0;
+      left: 230px;
+      right: 300px;
+      height: 65vh;
+      background-color: #000;
+      padding: 40px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .logo-text {
+      font-size: 40px;
+      font-weight: bold;
+      color: #3fa3ff;
+      margin-bottom: 20px;
+    }
+    .intro-text {
+      text-align: center;
+      max-width: 600px;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    .bonus-area {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .bonus-button {
+      background-color: #00d97e;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .bonus-button:hover {
+      background-color: #00b46c;
+    }
+    .input-area {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      right: 20px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      max-width: 500px;
+      border-radius: 5px;
+      border: none;
+      font-size: 14px;
+      background-color: #222;
+      color: white;
+    }
+    button {
+      background-color: #4f46e5;
+      border: none;
+      padding: 10px 16px;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>🔍 Experiências</h2>
+    <p>📌 Experiência 1</p>
+    <p>📌 Experiência 2</p>
+  </div>
+
+  <div class="discord">
+    <h3>🎧 Canal TPS – Discord</h3>
+    <p># geral</p>
+    <p># suporte</p>
+    <p># comunidade</p>
+  </div>
+
+  <div class="welcome">
+    <div class="logo-text">TPS</div>
+    <div class="intro-text">
+      🛫 <strong>Bem-vindo ao seu assistente de viagem pessoal.</strong><br><br>
+      ✈️ Para te ajudar melhor, posso saber:<br>
+      📍 Cidade de origem<br>
+      📍 Destino desejado<br>
+      📅 Data da sua viagem<br><br>
+      Ou, se preferir, digite abaixo qualquer dúvida sobre voos, hotéis ou aluguel de carros.
+    </div>
+    <div class="bonus-area" id="bonusArea">
+      🎁 Fez uma reserva real?<br>
+      <small>Confirme abaixo e receba +40 mensagens grátis</small><br>
+      <button class="bonus-button" onclick="confirmarReserva()">Confirmar minha reserva</button>
+    </div>
+
+    <div class="input-area">
+      <input id="userInput" placeholder="Ex: Voo barato de São Paulo para Nova York em julho" type="text"/>
+      <button onclick="enviarPergunta()">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    function confirmarReserva() {
+      let mensagens = parseInt(localStorage.getItem("tps_mensagens") || "0");
+      const bonus = 40;
+      const total = mensagens + bonus;
+      localStorage.setItem("tps_mensagens", total);
+      localStorage.setItem("tps_bonus_aplicado", "true");
+      alert("🎉 Obrigado pela sua reserva! Você ganhou +40 mensagens bônus.");
+      document.getElementById("bonusArea").innerHTML = "✅ Bônus aplicado: agora você tem até " + total + " mensagens.";
+    }
+  </script>
+</body>
+</html>

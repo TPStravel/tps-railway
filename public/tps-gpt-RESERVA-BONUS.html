@@ -1,0 +1,136 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"/>
+  <title>TPSGPT – Recompensa por Reserva</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a3d;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .welcome {
+      background-color: #000;
+      width: 100%;
+      max-width: 900px;
+      height: 65vh;
+      margin-top: 40px;
+      padding: 40px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+    }
+    .logo-text {
+      font-size: 40px;
+      font-weight: bold;
+      color: #3fa3ff;
+      margin-bottom: 20px;
+    }
+    .intro-text {
+      font-size: 16px;
+      text-align: center;
+      max-width: 600px;
+      margin-bottom: 20px;
+    }
+    .input-area {
+      position: absolute;
+      bottom: 30px;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      max-width: 900px;
+    }
+    input[type="text"] {
+      padding: 10px;
+      width: 70%;
+      max-width: 500px;
+      border-radius: 5px;
+      border: none;
+      font-size: 14px;
+      background-color: #222;
+      color: white;
+    }
+    button {
+      margin-left: 10px;
+      background-color: #4f46e5;
+      border: none;
+      padding: 10px 16px;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .bonus-area {
+      margin-top: 30px;
+      text-align: center;
+    }
+    .bonus-button {
+      background-color: #00d97e;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 14px;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    .bonus-button:hover {
+      background-color: #00b46c;
+    }
+  </style>
+</head>
+<body>
+  <div class="welcome">
+    <div class="logo-text">TPS</div>
+    <div class="intro-text">
+      🛫 <strong>Bem-vindo ao seu assistente de viagem pessoal.</strong><br><br>
+      ✈️ Para te ajudar melhor, posso saber:<br>
+      📍 Cidade de origem<br>
+      📍 Destino desejado<br>
+      📅 Data da sua viagem<br><br>
+      Ou, se preferir, digite abaixo qualquer dúvida sobre voos, hotéis ou aluguel de carros.
+    </div>
+    <div class="bonus-area" id="bonusArea">
+      🎁 Fez uma reserva real?<br>
+      <small>Confirme abaixo e receba +40 mensagens grátis</small><br>
+      <button class="bonus-button" onclick="confirmarReserva()">Confirmar minha reserva</button>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <input id="userInput" placeholder="Ex: Voo barato de São Paulo para Nova York em julho" type="text"/>
+    <button onclick="enviarPergunta()">Enviar</button>
+  </div>
+
+  <script>
+    function enviarPergunta() {
+      let mensagens = parseInt(localStorage.getItem("tps_mensagens") || "0");
+      if (mensagens >= 40) {
+        alert("Você atingiu o limite gratuito de 40 mensagens. Faça upgrade ou confirme sua reserva para continuar.");
+        return;
+      }
+      mensagens++;
+      localStorage.setItem("tps_mensagens", mensagens);
+      alert("Mensagem enviada! Total: " + mensagens);
+    }
+
+    function confirmarReserva() {
+      const mensagens = parseInt(localStorage.getItem("tps_mensagens") || "0");
+      const bonus = 40;
+      const total = mensagens + bonus;
+      localStorage.setItem("tps_mensagens", total);
+      alert("🎉 Obrigado pela sua reserva! Você ganhou +40 mensagens bônus.");
+      document.getElementById("bonusArea").innerHTML = "✅ Bônus aplicado: agora você tem até " + total + " mensagens.";
+    }
+  </script>
+</body>
+</html>

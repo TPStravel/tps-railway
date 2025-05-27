@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "functions": {
+    "api/gpt.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}

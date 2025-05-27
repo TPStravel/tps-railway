@@ -1,4 +1,3 @@
-// api/gpt.js
 import fetch from 'node-fetch';
 
 export default async function handler(req, res) {
@@ -20,22 +19,17 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'gpt-4', // ou use "gpt-3.5-turbo"
+        model: 'gpt-4',
         messages: [{ role: 'user', content: message }],
         temperature: 0.7
       })
     });
 
     const data = await response.json();
-
-    if (data.error) {
-      return res.status(500).json({ error: data.error.message });
-    }
-
-    const reply = data.choices?.[0]?.message?.content || 'Resposta não disponível.';
+    const reply = data.choices?.[0]?.message?.content || 'Sem resposta do modelo.';
     res.status(200).json({ reply });
 
   } catch (error) {
-    res.status(500).json({ error: 'Erro na requisição ao GPT: ' + error.message });
+    res.status(500).json({ error: 'Erro: ' + error.message });
   }
 }

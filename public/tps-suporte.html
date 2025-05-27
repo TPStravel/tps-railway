@@ -1,111 +1,113 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TPS – Suporte ao Viajante</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>TPS – Travel Personally Secretary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Dark mode CSS, sem alterar estrutura -->
   <style>
     body {
-      background-color: #121212;
-      color: white;
-      font-family: 'Montserrat', sans-serif;
+      background: #101014 !important;
+      color: #f3f3f3 !important;
+      font-family: 'Segoe UI', 'Arial', sans-serif;
       margin: 0;
-      padding: 20px;
+      padding: 0;
     }
-    #suporte-container {
-      background:#1f1f1f;
-      padding:20px;
-      border-radius:10px;
-      max-width:500px;
-      margin:40px auto;
-      color:white;
+    main, .container, .tps-container {
+      background: transparent !important;
     }
-    #suporte-container input,
-    #suporte-container textarea {
-      width:100%;
-      padding:8px;
-      margin-bottom:10px;
-      border-radius:5px;
+    h1, h2, h3, h4, h5, h6 {
+      color: #7ee787 !important;
+    }
+    input, textarea, select {
+      background: #181824 !important;
+      color: #f3f3f3 !important;
+      border: 1px solid #333 !important;
+    }
+    button, .btn, input[type="submit"] {
+      background: #7ee787 !important;
+      color: #101014 !important;
+      font-weight: bold;
+      border-radius: 8px;
       border: none;
+      transition: background 0.2s;
+      padding: 10px 16px;
+      margin-top: 6px;
     }
-    #suporte-container button {
-      background:#4caf50;
-      color:white;
-      padding:10px 20px;
-      border:none;
-      border-radius:5px;
-      cursor:pointer;
+    button:hover, .btn:hover, input[type="submit"]:hover {
+      background: #5fd67d !important;
     }
-    #suporte-feedback {
-      margin-top:15px;
-      color:#90ee90;
+    a {
+      color: #7ee787 !important;
+    }
+    hr {
+      border-color: #222 !important;
+    }
+    ::placeholder {
+      color: #b0b0b0 !important;
+      opacity: 1;
+    }
+    /* Ajustes para listas e cards */
+    ul, ol {
+      background: transparent !important;
+      color: #e2e2e2 !important;
+    }
+    /* Ajuste para balões de chat, se houver */
+    .chat-bubble, .message, .user-message, .bot-message {
+      background: #181824 !important;
+      color: #f3f3f3 !important;
+      border-radius: 12px;
+      padding: 8px 14px;
+      margin: 8px 0;
+    }
+    /* Ajuste para footer */
+    footer, .tps-footer {
+      color: #b0b0b0 !important;
+      background: transparent !important;
+      text-align: center;
+    }
+    /* Cards de cidades ou destaques */
+    .card, .highlight, .city-card {
+      background: #181824 !important;
+      color: #f3f3f3 !important;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+      padding: 12px 16px;
+      margin: 10px 0;
+    }
+    /* Remove outline azul padrão */
+    input:focus, button:focus {
+      outline: 2px solid #7ee787 !important;
     }
   </style>
 </head>
 <body>
-
-  <h1>✈️ TPS – Suporte ao Viajante</h1>
-  <p>Se algo não funcionou como deveria, estamos aqui para te ajudar. Preencha o formulário abaixo.</p>
-
-  <!-- 🔧 FORMULÁRIO DE SUPORTE AO USUÁRIO (TPS-SUPORTE) -->
-  <div id="suporte-container">
-    <h3>📩 Falar com Suporte</h3>
-    <p>Conte para nós o que aconteceu e nossa equipe irá analisar sua situação com atenção.</p>
-    <form id="suporte-form">
-      <label>Nome</label><br/>
-      <input type="text" id="suporte-nome" required><br/>
-      <label>Email</label><br/>
-      <input type="email" id="suporte-email" required><br/>
-      <label>Descreva o problema</label><br/>
-      <textarea id="suporte-msg" rows="4" required></textarea><br/>
-      <button type="submit">Enviar</button>
-    </form>
-    <div id="suporte-feedback"></div>
-  </div>
-
-  <script type="module">
-    // 🔧 SCRIPT PARA ENVIO AO FIRESTORE
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "SUA_API_KEY",
-      authDomain: "SEU_DOMINIO.firebaseapp.com",
-      projectId: "SEU_PROJECT_ID",
-      storageBucket: "SEU_BUCKET.appspot.com",
-      messagingSenderId: "SEU_SENDER_ID",
-      appId: "SEU_APP_ID"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-
-    document.getElementById("suporte-form").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const nome = document.getElementById("suporte-nome").value;
-      const email = document.getElementById("suporte-email").value;
-      const msg = document.getElementById("suporte-msg").value;
-      const user = auth.currentUser;
-      const uid = user ? user.uid : "anonimo";
-
-      try {
-        await addDoc(collection(db, "suporte"), {
-          nome,
-          email,
-          mensagem: msg,
-          data: new Date(),
-          uid
-        });
-        document.getElementById("suporte-feedback").innerText = "✨ Mensagem enviada com sucesso. Um guia entrará em contato em breve.";
-        document.getElementById("suporte-form").reset();
-      } catch (error) {
-        document.getElementById("suporte-feedback").innerText = "❌ Erro ao enviar. Tente novamente.";
-      }
-    });
-  </script>
+  <main>
+    <div>
+      <div>Paris, França</div>
+      <div>New York, EUA</div>
+      <div>Seoul, Coreia do Sul</div>
+      <div>Tóquio, Japão</div>
+      <div>Londres, Inglaterra</div>
+      <div>Versão TPS-GPT</div>
+      <div>TPS</div>
+      <div>🌱 Cada viagem através do TPS contribui para ações sociais reais.</div>
+      <div>Obrigado por fazer a diferença.</div>
+      <div>✈️ Bem-vindo ao seu assistente de viagem pessoal.</div>
+      <div>Me diga de onde você sai, para onde vai e quando pretende viajar.</div>
+      <form>
+        <input type="text" placeholder="De onde você sai?">
+        <input type="text" placeholder="Para onde vai?">
+        <input type="date" placeholder="Quando pretende viajar?">
+        <button type="submit">✈️ Planejar minha viagem</button>
+      </form>
+      <button>Enviar</button>
+      <div>
+        🤖:
+        <div>Bem-vindo ao chat lateral.</div>
+        <button>Enviar</button>
+      </div>
+    </div>
+  </main>
 </body>
 </html>

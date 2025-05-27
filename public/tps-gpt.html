@@ -1,145 +1,162 @@
-<!DOCTYPE html> 
+
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Simulação TPS - Canal Vivo</title>
+  <meta charset="utf-8"/>
+  <title>TPSGPT – Tela Preta com Texto Logo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
-      background-size: cover;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a3d;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
       color: white;
+    }
+    .sidebar {
+      width: 230px;
+      background-color: #2c2c5d;
+      padding: 10px;
+    }
+    .welcome {
+      position: absolute;
+      top: 0;
+      left: 230px;
+      right: 300px;
+      height: 65vh;
+      background-color: #000;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .logo-text {
+      font-size: 48px;
+      font-weight: bold;
+      color: #3fa3ff;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+    .intro-text {
       text-align: center;
-      padding-top: 80px;
-    }
-    .container {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 40px;
-      margin: auto;
-      max-width: 700px;
-      border-radius: 20px;
-    }
-    input {
-      width: 80%;
-      padding: 12px;
       font-size: 16px;
-      margin-top: 20px;
-      border-radius: 10px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      max-width: 600px;
+    }
+    .chat {
+      width: 100%;
+      max-width: 600px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .input-area {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      max-width: 600px;
+      padding-top: 10px;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border-radius: 5px;
       border: none;
+      font-size: 14px;
+      background-color: #222;
+      color: white;
     }
     button {
-      margin-top: 20px;
-      padding: 12px 30px;
-      font-size: 16px;
-      background-color: #2ea6ff;
-      color: white;
+      background-color: #4f46e5;
       border: none;
-      border-radius: 25px;
+      padding: 10px 16px;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
       cursor: pointer;
     }
-    button:hover {
-      background-color: #1a90d5;
+    .portfolio {
+      position: absolute;
+      top: 65vh;
+      left: 230px;
+      right: 300px;
+      height: 35vh;
+      background-color: #2b2b5c;
+      padding: 20px;
+      overflow-y: auto;
     }
-    #resposta {
-      margin-top: 30px;
-      font-size: 18px;
-      white-space: pre-wrap;
-      color: #e2e2e2;
+    .discord {
+      width: 300px;
+      height: 100vh;
+      background-color: #14142b;
+      border-left: 1px solid #222;
+      padding: 20px;
+      box-sizing: border-box;
     }
   </style>
-
-  <!-- Firebase (opcional) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-  apiKey: "AIzaSyBCZo9jhE9Fx7Lkn_VFObcl35sPaacpZJU",
-  authDomain: "canal-vivo-4cd4a.firebaseapp.com",
-  projectId: "canal-vivo-4cd4a",
-  storageBucket: "canal-vivo-4cd4a.appspot.com",
-  messagingSenderId: "1003445191655",
-  appId: "1:1003445191655:web:c6c7915bf02979c10af342"
-};
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    window.salvarHistorico = async function (mensagem, resposta) {
-      try {
-        await addDoc(collection(db, "historicoGPT"), {
-          mensagem: mensagem,
-          resposta: resposta,
-          data: new Date().toISOString()
-        });
-      } catch (e) {
-        console.error("Erro ao salvar no Firestore", e);
-      }
-    }
-  </script>
 </head>
 <body>
-  <div class="container">
-    <h1>Simule sua necessidade de viagem</h1>
-    <p>Exemplo: “Preciso de hotel barato em Lisboa por 3 noites.”</p>
-    <input type="text" id="mensagem" placeholder="Descreva sua viagem aqui...">
+  <div class="sidebar">
+    <h2>🔍 Experiências</h2>
+    <div class="experience">📌 Experiência 1</div>
+    <div class="experience">📌 Experiência 2</div>
+  </div>
+
+  <div class="welcome">
+    <div class="logo-text">TPS</div>
+    <div class="intro-text">
+      🛫 <strong>Bem-vindo ao seu assistente de viagem pessoal.</strong><br><br>
+      ✈️ Para te ajudar melhor, posso saber:<br>
+      📍 Cidade de origem<br>
+      📍 Destino desejado<br>
+      📅 Data da sua viagem<br><br>
+      Ou, se preferir, digite abaixo qualquer dúvida que tiver sobre voos, hotéis ou aluguel de carros.
+    </div>
+    <div class="chat" id="chatBox"></div>
+    <div class="input-area" id="inputArea">
+      <input id="userInput" placeholder="Ex: Voo barato de São Paulo para Nova York em julho" type="text"/>
+      <button onclick="enviarPergunta()">Enviar</button>
+    </div>
+  </div>
+
+  <div class="portfolio">
+    <h2>📁 Seu Portfólio</h2>
+    <div class="exploration-box">Exploração 1</div>
+    <div class="exploration-box">Exploração 2</div>
+  </div>
+
+  <div class="discord">
+    <h3>🎧 Canal TPS – Discord</h3>
+    <div class="channel"># geral</div>
+    <div class="channel"># suporte</div>
+    <div class="channel"># comunidade</div>
     <br>
-    <button onclick="enviarMensagem()">Simular agora</button>
-    <div id="resposta"></div>
+    <div class="user"><div class="avatar"></div> richard<span class="status"></span></div>
+    <div class="user"><div class="avatar"></div> julia<span class="status"></span></div>
+    <div class="user"><div class="avatar"></div> bot-gpt<span class="status"></span></div>
   </div>
 
   <script>
-    async function enviarMensagem() {
-      const input = document.getElementById('mensagem');
-      const mensagem = input.value.trim();
-      const respostaEl = document.getElementById('resposta');
-
-      if (!mensagem) {
-        respostaEl.innerText = "Por favor, escreva algo.";
-        return;
-      }
-
-      respostaEl.innerText = "⏳ Processando sua simulação...";
-
-      try {
-        const res = await fetch('/.netlify/functions/gpt', {  // ✅ CORRIGIDO
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: mensagem })
-        });
-
-        const data = await res.json();
-
-        respostaEl.innerText = data.reply || "❌ Nenhuma resposta recebida.";
-
-        // ✅ Mensagem final de sucesso
-        if (data.reply) {
-          const sucesso = document.createElement('div');
-          sucesso.innerText = "✅ Simulação concluída com sucesso.";
-          sucesso.style.color = "#00ff99";
-          sucesso.style.fontWeight = "bold";
-          sucesso.style.marginTop = "20px";
-          respostaEl.prepend(sucesso);
-        }
-
-        // 🟡 Salvar no Firebase (opcional)
-        if (window.salvarHistorico && data.reply) {
-          window.salvarHistorico(mensagem, data.reply);
-        }
-
-        // 🔁 Fallback: salvar no localStorage se Firebase não estiver ativo
-        if (!window.salvarHistorico && data.reply) {
-          const historico = JSON.parse(localStorage.getItem("gptHistorico") || "[]");
-          historico.push({ mensagem, resposta: data.reply, data: new Date().toISOString() });
-          localStorage.setItem("gptHistorico", JSON.stringify(historico));
-        }
-
-      } catch (err) {
-        respostaEl.innerText = "❌ Erro ao se conectar com o servidor.";
-        console.error(err);
-      }
+    function enviarPergunta() {
+      const input = document.getElementById("userInput");
+      const chat = document.getElementById("chatBox");
+      const userMsg = document.createElement("div");
+      userMsg.className = "bot-msg";
+      userMsg.style.backgroundColor = "#2d2d5f";
+      userMsg.style.textAlign = "right";
+      userMsg.style.marginTop = "10px";
+      userMsg.textContent = input.value;
+      chat.appendChild(userMsg);
+      input.value = "";
     }
   </script>
 </body>

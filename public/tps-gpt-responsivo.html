@@ -1,0 +1,291 @@
+
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TPS - Travel Personally Secretary</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #0d0d0d;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: white;
+    }
+
+    .tela-preta {
+      width: 100%;
+      min-height: 100vh;
+      background-color: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 40px;
+    }
+
+    .abas {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      background-color: #1a1a1a;
+      width: 100%;
+      border-bottom: 1px solid #333;
+    }
+
+    .aba {
+      flex: 1 1 120px;
+      padding: 12px;
+      cursor: pointer;
+      border: none;
+      background-color: #1a1a1a;
+      color: white;
+      font-size: 15px;
+      text-align: center;
+      transition: background 0.2s;
+    }
+
+    .aba:hover, .aba.ativa {
+      background-color: #333;
+    }
+
+    .conteudo {
+      flex-grow: 1;
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+      display: none;
+    }
+
+    .conteudo.ativo {
+      display: block;
+    }
+
+    form.formulario {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    form.formulario label {
+      font-weight: bold;
+    }
+
+    form.formulario input {
+      padding: 12px;
+      border-radius: 6px;
+      border: none;
+      font-size: 15px;
+      background-color: #222;
+      color: white;
+    }
+
+    form.formulario button {
+      background-color: #2196F3;
+      color: white;
+      padding: 14px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    form.formulario button:hover {
+      background-color: #0b7dda;
+    }
+
+    .resultado {
+      margin-top: 25px;
+      background-color: #1c1c1c;
+      padding: 18px;
+      border-radius: 8px;
+    }
+
+    .resultado p, .resultado h3 {
+      margin: 10px 0;
+    }
+
+    .links-afiliados a {
+      display: block;
+      margin: 10px 0;
+      padding: 12px;
+      background-color: #333;
+      border-radius: 6px;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .links-afiliados a:hover {
+      background-color: #555;
+    }
+
+    @media (max-width: 600px) {
+      .formulario input, .formulario button {
+        font-size: 14px;
+      }
+
+      .aba {
+        flex: 1 1 100%;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tela-preta">
+    <div class="abas">
+      <button class="aba ativa" onclick="mostrarAba('voos')">✈️ Voos</button>
+      <button class="aba" onclick="mostrarAba('hoteis')">🏨 Hotéis</button>
+      <button class="aba" onclick="mostrarAba('carros')">🚗 Carros</button>
+      <button class="aba" onclick="mostrarAba('chat')">💬 Chat</button>
+      <button class="aba" onclick="mostrarAba('seguro')">🛡️ Seguro</button>
+      <button class="aba" onclick="mostrarAba('outros')">📦 Mais</button>
+    </div>
+
+    <div id="voos" class="conteudo ativo">
+      <h2>Buscar Voos</h2>
+      <form class="formulario" onsubmit="mostrarResultado('resultadoVoos'); return false;">
+        <label>Origem</label>
+        <input type="text" placeholder="Ex: São Paulo" required />
+        <label>Destino</label>
+        <input type="text" placeholder="Ex: Nova York" required />
+        <label>Data da Viagem</label>
+        <input type="date" required />
+        <button type="submit">Simular Voos</button>
+      </form>
+      <div class="resultado" id="resultadoVoos" style="display:none;">
+        <h3>Voos simulados:</h3>
+        <p>✈️ Latam Airlines - 10:00 → 18:00 (🧳 Economy) - R$ 2.300</p>
+        <p>✈️ Air France - 12:30 → 22:00 (💼 Business) - R$ 4.900</p>
+        <p>✈️ American Airlines - 14:00 → 23:30 (🧳 Economy) - R$ 2.800</p>
+      </div>
+    </div>
+
+    <div id="hoteis" class="conteudo">
+      <h2>Busca de Hotéis</h2>
+      <form class="formulario" onsubmit="mostrarResultado('resultadoHoteis'); return false;">
+        <label>Cidade</label>
+        <input type="text" placeholder="Ex: Lisboa" required />
+        <label>Check-in</label>
+        <input type="date" required />
+        <label>Check-out</label>
+        <input type="date" required />
+        <label>Número de Hóspedes</label>
+        <input type="number" min="1" value="1" required />
+        <button type="submit">Buscar Hotéis</button>
+      </form>
+      <div class="resultado" id="resultadoHoteis" style="display:none;">
+        <h3>Hotéis encontrados:</h3>
+        <p>🏨 Hotel Central Lisboa - R$ 560/noite</p>
+        <p>🏨 Boutique Chiado - R$ 420/noite</p>
+        <p>🏨 Luxury Palace - R$ 890/noite</p>
+      </div>
+    </div>
+
+    <div id="carros" class="conteudo">
+      <h2>Aluguel de Carros</h2>
+      <form class="formulario" onsubmit="mostrarResultado('resultadoCarros'); return false;">
+        <label>Local de Retirada</label>
+        <input type="text" placeholder="Ex: Aeroporto de Lisboa" required />
+        <label>Data de Retirada</label>
+        <input type="date" required />
+        <label>Data de Devolução</label>
+        <input type="date" required />
+        <label>Tipo de Carro</label>
+        <input type="text" placeholder="Econômico, SUV..." required />
+        <button type="submit">Buscar Carros</button>
+      </form>
+      <div class="resultado" id="resultadoCarros" style="display:none;">
+        <h3>Carros disponíveis:</h3>
+        <p>🚗 Fiat Mobi Econômico - R$ 120/dia</p>
+        <p>🚙 Hyundai Creta SUV - R$ 230/dia</p>
+        <p>🚘 BMW Série 3 - R$ 490/dia</p>
+      </div>
+    </div>
+
+    <div id="chat" class="conteudo">
+      <h2>Chat com o TPS</h2>
+      <div class="resultado" id="chatArea" style="height:200px; overflow-y:auto;">
+        <p><strong>TPS:</strong> Olá! Como posso te ajudar com sua viagem hoje?</p>
+      </div>
+      <form onsubmit="enviarMensagem(); return false;" class="formulario">
+        <input type="text" id="mensagemUsuario" placeholder="Digite sua mensagem..." required />
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+
+    <div id="seguro" class="conteudo">
+      <h2>Simulação de Seguro de Viagem</h2>
+      <form class="formulario" onsubmit="mostrarResultado('resultadoSeguro'); return false;">
+        <label>Origem</label>
+        <input type="text" placeholder="Ex: São Paulo" required />
+        <label>Destino</label>
+        <input type="text" placeholder="Ex: Lisboa" required />
+        <label>Data de Início</label>
+        <input type="date" required />
+        <label>Data de Término</label>
+        <input type="date" required />
+        <label>Idade do Viajante</label>
+        <input type="number" placeholder="Ex: 35" required />
+        <button type="submit">Simular Seguro</button>
+      </form>
+      <div class="resultado links-afiliados" id="resultadoSeguro" style="display:none;">
+        <h3>Veja planos de seguro recomendados:</h3>
+        <a href="https://www.allianztravel.com/?ref=canal-vivo" target="_blank">🌍 Allianz Travel</a>
+        <a href="https://www.worldnomads.com/?partner=canalvivo" target="_blank">🧳 World Nomads</a>
+        <a href="https://www.safetywing.com/?ref=canalvivo" target="_blank">🏥 SafetyWing</a>
+      </div>
+    </div>
+
+    <div id="outros" class="conteudo">
+      <h2>Outras Simulações</h2>
+      <form class="formulario" onsubmit="mostrarResultado('resultadoOutros'); return false;">
+        <label>Cidade (Clima)</label>
+        <input type="text" placeholder="Ex: Paris" required />
+        <label>Moeda de Origem</label>
+        <input type="text" placeholder="Ex: BRL" required />
+        <label>Moeda de Destino</label>
+        <input type="text" placeholder="Ex: EUR" required />
+        <button type="submit">Simular</button>
+      </form>
+      <div class="resultado" id="resultadoOutros" style="display:none;">
+        <h3>Resultados:</h3>
+        <p>☀️ Clima atual em Paris: 22°C, céu limpo</p>
+        <p>💱 Conversão: 1 BRL = 0.18 EUR</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function mostrarAba(id) {
+      document.querySelectorAll('.conteudo').forEach(div => div.classList.remove('ativo'));
+      document.querySelectorAll('.aba').forEach(btn => btn.classList.remove('ativa'));
+      document.getElementById(id).classList.add('ativo');
+      event.target.classList.add('ativa');
+    }
+
+    function mostrarResultado(id) {
+      document.getElementById(id).style.display = "block";
+    }
+
+    function enviarMensagem() {
+      const input = document.getElementById("mensagemUsuario");
+      const chatArea = document.getElementById("chatArea");
+      const msg = input.value.trim();
+      if (msg) {
+        chatArea.innerHTML += "<p><strong>Você:</strong> " + msg + "</p>";
+        setTimeout(() => {
+          chatArea.innerHTML += "<p><strong>TPS:</strong> Estou analisando sua solicitação...</p>";
+          chatArea.scrollTop = chatArea.scrollHeight;
+        }, 500);
+        input.value = "";
+      }
+    }
+  </script>
+</body>
+</html>
