@@ -6,13 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- PWA CONFIG -->
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0d0d0d">
-<script>
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-  }
-</script>
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0d0d0d">
 
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet" />
   <script type="module">
@@ -89,11 +84,11 @@
     .main-title { font-size: 34px; font-weight: 900; text-shadow: 2px 2px 0 #2ea6ff, 2px 4px 8px #000; margin-bottom: 20px; text-align: center; }
     .slogan { font-size: 1.25em; font-weight: 500; color: #cccccc; max-width: 760px; text-align: center; margin-bottom: 50px; line-height: 1.6; }
     .flags-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
-  justify-items: center;
-}
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
+      justify-items: center;
+    }
     .flag-card {
       text-align: center; cursor: pointer; text-decoration: none; color: white;
       display: flex; flex-direction: column; align-items: center;
@@ -136,33 +131,23 @@
     <div class="main-title">CANAL VIVO</div>
     <div class="slogan">
       Four worlds. One inner path.<br />Where technology meets your soul.<br />Choose your start... and cross over.
+    </div>
     <div class="flags-grid">
-  <a class="flag-card" onclick="registerAccess('en')" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" /><div class="flag-label">English</div></a>
-  <a class="flag-card" onclick="registerAccess('es')" href="mistical-journey.html?lang=es"><img class="flag-img" src="https://flagcdn.com/w320/es.png" /><div class="flag-label">Español</div></a>
-  <a class="flag-card" onclick="registerAccess('fr')" href="mistical-journey.html?lang=fr"><img class="flag-img" src="https://flagcdn.com/w320/fr.png" /><div class="flag-label">Français</div></a>
-  <a class="flag-card" onclick="registerAccess('de')" href="mistical-journey.html?lang=de"><img class="flag-img" src="https://flagcdn.com/w320/de.png" /><div class="flag-label">Deutsch</div></a>
-
-  <a class="flag-card" onclick="registerAccess('ja')" href="mistical-journey.html?lang=ja"><img class="flag-img" src="https://flagcdn.com/w320/jp.png" /><div class="flag-label">日本語</div></a>
-  <a class="flag-card" onclick="registerAccess('zh')" href="mistical-journey.html?lang=zh"><img class="flag-img" src="https://flagcdn.com/w320/cn.png" /><div class="flag-label">中文</div></a>
-  <a class="flag-card" onclick="registerAccess('ru')" href="mistical-journey.html?lang=ru"><img class="flag-img" src="https://flagcdn.com/w320/ru.png" /><div class="flag-label">Русский</div></a>
-  <a class="flag-card" onclick="registerAccess('hi')" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" /><div class="flag-label">हिन्दी</div></a>
-
-  <a class="flag-card" onclick="registerAccess('pt')" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" /><div class="flag-label">Português</div></a>
-  <a class="flag-card" onclick="registerAccess('ko')" href="mistical-journey.html?lang=ko"><img class="flag-img" src="https://flagcdn.com/w320/kr.png" /><div class="flag-label">한국어</div></a>
-  <a class="flag-card" onclick="registerAccess('it')" href="mistical-journey.html?lang=it"><img class="flag-img" src="https://flagcdn.com/w320/it.png" /><div class="flag-label">Italiano</div></a>
-  <a class="flag-card" onclick="registerAccess('nl')" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" /><div class="flag-label">Nederlands</div></a>
-</div>
-      <!--
-<form id="leadForm">
-  <input type="text" id="leadName" placeholder="Name" />
-  <input type="text" id="leadPhone" placeholder="Phone" />
-  <input type="email" id="leadEmail" placeholder="Email" />
-  <button type="button" onclick="submitLead()">Submit</button>
-</form>
--->
+      <a class="flag-card" onclick="registerAccess('en')" href="mistical-journey.html?lang=en"><img class="flag-img" src="https://flagcdn.com/w320/us.png" /><div class="flag-label">English</div></a>
+      <a class="flag-card" onclick="registerAccess('es')" href="mistical-journey.html?lang=es"><img class="flag-img" src="https://flagcdn.com/w320/es.png" /><div class="flag-label">Español</div></a>
+      <a class="flag-card" onclick="registerAccess('fr')" href="mistical-journey.html?lang=fr"><img class="flag-img" src="https://flagcdn.com/w320/fr.png" /><div class="flag-label">Français</div></a>
+      <a class="flag-card" onclick="registerAccess('de')" href="mistical-journey.html?lang=de"><img class="flag-img" src="https://flagcdn.com/w320/de.png" /><div class="flag-label">Deutsch</div></a>
+      <a class="flag-card" onclick="registerAccess('ja')" href="mistical-journey.html?lang=ja"><img class="flag-img" src="https://flagcdn.com/w320/jp.png" /><div class="flag-label">日本語</div></a>
+      <a class="flag-card" onclick="registerAccess('zh')" href="mistical-journey.html?lang=zh"><img class="flag-img" src="https://flagcdn.com/w320/cn.png" /><div class="flag-label">中文</div></a>
+      <a class="flag-card" onclick="registerAccess('ru')" href="mistical-journey.html?lang=ru"><img class="flag-img" src="https://flagcdn.com/w320/ru.png" /><div class="flag-label">Русский</div></a>
+      <a class="flag-card" onclick="registerAccess('hi')" href="mistical-journey.html?lang=hi"><img class="flag-img" src="https://flagcdn.com/w320/in.png" /><div class="flag-label">हिन्दी</div></a>
+      <a class="flag-card" onclick="registerAccess('pt')" href="mistical-journey.html?lang=pt"><img class="flag-img" src="https://flagcdn.com/w320/br.png" /><div class="flag-label">Português</div></a>
+      <a class="flag-card" onclick="registerAccess('ko')" href="mistical-journey.html?lang=ko"><img class="flag-img" src="https://flagcdn.com/w320/kr.png" /><div class="flag-label">한국어</div></a>
+      <a class="flag-card" onclick="registerAccess('it')" href="mistical-journey.html?lang=it"><img class="flag-img" src="https://flagcdn.com/w320/it.png" /><div class="flag-label">Italiano</div></a>
+      <a class="flag-card" onclick="registerAccess('nl')" href="mistical-journey.html?lang=nl"><img class="flag-img" src="https://flagcdn.com/w320/nl.png" /><div class="flag-label">Nederlands</div></a>
+    </div>
   </div>
   <script>
-  /*  
     const translations = {
       "pt": {"form_title":"Deixe seu contato","name":"Nome","phone":"Celular","email":"E-mail","submit":"Enviar"},
       "en": {"form_title":"Leave your contact","name":"Name","phone":"Phone","email":"Email","submit":"Submit"},
@@ -178,13 +163,19 @@
       "nl": {"form_title":"Laat uw contactgegevens achter","name":"Naam","phone":"Telefoon","email":"E-mail","submit":"Verzenden"}
     };
     const lang = new URLSearchParams(window.location.search).get("lang") || "en";
-const t = translations[lang] || translations["en"];
-document.getElementById("leadTitle").innerText = t.form_title;
-document.getElementById("leadName").placeholder = t.name;
-document.getElementById("leadPhone").placeholder = t.phone;
-document.getElementById("leadEmail").placeholder = t.email;
-document.querySelector(".lead-form button").innerText = t.submit;
-*/
+    const t = translations[lang] || translations["en"];
+    // document.getElementById("leadTitle").innerText = t.form_title;
+    // document.getElementById("leadName").placeholder = t.name;
+    // document.getElementById("leadPhone").placeholder = t.phone;
+    // document.getElementById("leadEmail").placeholder = t.email;
+    // document.querySelector(".lead-form button").innerText = t.submit;
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('✅ Service Worker registrado!'))
+        .catch((err) => console.error('❌ Erro ao registrar Service Worker:', err));
+    }
   </script>
 </body>
 </html>

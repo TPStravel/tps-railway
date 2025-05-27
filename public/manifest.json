@@ -1,0 +1,18 @@
+{
+  "name": "Canal Vivo",
+  "short_name": "CanalVivo",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "background_color": "#0d0d0d",
+  "theme_color": "#0d0d0d",
+  "description": "O mundo simbólico em movimento.",
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "lang": "pt-BR",
+  "orientation": "portrait-primary"
+}
