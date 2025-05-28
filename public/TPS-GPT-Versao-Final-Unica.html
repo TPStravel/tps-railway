@@ -399,17 +399,113 @@ function enviarMensagemCentral() {
       log.appendChild(erroDiv);
     }
   }
+</script> <!-- ✅ aqui fecha corretamente o script anterior -->
+<script>
+document.getElementById("userInput").addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    verificarLimite().then(pode => {
+      if (!pode) return;
 
-  document.getElementById("userInput").addEventListener("keydown", function(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      verificarLimite().then(pode => {
-        if (pode) enviarMensagemCentral();
-      });
-    }
-  });
+      const texto = this.value.trim().toLowerCase();
+
+      // Busca de voos
+      const regexBusca = /voo de (\w{3}) para (\w{3}) dia (\d{4}-\d{2}-\d{2})/;
+      const matchBusca = texto.match(regexBusca);
+      if (matchBusca) {
+        const origem = matchBusca[1].toUpperCase();
+        const destino = matchBusca[2].toUpperCase();
+        const data = matchBusca[3];
+        buscarVoosAmadeus(origem, destino, data);
+        return;
+      }
+
+      // Escolha de voo
+      const regexEscolha = /voo(?: número)? (\d)/;
+      const matchEscolha = texto.match(regexEscolha);
+      if (matchEscolha && window.ultimosVoos) {
+        const index = parseInt(matchEscolha[1], 10) - 1;
+        const vooEscolhido = window.ultimosVoos[index];
+        if (!vooEscolhido) return alert("⚠️ Número inválido.");
+
+        const log = document.getElementById("mensagensCentrais");
+        const confirmacao = document.createElement("div");
+        confirmacao.innerHTML = `✅ Voo número ${index + 1} selecionado com sucesso.`;
+        log.appendChild(confirmacao);
+
+        db.collection("voos_escolhidos").add({
+          voo: vooEscolhido,
+          dataSelecionado: new Date(),
+          usuario: getUserID()
+        });
+
+        const sugestao = document.createElement("div");
+        sugestao.innerHTML = "🏨 Deseja ver hotéis ou aluguel de carros também?";
+        log.appendChild(sugestao);
+        return;
+      }
+
+      // Qualquer outro texto
+      enviarMensagemCentral();
+    });
+  }
+});
+<script>
+async function buscarVoosAmadeus(origem, destino, data) {
+  const log = document.getElementById("mensagensCentrais");
+
+  const loadingMsg = document.createElement("div");
+  loadingMsg.innerHTML = `✈️ Procurando voos de <b>${origem}</b> para <b>${destino}</b> em <b>${data}</b>... Aguarde um momento!`;
+  log.appendChild(loadingMsg);
+
+  try {
+    const response = await fetch("/api/amadeus/flights", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ origin: origem, destination: destino, departureDate: data })
+    });
+    const result = await response.json();
+    const voos = result.flights;
+
+    const tabela = document.createElement("table");
+    tabela.style.borderCollapse = "collapse";
+    tabela.style.marginTop = "10px";
+    tabela.style.color = "#ccc";
+
+    const cabecalho = `
+      <tr style="border-bottom:1px solid #666;">
+        <th>✈️ Nº</th><th>Companhia</th><th>Saída</th><th>Chegada</th><th>Classe</th><th>Preço (BRL)</th>
+      </tr>`;
+
+    let linhas = "";
+    voos.forEach((voo, i) => {
+      const segmento = voo.itineraries[0].segments[0];
+      const horarioSaida = segmento.departure.at.substring(11, 16);
+      const horarioChegada = segmento.arrival.at.substring(11, 16);
+      const companhia = segmento.carrierCode;
+      const preco = voo.price.total;
+
+      linhas += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${companhia}</td>
+          <td>${horarioSaida}</td>
+          <td>${horarioChegada}</td>
+          <td>🧳 Econômica</td>
+          <td>R$ ${preco}</td>
+        </tr>`;
+    });
+
+    tabela.innerHTML = cabecalho + linhas;
+    log.appendChild(tabela);
+
+    window.ultimosVoos = voos;
+
+  } catch (err) {
+    const erro = document.createElement("div");
+    erro.innerHTML = "⚠️ Erro ao buscar voos.";
+    log.appendChild(erro);
+  }
+}
 </script>
-</body>
 
-
-</html>
