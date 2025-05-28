@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Histórico de Simulações - TPS</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       background: #121212;
@@ -32,48 +34,120 @@
     .resposta {
       margin-top: 5px;
     }
+    .filtros {
+      margin-bottom: 20px;
+    }
+    .filtros input, .filtros select, .filtros button {
+      margin-right: 10px;
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+    }
     #limpar {
       background: #ff4444;
-      border: none;
       color: white;
-      padding: 10px 20px;
-      font-size: 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
+    }
+    #exportarJSON {
+      background: #00c8ff;
+      color: black;
+    }
+    #exportarPDF {
+      background: #ffaa00;
+      color: black;
     }
   </style>
 </head>
 <body>
   <h1>Histórico de Simulações</h1>
+  <div class="filtros">
+    <input type="text" id="busca" placeholder="🔍 Buscar palavra-chave..." />
+    <select id="ordenar">
+      <option value="desc">📅 Mais recentes primeiro</option>
+      <option value="asc">📅 Mais antigos primeiro</option>
+    </select>
+    <button id="exportarJSON">📁 Exportar JSON</button>
+    <button id="exportarPDF">📄 Exportar PDF</button>
+    <button id="limpar">🗑️ Limpar histórico</button>
+  </div>
   <div id="historicoContainer"></div>
-  <button id="limpar">🗑️ Limpar histórico</button>
 
   <script>
     const container = document.getElementById("historicoContainer");
-    const historico = JSON.parse(localStorage.getItem("gptHistorico") || "[]").reverse();
+    const buscaInput = document.getElementById("busca");
+    const ordenarSelect = document.getElementById("ordenar");
+    let historico = JSON.parse(localStorage.getItem("gptHistorico") || "[]");
 
-    if (historico.length === 0) {
-      container.innerHTML = "<p>Nenhuma simulação encontrada.</p>";
-    } else {
-      historico.forEach(entry => {
-        const div = document.createElement("div");
-        div.className = "entry";
-        div.innerHTML = `
-          <time>${new Date(entry.data).toLocaleString()}</time>
-          <div class="mensagem">🟢 ${entry.mensagem}</div>
-          <div class="resposta">💬 ${entry.resposta}</div>
-        `;
-        container.appendChild(div);
+    function renderHistorico() {
+      container.innerHTML = "";
+      let filtrado = historico.filter(entry => {
+        const termo = buscaInput.value.toLowerCase();
+        return entry.mensagem.toLowerCase().includes(termo) || entry.resposta.toLowerCase().includes(termo);
       });
+
+      const ordenado = ordenarSelect.value === "asc"
+        ? filtrado.sort((a, b) => new Date(a.data) - new Date(b.data))
+        : filtrado.sort((a, b) => new Date(b.data) - new Date(a.data));
+
+      if (ordenado.length === 0) {
+        container.innerHTML = "<p>Nenhuma simulação encontrada.</p>";
+      } else {
+        ordenado.forEach(entry => {
+          const div = document.createElement("div");
+          div.className = "entry";
+          const data = new Date(entry.data).toLocaleString("pt-BR", {
+            dateStyle: "long",
+            timeStyle: "short"
+          });
+          div.innerHTML = `
+            <time>${data}</time>
+            <div class="mensagem">🟢 ${entry.mensagem}</div>
+            <div class="resposta">💬 ${entry.resposta}</div>
+          `;
+          container.appendChild(div);
+        });
+      }
     }
 
     document.getElementById("limpar").addEventListener("click", () => {
       if (confirm("Deseja realmente apagar todo o histórico?")) {
         localStorage.removeItem("gptHistorico");
-        location.reload();
+        historico = [];
+        renderHistorico();
       }
     });
+
+    document.getElementById("exportarJSON").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(historico, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "historico_gpt.json";
+      a.click();
+    });
+
+    document.getElementById("exportarPDF").addEventListener("click", () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      let y = 10;
+      historico.forEach((entry, index) => {
+        doc.text(`${index + 1}. ${new Date(entry.data).toLocaleString("pt-BR")}`, 10, y);
+        y += 6;
+        doc.text("Mensagem: " + entry.mensagem, 10, y);
+        y += 6;
+        doc.text("Resposta: " + entry.resposta, 10, y);
+        y += 10;
+        if (y > 280) {
+          doc.addPage();
+          y = 10;
+        }
+      });
+      doc.save("historico_gpt.pdf");
+    });
+
+    buscaInput.addEventListener("input", renderHistorico);
+    ordenarSelect.addEventListener("change", renderHistorico);
+
+    renderHistorico();
   </script>
 </body>
 </html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Painel Admin – Canal Vivo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, query, orderBy
+    } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDReBGhb2gZNv7KA86HJXTeiLimWTrurp8",
+      authDomain: "canal-vivo-chat.firebaseapp.com",
+      projectId: "canal-vivo-chat"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function carregarDados() {
+      const acessosSnapshot = await getDocs(query(collection(db, "acessos"), orderBy("data", "desc")));
+      const leadsSnapshot = await getDocs(query(collection(db, "leads"), orderBy("data", "desc")));
+
+      const acessos = [];
+      const leads = [];
+
+      acessosSnapshot.forEach(doc => acessos.push(doc.data()));
+      leadsSnapshot.forEach(doc => leads.push(doc.data()));
+
+      exibirDados(acessos, leads);
+    }
+
+    function exibirDados(acessos, leads) {
+      document.getElementById("totalAcessos").textContent = acessos.length;
+      document.getElementById("totalLeads").textContent = leads.length;
+
+      const acessosPorData = {};
+      acessos.forEach(a => {
+        const d = (a.data || "").split("T")[0];
+        acessosPorData[d] = (acessosPorData[d] || 0) + 1;
+      });
+
+      const labels = Object.keys(acessosPorData);
+      const valores = Object.values(acessosPorData);
+
+      new Chart(document.getElementById("graficoAcessos"), {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Acessos por dia",
+            data: valores,
+            borderColor: "#4bc0c0",
+            backgroundColor: "rgba(75,192,192,0.2)"
+          }]
+        }
+      });
+
+      const tabela = document.getElementById("tabelaLeads");
+      leads.forEach(lead => {
+        const row = tabela.insertRow();
+        row.insertCell(0).textContent = lead.nome || "";
+        row.insertCell(1).textContent = lead.email || "";
+        row.insertCell(2).textContent = lead.telefone || "";
+        row.insertCell(3).textContent = lead.data?.split("T")[0] || "";
+      });
+
+      document.getElementById("busca").addEventListener("input", e => {
+        const termo = e.target.value.toLowerCase();
+        [...tabela.rows].forEach((row, i) => {
+          if (i === 0) return;
+          const match = [...row.cells].some(cell =>
+            cell.textContent.toLowerCase().includes(termo)
+          );
+          row.style.display = match ? "" : "none";
+        });
+      });
+    }
+
+    window.onload = carregarDados;
+  </script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #00ffc8;
+    }
+
+    .cards {
+      display: flex;
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .card {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      flex: 1;
+      text-align: center;
+    }
+
+    .card span {
+      font-size: 2em;
+      font-weight: bold;
+    }
+
+    canvas {
+      max-width: 100%;
+      background: white;
+      border-radius: 8px;
+      margin-top: 30px;
+    }
+
+    input {
+      margin: 20px 0;
+      padding: 10px;
+      width: 100%;
+      max-width: 300px;
+      border-radius: 6px;
+      border: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #1d1d1d;
+    }
+
+    th, td {
+      border: 1px solid #333;
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>📊 Painel Administrativo – Canal Vivo</h1>
+
+  <div class="cards">
+    <div class="card">
+      <div>Total de Acessos</div>
+      <span id="totalAcessos">...</span>
+    </div>
+    <div class="card">
+      <div>Total de Leads</div>
+      <span id="totalLeads">...</span>
+    </div>
+  </div>
+
+  <canvas id="graficoAcessos" height="100"></canvas>
+
+  <input type="text" id="busca" placeholder="🔍 Buscar nome ou email..." />
+
+  <table id="tabelaLeads">
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Telefone</th>
+      <th>Data</th>
+    </tr>
+  </table>
+</body>
+</html>

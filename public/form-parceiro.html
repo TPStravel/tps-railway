@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -79,21 +80,33 @@
   </form>
 
   <script>
-    emailjs.init('SUA_PUBLIC_KEY_AQUI'); // Substitua pela sua PUBLIC KEY
+    emailjs.init('REPLACE_WITH_YOUR_PUBLIC_KEY');
 
     const translations = {
-      pt: {...},
-      en: {...},
-      es: {...},
-      fr: {...},
-      de: {...},
-      it: {...},
-      ja: {...},
-      ko: {...},
-      zh: {...},
-      ru: {...},
-      hi: {...},
-      nl: {...}
+      pt: {
+        titulo: "🤝 Quero ser parceiro do TPS",
+        empresa: "Nome da empresa",
+        responsavel: "Responsável",
+        email: "Email para contato",
+        tipo: "Tipo de parceria",
+        mensagem: "Mensagem simbólica",
+        placeholder: "Conte o que representa essa parceria para você...",
+        botao: "Enviar proposta",
+        sucesso: "✅ Proposta enviada com sucesso!",
+        erro: "❌ Erro ao enviar. Tente novamente."
+      },
+      en: {
+        titulo: "🤝 I want to be a TPS partner",
+        empresa: "Company name",
+        responsavel: "Responsible person",
+        email: "Contact email",
+        tipo: "Type of partnership",
+        mensagem: "Symbolic message",
+        placeholder: "Tell us what this partnership means to you...",
+        botao: "Submit proposal",
+        sucesso: "✅ Proposal sent successfully!",
+        erro: "❌ Error sending proposal. Try again."
+      }
     };
 
     const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
@@ -110,11 +123,11 @@
 
     document.getElementById('parceria-form').addEventListener('submit', function(e) {
       e.preventDefault();
-      emailjs.sendForm('SEU_SERVICE_ID', 'SEU_TEMPLATE_ID', this)
+      emailjs.sendForm('REPLACE_WITH_YOUR_SERVICE_ID', 'REPLACE_WITH_YOUR_TEMPLATE_ID', this)
         .then(() => {
           document.getElementById('status-msg').innerText = t.sucesso;
           this.reset();
-        }, (error) => {
+        }, () => {
           document.getElementById('status-msg').innerText = t.erro;
         });
     });

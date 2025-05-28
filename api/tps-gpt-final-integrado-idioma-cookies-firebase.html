@@ -1,0 +1,328 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>TPS – Travel Personally Secretary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a3d;
+      color: white;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 230px;
+      background-color: #2c2c5d;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h2 { font-size: 20px; margin-bottom: 20px; }
+    .item {
+      margin-bottom: 16px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .item:hover { transform: scale(1.03); }
+    .item img {
+      width: 100%; height: 120px; object-fit: cover;
+      border-radius: 8px; margin-bottom: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .item span { font-size: 14px; text-align: center; display: block; }
+
+    .main {
+      flex: 1;
+      background-color: #000;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px 100px;
+      overflow-y: auto;
+    }
+
+    .logo {
+      font-size: 36px;
+      font-weight: bold;
+      color: #3fa3ff;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+    .mensagem-social {
+      font-size: 14px;
+      text-align: center;
+      max-width: 600px;
+      color: #ffd700;
+      margin: 8px 0 12px 0;
+    }
+    .slogan {
+      font-size: 18px;
+      text-align: center;
+      max-width: 600px;
+      color: #ccc;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    #mensagensCentrais {
+      width: 100%;
+      max-width: 600px;
+      text-align: left;
+      padding-left: 20px;
+      font-size: 14px;
+      margin-top: 10px;
+    }
+
+    .input-area {
+      position: absolute;
+      bottom: 20px;
+      left: 250px;
+      right: 320px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    textarea {
+      flex: 1;
+      padding: 10px;
+      min-height: 50px;
+      max-height: 70px;
+      resize: none;
+      border-radius: 5px;
+      border: none;
+      font-size: 14px;
+      background-color: #222;
+      color: white;
+    }
+
+    button {
+      background-color: #4f46e5;
+      border: none;
+      padding: 10px 16px;
+      color: white;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .discord {
+      width: 300px;
+      background-color: #14142b;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid #222;
+    }
+
+    .chat-log {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      background-color: #1e1e3f;
+      padding: 10px;
+      border-radius: 5px;
+    }
+
+    .chat-log div {
+      text-align: left;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .chat-input {
+      display: flex;
+      gap: 6px;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      background-color: #2b2b4f;
+      color: white;
+    }
+
+    .chat-input button {
+      padding: 8px 12px;
+      background-color: #4f46e5;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+    }
+
+    .abas {
+      display: flex;
+      gap: 10px;
+      position: absolute;
+      top: 20px;
+      right: 40px;
+    }
+
+    .abas .aba {
+      background-color: #4f46e5;
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .abas .aba:hover {
+      background-color: #6d63ff;
+      transform: translateY(-1px);
+    }
+
+    .abas .aba.ativa {
+      background-color: #3b36c8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div>
+    <h2>🔍 Explorar</h2>
+    <div class="item"><img src="https://images.unsplash.com/photo-1500916434205-0c77489c6cf7?w=400&h=300&fit=crop"/><span>Paris</span></div>
+    <div class="item"><img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop"/><span>New York</span></div>
+    <div class="item"><img src="https://images.unsplash.com/photo-1549693578-d683be217e58?w=400&h=300&fit=crop"/><span>Seoul</span></div>
+    <div class="item"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=300&fit=crop"/><span>Tóquio</span></div>
+    <div class="item"><img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop"/><span>Londres</span></div>
+  </div>
+  <div style="font-size: 11px; color: #ccc;">Versão TPS</div>
+</div>
+
+<div class="main">
+  <div class="abas">
+    <button class="aba ativa">✈️ Voos</button>
+    <button class="aba">🏨 Hotéis</button>
+    <button class="aba">🚗 Carros</button>
+    <button class="aba">🛡️ Seguro</button>
+  </div>
+  <div class="logo">TPS</div>
+  <div class="mensagem-social">🌱 Cada viagem através do TPS contribui para ações sociais reais.<br/>Obrigado por fazer a diferença.</div>
+  <div class="slogan">✈️ Bem-vindo ao seu assistente de viagem pessoal.<br/>Me diga de onde você sai, para onde vai e quando pretende viajar.</div>
+  <div id="mensagensCentrais" style="position:absolute;left:210px; top:240px;top:260px;max-width:400px;font-size:14px;text-align:left;color:#ccc;"></div>
+  <div class="input-area">
+    <textarea id="userInput" placeholder="Digite sua mensagem..."></textarea>
+    <button onclick="enviarMensagemCentral()">Enviar</button>
+  </div>
+</div>
+
+<div class="discord">
+  <div class="chat-log" id="chatLog">
+    <div><strong>🤖:</strong> Bem-vindo ao chat lateral.</div>
+  </div>
+  <div class="chat-input">
+    <input id="chatInput" placeholder="Digite aqui..." type="text"/>
+    <button onclick="enviarMensagemLateral()">Enviar</button>
+  </div>
+</div>
+
+<script>
+function enviarMensagemCentral() {
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  const log = document.getElementById("mensagensCentrais");
+  const div = document.createElement("div");
+  div.innerHTML = "<strong>👤:</strong> " + text;
+  log.appendChild(div);
+  input.value = "";
+  log.scrollTop = log.scrollHeight;
+}
+
+function enviarMensagemLateral() {
+  const input = document.getElementById("chatInput");
+  const text = input.value.trim();
+  if (!text) return;
+  const log = document.getElementById("chatLog");
+  const div = document.createElement("div");
+  div.innerHTML = "<strong>👤:</strong> " + text;
+  log.appendChild(div);
+  input.value = "";
+  log.scrollTop = log.scrollHeight;
+}
+
+document.getElementById("userInput").addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    enviarMensagemCentral();
+  }
+});
+</script>
+
+
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDReBGhb2gZNv7KA86HJXTeiLimWTrurp8",
+    authDomain: "canal-vivo-chat.firebaseapp.com",
+    projectId: "canal-vivo-chat"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
+<script>
+const translations = {
+  pt: { placeholder: "Digite sua mensagem...", send: "Enviar" },
+  en: { placeholder: "Type your message...", send: "Send" },
+  es: { placeholder: "Escribe tu mensaje...", send: "Enviar" },
+  ko: { placeholder: "메시지를 입력하세요...", send: "보내기" },
+  fr: { placeholder: "Tapez votre message...", send: "Envoyer" },
+  de: { placeholder: "Geben Sie Ihre Nachricht ein...", send: "Senden" },
+  it: { placeholder: "Scrivi il tuo messaggio...", send: "Invia" },
+  ja: { placeholder: "メッセージを入力してください...", send: "送信" },
+  zh: { placeholder: "输入你的消息...", send: "发送" },
+  ru: { placeholder: "Введите ваше сообщение...", send: "Отправить" },
+  hi: { placeholder: "अपना संदेश लिखें...", send: "भेजें" },
+  ar: { placeholder: "اكتب رسالتك...", send: "إرسال" }
+};
+
+window.onload = () => {
+  const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+  const t = translations[lang] || translations.pt;
+  document.getElementById("userInput")?.setAttribute("placeholder", t.placeholder);
+  document.querySelector("button")?.textContent = t.send;
+  localStorage.setItem("aceitouCookies", "true");
+};
+
+function enviarMensagemCentral() {
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return;
+
+  const log = document.getElementById("mensagensCentrais");
+  const div = document.createElement("div");
+  div.innerHTML = "<strong>👤:</strong> " + text;
+  log.appendChild(div);
+  input.value = "";
+  log.scrollTop = log.scrollHeight;
+
+  const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+  db.collection("mensagens_tps").add({
+    mensagem: text,
+    remetente: "user",
+    idioma: lang,
+    timestamp: new Date()
+  });
+}
+</script>
+</body>
+
+</html>

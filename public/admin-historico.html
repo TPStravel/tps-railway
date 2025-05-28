@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,27 +7,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background-color: #121212;
+      background-color: #0e0e0e;
       color: #fff;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
       padding: 20px;
     }
     h1 {
-      color: #00ffff;
+      color: #2ea6ff;
+      margin-bottom: 20px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
     }
     input, button {
-      padding: 8px;
-      margin: 5px;
-      border-radius: 4px;
+      padding: 10px;
+      border-radius: 5px;
       border: none;
+      font-size: 14px;
     }
-    input {
-      width: 250px;
+    input[type="text"], input[type="date"] {
+      background: #1e1e1e;
+      color: #fff;
+    }
+    button {
+      background-color: #2ea6ff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1a90d5;
     }
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     th, td {
       border: 1px solid #333;
@@ -34,27 +52,30 @@
       text-align: left;
     }
     th {
-      background-color: #333;
+      background-color: #222;
     }
     tr:nth-child(even) {
-      background-color: #1e1e1e;
+      background-color: #1a1a1a;
     }
-    .controls {
-      margin-top: 20px;
+    .summary {
+      margin-top: 10px;
+      color: #ccc;
     }
   </style>
   <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-    import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import {
+      getFirestore, collection, getDocs, query, orderBy
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
 
     const firebaseConfig = {
-  apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
-  authDomain: "canal-vivo-4cd4a.firebaseapp.com",
-  projectId: "canal-vivo-4cd4a",
-  storageBucket: "canal-vivo-4cd4a.appspot.com",
-  messagingSenderId: "1003445191655",
-  appId: "1:1003445191655:web:c6c7915bf02979c10af342"
-};
+      apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+      projectId: "canal-vivo-4cd4a",
+      storageBucket: "canal-vivo-4cd4a.appspot.com",
+      messagingSenderId: "1003445191655",
+      appId: "1:1003445191655:web:c6c7915bf02979c10af342"
+    };
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
@@ -63,22 +84,34 @@
       const tabela = document.getElementById('tabela');
       tabela.innerHTML = '';
       const filtro = document.getElementById('filtro').value.toLowerCase();
+      const inicio = document.getElementById('dataInicio').value;
+      const fim = document.getElementById('dataFim').value;
 
       const q = query(collection(db, "historicoGPT"), orderBy("data", "desc"));
       const snapshot = await getDocs(q);
+      let total = 0;
 
       snapshot.forEach(doc => {
         const data = doc.data();
-        if (
+        const dataHora = new Date(data.data.toDate());
+        const dataFormatada = dataHora.toISOString().split('T')[0];
+
+        const dentroIntervalo = (!inicio || dataFormatada >= inicio) && (!fim || dataFormatada <= fim);
+        const contemFiltro = (
           data.mensagem.toLowerCase().includes(filtro) ||
           data.resposta.toLowerCase().includes(filtro)
-        ) {
+        );
+
+        if (dentroIntervalo && contemFiltro) {
           const row = tabela.insertRow();
-          row.insertCell().textContent = new Date(data.data.toDate()).toLocaleString();
+          row.insertCell().textContent = dataHora.toLocaleString();
           row.insertCell().textContent = data.mensagem;
           row.insertCell().textContent = data.resposta;
+          total++;
         }
       });
+
+      document.getElementById("resumo").textContent = `🔍 Total encontrado: ${total}`;
     }
 
     window.carregarHistorico = carregarHistorico;
@@ -93,16 +126,19 @@
       a.href = url;
       a.download = 'historicoGPT.json';
       a.click();
-    }
+    };
   </script>
 </head>
 <body>
   <h1>Painel de Histórico GPT</h1>
   <div class="controls">
-    <input type="text" id="filtro" placeholder="Filtrar por palavra-chave">
-    <button onclick="carregarHistorico()">🔍 Filtrar</button>
+    <input type="text" id="filtro" placeholder="🔍 Palavra-chave">
+    <input type="date" id="dataInicio" title="Data início">
+    <input type="date" id="dataFim" title="Data fim">
+    <button onclick="carregarHistorico()">Filtrar</button>
     <button onclick="exportarJSON()">⬇️ Exportar JSON</button>
   </div>
+  <div class="summary" id="resumo">Total encontrado: 0</div>
   <table>
     <thead>
       <tr>

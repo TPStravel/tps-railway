@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>TPS – Travel Personally Secretary</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1a1a3d;
+      color: white;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 230px;
+      background-color: #2c2c5d;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h2 { font-size: 20px; margin-bottom: 20px; }
+    .item { margin-bottom: 16px; cursor: pointer; transition: transform 0.3s ease; }
+    .item:hover { transform: scale(1.03); }
+    .item img {
+      width: 100%; height: 120px; object-fit: cover;
+      border-radius: 8px; margin-bottom: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    }
+    .item span { font-size: 14px; text-align: center; display: block; }
+    .main {
+      flex: 1;
+      background-color: #000;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px 100px;
+      overflow-y: auto;
+    }
+    .logo { font-size: 36px; font-weight: bold; color: #3fa3ff; margin-bottom: 10px; }
+    .slogan {
+      font-size: 18px;
+      text-align: center;
+      max-width: 600px;
+      color: #ccc;
+      line-height: 1.5;
+      margin-top: 15px;
+    }
+    .mensagem-social {
+      font-size: 14px;
+      text-align: center;
+      max-width: 600px;
+      color: #ffd700;
+      line-height: 1.5;
+      margin: 16px 0 20px 0;
+    }
+    .input-area {
+      position: absolute;
+      bottom: 20px;
+      left: 250px;
+      right: 320px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    textarea {
+      flex: 1; padding: 10px; min-height: 50px; max-height: 70px;
+      resize: none; border-radius: 5px; border: none;
+      font-size: 14px; background-color: #222; color: white;
+    }
+    button {
+      background-color: #4f46e5; border: none; padding: 10px 16px;
+      color: white; font-weight: bold; border-radius: 5px; cursor: pointer;
+    }
+    .discord {
+      width: 300px;
+      background-color: #14142b;
+      padding: 20px;
+      box-sizing: border-box;
+      border-left: 1px solid #222;
+      display: flex;
+      flex-direction: column;
+    }
+    .chat-log {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 10px;
+      background-color: #1e1e3f;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .chat-log div {
+      text-align: left;
+      margin-bottom: 6px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .chat-input {
+      display: flex;
+      gap: 6px;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      background-color: #2b2b4f;
+      color: white;
+    }
+    .chat-input button {
+      padding: 8px 12px;
+      background-color: #4f46e5;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      cursor: pointer;
+    }
+    .abas {
+      display: flex;
+      gap: 10px;
+      position: absolute;
+      top: 20px;
+      right: 40px;
+    }
+    .abas .aba {
+      background-color: #4f46e5;
+      border: none;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .abas .aba:hover {
+      background-color: #6d63ff;
+      transform: translateY(-1px);
+    }
+    .abas .aba.ativa {
+      background-color: #3b36c8;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div>
+      <h2>🔍 Explorar</h2>
+      <div class="item"><img alt="Paris" src="https://images.unsplash.com/photo-1500916434205-0c77489c6cf7?w=400&h=300&fit=crop"/><span>Paris, França</span></div>
+      <div class="item"><img alt="New York" src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop"/><span>New York, EUA</span></div>
+      <div class="item"><img alt="Seoul" src="https://images.unsplash.com/photo-1549693578-d683be217e58?w=400&h=300&fit=crop"/><span>Seoul, Coreia do Sul</span></div>
+      <div class="item"><img alt="Tóquio" src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=300&fit=crop"/><span>Tóquio, Japão</span></div>
+      <div class="item"><img alt="Londres" src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop"/><span>Londres, Inglaterra</span></div>
+    </div>
+    <div style="font-size: 11px; color: #ccc;">Versão TPS-GPT</div>
+  </div>
+  <div class="main">
+    <div class="abas">
+      <button class="aba ativa">✈️ Voos</button>
+      <button class="aba">🏨 Hotéis</button>
+      <button class="aba">🚗 Carros</button>
+      <button class="aba">🛡️ Seguro</button>
+    </div>
+    <div class="logo">TPS</div>
+    <div class="mensagem-social">🌱 Cada viagem através do TPS contribui para ações sociais reais.<br/>Obrigado por fazer a diferença.</div>
+    <div class="slogan">✈️ Bem-vindo ao seu assistente de viagem pessoal.<br/>Me diga de onde você sai, para onde vai e quando pretende viajar.</div>
+    <div class="input-area">
+      <textarea id="userInput" placeholder="Digite sua mensagem..."></textarea>
+      <button id="sendBtn" onclick="enviarPergunta()">Enviar</button>
+    </div>
+  </div>
+  <div class="discord">
+    <div class="chat-log" id="chatLog">
+      <div><strong>🤖:</strong> Bem-vindo ao chat lateral.</div>
+    </div>
+    <div class="chat-input">
+      <input id="chatInput" placeholder="Digite aqui..." type="text"/>
+      <button onclick="enviarChat()">Enviar</button>
+    </div>
+  </div>
+
+  <script>
+    async function enviarPergunta() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      const divPergunta = document.createElement("div");
+      divPergunta.innerHTML = "<strong>👤:</strong> " + text;
+      document.getElementById("chatLog").appendChild(divPergunta);
+
+      // Detectar formato de voo
+      const vooRegex = /voo de (\w{3}) para (\w{3}) no dia (\d{4}-\d{2}-\d{2})/i;
+      const match = text.match(vooRegex);
+      if (match) {
+        const [, origem, destino, data] = match;
+        const aviso = document.createElement("div");
+        aviso.innerHTML = `<strong>🤖:</strong> ✈️ Procurando voos de ${origem} para ${destino} em ${data}...`;
+        document.getElementById("chatLog").appendChild(aviso);
+
+        try {
+          const res = await fetch("/api/amadeus-flights", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ origin: origem, destination: destino, date: data })
+          });
+          const json = await res.json();
+          if (json?.data?.length) {
+            json.data.forEach((oferta, idx) => {
+              const s = oferta.itineraries[0].segments[0];
+              const div = document.createElement("div");
+              div.innerHTML = `<strong>1️⃣ ${s.departure.iataCode} → ${s.arrival.iataCode}</strong><br>
+              ✈️ ${s.carrierCode} | 🕐 ${s.departure.at} → ${s.arrival.at}<br>
+              💵 USD ${oferta.price.total}<hr style="border-color:#333;">`;
+              document.getElementById("chatLog").appendChild(div);
+            });
+          } else {
+            const div = document.createElement("div");
+            div.innerHTML = "<strong>🤖:</strong> Nenhum voo encontrado.";
+            document.getElementById("chatLog").appendChild(div);
+          }
+        } catch (e) {
+          const div = document.createElement("div");
+          div.innerHTML = "<strong>🤖:</strong> Erro ao buscar voos.";
+          document.getElementById("chatLog").appendChild(div);
+        }
+
+        input.value = "";
+        return;
+      }
+
+      // Aqui continua normal para GPT...
+      const loading = document.createElement("div");
+      loading.innerHTML = "<strong>🤖:</strong> Digitando...";
+      document.getElementById("chatLog").appendChild(loading);
+
+      const res = await fetch("/api/gpt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+      const data = await res.json();
+      loading.remove();
+      const bot = document.createElement("div");
+      bot.innerHTML = "<strong>🤖:</strong> " + (data.reply || "Erro.");
+      document.getElementById("chatLog").appendChild(bot);
+
+      input.value = "";
+    }
+
+    function enviarChat() {
+      const input = document.getElementById("chatInput");
+      const text = input.value.trim();
+      if (!text) return;
+      const div = document.createElement("div");
+      div.innerHTML = "<strong>👤:</strong> " + text;
+      document.getElementById("chatLog").appendChild(div);
+      input.value = "";
+    }
+  </script>
+</body>
+</html>

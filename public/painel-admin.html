@@ -1,24 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel Administrativo – Canal Vivo</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background: #111;
       color: #eee;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       padding: 40px;
     }
     h1, h2 {
       color: #00ffcc;
     }
-    input, button {
+    input, button, select {
       padding: 10px;
       margin: 5px;
       font-size: 1rem;
@@ -32,14 +31,11 @@
     th, td {
       border: 1px solid #444;
       padding: 10px;
-      text-align: left;
     }
     th {
       background-color: #222;
     }
     #export-btn {
-      margin-top: 10px;
-      padding: 8px 16px;
       background: #00ffcc;
       color: #000;
       border: none;
@@ -47,148 +43,161 @@
     }
   </style>
 
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
 
-  <h1>Painel Administrativo</h1>
+<h1>Painel Administrativo</h1>
 
-  <div id="login">
-    <input type="email" id="email" placeholder="Email admin" />
-    <input type="password" id="password" placeholder="Senha" />
-    <button onclick="login()">Entrar</button>
-  </div>
+<div id="login">
+  <input type="email" id="email" placeholder="Email admin" />
+  <input type="password" id="password" placeholder="Senha" />
+  <button onclick="login()">Entrar</button>
+</div>
 
-  <div id="admin-panel" style="display: none;">
-    <h2>👁️ Acessos Registrados</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Mundo</th>
-          <th>Idioma</th>
-          <th>Data</th>
-        </tr>
-      </thead>
-      <tbody id="acessos-body"></tbody>
-    </table>
+<div id="admin-panel" style="display: none;">
+  <h2>📊 Acessos por Mundo</h2>
+  <canvas id="acessosChart" width="600" height="200"></canvas>
 
-    <h2>📋 Leads Registrados</h2>
-    <button id="export-btn" onclick="exportLeads()">Exportar CSV</button>
-    <table>
-      <thead>
-        <tr>
-          <th>Nome</th>
-          <th>Email</th>
-          <th>Celular</th>
-          <th>Data</th>
-        </tr>
-      </thead>
-      <tbody id="leads-body"></tbody>
-    </table>
-  </div>
+  <h2>📋 Leads Registrados</h2>
+  <input type="text" id="busca" placeholder="🔍 Buscar nome/email..." />
+  <button id="export-btn" onclick="exportLeads()">Exportar CSV</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Email</th>
+        <th>Celular</th>
+        <th>Data</th>
+      </tr>
+    </thead>
+    <tbody id="leads-body"></tbody>
+  </table>
+</div>
 
-  <script>
-    const firebaseConfig = {
-  apiKey: "AIzaSyDtiRVZsBAkepBtBN5_AJSRFQ_5_eaGtpM",
-  authDomain: "canal-vivo-4cd4a.firebaseapp.com",
-  projectId: "canal-vivo-4cd4a",
-  storageBucket: "canal-vivo-4cd4a.appspot.com",
-  messagingSenderId: "1003445191655",
-  appId: "1:1003445191655:web:c6c7915bf0297c10af342"
-};
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyDtiRVZsBAkepBtBN5_AJSRFQ_5_eaGtpM",
+    authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+    projectId: "canal-vivo-4cd4a",
+  };
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-    function login() {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
+  function login() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-      auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-          document.getElementById("login").style.display = "none";
-          document.getElementById("admin-panel").style.display = "block";
-          carregarAcessos();
-          carregarLeads();
-        })
-        .catch(error => {
-          alert("Erro: " + error.message);
+    auth.signInWithEmailAndPassword(email, password)
+      .then(() => {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("admin-panel").style.display = "block";
+        carregarLeads();
+        gerarGraficoAcessos();
+      })
+      .catch(error => {
+        alert("Erro: " + error.message);
+      });
+  }
+
+  let leadsData = [];
+
+  function carregarLeads() {
+    db.collection("leads")
+      .orderBy("data", "desc")
+      .limit(200)
+      .get()
+      .then(snapshot => {
+        const tbody = document.getElementById("leads-body");
+        tbody.innerHTML = "";
+        leadsData = [];
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          const nome = d.nome || "-";
+          const email = d.email || "-";
+          const celular = d.celular || "-";
+          const data = new Date(d.data?.seconds * 1000).toLocaleString();
+          leadsData.push({ nome, email, celular, data });
         });
+        renderLeads(leadsData);
+      });
+  }
+
+  function renderLeads(data) {
+    const tbody = document.getElementById("leads-body");
+    tbody.innerHTML = "";
+    data.forEach(d => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td>${d.nome}</td><td>${d.email}</td><td>${d.celular}</td><td>${d.data}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById("busca").addEventListener("input", function () {
+    const termo = this.value.toLowerCase();
+    const filtrados = leadsData.filter(l =>
+      l.nome.toLowerCase().includes(termo) || l.email.toLowerCase().includes(termo)
+    );
+    renderLeads(filtrados);
+  });
+
+  function exportLeads() {
+    if (leadsData.length === 0) {
+      alert("Nenhum lead para exportar.");
+      return;
     }
 
-    function carregarAcessos() {
-      db.collection("acessos")
-        .orderBy("data", "desc")
-        .limit(50)
-        .get()
-        .then(snapshot => {
-          const tbody = document.getElementById("acessos-body");
-          tbody.innerHTML = "";
-          snapshot.forEach(doc => {
-            const d = doc.data();
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td>${d.mundo || '-'}</td>
-              <td>${d.idioma || '-'}</td>
-              <td>${new Date(d.data?.seconds * 1000).toLocaleString()}</td>
-            `;
-            tbody.appendChild(tr);
-          });
-        });
-    }
+    const csv = "Nome,Email,Celular,Data\n" +
+      leadsData.map(l => `${l.nome},${l.email},${l.celular},${l.data}`).join("\n");
 
-    let leadsData = [];
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "leads.csv";
+    a.click();
+  }
 
-    function carregarLeads() {
-      db.collection("leads")
-        .orderBy("data", "desc")
-        .limit(100)
-        .get()
-        .then(snapshot => {
-          const tbody = document.getElementById("leads-body");
-          tbody.innerHTML = "";
-          leadsData = [];
-          snapshot.forEach(doc => {
-            const d = doc.data();
-            const nome = d.nome || "-";
-            const email = d.email || "-";
-            const celular = d.celular || "-";
-            const data = new Date(d.data?.seconds * 1000).toLocaleString();
-            leadsData.push({ nome, email, celular, data });
+  function gerarGraficoAcessos() {
+    db.collection("acessos").get().then(snapshot => {
+      const contagem = {};
+      snapshot.forEach(doc => {
+        const mundo = doc.data().mundo || "Desconhecido";
+        contagem[mundo] = (contagem[mundo] || 0) + 1;
+      });
 
-            const tr = document.createElement("tr");
-            tr.innerHTML = `
-              <td>${nome}</td>
-              <td>${email}</td>
-              <td>${celular}</td>
-              <td>${data}</td>
-            `;
-            tbody.appendChild(tr);
-          });
-        });
-    }
-
-    function exportLeads() {
-      if (leadsData.length === 0) {
-        alert("Nenhum lead para exportar.");
-        return;
-      }
-
-      const csv = "Nome,Email,Celular,Data\n" +
-        leadsData.map(l => `${l.nome},${l.email},${l.celular},${l.data}`).join("\n");
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "leads.csv";
-      a.click();
-    }
-  </script>
-
+      const ctx = document.getElementById('acessosChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(contagem),
+          datasets: [{
+            label: 'Nº de Acessos',
+            data: Object.values(contagem),
+            backgroundColor: '#00ffcc',
+          }]
+        },
+        options: {
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { color: '#eee' }
+            },
+            x: {
+              ticks: { color: '#eee' }
+            }
+          }
+        }
+      });
+    });
+  }
+</script>
 </body>
 </html>
