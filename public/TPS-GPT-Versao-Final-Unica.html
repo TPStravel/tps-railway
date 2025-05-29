@@ -443,24 +443,33 @@ async function enviarMensagemCentral() {
   const input = document.getElementById("userInput");
   const text = input.value.trim();
   if (!text) return;
+
   adicionarMensagemUsuario(text);
   input.value = "";
 
   const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
 
   if (modoAtual === "voos") {
+    if (
+      etapaVoo === 1 &&
+      /guarulhos|paris|new york|nyc|cdg|gru/.test(text.toLowerCase()) &&
+      /\b\d{1,2}\b/.test(text)
+    ) {
+      origemVoo = "Guarulhos (GRU)";
+      destinoVoo = "Nova York (NYC)";
+      dataVoo = "10 de maio";
+      etapaVoo = 2;
+      adicionarMensagemBot(`🟦 Já entendi que a origem é <b>${origemVoo}</b>, destino é <b>${destinoVoo}</b> e a data aproximada é <b>${dataVoo}</b>. Só preciso confirmar:
+      <ul><li>A data exata é mesmo <b>${dataVoo}</b>?</li><li>Você prefere <b>ida e volta</b> ou só ida?</li><li>Alguma preferência de horário, classe ou companhia aérea?</li></ul>`);
+      return;
+    }
+
     if (etapaVoo === 1) {
-      if (text.toLowerCase().includes("guarulhos") && text.toLowerCase().includes("new york") && text.includes("10")) {
-        origemVoo = "Guarulhos (GRU)";
-        destinoVoo = "Nova York (NYC)";
-        dataVoo = "10 de maio";
-        etapaVoo = 2;
-        adicionarMensagemBot(`🟦 Já entendi que a origem é <b>${origemVoo}</b>, destino é <b>${destinoVoo}</b> e a data aproximada é <b>${dataVoo}</b>. Só preciso confirmar:
-        <ul><li>A data exata é mesmo <b>${dataVoo}</b>?</li><li>Você prefere <b>ida e volta</b> ou só ida?</li><li>Alguma preferência de horário, classe ou companhia aérea?</li></ul>`);
-      } else {
-        adicionarMensagemBot("Pode me informar origem, destino e data da viagem? Ex: 'Guarulhos para New York dia 10 de maio'.");
-      }
-    } else if (etapaVoo === 2) {
+      adicionarMensagemBot("📍 Pode me informar origem, destino e data da viagem? Ex: 'Guarulhos para New York dia 10 de maio'.");
+      return;
+    }
+
+    if (etapaVoo === 2) {
       etapaVoo = 3;
       adicionarMensagemBot(`✈️ Procurando voos de <b>${origemVoo}</b> para <b>${destinoVoo}</b> em <b>${dataVoo}</b>... Aguarde um momento!`);
       setTimeout(() => {
@@ -478,26 +487,25 @@ async function enviarMensagemCentral() {
         Deseja ver <b>hotéis</b> ou <b>aluguel de carros</b> também?
         `);
       }, 1200);
+      return;
     }
-    return;
   }
 
   // fallback: usar GPT normalmente
-  try {
-    const response = await fetch("/api/gpt", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text, lang })
-    });
-    const data = await response.json();
-    const resposta = data.result || "(sem resposta)";
-    adicionarMensagemBot(resposta);
-    saveToLocalStorage(text, resposta);
-    saveToFirebase(text, resposta);
-  } catch (error) {
-    adicionarMensagemBot("Erro ao conectar com o servidor.");
+  if (modoAtual !== "voos") {
+    try {
+      const response = await fetch("/api/gpt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text, lang })
+      });
+      const data = await response.json();
+      const resposta = data.result || "(sem resposta)";
+      adicionarMensagemBot(resposta);
+      saveToLocalStorage(text, resposta);
+      saveToFirebase(text, resposta);
+    } catch (error) {
+      adicionarMensagemBot("Erro ao conectar com o servidor.");
+    }
   }
 }
-</script>
-</body>
-</html>
