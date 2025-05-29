@@ -436,7 +436,7 @@ function adicionarMensagemUsuario(msg) {
 }
 
 document.querySelectorAll(".aba")[0].onclick = () => {
-  iniciarFluxoVoos();
+  if (modoAtual !== "voos") iniciarFluxoVoos();
 };
 
 async function enviarMensagemCentral() {
