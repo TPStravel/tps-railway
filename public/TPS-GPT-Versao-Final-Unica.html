@@ -1,11 +1,12 @@
 
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <title>TPS – Travel Personally Secretary</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
+<meta charset="utf-8"/>
+<title>TPS – Travel Personally Secretary</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<style>
     body {
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
@@ -191,46 +192,42 @@
   </style>
 </head>
 <body>
-
 <div class="sidebar">
-  <div>
-    <h2>🔍 Explorar</h2>
-    <div class="item"><img src="https://images.unsplash.com/photo-1500916434205-0c77489c6cf7?w=400&h=300&fit=crop"/><span>Paris</span></div>
-    <div class="item"><img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop"/><span>New York</span></div>
-    <div class="item"><img src="https://images.unsplash.com/photo-1549693578-d683be217e58?w=400&h=300&fit=crop"/><span>Seoul</span></div>
-    <div class="item"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&h=300&fit=crop"/><span>Tóquio</span></div>
-    <div class="item"><img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&h=300&fit=crop"/><span>Londres</span></div>
-  </div>
-  <div style="font-size: 11px; color: #ccc;">Versão TPS</div>
+<div>
+<h2>🔍 Explorar</h2>
+<div class="item"><img src="https://images.unsplash.com/photo-1500916434205-0c77489c6cf7?w=400&amp;h=300&amp;fit=crop"/><span>Paris</span></div>
+<div class="item"><img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&amp;h=300&amp;fit=crop"/><span>New York</span></div>
+<div class="item"><img src="https://images.unsplash.com/photo-1549693578-d683be217e58?w=400&amp;h=300&amp;fit=crop"/><span>Seoul</span></div>
+<div class="item"><img src="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=400&amp;h=300&amp;fit=crop"/><span>Tóquio</span></div>
+<div class="item"><img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=400&amp;h=300&amp;fit=crop"/><span>Londres</span></div>
 </div>
-
+<div style="font-size: 11px; color: #ccc;">Versão TPS</div>
+</div>
 <div class="main">
-  <div class="abas">
-    <button class="aba ativa">✈️ Voos</button>
-    <button class="aba">🏨 Hotéis</button>
-    <button class="aba">🚗 Carros</button>
-    <button class="aba">🛡️ Seguro</button>
-  </div>
-  <div class="logo">TPS</div>
-  <div class="mensagem-social">🌱 Cada viagem através do TPS contribui para ações sociais reais.<br/>Obrigado por fazer a diferença.</div>
-  <div class="slogan">✈️ Bem-vindo ao seu assistente de viagem pessoal.<br/>Me diga de onde você sai, para onde vai e quando pretende viajar.</div>
-  <div id="mensagensCentrais" style="position:absolute;left:210px; top:240px;top:260px;max-width:400px;font-size:14px;text-align:left;color:#ccc;"></div>
-  <div class="input-area">
-    <textarea id="userInput" placeholder="Digite sua mensagem..."></textarea>
-    <button onclick="enviarMensagemCentral()">Enviar</button>
-  </div>
+<div class="abas">
+<button class="aba ativa">✈️ Voos</button>
+<button class="aba">🏨 Hotéis</button>
+<button class="aba">🚗 Carros</button>
+<button class="aba">🛡️ Seguro</button>
 </div>
-
+<div class="logo">TPS</div>
+<div class="mensagem-social">🌱 Cada viagem através do TPS contribui para ações sociais reais.<br/>Obrigado por fazer a diferença.</div>
+<div class="slogan">✈️ Bem-vindo ao seu assistente de viagem pessoal.<br/>Me diga de onde você sai, para onde vai e quando pretende viajar.</div>
+<div id="mensagensCentrais" style="position:absolute;left:210px; top:240px;top:260px;max-width:400px;font-size:14px;text-align:left;color:#ccc;"></div>
+<div class="input-area">
+<textarea id="userInput" placeholder="Digite sua mensagem..."></textarea>
+<button onclick="enviarMensagemCentral()">Enviar</button>
+</div>
+</div>
 <div class="discord">
-  <div class="chat-log" id="chatLog">
-    <div><strong>🤖:</strong> Bem-vindo ao chat TPS</div>
-  </div>
-  <div class="chat-input">
-    <input id="chatInput" placeholder="Digite aqui..." type="text"/>
-    <button onclick="enviarMensagemLateral()">Enviar</button>
-  </div>
+<div class="chat-log" id="chatLog">
+<div><strong>🤖:</strong> Bem-vindo ao chat lateral.</div>
 </div>
-
+<div class="chat-input">
+<input id="chatInput" placeholder="Digite aqui..." type="text"/>
+<button onclick="enviarMensagemLateral()">Enviar</button>
+</div>
+</div>
 <script>
 function enviarMensagemCentral() {
   const input = document.getElementById("userInput");
@@ -264,8 +261,6 @@ document.getElementById("userInput").addEventListener("keydown", function(e) {
   }
 });
 </script>
-
-
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script>
@@ -277,7 +272,6 @@ document.getElementById("userInput").addEventListener("keydown", function(e) {
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 </script>
-
 <script>
 const translations = {
   pt: { placeholder: "Digite sua mensagem...", send: "Enviar" },
@@ -323,7 +317,6 @@ function enviarMensagemCentral() {
   });
 }
 </script>
-
 <script>
   const firebaseConfig = {
     apiKey: "AIzaSyDReBGhb2gZNv7KA86HJXTeiLimWTrurp8",
@@ -399,113 +392,107 @@ function enviarMensagemCentral() {
       log.appendChild(erroDiv);
     }
   }
-</script> <!-- ✅ aqui fecha corretamente o script anterior -->
+
+  document.getElementById("userInput").addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      verificarLimite().then(pode => {
+        if (pode) enviarMensagemCentral();
+      });
+    }
+  });
+</script>
+
 <script>
-document.getElementById("userInput").addEventListener("keydown", function(e) {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    verificarLimite().then(pode => {
-      if (!pode) return;
+let etapaVoo = 0;
+let origemVoo = "", destinoVoo = "", dataVoo = "";
+let modoAtual = "";
 
-      const texto = this.value.trim().toLowerCase();
+function iniciarFluxoVoos() {
+  modoAtual = "voos";
+  etapaVoo = 1;
+  adicionarMensagemBot("✈️ Para te ajudar com sua passagem aérea, posso saber a cidade de origem, destino e data da viagem?");
+}
 
-      // Busca de voos
-      const regexBusca = /voo de (\w{3}) para (\w{3}) dia (\d{4}-\d{2}-\d{2})/;
-      const matchBusca = texto.match(regexBusca);
-      if (matchBusca) {
-        const origem = matchBusca[1].toUpperCase();
-        const destino = matchBusca[2].toUpperCase();
-        const data = matchBusca[3];
-        buscarVoosAmadeus(origem, destino, data);
-        return;
-      }
-
-      // Escolha de voo
-      const regexEscolha = /voo(?: número)? (\d)/;
-      const matchEscolha = texto.match(regexEscolha);
-      if (matchEscolha && window.ultimosVoos) {
-        const index = parseInt(matchEscolha[1], 10) - 1;
-        const vooEscolhido = window.ultimosVoos[index];
-        if (!vooEscolhido) return alert("⚠️ Número inválido.");
-
-        const log = document.getElementById("mensagensCentrais");
-        const confirmacao = document.createElement("div");
-        confirmacao.innerHTML = `✅ Voo número ${index + 1} selecionado com sucesso.`;
-        log.appendChild(confirmacao);
-
-        db.collection("voos_escolhidos").add({
-          voo: vooEscolhido,
-          dataSelecionado: new Date(),
-          usuario: getUserID()
-        });
-
-        const sugestao = document.createElement("div");
-        sugestao.innerHTML = "🏨 Deseja ver hotéis ou aluguel de carros também?";
-        log.appendChild(sugestao);
-        return;
-      }
-
-      // Qualquer outro texto
-      enviarMensagemCentral();
-    });
-  }
-});
-<script>
-async function buscarVoosAmadeus(origem, destino, data) {
+function adicionarMensagemBot(msg) {
   const log = document.getElementById("mensagensCentrais");
+  const div = document.createElement("div");
+  div.innerHTML = "<strong>🤖:</strong> " + msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
 
-  const loadingMsg = document.createElement("div");
-  loadingMsg.innerHTML = `✈️ Procurando voos de <b>${origem}</b> para <b>${destino}</b> em <b>${data}</b>... Aguarde um momento!`;
-  log.appendChild(loadingMsg);
+function adicionarMensagemUsuario(msg) {
+  const log = document.getElementById("mensagensCentrais");
+  const div = document.createElement("div");
+  div.innerHTML = "<strong>👤:</strong> " + msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
 
+document.querySelectorAll(".aba")[0].onclick = () => {
+  iniciarFluxoVoos();
+};
+
+async function enviarMensagemCentral() {
+  const input = document.getElementById("userInput");
+  const text = input.value.trim();
+  if (!text) return;
+  adicionarMensagemUsuario(text);
+  input.value = "";
+
+  const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+
+  if (modoAtual === "voos") {
+    if (etapaVoo === 1) {
+      if (text.toLowerCase().includes("guarulhos") && text.toLowerCase().includes("new york") && text.includes("10")) {
+        origemVoo = "Guarulhos (GRU)";
+        destinoVoo = "Nova York (NYC)";
+        dataVoo = "10 de maio";
+        etapaVoo = 2;
+        adicionarMensagemBot(`🟦 Já entendi que a origem é <b>${origemVoo}</b>, destino é <b>${destinoVoo}</b> e a data aproximada é <b>${dataVoo}</b>. Só preciso confirmar:
+        <ul><li>A data exata é mesmo <b>${dataVoo}</b>?</li><li>Você prefere <b>ida e volta</b> ou só ida?</li><li>Alguma preferência de horário, classe ou companhia aérea?</li></ul>`);
+      } else {
+        adicionarMensagemBot("Pode me informar origem, destino e data da viagem? Ex: 'Guarulhos para New York dia 10 de maio'.");
+      }
+    } else if (etapaVoo === 2) {
+      etapaVoo = 3;
+      adicionarMensagemBot(`✈️ Procurando voos de <b>${origemVoo}</b> para <b>${destinoVoo}</b> em <b>${dataVoo}</b>... Aguarde um momento!`);
+      setTimeout(() => {
+        adicionarMensagemBot(`
+        <b>✈️ Opções de Voos – ${dataVoo} de 2025</b>
+        <table border="1" cellspacing="0" cellpadding="4" style="margin-top:8px;font-size:13px;">
+          <tr><th>№</th><th>Companhia</th><th>Saída</th><th>Chegada</th><th>Classe</th><th>Terminal</th><th>Preço</th></tr>
+          <tr><td>1</td><td>LATAM</td><td>22:50</td><td>06:30 (+1)</td><td>💼 Econômica</td><td>GRU T3 → JFK T4</td><td>R$ 4.500</td></tr>
+          <tr><td>2</td><td>American</td><td>21:30</td><td>05:10 (+1)</td><td>💼 Econômica</td><td>GRU T3 → JFK T8</td><td>R$ 4.700</td></tr>
+          <tr><td>3</td><td>Delta</td><td>22:00</td><td>06:00 (+1)</td><td>💼 Econômica</td><td>GRU T3 → JFK T4</td><td>R$ 4.600</td></tr>
+          <tr><td>4</td><td>United</td><td>23:55</td><td>07:45 (+1)</td><td>💼 Econômica</td><td>GRU T3 → EWR</td><td>R$ 4.550</td></tr>
+          <tr><td>5</td><td>Copa</td><td>02:00</td><td>14:30</td><td>💼 Econômica</td><td>GRU T2 → JFK T4</td><td>R$ 3.200</td></tr>
+        </table>
+        <div style='font-size:13px;color:#ccc;margin-top:6px;'>💡 Os voos diretos duram cerca de 9h30min. A opção da Copa tem escala no Panamá (~12h30min).</div><br>
+        Deseja ver <b>hotéis</b> ou <b>aluguel de carros</b> também?
+        `);
+      }, 1200);
+    }
+    return;
+  }
+
+  // fallback: usar GPT normalmente
   try {
-    const response = await fetch("/api/amadeus/flights", {
+    const response = await fetch("/api/gpt", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ origin: origem, destination: destino, departureDate: data })
+      body: JSON.stringify({ message: text, lang })
     });
-    const result = await response.json();
-    const voos = result.flights;
-
-    const tabela = document.createElement("table");
-    tabela.style.borderCollapse = "collapse";
-    tabela.style.marginTop = "10px";
-    tabela.style.color = "#ccc";
-
-    const cabecalho = `
-      <tr style="border-bottom:1px solid #666;">
-        <th>✈️ Nº</th><th>Companhia</th><th>Saída</th><th>Chegada</th><th>Classe</th><th>Preço (BRL)</th>
-      </tr>`;
-
-    let linhas = "";
-    voos.forEach((voo, i) => {
-      const segmento = voo.itineraries[0].segments[0];
-      const horarioSaida = segmento.departure.at.substring(11, 16);
-      const horarioChegada = segmento.arrival.at.substring(11, 16);
-      const companhia = segmento.carrierCode;
-      const preco = voo.price.total;
-
-      linhas += `
-        <tr>
-          <td>${i + 1}</td>
-          <td>${companhia}</td>
-          <td>${horarioSaida}</td>
-          <td>${horarioChegada}</td>
-          <td>🧳 Econômica</td>
-          <td>R$ ${preco}</td>
-        </tr>`;
-    });
-
-    tabela.innerHTML = cabecalho + linhas;
-    log.appendChild(tabela);
-
-    window.ultimosVoos = voos;
-
-  } catch (err) {
-    const erro = document.createElement("div");
-    erro.innerHTML = "⚠️ Erro ao buscar voos.";
-    log.appendChild(erro);
+    const data = await response.json();
+    const resposta = data.result || "(sem resposta)";
+    adicionarMensagemBot(resposta);
+    saveToLocalStorage(text, resposta);
+    saveToFirebase(text, resposta);
+  } catch (error) {
+    adicionarMensagemBot("Erro ao conectar com o servidor.");
   }
 }
 </script>
-
+</body>
+</html>
