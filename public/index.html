@@ -628,6 +628,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // ✅ Adicione esta linha aqui:
+  window.loginUser = loginUser;
+
   // Auto-login se sessão anterior ainda ativa
   onAuthStateChanged(auth, (user) => {
     if (user) {
