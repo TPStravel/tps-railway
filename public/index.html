@@ -327,17 +327,75 @@
         40% { transform: scale(1); }
     }
 </style>
+<head>
+  <style>
+    /* Seus estilos atuais, como cores, layout, animações, etc */
+
+    /* ... (seu CSS atual aqui) ... */
+
+    /* --- Cole aqui o CSS do overlay --- */
+    #login-container {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(20, 20, 20, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.login-modal {
+  background: rgba(40, 40, 40, 0.95);
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 280px;
+}
+
+   /* E estilos para inputs e botão dentro do modal */
+
+  </style>
 </head>
+
 <body>
-  <div id="login-container" style="position:absolute; inset:0; background:#1a1a3d; color:white; display:flex; flex-direction:column; justify-content:center; align-items:center; z-index:9999;">
-  <h2 style="margin-bottom:20px;">🔐 Acesse seu Terminal TPS</h2>
-  <input type="email" id="login-email" placeholder="Seu e-mail" style="padding:10px; margin-bottom:10px; width:250px; border-radius:6px; border:none;" />
-  <input type="password" id="login-password" placeholder="Sua senha" style="padding:10px; margin-bottom:20px; width:250px; border-radius:6px; border:none;" />
-  <button onclick="loginUser()" style="padding:10px 20px; background:#6a5acd; color:white; border:none; border-radius:6px;">Entrar</button>
-  <div id="login-status" style="margin-top:20px; color:lightgray;"></div>
-</div>
-<div class="sidebar">
-  <div>
+  <!-- 🔐 Overlay de Login Flutuante -->
+  <div id="login-container">
+    <form class="login-modal" id="login-form">
+      <h2>🔐 Acesse seu Terminal TPS</h2>
+      <input type="email" id="login-email" class="login-input" placeholder="Seu e-mail" required />
+      <input type="password" id="login-password" class="login-input" placeholder="Sua senha" required />
+      <button type="submit" class="login-button">Entrar</button>
+      <div id="login-status" class="login-status"></div>
+    </form>
+  </div>
+
+  <!-- A partir daqui vem o conteúdo da sua página, SEM outro login-container -->
+  <div class="sidebar">
+    <div>
+      <h2>🧭 Destinos que Tocam a Alma</h2>
+      <div class="item"><img src="..." /><span>Paris</span></div>
+      <!-- demais destinos -->
+    </div>
+    <div style="font-size: 11px; color: #ccc;">Conectando corações ao mundo</div>
+  </div>
+
+  <!-- restante do conteúdo principal -->
+  <div class="main">
+    <!-- conteúdo -->
+  </div>
+
+  <div class="discord">
+    <!-- conteúdo -->
+  </div>
+
+  <!-- seus scripts -->
+</body>
+
     <h2>🧭 Destinos que Tocam a Alma</h2>
     <div class="item"><img src="https://images.unsplash.com/photo-1500916434205-0c77489c6cf7?w=400&h=300&fit=crop"/><span>Paris</span></div>
     <div class="item"><img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=400&h=300&fit=crop"/><span>New York</span></div>
@@ -359,7 +417,12 @@
   <div class="slogan">
     <span id="frase-aguarde">Aguarde... Sua jornada está prestes a começar...</span>
   </div>
-  <div id="mensagensCentrais"></div>
+<div id="mensagensCentrais">
+  <div id="status-mensagem" style="margin-top: 10px; font-size: 14px; color: lightgray;"></div>
+</div>
+
+  <!-- ✅ Mensagem de status do login simbólico -->
+
   <div class="input-area">
     <textarea id="userInput" placeholder="Compartilhe seus sonhos de viagem..."></textarea>
     <button onclick="enviarMensagemCentral()">Enviar</button>
@@ -506,11 +569,11 @@ function enviarMensagemCentral() {
 }
 
 // Event listeners para Enter
-document.getElementById('chatInput').addEventListener('keypress', function(e) {
-    if (e.key === 'Enter') {
-        enviarMensagemLateral();
-    }
+document.getElementById('login-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  loginUser();
 });
+
 
 document.getElementById('userInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -595,48 +658,78 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  async function loginUser() {
-    const email = document.getElementById('login-email').value;
-    const password = document.getElementById('login-password').value;
-    const status = document.getElementById('login-status');
-    status.innerText = "⏳ Entrando...";
+// ✅ Função tradicional (para formulário de login)
+async function loginUser() {
+  const email = document.getElementById('login-email').value;
+  const password = document.getElementById('login-password').value;
+  const status = document.getElementById('login-status');
+  status.innerText = "⏳ Entrando...";
 
-    try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    // usuário autenticado
+    document.getElementById('login-container').style.display = 'none';
+    status.innerText = "";
+  } catch (error) {
+    status.innerText = "❌ Erro no login: " + error.message;
+  }
+}
 
-      const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
-      const timestamp = new Date().toISOString();
+// ✅ Função inline para login via chat simbólico
+async function loginUserInline(email, password) {
+  const statusBox = document.getElementById('status-mensagem');
+  if (statusBox) statusBox.innerText = "⏳ Validando suas credenciais...";
 
-      await setDoc(doc(db, "tps_leads", user.uid), {
-        email: user.email,
-        data: timestamp,
-        idioma: lang,
-        portal: "TPS",
-        status: "login_com_consentimento"
-      });
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      localStorage.setItem("tps_logged_in", "true");
-      document.cookie = "tps_cookie_consent=true; path=/;";
-      document.getElementById('login-container').style.display = 'none';
+    const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+    const timestamp = new Date().toISOString();
 
-    } catch (error) {
-      status.innerText = "❌ Erro no login: " + error.message;
+    await setDoc(doc(db, "tps_leads", user.uid), {
+      email: user.email,
+      data: timestamp,
+      idioma: lang,
+      portal: "TPS",
+      status: "login_inline"
+    });
+
+    localStorage.setItem("tps_logged_in", "true");
+    document.cookie = "tps_cookie_consent=true; path=/;";
+    if (statusBox) statusBox.innerText = "✅ Login concluído. Sua jornada está segura.";
+  } catch (error) {
+    if (statusBox) statusBox.innerText = "❌ Erro ao fazer login: " + error.message;
+  }
+}
+
+// ✅ Função que interpreta entrada tipo: email / senha
+function interpretarMensagemLogin(texto) {
+  const partes = texto.split("/");
+  if (partes.length === 2) {
+    const email = partes[0].trim();
+    const senha = partes[1].trim();
+    if (email.includes("@") && senha.length >= 4) {
+      loginUserInline(email, senha);
+      return true;
     }
   }
+  return false;
+}
 
-  // ✅ Adicione esta linha aqui:
-  window.loginUser = loginUser;
+// Tornar loginUser global para botão do formulário
+window.loginUser = loginUser;
 
-  // Auto-login se sessão anterior ainda ativa
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      document.getElementById('login-container').style.display = 'none';
-    }
-  });
+// Auto-login se já logado
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    document.getElementById('login-container').style.display = 'none';
+  }
+});
+
 </script>
 </body>
 </html>
