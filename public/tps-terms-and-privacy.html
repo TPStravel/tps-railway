@@ -1,12 +1,15 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TPS – Termos e Privacidade</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TPS – Termos e Privacidade</title>
+<style>
     body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; overflow-y: auto; }
     .container { max-width: 900px; margin: auto; padding-bottom: 60px; }
+    .language-selector { text-align: center; margin-bottom: 20px; }
+    #language-select { padding: 8px 12px; font-size: 1rem; border-radius: 5px; background-color: #333; color: white; border: 1px solid #555; }
     h1 { text-align: center; font-size: 2.4rem; margin-bottom: 30px; }
     h2 { color: #4caf50; margin-top: 40px; }
     p, li { font-size: 1.05rem; }
@@ -17,40 +20,337 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Bem-vindo ao TPS - Travel Personally Secretary</h1>
+<div style="position: fixed; top: 10px; left: 20px; z-index: 9999;">
+<select id="language-select" onchange="changeLanguage()" style="padding: 5px; border-radius: 5px;">
+<option value="pt">Português</option>
+<option value="en">English</option>
+<option value="es">Español</option>
+<option value="fr">Français</option>
+<option value="ko">한국어</option>
+<option value="ja">日本語</option>
+<option value="zh">中文</option>
+<option value="ru">Русский</option>
+<option value="hi">हिन्दी</option>
+<option value="de">Deutsch</option>
+<option value="it">Italiano</option>
+<option value="nl">Nederlands</option>
+</select>
+</div>
 
-    <h2>Introdução</h2>
-    <p>O <strong>TPS</strong> é uma plataforma personalizada que ajuda você a planejar suas viagens de forma eficiente e intuitiva. Com base nas suas preferências, histórico e estilo de viagem, entregamos recomendações de voos, hotéis, carros e seguros alinhadas ao que realmente importa para você.</p>
-    <p><strong>Objetivo:</strong> Oferecer uma experiência prática, simbólica e personalizada de viagem.</p>
-    <p><strong>Como funciona:</strong> O sistema coleta dados básicos (como destino, datas, tipo de viagem) e entrega resultados emocionalmente relevantes.</p>
+<div class="container">
 
-    <h2>Termos de Uso</h2>
-    <ul>
-      <li><strong>Coleta de Dados:</strong> Nome, e-mail, preferências, histórico de busca e uso.</li>
-      <li><strong>Uso dos Dados:</strong> Somente para melhorar sua experiência. Nunca compartilhamos com terceiros para fins comerciais.</li>
-      <li><strong>Cookies:</strong> Utilizados para lembrar suas escolhas e acelerar futuras buscas.</li>
-      <li><strong>Segurança:</strong> Seus dados são protegidos com criptografia e padrões de segurança.</li>
-      <li><strong>Limitações:</strong> O TPS é uma plataforma simbólica de apoio. Você é responsável pelas decisões finais de reserva e compra.</li>
-    </ul>
+<h1 id="titulo">Bem-vindo ao TPS - Travel Personally Secretary</h1>
+<h2 id="sub1">Introdução</h2>
+<p id="p1">O <strong>TPS</strong> é uma plataforma personalizada que ajuda você a planejar suas viagens de forma eficiente e intuitiva. Com base nas suas preferências, histórico e estilo de viagem, entregamos recomendações de voos, hotéis, carros e seguros alinhadas ao que realmente importa para você.</p>
+<p id="p2"><strong>Objetivo:</strong> Oferecer uma experiência prática, simbólica e personalizada de viagem.</p>
+<p id="p3"><strong>Como funciona:</strong> O sistema coleta dados básicos (como destino, datas, tipo de viagem) e entrega resultados emocionalmente relevantes.</p>
+<h2 id="sub2">Termos de Uso</h2>
+<ul>
+<li id="li1"><strong>Coleta de Dados:</strong> Nome, e-mail, preferências, histórico de busca e uso.</li>
+<li id="li2"><strong>Uso dos Dados:</strong> Somente para melhorar sua experiência. Nunca compartilhamos com terceiros para fins comerciais.</li>
+<li id="li3"><strong>Cookies:</strong> Utilizados para lembrar suas escolhas e acelerar futuras buscas.</li>
+<li id="li4"><strong>Segurança:</strong> Seus dados são protegidos com criptografia e padrões de segurança.</li>
+<li id="li5"><strong>Limitações:</strong> O TPS é uma plataforma simbólica de apoio. Você é responsável pelas decisões finais de reserva e compra.</li>
+</ul>
+<h2 id="sub3">Política de Privacidade</h2>
+<ul>
+<li id="li6">Coletamos dados mínimos e apenas com seu consentimento.</li>
+<li id="li7">Não vendemos nem divulgamos informações pessoais.</li>
+<li id="li8">Você pode solicitar exclusão dos seus dados a qualquer momento.</li>
+<li id="li9">Seus dados são armazenados em servidores seguros.</li>
+</ul>
+<p id="p4">Ao continuar, você concorda com todos os termos acima.</p>
+<button class="btn" id="botao-continuar" onclick="aceitarTermos('tps-portal.html')">Aceitar e Continuar</button>
+</div>
+<footer>© 2025 TPS - Travel Personally Secretary</footer>
+<script>
+    // Dicionário de traduções
+    const traducoesTermos = {
+      pt: {
+        titulo: "Bem-vindo ao TPS - Travel Personally Secretary",
+        sub1: "Introdução",
+        sub2: "Termos de Uso",
+        sub3: "Política de Privacidade",
+        p1: "O TPS é uma plataforma personalizada que ajuda você a planejar suas viagens de forma eficiente e intuitiva. Com base nas suas preferências, histórico e estilo de viagem, entregamos recomendações de voos, hotéis, carros e seguros alinhadas ao que realmente importa para você.",
+        p2: "Objetivo: Oferecer uma experiência prática, simbólica e personalizada de viagem.",
+        p3: "Como funciona: O sistema coleta dados básicos (como destino, datas, tipo de viagem) e entrega resultados emocionalmente relevantes.",
+        p4: "Ao continuar, você concorda com todos os termos acima.",
+        li1: "Coleta de Dados: Nome, e-mail, preferências, histórico de busca e uso.",
+        li2: "Uso dos Dados: Somente para melhorar sua experiência. Nunca compartilhamos com terceiros para fins comerciais.",
+        li3: "Cookies: Utilizados para lembrar suas escolhas e acelerar futuras buscas.",
+        li4: "Segurança: Seus dados são protegidos com criptografia e padrões de segurança.",
+        li5: "Limitações: O TPS é uma plataforma simbólica de apoio. Você é responsável pelas decisões finais de reserva e compra.",
+        li6: "Coletamos dados mínimos e apenas com seu consentimento.",
+        li7: "Não vendemos nem divulgamos informações pessoais.",
+        li8: "Você pode solicitar exclusão dos seus dados a qualquer momento.",
+        li9: "Seus dados são armazenados em servidores seguros.",
+        botao: "Aceitar e Continuar"
+      },
+      en: {
+        titulo: "Welcome to TPS - Travel Personally Secretary",
+        sub1: "Introduction",
+        sub2: "Terms of Use",
+        sub3: "Privacy Policy",
+        p1: "TPS is a personalized platform that helps you plan your travels efficiently and intuitively. Based on your preferences, history, and travel style, we deliver flight, hotel, car, and insurance recommendations aligned with what really matters to you.",
+        p2: "Objective: To offer a practical, symbolic, and personalized travel experience.",
+        p3: "How it works: The system collects basic data (such as destination, dates, type of trip) and delivers emotionally relevant results.",
+        p4: "By continuing, you agree to all the terms above.",
+        li1: "Data Collection: Name, email, preferences, search and usage history.",
+        li2: "Data Usage: Only to improve your experience. We never share with third parties for commercial purposes.",
+        li3: "Cookies: Used to remember your choices and speed up future searches.",
+        li4: "Security: Your data is protected with encryption and security standards.",
+        li5: "Limitations: TPS is a symbolic support platform. You are responsible for final booking and purchase decisions.",
+        li6: "We collect minimal data and only with your consent.",
+        li7: "We do not sell or disclose personal information.",
+        li8: "You can request deletion of your data at any time.",
+        li9: "Your data is stored on secure servers.",
+        botao: "Accept and Continue"
+      },
+      es: {
+        titulo: "Bienvenido a TPS - Travel Personally Secretary",
+        sub1: "Introducción",
+        sub2: "Términos de Uso",
+        sub3: "Política de Privacidad",
+        p1: "TPS es una plataforma personalizada que te ayuda a planificar tus viajes de manera eficiente e intuitiva. Basándose en tus preferencias, historial y estilo de viaje, entregamos recomendaciones de vuelos, hoteles, autos y seguros alineadas con lo que realmente te importa.",
+        p2: "Objetivo: Ofrecer una experiencia práctica, simbólica y personalizada de viaje.",
+        p3: "Cómo funciona: El sistema recopila datos básicos (como destino, fechas, tipo de viaje) y entrega resultados emocionalmente relevantes.",
+        p4: "Al continuar, aceptas todos los términos anteriores.",
+        li1: "Recopilación de Datos: Nombre, correo electrónico, preferencias, historial de búsqueda y uso.",
+        li2: "Uso de Datos: Solo para mejorar tu experiencia. Nunca compartimos con terceros con fines comerciales.",
+        li3: "Cookies: Utilizadas para recordar tus elecciones y acelerar futuras búsquedas.",
+        li4: "Seguridad: Tus datos están protegidos con encriptación y estándares de seguridad.",
+        li5: "Limitaciones: TPS es una plataforma simbólica de apoyo. Eres responsable de las decisiones finales de reserva y compra.",
+        li6: "Recopilamos datos mínimos y solo con tu consentimiento.",
+        li7: "No vendemos ni divulgamos información personal.",
+        li8: "Puedes solicitar la eliminación de tus datos en cualquier momento.",
+        li9: "Tus datos se almacenan en servidores seguros.",
+        botao: "Aceptar y Continuar"
+      },
+      fr: {
+        titulo: "Bienvenue sur TPS - Travel Personally Secretary",
+        sub1: "Introduction",
+        sub2: "Conditions d'utilisation",
+        sub3: "Politique de confidentialité",
+        p1: "TPS est une plateforme personnalisée qui vous aide à planifier vos voyages de manière efficace et intuitive. Basé sur vos préférences, votre historique et votre style de voyage, nous livrons des recommandations de vols, hôtels, voitures et assurances alignées sur ce qui compte vraiment pour vous.",
+        p2: "Objectif : Offrir une expérience de voyage pratique, symbolique et personnalisée.",
+        p3: "Comment cela fonctionne : Le système collecte des données de base (comme la destination, les dates, le type de voyage) et livre des résultats émotionnellement pertinents.",
+        p4: "En continuant, vous acceptez tous les termes ci-dessus.",
+        li1: "Collecte de données : Nom, email, préférences, historique de recherche et d'utilisation.",
+        li2: "Utilisation des données : Uniquement pour améliorer votre expérience. Nous ne partageons jamais avec des tiers à des fins commerciales.",
+        li3: "Cookies : Utilisés pour mémoriser vos choix et accélérer les futures recherches.",
+        li4: "Sécurité : Vos données sont protégées par chiffrement et normes de sécurité.",
+        li5: "Limitations : TPS est une plateforme symbolique de support. Vous êtes responsable des décisions finales de réservation et d'achat.",
+        li6: "Nous collectons des données minimales et seulement avec votre consentement.",
+        li7: "Nous ne vendons ni ne divulguons d'informations personnelles.",
+        li8: "Vous pouvez demander la suppression de vos données à tout moment.",
+        li9: "Vos données sont stockées sur des serveurs sécurisés.",
+        botao: "Accepter et Continuer"
+      },
+      ko: {
+        titulo: "TPS - Travel Personally Secretary에 오신 것을 환영합니다",
+        sub1: "소개",
+        sub2: "이용 약관",
+        sub3: "개인정보 보호정책",
+        p1: "TPS는 효율적이고 직관적으로 여행을 계획할 수 있도록 도와주는 개인화된 플랫폼입니다. 귀하의 선호도, 기록 및 여행 스타일을 바탕으로 정말 중요한 것에 맞춘 항공편, 호텔, 자동차 및 보험 추천을 제공합니다.",
+        p2: "목표: 실용적이고 상징적이며 개인화된 여행 경험을 제공합니다.",
+        p3: "작동 방식: 시스템은 기본 데이터(목적지, 날짜, 여행 유형 등)를 수집하고 감정적으로 관련된 결과를 제공합니다.",
+        p4: "계속하면 위의 모든 약관에 동의하는 것입니다.",
+        li1: "데이터 수집: 이름, 이메일, 선호도, 검색 및 사용 기록.",
+        li2: "데이터 사용: 경험 향상을 위해서만 사용됩니다. 상업적 목적으로 제3자와 공유하지 않습니다.",
+        li3: "쿠키: 선택을 기억하고 향후 검색을 빠르게 하기 위해 사용됩니다.",
+        li4: "보안: 데이터는 암호화 및 보안 표준으로 보호됩니다.",
+        li5: "제한사항: TPS는 상징적인 지원 플랫폼입니다. 최종 예약 및 구매 결정은 귀하의 책임입니다.",
+        li6: "최소한의 데이터만 수집하며 귀하의 동의 하에만 수집합니다.",
+        li7: "개인정보를 판매하거나 공개하지 않습니다.",
+        li8: "언제든지 데이터 삭제를 요청할 수 있습니다.",
+        li9: "데이터는 안전한 서버에 저장됩니다.",
+        botao: "동의하고 계속하기"
+      },
+      ja: {
+        titulo: "TPS - Travel Personally Secretaryへようこそ",
+        sub1: "はじめに",
+        sub2: "利用規約",
+        sub3: "プライバシーポリシー",
+        p1: "TPSは、効率的で直感的に旅行を計画するのに役立つパーソナライズされたプラットフォームです。お客様の好み、履歴、旅行スタイルに基づいて、本当に重要なことに合わせたフライト、ホテル、レンタカー、保険の推奨事項をお届けします。",
+        p2: "目的：実用的で象徴的でパーソナライズされた旅行体験を提供すること。",
+        p3: "仕組み：システムは基本データ（目的地、日付、旅行タイプなど）を収集し、感情的に関連する結果を提供します。",
+        p4: "続行することで、上記のすべての条件に同意したものとみなされます。",
+        li1: "データ収集：名前、メール、好み、検索・使用履歴。",
+        li2: "データ使用：お客様の体験向上のためのみに使用します。商業目的で第三者と共有することはありません。",
+        li3: "クッキー：お客様の選択を記憶し、今後の検索を高速化するために使用されます。",
+        li4: "セキュリティ：お客様のデータは暗号化とセキュリティ基準で保護されています。",
+        li5: "制限：TPSは象徴的なサポートプラットフォームです。最終的な予約と購入の決定はお客様の責任です。",
+        li6: "最小限のデータのみを収集し、お客様の同意がある場合のみ収集します。",
+        li7: "個人情報を販売したり開示したりすることはありません。",
+        li8: "いつでもデータの削除を要求できます。",
+        li9: "お客様のデータは安全なサーバーに保存されます。",
+        botao: "同意して続行"
+      },
+      zh: {
+        titulo: "欢迎使用TPS - Travel Personally Secretary",
+        sub1: "介绍",
+        sub2: "使用条款",
+        sub3: "隐私政策",
+        p1: "TPS是一个个性化平台，帮助您高效直观地规划旅行。基于您的偏好、历史和旅行风格，我们提供与您真正关心的事情相符的航班、酒店、汽车和保险推荐。",
+        p2: "目标：提供实用、象征性和个性化的旅行体验。",
+        p3: "工作原理：系统收集基本数据（如目的地、日期、旅行类型）并提供情感相关的结果。",
+        p4: "继续使用即表示您同意上述所有条款。",
+        li1: "数据收集：姓名、电子邮件、偏好、搜索和使用记录。",
+        li2: "数据使用：仅用于改善您的体验。我们绝不会为商业目的与第三方共享。",
+        li3: "Cookie：用于记住您的选择并加快未来搜索。",
+        li4: "安全性：您的数据受到加密和安全标准的保护。",
+        li5: "限制：TPS是一个象征性支持平台。您对最终预订和购买决定负责。",
+        li6: "我们只收集最少的数据，并且只在您同意的情况下收集。",
+        li7: "我们不出售或披露个人信息。",
+        li8: "您可以随时要求删除您的数据。",
+        li9: "您的数据存储在安全服务器上。",
+        botao: "接受并继续"
+      },
+      ru: {
+        titulo: "Добро пожаловать в TPS - Travel Personally Secretary",
+        sub1: "Введение",
+        sub2: "Условия использования",
+        sub3: "Политика конфиденциальности",
+        p1: "TPS - это персонализированная платформа, которая помогает вам планировать путешествия эффективно и интуитивно. Основываясь на ваших предпочтениях, истории и стиле путешествий, мы предоставляем рекомендации по авиабилетам, отелям, автомобилям и страховке, соответствующие тому, что действительно важно для вас.",
+        p2: "Цель: Предложить практический, символический и персонализированный опыт путешествий.",
+        p3: "Как это работает: Система собирает основные данные (такие как направление, даты, тип поездки) и предоставляет эмоционально релевантные результаты.",
+        p4: "Продолжая, вы соглашаетесь со всеми вышеуказанными условиями.",
+        li1: "Сбор данных: Имя, электронная почта, предпочтения, история поиска и использования.",
+        li2: "Использование данных: Только для улучшения вашего опыта. Мы никогда не делимся с третьими лицами в коммерческих целях.",
+        li3: "Куки: Используются для запоминания ваших выборов и ускорения будущих поисков.",
+        li4: "Безопасность: Ваши данные защищены шифрованием и стандартами безопасности.",
+        li5: "Ограничения: TPS - это символическая платформа поддержки. Вы несете ответственность за окончательные решения о бронировании и покупке.",
+        li6: "Мы собираем минимальные данные и только с вашего согласия.",
+        li7: "Мы не продаем и не раскрываем личную информацию.",
+        li8: "Вы можете запросить удаление ваших данных в любое время.",
+        li9: "Ваши данные хранятся на защищенных серверах.",
+        botao: "Принять и продолжить"
+      },
+      hi: {
+        titulo: "TPS - Travel Personally Secretary में आपका स्वागत है",
+        sub1: "परिचय",
+        sub2: "उपयोग की शर्तें",
+        sub3: "गोपनीयता नीति",
+        p1: "TPS एक व्यक्तिगत प्लेटफॉर्म है जो आपको कुशलता से और सहज रूप से अपनी यात्राओं की योजना बनाने में मदद करता है। आपकी प्राथमिकताओं, इतिहास और यात्रा शैली के आधार पर, हम उड़ान, होटल, कार और बीमा की सिफारिशें प्रदान करते हैं जो वास्तव में आपके लिए महत्वपूर्ण हैं।",
+        p2: "उद्देश्य: एक व्यावहारिक, प्रतीकात्मक और व्यक्तिगत यात्रा अनुभव प्रदान करना।",
+        p3: "यह कैसे काम करता है: सिस्टम बुनियादी डेटा (जैसे गंतव्य, तारीखें, यात्रा का प्रकार) एकत्र करता है और भावनात्मक रूप से प्रासंगिक परिणाम प्रदान करता है।",
+        p4: "जारी रखने से, आप उपरोक्त सभी शर्तों से सहमत होते हैं।",
+        li1: "डेटा संग्रह: नाम, ईमेल, प्राथमिकताएं, खोज और उपयोग का इतिहास।",
+        li2: "डेटा उपयोग: केवल आपके अनुभव को बेहतर बनाने के लिए। हम कभी भी वाणिज्यिक उद्देश्यों के लिए तीसरे पक्ष के साथ साझा नहीं करते।",
+        li3: "कुकीज़: आपकी पसंद को याद रखने और भविष्य की खोजों को तेज़ करने के लिए उपयोग की जाती हैं।",
+        li4: "सुरक्षा: आपका डेटा एन्क्रिप्शन और सुरक्षा मानकों से सुरक्षित है।",
+        li5: "सीमाएं: TPS एक प्रतीकात्मक सहायता प्लेटफॉर्म है। अंतिम बुकिंग और खरीदारी के निर्णयों के लिए आप जिम्मेदार हैं।",
+        li6: "हम न्यूनतम डेटा एकत्र करते हैं और केवल आपकी सहमति से।",
+        li7: "हम व्यक्तिगत जानकारी बेचते या प्रकट नहीं करते।",
+        li8: "आप किसी भी समय अपने डेटा को हटाने का अनुरोध कर सकते हैं।",
+        li9: "आपका डेटा सुरक्षित सर्वर पर संग्रहीत है।",
+        botao: "स्वीकार करें और जारी रखें"
+      },
+      de: {
+        titulo: "Willkommen bei TPS - Travel Personally Secretary",
+        sub1: "Einführung",
+        sub2: "Nutzungsbedingungen",
+        sub3: "Datenschutzrichtlinie",
+        p1: "TPS ist eine personalisierte Plattform, die Ihnen hilft, Ihre Reisen effizient und intuitiv zu planen. Basierend auf Ihren Vorlieben, Ihrer Geschichte und Ihrem Reisestil liefern wir Empfehlungen für Flüge, Hotels, Autos und Versicherungen, die auf das ausgerichtet sind, was Ihnen wirklich wichtig ist.",
+        p2: "Ziel: Eine praktische, symbolische und personalisierte Reiseerfahrung zu bieten.",
+        p3: "Wie es funktioniert: Das System sammelt grundlegende Daten (wie Ziel, Daten, Art der Reise) und liefert emotional relevante Ergebnisse.",
+        p4: "Durch Fortfahren stimmen Sie allen oben genannten Bedingungen zu.",
+        li1: "Datensammlung: Name, E-Mail, Vorlieben, Such- und Nutzungshistorie.",
+        li2: "Datennutzung: Nur zur Verbesserung Ihrer Erfahrung. Wir teilen niemals mit Dritten zu kommerziellen Zwecken.",
+        li3: "Cookies: Verwendet, um sich an Ihre Auswahl zu erinnern und zukünftige Suchen zu beschleunigen.",
+        li4: "Sicherheit: Ihre Daten sind durch Verschlüsselung und Sicherheitsstandards geschützt.",
+        li5: "Einschränkungen: TPS ist eine symbolische Unterstützungsplattform. Sie sind für endgültige Buchungs- und Kaufentscheidungen verantwortlich.",
+        li6: "Wir sammeln minimale Daten und nur mit Ihrer Zustimmung.",
+        li7: "Wir verkaufen oder geben keine persönlichen Informationen preis.",
+        li8: "Sie können jederzeit die Löschung Ihrer Daten beantragen.",
+        li9: "Ihre Daten werden auf sicheren Servern gespeichert.",
+        botao: "Akzeptieren und Fortfahren"
+      },
+      it: {
+        titulo: "Benvenuto in TPS - Travel Personally Secretary",
+        sub1: "Introduzione",
+        sub2: "Termini di utilizzo",
+        sub3: "Politica sulla privacy",
+        p1: "TPS è una piattaforma personalizzata che ti aiuta a pianificare i tuoi viaggi in modo efficiente e intuitivo. Basandoci sulle tue preferenze, cronologia e stile di viaggio, forniamo raccomandazioni per voli, hotel, auto e assicurazioni allineate a ciò che conta davvero per te.",
+        p2: "Obiettivo: Offrire un'esperienza di viaggio pratica, simbolica e personalizzata.",
+        p3: "Come funziona: Il sistema raccoglie dati di base (come destinazione, date, tipo di viaggio) e fornisce risultati emotivamente rilevanti.",
+        p4: "Continuando, accetti tutti i termini sopra indicati.",
+        li1: "Raccolta dati: Nome, email, preferenze, cronologia di ricerca e utilizzo.",
+        li2: "Utilizzo dei dati: Solo per migliorare la tua esperienza. Non condividiamo mai con terze parti per scopi commerciali.",
+        li3: "Cookie: Utilizzati per ricordare le tue scelte e accelerare le ricerche future.",
+        li4: "Sicurezza: I tuoi dati sono protetti con crittografia e standard di sicurezza.",
+        li5: "Limitazioni: TPS è una piattaforma di supporto simbolica. Sei responsabile delle decisioni finali di prenotazione e acquisto.",
+        li6: "Raccogliamo dati minimi e solo con il tuo consenso.",
+        li7: "Non vendiamo né divulghiamo informazioni personali.",
+        li8: "Puoi richiedere l'eliminazione dei tuoi dati in qualsiasi momento.",
+        li9: "I tuoi dati sono archiviati su server sicuri.",
+        botao: "Accetta e continua"
+      },
+      nl: {
+        titulo: "Welkom bij TPS - Travel Personally Secretary",
+        sub1: "Introductie",
+        sub2: "Gebruiksvoorwaarden",
+        sub3: "Privacybeleid",
+        p1: "TPS is een gepersonaliseerd platform dat je helpt om je reizen efficiënt en intuïtief te plannen. Gebaseerd op jouw voorkeuren, geschiedenis en reisstijl, leveren we aanbevelingen voor vluchten, hotels, auto's en verzekeringen die aansluiten bij wat echt belangrijk voor je is.",
+        p2: "Doel: Een praktische, symbolische en gepersonaliseerde reiservaring bieden.",
+        p3: "Hoe het werkt: Het systeem verzamelt basisgegevens (zoals bestemming, data, type reis) en levert emotioneel relevante resultaten.",
+        p4: "Door verder te gaan, ga je akkoord met alle bovenstaande voorwaarden.",
+        li1: "Gegevensverzameling: Naam, e-mail, voorkeuren, zoek- en gebruiksgeschiedenis.",
+        li2: "Gegevensgebruik: Alleen om je ervaring te verbeteren. We delen nooit met derden voor commerciële doeleinden.",
+        li3: "Cookies: Gebruikt om je keuzes te onthouden en toekomstige zoekopdrachten te versnellen.",
+        li4: "Beveiliging: Je gegevens zijn beschermd met encryptie en beveiligingsstandaarden.",
+        li5: "Beperkingen: TPS is een symbolisch ondersteuningsplatform. Je bent verantwoordelijk voor definitieve boekings- en aankoopbeslissingen.",
+        li6: "We verzamelen minimale gegevens en alleen met je toestemming.",
+        li7: "We verkopen of onthullen geen persoonlijke informatie.",
+        li8: "Je kunt op elk moment verwijdering van je gegevens aanvragen.",
+        li9: "Je gegevens worden opgeslagen op beveiligde servers.",
+        botao: "Accepteren en doorgaan"
+      }
+    };
 
-    <h2>Política de Privacidade</h2>
-    <ul>
-      <li>Coletamos dados mínimos e apenas com seu consentimento.</li>
-      <li>Não vendemos nem divulgamos informações pessoais.</li>
-      <li>Você pode solicitar exclusão dos seus dados a qualquer momento.</li>
-      <li>Seus dados são armazenados em servidores seguros.</li>
-    </ul>
+    // Detectar idioma da URL
+    const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
 
-    <p>Ao continuar, você concorda com todos os termos acima.</p>
+    // Função para aplicar traduções
+    document.addEventListener("DOMContentLoaded", () => {
+      const t = traducoesTermos[lang] || traducoesTermos["pt"];
+      
+      // Aplicar traduções aos elementos
+      document.getElementById("titulo").innerText = t.titulo;
+      document.getElementById("botao-continuar").innerText = t.botao;
+      
+      // Subtítulos
+      for (let i = 1; i <= 3; i++) {
+        const el = document.getElementById("sub" + i);
+        if (el) el.innerText = t["sub" + i];
+      }
+      
+      // Parágrafos
+      for (let i = 1; i <= 4; i++) {
+        const el = document.getElementById("p" + i);
+        if (el) el.innerHTML = t["p" + i];
+      }
+      
+      // Itens da lista
+      for (let i = 1; i <= 9; i++) {
+        const el = document.getElementById("li" + i);
+        if (el) el.innerHTML = t["li" + i];
+      }
 
-    <!-- ✅ Redirecionamento corrigido -->
-    <button class="btn" onclick="aceitarTermos('tps-portal.html')">Aceitar e Continuar</button>
-  </div>
+      // Definir o valor correto no seletor de idioma
+      const langSelect = document.getElementById("language-select");
+      if (langSelect) langSelect.value = lang;
+    });
 
-  <footer>&copy; 2025 TPS - Travel Personally Secretary</footer>
-
-  <script type="module">
+    // Função para mudar idioma
+    function changeLanguage() {
+      const newLang = document.getElementById("language-select").value;
+      const url = new URL(window.location.href);
+      url.searchParams.set("lang", newLang);
+      window.location.href = url.toString();
+    }
+  </script>
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
@@ -67,8 +367,18 @@
     const db = getFirestore(app);
 
     window.aceitarTermos = async function(proximaUrl) {
-      localStorage.setItem("cookieConsent", "true");
       const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+      
+      // Salvar consentimento no localStorage
+      const consentData = {
+        accepted: true,
+        timestamp: new Date().toISOString(),
+        lang: lang
+      };
+      
+      // Usar variável em memória em vez de localStorage para compatibilidade
+      window.tpsConsent = consentData;
+      
       try {
         await addDoc(collection(db, "consentimentos"), {
           timestamp: new Date().toISOString(),
@@ -83,5 +393,42 @@
       }
     };
   </script>
-</body>
-</html>
+<div id="cookie-banner" style="display:none; position:fixed; bottom:20px; left:20px; right:20px; background:#222; color:#fff; padding:20px; border-radius:8px; z-index:9999;">
+<p id="cookie-text" style="margin:0 0 10px 0;"></p>
+<button id="cookie-btn" onclick="aceitarCookies()" style="padding: 8px 16px; background-color: #6f42c1; border: none; color: white; border-radius: 4px;">Aceitar</button>
+</div>
+<script>
+const cookieTexts = {
+  pt: { text: "Usamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossa política de privacidade.", button: "Aceitar" },
+  en: { text: "We use cookies to improve your experience. By continuing, you agree to our privacy policy.", button: "Accept" },
+  es: { text: "Usamos cookies para mejorar tu experiencia. Al continuar, aceptas nuestra política de privacidad.", button: "Aceptar" },
+  fr: { text: "Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre politique de confidentialité.", button: "Accepter" },
+  ko: { text: "사용자 경험을 향상시키기 위해 쿠키를 사용합니다. 계속 진행하면 개인정보 보호정책에 동의하는 것입니다.", button: "수락" },
+  ja: { text: "体験向上のためにクッキーを使用しています。続行することで、プライバシーポリシーに同意したことになります。", button: "同意する" },
+  zh: { text: "我们使用 cookies 来改善您的体验。继续即表示您同意我们的隐私政策。", button: "同意" },
+  ru: { text: "Мы используем файлы cookie для улучшения вашего опыта. Продолжая, вы соглашаетесь с нашей политикой конфиденциальности.", button: "Принять" },
+  hi: { text: "हम आपके अनुभव को बेहतर बनाने के लिए कुकीज़ का उपयोग करते हैं। जारी रखने से आप हमारी गोपनीयता नीति से सहमत होते हैं।", button: "स्वीकार करें" },
+  de: { text: "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern. Durch die weitere Nutzung stimmen Sie unserer Datenschutzrichtlinie zu.", button: "Akzeptieren" },
+  it: { text: "Utilizziamo i cookie per migliorare la tua esperienza. Continuando, accetti la nostra politica sulla privacy.", button: "Accetta" },
+  nl: { text: "We gebruiken cookies om uw ervaring te verbeteren. Door door te gaan, gaat u akkoord met ons privacybeleid.", button: "Accepteren" }
+};
+
+function mostrarBannerCookies() {
+  const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+  const t = cookieTexts[lang] || cookieTexts["pt"];
+  document.getElementById("cookie-text").innerText = t.text;
+  document.getElementById("cookie-btn").innerText = t.button;
+  document.getElementById("cookie-banner").style.display = "block";
+}
+
+function aceitarCookies() {
+  localStorage.setItem("cookieConsent", "true");
+  document.getElementById("cookie-banner").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (!localStorage.getItem("cookieConsent")) {
+    mostrarBannerCookies();
+  }
+});
+</script></body></html>

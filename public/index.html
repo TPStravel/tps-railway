@@ -34,6 +34,7 @@
           lang,
           consent: true
         });
+        console.log(`✅ Access registered for language: ${lang}`);
       } catch (e) {
         console.error("Erro ao registrar acesso:", e);
       }
@@ -552,9 +553,26 @@
     @keyframes fadeIn {
       to { opacity: 1; }
     }
+
+    /* Debug helper for language verification */
+    .debug-info {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #00ff00;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 10px;
+      z-index: 1000;
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <!-- Debug info for language verification -->
+  <div class="debug-info" id="debugInfo">Loading...</div>
+
   <!-- Enhanced Dark Mist Background -->
   <div class="background-container">
     <div class="mist-overlay"></div>
@@ -585,68 +603,68 @@
     
     <div class="flags-container">
       <div class="flags-grid">
-        <a class="flag-card" onclick="registerAccess('en')" href="mistical-journey.html?lang=en">
+        <a class="flag-card" href="intro.html?lang=en" data-lang="en" onclick="handleLanguageClick('en', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/us.png" alt="English" loading="lazy">
           <div class="flag-label">English</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('es')" href="mistical-journey.html?lang=es">
+        <a class="flag-card" href="intro.html?lang=es" data-lang="es" onclick="handleLanguageClick('es', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/es.png" alt="Español" loading="lazy">
           <div class="flag-label">Español</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('fr')" href="mistical-journey.html?lang=fr">
+        <a class="flag-card" href="intro.html?lang=fr" data-lang="fr" onclick="handleLanguageClick('fr', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/fr.png" alt="Français" loading="lazy">
           <div class="flag-label">Français</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('de')" href="mistical-journey.html?lang=de">
+        <a class="flag-card" href="intro.html?lang=de" data-lang="de" onclick="handleLanguageClick('de', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/de.png" alt="Deutsch" loading="lazy">
           <div class="flag-label">Deutsch</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('ja')" href="mistical-journey.html?lang=ja">
+        <a class="flag-card" href="intro.html?lang=ja" data-lang="ja" onclick="handleLanguageClick('ja', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/jp.png" alt="日本語" loading="lazy">
           <div class="flag-label">日本語</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('zh')" href="mistical-journey.html?lang=zh">
+        <a class="flag-card" href="intro.html?lang=zh" data-lang="zh" onclick="handleLanguageClick('zh', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/cn.png" alt="中文" loading="lazy">
           <div class="flag-label">中文</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('ru')" href="mistical-journey.html?lang=ru">
+        <a class="flag-card" href="intro.html?lang=ru" data-lang="ru" onclick="handleLanguageClick('ru', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/ru.png" alt="Русский" loading="lazy">
           <div class="flag-label">Русский</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('hi')" href="mistical-journey.html?lang=hi">
+        <a class="flag-card" href="intro.html?lang=hi" data-lang="hi" onclick="handleLanguageClick('hi', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/in.png" alt="हिन्दी" loading="lazy">
           <div class="flag-label">हिन्दी</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('pt')" href="mistical-journey.html?lang=pt">
+        <a class="flag-card" href="intro.html?lang=pt" data-lang="pt" onclick="handleLanguageClick('pt', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" loading="lazy">
           <div class="flag-label">Português</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('ko')" href="mistical-journey.html?lang=ko">
+        <a class="flag-card" href="intro.html?lang=ko" data-lang="ko" onclick="handleLanguageClick('ko', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/kr.png" alt="한국어" loading="lazy">
           <div class="flag-label">한국어</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('it')" href="mistical-journey.html?lang=it">
+        <a class="flag-card" href="intro.html?lang=it" data-lang="it" onclick="handleLanguageClick('it', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/it.png" alt="Italiano" loading="lazy">
           <div class="flag-label">Italiano</div>
         </a>
         
-        <a class="flag-card" onclick="registerAccess('nl')" href="mistical-journey.html?lang=nl">
+        <a class="flag-card" href="intro.html?lang=nl" data-lang="nl" onclick="handleLanguageClick('nl', this)">
           <img class="flag-img" src="https://flagcdn.com/w320/nl.png" alt="Nederlands" loading="lazy">
           <div class="flag-label">Nederlands</div>
         </a>
       </div>
       
-      <div class="interaction-hint">
+      <div class="interaction-hint" id="langHint">
         Select your language to begin your journey
       </div>
     </div>
@@ -660,6 +678,35 @@
         .catch((err) => console.error('❌ Erro ao registrar Service Worker:', err));
     }
     
+    // Enhanced language handling with better debugging
+    function handleLanguageClick(lang, element) {
+      console.log(`🌐 Language selected: ${lang}`);
+      
+      // Register access first
+      if (window.registerAccess) {
+        window.registerAccess(lang);
+      }
+      
+      // Visual feedback
+      element.style.transform = 'scale(1.1)';
+      element.style.background = 'rgba(46, 166, 255, 0.2)';
+      
+      // Debug info
+      const debugEl = document.getElementById('debugInfo');
+      debugEl.textContent = `Selected: ${lang} → intro.html?lang=${lang}`;
+      debugEl.style.display = 'block';
+      
+      // Small delay to show feedback, then navigate
+      setTimeout(() => {
+        const targetUrl = `intro.html?lang=${lang}`;
+        console.log(`🚀 Navigating to: ${targetUrl}`);
+        window.location.href = targetUrl;
+      }, 300);
+      
+      // Prevent default to ensure our handling works
+      return false;
+    }
+    
     // Performance optimization: Preload critical resources
     document.addEventListener('DOMContentLoaded', function() {
       // Add loading class to elements for smooth transitions
@@ -668,7 +715,36 @@
         el.style.animationDelay = `${index * 0.15}s`;
         el.classList.add('loading');
       });
+      
+      // Initialize hint text
+      updateHintText();
     });
+    
+    // Enhanced multilingual hint text
+    function updateHintText() {
+      const lang = new URLSearchParams(window.location.search).get("lang") || "en";
+      
+      const traducoes = {
+        pt: "Selecione seu idioma para iniciar sua jornada",
+        en: "Select your language to begin your journey",
+        ja: "言語を選択して旅を始めましょう",
+        ko: "언어를 선택하고 여정을 시작하세요",
+        es: "Selecciona tu idioma para comenzar tu viaje",
+        fr: "Sélectionnez votre langue pour commencer votre voyage",
+        de: "Wähle deine Sprache, um deine Reise zu beginnen",
+        it: "Seleziona la tua lingua per iniziare il viaggio",
+        zh: "选择你的语言开始旅程",
+        ru: "Выберите язык, чтобы начать свое путешествие",
+        hi: "अपनी यात्रा शुरू करने के लिए भाषा चुनें",
+        nl: "Selecteer je taal om je reis te beginnen"
+      };
+
+      const texto = traducoes[lang] || traducoes["en"];
+      document.getElementById("langHint").innerText = texto;
+      
+      // Debug info
+      console.log(`💬 Hint text set to: ${lang} → "${texto}"`);
+    }
   </script>
 </body>
 </html>

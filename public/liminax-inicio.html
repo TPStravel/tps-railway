@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Canal Vivo – Em Breve</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: #121212;
+      color: #ffffff;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      color: #2ea6ff;
+    }
+    p {
+      font-size: 1.2em;
+      max-width: 600px;
+    }
+    .btn {
+      margin-top: 40px;
+      padding: 10px 24px;
+      background-color: #2ea6ff;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn:hover {
+      background-color: #1a90d5;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="titulo">Em breve...</h1>
+  <p id="mensagem">Estamos preparando essa jornada com cuidado. Logo você poderá iniciar sua travessia por aqui.</p>
+  <a class="btn" href="portal4.html" id="voltar">← Voltar para escolha de mundos</a>
+
+  <script>
+    const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+
+    const textos = {
+      pt: {
+        titulo: "Em breve...",
+        mensagem: "Estamos preparando essa jornada com cuidado. Logo você poderá iniciar sua travessia por aqui.",
+        voltar: "← Voltar para escolha de mundos"
+      },
+      en: {
+        titulo: "Coming soon...",
+        mensagem: "We’re preparing this journey carefully. Soon you will be able to begin your path here.",
+        voltar: "← Back to world selection"
+      },
+      es: {
+        titulo: "Muy pronto...",
+        mensagem: "Estamos preparando esta travesía con cuidado. Pronto podrás iniciarla aquí.",
+        voltar: "← Volver a la selección de mundos"
+      }
+    };
+
+    const t = textos[lang] || textos.pt;
+    document.getElementById("titulo").textContent = t.titulo;
+    document.getElementById("mensagem").textContent = t.mensagem;
+    document.getElementById("voltar").textContent = t.voltar;
+  </script>
+</body>
+</html>

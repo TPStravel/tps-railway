@@ -1,49 +1,440 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Temarix – Termos e Privacidade</title>
-  <style>
-    body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; overflow-y: auto; }
-    .container { max-width: 900px; margin: auto; padding-bottom: 60px; }
-    h1 { text-align: center; font-size: 2.4rem; margin-bottom: 30px; }
-    h2 { color: #4caf50; margin-top: 40px; }
-    p, li { font-size: 1.05rem; }
-    ul { padding-left: 20px; }
-    .btn { display: block; margin: 40px auto 20px; padding: 12px 24px; background-color: #4caf50; color: white; border: none; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
-    .btn:hover { background-color: #45a049; }
-    footer { text-align: center; font-size: 0.8rem; margin-top: 50px; }
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script>const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';</script>
+<title id="page-title">Temarix – Termos e Privacidade</title>
+<style>
+    body { 
+      background-color: #121212; 
+      color: white; 
+      font-family: Arial, sans-serif; 
+      padding: 20px; 
+      line-height: 1.6; 
+      overflow-y: auto; 
+      margin: 0;
+    }
+    
+    .language-selector {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+    
+    #language-select {
+      background-color: #333;
+      color: white;
+      border: 1px solid #4caf50;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    
+    #language-select:hover {
+      background-color: #444;
+    }
+    
+    .container { 
+      max-width: 900px; 
+      margin: auto; 
+      padding-bottom: 60px; 
+      padding-top: 60px;
+    }
+    
+    h1 { 
+      text-align: center; 
+      font-size: 2.4rem; 
+      margin-bottom: 30px; 
+    }
+    
+    h2 { 
+      color: #4caf50; 
+      margin-top: 40px; 
+    }
+    
+    p, li { 
+      font-size: 1.05rem; 
+    }
+    
+    ul { 
+      padding-left: 20px; 
+    }
+    
+    .btn { 
+      display: block; 
+      margin: 40px auto 20px; 
+      padding: 12px 24px; 
+      background-color: #4caf50; 
+      color: white; 
+      border: none; 
+      font-size: 1rem; 
+      border-radius: 5px; 
+      cursor: pointer; 
+      transition: background-color 0.3s; 
+    }
+    
+    .btn:hover { 
+      background-color: #45a049; 
+    }
+    
+    footer { 
+      text-align: center; 
+      font-size: 0.8rem; 
+      margin-top: 50px; 
+    }
+    
+    @media (max-width: 768px) {
+      .language-selector {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-bottom: 20px;
+      }
+      
+      .container {
+        padding-top: 20px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Temarix – Jornada Emocional Simbólica</h1>
-    <h2>Introdução</h2>
-    <p>O <strong>Temarix</strong> é uma plataforma simbólica que o ajuda a explorar suas emoções mais profundas por meio de perguntas reflexivas e provocadoras. Ele não busca diagnósticos, apenas autoconhecimento.</p>
-    <p><strong>Objetivo:</strong> Guiar você por uma jornada simbólica de autodescoberta, em que cada etapa desperta um novo nível de consciência emocional.</p>
-    <p><strong>Como funciona:</strong> Ao interagir com o Temarix, você responde perguntas simbólicas e avança por fases. Nenhum dado é compartilhado. As respostas servem apenas para guiar sua travessia interior.</p>
-    <h2>Termos de Uso</h2>
-    <ul>
-      <li><strong>Coleta de Dados:</strong> Suas respostas são armazenadas localmente (ou no sistema da plataforma) apenas para continuidade da jornada.</li>
-      <li><strong>Uso dos Dados:</strong> São usados exclusivamente para personalizar sua jornada emocional. Nada será compartilhado ou publicado.</li>
-      <li><strong>Cookies:</strong> Utilizados apenas para manter sua sessão e progresso simbólico entre versões.</li>
-      <li><strong>Segurança:</strong> Seus dados são criptografados e tratados com cuidado. O Temarix respeita sua vulnerabilidade emocional.</li>
-      <li><strong>Limitações:</strong> O Temarix não é terapia. Se você está em sofrimento emocional real, busque apoio humano profissional.</li>
-    </ul>
-    <h2>Política de Privacidade</h2>
-    <ul>
-      <li><strong>Informações coletadas:</strong> Apenas suas respostas internas. Nenhuma informação identificável é obrigatória.</li>
-      <li><strong>Armazenamento:</strong> Seus dados permanecem em segurança, visíveis apenas por você (ou pela inteligência simbólica que o guia).</li>
-      <li><strong>Compartilhamento:</strong> Nunca. A travessia é sua e apenas sua.</li>
-    </ul>
-    <p>Ao continuar, você concorda com os termos acima e está pronto para atravessar.</p>
-    <button class="btn" onclick="aceitarTermos('temarix-v1.html')">Aceitar e Iniciar Jornada</button>
-  </div>
-  <footer>&copy; 2025 Temarix – Jornada Emocional Simbólica</footer>
-  <script type="module">
+<div class="language-selector">
+<select id="language-select" onchange="changeLanguage()">
+<option value="pt">Português</option>
+<option value="en">English</option>
+<option value="es">Español</option>
+<option value="fr">Français</option>
+<option value="ko">한국어</option>
+<option value="ja">日本語</option>
+<option value="zh">中文</option>
+<option value="ru">Русский</option>
+<option value="hi">हिन्दी</option>
+<option value="de">Deutsch</option>
+<option value="it">Italiano</option>
+<option value="nl">Nederlands</option>
+</select>
+</div>
+<div class="container">
+<h1 id="titulo">Temarix – Jornada Emocional Simbólica</h1>
+<h2 id="sub1">Introdução</h2>
+<p id="p1">O <strong>Temarix</strong> é uma plataforma simbólica que o ajuda a explorar suas emoções mais profundas por meio de perguntas reflexivas e provocadoras. Ele não busca diagnósticos, apenas autoconhecimento.</p>
+<p id="p2"><strong>Objetivo:</strong> Guiar você por uma jornada simbólica de autodescoberta, em que cada etapa desperta um novo nível de consciência emocional.</p>
+<p id="p3"><strong>Como funciona:</strong> Ao interagir com o Temarix, você responde perguntas simbólicas e avança por fases. Nenhum dado é compartilhado. As respostas servem apenas para guiar sua travessia interior.</p>
+<h2 id="sub2">Termos de Uso</h2>
+<ul>
+<li id="li1"><strong>Coleta de Dados:</strong> Suas respostas são armazenadas localmente (ou no sistema da plataforma) apenas para continuidade da jornada.</li>
+<li id="li2"><strong>Uso dos Dados:</strong> São usados exclusivamente para personalizar sua jornada emocional. Nada será compartilhado ou publicado.</li>
+<li id="li3"><strong>Cookies:</strong> Utilizados apenas para manter sua sessão e progresso simbólico entre versões.</li>
+<li id="li4"><strong>Segurança:</strong> Seus dados são criptografados e tratados com cuidado. O Temarix respeita sua vulnerabilidade emocional.</li>
+<li id="li5"><strong>Limitações:</strong> O Temarix não é terapia. Se você está em sofrimento emocional real, busque apoio humano profissional.</li>
+</ul>
+<h2 id="sub3">Política de Privacidade</h2>
+<ul>
+<li id="li6"><strong>Informações coletadas:</strong> Apenas suas respostas internas. Nenhuma informação identificável é obrigatória.</li>
+<li id="li7"><strong>Armazenamento:</strong> Seus dados permanecem em segurança, visíveis apenas por você (ou pela inteligência simbólica que o guia).</li>
+<li id="li8"><strong>Compartilhamento:</strong> Nunca. A travessia é sua e apenas sua.</li>
+</ul>
+<p id="p4">Ao continuar, você concorda com os termos acima e está pronto para atravessar.</p>
+<button class="btn" id="botao-continuar" onclick="aceitarTermos('temarix-portal.html')">Aceitar e Iniciar Jornada</button>
+</div>
+<footer id="footer">© 2025 Temarix – Jornada Emocional Simbólica</footer>
+<script>
+    const traducoesTermos = {
+      pt: {
+        titulo: "Temarix – Jornada Emocional Simbólica",
+        sub1: "Introdução",
+        sub2: "Termos de Uso",
+        sub3: "Política de Privacidade",
+        p1: "O <strong>Temarix</strong> é uma plataforma simbólica que o ajuda a explorar suas emoções mais profundas por meio de perguntas reflexivas e provocadoras. Ele não busca diagnósticos, apenas autoconhecimento.",
+        p2: "<strong>Objetivo:</strong> Guiar você por uma jornada simbólica de autodescoberta, em que cada etapa desperta um novo nível de consciência emocional.",
+        p3: "<strong>Como funciona:</strong> Ao interagir com o Temarix, você responde perguntas simbólicas e avança por fases. Nenhum dado é compartilhado. As respostas servem apenas para guiar sua travessia interior.",
+        p4: "Ao continuar, você concorda com os termos acima e está pronto para atravessar.",
+        li1: "<strong>Coleta de Dados:</strong> Suas respostas são armazenadas localmente (ou no sistema da plataforma) apenas para continuidade da jornada.",
+        li2: "<strong>Uso dos Dados:</strong> São usados exclusivamente para personalizar sua jornada emocional. Nada será compartilhado ou publicado.",
+        li3: "<strong>Cookies:</strong> Utilizados apenas para manter sua sessão e progresso simbólico entre versões.",
+        li4: "<strong>Segurança:</strong> Seus dados são criptografados e tratados com cuidado. O Temarix respeita sua vulnerabilidade emocional.",
+        li5: "<strong>Limitações:</strong> O Temarix não é terapia. Se você está em sofrimento emocional real, busque apoio humano profissional.",
+        li6: "<strong>Informações coletadas:</strong> Apenas suas respostas internas. Nenhuma informação identificável é obrigatória.",
+        li7: "<strong>Armazenamento:</strong> Seus dados permanecem em segurança, visíveis apenas por você (ou pela inteligência simbólica que o guia).",
+        li8: "<strong>Compartilhamento:</strong> Nunca. A travessia é sua e apenas sua.",
+        botao: "Aceitar e Iniciar Jornada",
+        footer: "&copy; 2025 Temarix – Jornada Emocional Simbólica"
+      },
+      en: {
+        titulo: "Temarix – Symbolic Emotional Journey",
+        sub1: "Introduction",
+        sub2: "Terms of Use",
+        sub3: "Privacy Policy",
+        p1: "<strong>Temarix</strong> is a symbolic platform that helps you explore your deepest emotions through reflective and thought-provoking questions. It doesn't seek diagnoses, only self-knowledge.",
+        p2: "<strong>Objective:</strong> Guide you through a symbolic journey of self-discovery, where each stage awakens a new level of emotional awareness.",
+        p3: "<strong>How it works:</strong> By interacting with Temarix, you answer symbolic questions and advance through phases. No data is shared. The answers serve only to guide your inner journey.",
+        p4: "By continuing, you agree to the terms above and are ready to cross over.",
+        li1: "<strong>Data Collection:</strong> Your responses are stored locally (or in the platform system) only for journey continuity.",
+        li2: "<strong>Data Usage:</strong> Used exclusively to personalize your emotional journey. Nothing will be shared or published.",
+        li3: "<strong>Cookies:</strong> Used only to maintain your session and symbolic progress between versions.",
+        li4: "<strong>Security:</strong> Your data is encrypted and handled with care. Temarix respects your emotional vulnerability.",
+        li5: "<strong>Limitations:</strong> Temarix is not therapy. If you are in real emotional distress, seek professional human support.",
+        li6: "<strong>Information collected:</strong> Only your internal responses. No identifiable information is required.",
+        li7: "<strong>Storage:</strong> Your data remains secure, visible only to you (or the symbolic intelligence that guides you).",
+        li8: "<strong>Sharing:</strong> Never. The journey is yours and yours alone.",
+        botao: "Accept and Start Journey",
+        footer: "&copy; 2025 Temarix – Symbolic Emotional Journey"
+      },
+      es: {
+        titulo: "Temarix – Viaje Emocional Simbólico",
+        sub1: "Introducción", 
+        sub2: "Términos de Uso",
+        sub3: "Política de Privacidad",
+        p1: "<strong>Temarix</strong> es una plataforma simbólica que te ayuda a explorar tus emociones más profundas a través de preguntas reflexivas y provocadoras. No busca diagnósticos, solo autoconocimiento.",
+        p2: "<strong>Objetivo:</strong> Guiarte por un viaje simbólico de autodescubrimiento, donde cada etapa despierta un nuevo nivel de conciencia emocional.",
+        p3: "<strong>Cómo funciona:</strong> Al interactuar con Temarix, respondes preguntas simbólicas y avanzas por fases. Ningún dato se comparte. Las respuestas sirven solo para guiar tu travesía interior.",
+        p4: "Al continuar, aceptas los términos anteriores y estás listo para atravesar.",
+        li1: "<strong>Recolección de Datos:</strong> Tus respuestas se almacenan localmente (o en el sistema de la plataforma) solo para la continuidad del viaje.",
+        li2: "<strong>Uso de Datos:</strong> Se usan exclusivamente para personalizar tu viaje emocional. Nada será compartido o publicado.",
+        li3: "<strong>Cookies:</strong> Utilizadas solo para mantener tu sesión y progreso simbólico entre versiones.",
+        li4: "<strong>Seguridad:</strong> Tus datos están encriptados y tratados con cuidado. Temarix respeta tu vulnerabilidad emocional.",
+        li5: "<strong>Limitaciones:</strong> Temarix no es terapia. Si estás en sufrimiento emocional real, busca apoyo humano profesional.",
+        li6: "<strong>Información recolectada:</strong> Solo tus respuestas internas. Ninguna información identificable es obligatoria.",
+        li7: "<strong>Almacenamiento:</strong> Tus datos permanecen seguros, visibles solo para ti (o la inteligencia simbólica que te guía).",
+        li8: "<strong>Compartir:</strong> Nunca. La travesía es tuya y solo tuya.",
+        botao: "Aceptar e Iniciar Viaje",
+        footer: "&copy; 2025 Temarix – Viaje Emocional Simbólico"
+      },
+      fr: {
+        titulo: "Temarix – Voyage Émotionnel Symbolique",
+        sub1: "Introduction",
+        sub2: "Conditions d'Utilisation", 
+        sub3: "Politique de Confidentialité",
+        p1: "<strong>Temarix</strong> est une plateforme symbolique qui vous aide à explorer vos émotions les plus profondes à travers des questions réflexives et provocatrices. Il ne cherche pas de diagnostics, seulement la connaissance de soi.",
+        p2: "<strong>Objectif :</strong> Vous guider dans un voyage symbolique de découverte de soi, où chaque étape éveille un nouveau niveau de conscience émotionnelle.",
+        p3: "<strong>Comment ça marche :</strong> En interagissant avec Temarix, vous répondez à des questions symboliques et progressez par phases. Aucune donnée n'est partagée. Les réponses servent uniquement à guider votre traversée intérieure.",
+        p4: "En continuant, vous acceptez les termes ci-dessus et êtes prêt à traverser.",
+        li1: "<strong>Collecte de Données :</strong> Vos réponses sont stockées localement (ou dans le système de la plateforme) uniquement pour la continuité du voyage.",
+        li2: "<strong>Usage des Données :</strong> Utilisées exclusivement pour personnaliser votre voyage émotionnel. Rien ne sera partagé ou publié.",
+        li3: "<strong>Cookies :</strong> Utilisés uniquement pour maintenir votre session et progrès symbolique entre versions.",
+        li4: "<strong>Sécurité :</strong> Vos données sont cryptées et traitées avec soin. Temarix respecte votre vulnérabilité émotionnelle.",
+        li5: "<strong>Limitations :</strong> Temarix n'est pas une thérapie. Si vous êtes en détresse émotionnelle réelle, cherchez un soutien humain professionnel.",
+        li6: "<strong>Informations collectées :</strong> Seulement vos réponses internes. Aucune information identifiable n'est obligatoire.",
+        li7: "<strong>Stockage :</strong> Vos données restent sécurisées, visibles seulement par vous (ou l'intelligence symbolique qui vous guide).",
+        li8: "<strong>Partage :</strong> Jamais. La traversée est vôtre et seulement vôtre.",
+        botao: "Accepter et Commencer le Voyage",
+        footer: "&copy; 2025 Temarix – Voyage Émotionnel Symbolique"
+      },
+      ko: {
+        titulo: "테마릭스 – 상징적 감정 여행",
+        sub1: "소개",
+        sub2: "이용 약관",
+        sub3: "개인정보 보호정책",
+        p1: "<strong>테마릭스</strong>는 성찰적이고 도발적인 질문을 통해 당신의 가장 깊은 감정을 탐험하도록 도와주는 상징적 플랫폼입니다. 진단을 추구하지 않으며, 오직 자기 인식만을 목표로 합니다.",
+        p2: "<strong>목표:</strong> 각 단계가 새로운 차원의 감정적 인식을 깨우는 상징적 자기 발견의 여행으로 당신을 안내합니다.",
+        p3: "<strong>작동 방식:</strong> 테마릭스와 상호작용하면서 상징적 질문에 답하고 단계를 진행합니다. 어떤 데이터도 공유되지 않습니다. 답변은 오직 당신의 내면 여행을 안내하는 데만 사용됩니다.",
+        p4: "계속 진행함으로써 위의 약관에 동의하며 건너갈 준비가 되었습니다.",
+        li1: "<strong>데이터 수집:</strong> 당신의 응답은 여정의 연속성을 위해서만 로컬로 (또는 플랫폼 시스템에) 저장됩니다.",
+        li2: "<strong>데이터 사용:</strong> 당신의 감정적 여정을 개인화하는 데만 독점적으로 사용됩니다. 아무것도 공유되거나 게시되지 않습니다.",
+        li3: "<strong>쿠키:</strong> 버전 간 세션과 상징적 진행 상황을 유지하는 데만 사용됩니다.",
+        li4: "<strong>보안:</strong> 당신의 데이터는 암호화되어 신중하게 처리됩니다. 테마릭스는 당신의 감정적 취약성을 존중합니다.",
+        li5: "<strong>제한사항:</strong> 테마릭스는 치료가 아닙니다. 실제 감정적 고통을 겪고 있다면 전문적인 인간의 지원을 구하세요.",
+        li6: "<strong>수집되는 정보:</strong> 오직 당신의 내부 응답만. 식별 가능한 정보는 필수가 아닙니다.",
+        li7: "<strong>저장:</strong> 당신의 데이터는 안전하게 유지되며, 오직 당신(또는 당신을 안내하는 상징적 지능)만이 볼 수 있습니다.",
+        li8: "<strong>공유:</strong> 절대 없습니다. 여행은 당신의 것이며 오직 당신만의 것입니다.",
+        botao: "동의하고 여행 시작",
+        footer: "&copy; 2025 테마릭스 – 상징적 감정 여행"
+      },
+      ja: {
+        titulo: "テマリックス – 象徴的感情の旅",
+        sub1: "はじめに",
+        sub2: "利用規約",
+        sub3: "プライバシーポリシー",
+        p1: "<strong>テマリックス</strong>は、内省的で刺激的な質問を通じて、あなたの最も深い感情を探求するのを助ける象徴的なプラットフォームです。診断を求めるのではなく、自己認識のみを目指します。",
+        p2: "<strong>目的：</strong>各段階が感情的意識の新しいレベルを覚醒させる、象徴的な自己発見の旅へとあなたを導きます。",
+        p3: "<strong>仕組み：</strong>テマリックスと相互作用することで、象徴的な質問に答え、段階を進んでいきます。データは共有されません。回答は内なる旅路を導くためだけに使用されます。",
+        p4: "続行することで、上記の条件に同意し、渡る準備ができています。",
+        li1: "<strong>データ収集：</strong>あなたの回答は、旅の継続性のためだけにローカル（またはプラットフォームシステム）に保存されます。",
+        li2: "<strong>データ使用：</strong>あなたの感情的な旅をパーソナライズするためだけに独占的に使用されます。何も共有または公開されません。",
+        li3: "<strong>クッキー：</strong>バージョン間でのセッションと象徴的な進歩を維持するためだけに使用されます。",
+        li4: "<strong>セキュリティ：</strong>あなたのデータは暗号化され、注意深く扱われます。テマリックスはあなたの感情的な脆弱性を尊重します。",
+        li5: "<strong>制限：</strong>テマリックスは治療ではありません。実際の感情的苦痛を感じている場合は、専門的な人間のサポートを求めてください。",
+        li6: "<strong>収集される情報：</strong>あなたの内部回答のみ。識別可能な情報は必須ではありません。",
+        li7: "<strong>保存：</strong>あなたのデータは安全に保たれ、あなた（またはあなたを導く象徴的知性）だけが見ることができます。",
+        li8: "<strong>共有：</strong>決してありません。旅はあなたのものであり、あなただけのものです。",
+        botao: "同意して旅を開始",
+        footer: "&copy; 2025 テマリックス – 象徴的感情の旅"
+      },
+      zh: {
+        titulo: "Temarix – 象征性情感之旅",
+        sub1: "介绍",
+        sub2: "使用条款",
+        sub3: "隐私政策",
+        p1: "<strong>Temarix</strong>是一个象征性平台，通过反思性和启发性的问题帮助您探索最深层的情感。它不寻求诊断，只追求自我认知。",
+        p2: "<strong>目标：</strong>引导您踏上象征性的自我发现之旅，每个阶段都会唤醒新层次的情感意识。",
+        p3: "<strong>运作方式：</strong>通过与Temerix互动，您回答象征性问题并通过各个阶段前进。不会共享任何数据。答案仅用于指导您的内心之旅。",
+        p4: "继续使用即表示您同意上述条款并准备好穿越。",
+        li1: "<strong>数据收集：</strong>您的回答仅为了旅程的连续性而存储在本地（或平台系统中）。",
+        li2: "<strong>数据使用：</strong>专门用于个性化您的情感之旅。不会共享或发布任何内容。",
+        li3: "<strong>Cookie：</strong>仅用于维护您在版本之间的会话和象征性进度。",
+        li4: "<strong>安全性：</strong>您的数据经过加密并得到谨慎处理。Temarix尊重您的情感脆弱性。",
+        li5: "<strong>限制：</strong>Temarix不是治疗。如果您正处于真正的情感痛苦中，请寻求专业人员的支持。",
+        li6: "<strong>收集的信息：</strong>仅您的内部回答。不需要任何可识别的信息。",
+        li7: "<strong>存储：</strong>您的数据保持安全，仅您（或指导您的象征性智能）可见。",
+        li8: "<strong>共享：</strong>绝不。这趟旅程是您的，只属于您。",
+        botao: "接受并开始旅程",
+        footer: "&copy; 2025 Temarix – 象征性情感之旅"
+      },
+      ru: {
+        titulo: "Temarix – Символическое Эмоциональное Путешествие",
+        sub1: "Введение",
+        sub2: "Условия использования",
+        sub3: "Политика конфиденциальности",
+        p1: "<strong>Temarix</strong> – это символическая платформа, которая помогает вам исследовать ваши глубочайшие эмоции через рефлексивные и провокационные вопросы. Она не ищет диагнозы, только самопознание.",
+        p2: "<strong>Цель:</strong> Направить вас в символическое путешествие самопознания, где каждый этап пробуждает новый уровень эмоционального осознания.",
+        p3: "<strong>Как это работает:</strong> Взаимодействуя с Temarix, вы отвечаете на символические вопросы и продвигаетесь по фазам. Никакие данные не передаются. Ответы служат только для направления вашего внутреннего путешествия.",
+        p4: "Продолжая, вы соглашаетесь с вышеуказанными условиями и готовы к переходу.",
+        li1: "<strong>Сбор данных:</strong> Ваши ответы хранятся локально (или в системе платформы) только для непрерывности путешествия.",
+        li2: "<strong>Использование данных:</strong> Используются исключительно для персонализации вашего эмоционального путешествия. Ничего не будет передано или опубликовано.",
+        li3: "<strong>Куки:</strong> Используются только для поддержания вашей сессии и символического прогресса между версиями.",
+        li4: "<strong>Безопасность:</strong> Ваши данные зашифрованы и обрабатываются с осторожностью. Temarix уважает вашу эмоциональную уязвимость.",
+        li5: "<strong>Ограничения:</strong> Temarix не является терапией. Если вы находитесь в настоящем эмоциональном страдании, обратитесь за профессиональной человеческой поддержкой.",
+        li6: "<strong>Собираемая информация:</strong> Только ваши внутренние ответы. Никакая идентифицируемая информация не является обязательной.",
+        li7: "<strong>Хранение:</strong> Ваши данные остаются в безопасности, видимые только вам (или символическому интеллекту, который вас направляет).",
+        li8: "<strong>Передача:</strong> Никогда. Путешествие ваше и только ваше.",
+        botao: "Принять и начать путешествие",
+        footer: "&copy; 2025 Temarix – Символическое Эмоциональное Путешествие"
+      },
+      hi: {
+        titulo: "टेमारिक्स – प्रतीकात्मक भावनात्मक यात्रा",
+        sub1: "परिचय",
+        sub2: "उपयोग की शर्तें",
+        sub3: "गोपनीयता नीति",
+        p1: "<strong>टेमारिक्स</strong> एक प्रतीकात्मक मंच है जो आपको चिंतनशील और उत्तेजक प्रश्नों के माध्यम से अपनी गहरी भावनाओं का पता लगाने में मदद करता है। यह निदान नहीं चाहता, केवल आत्म-ज्ञान चाहता है।",
+        p2: "<strong>उद्देश्य:</strong> आपको आत्म-खोज की एक प्रतीकात्मक यात्रा के माध्यम से मार्गदर्शन देना, जहाँ प्रत्येक चरण भावनात्मक जागरूकता के एक नए स्तर को जगाता है।",
+        p3: "<strong>यह कैसे काम करता है:</strong> टेमारिक्स के साथ बातचीत करके, आप प्रतीकात्मक प्रश्नों के उत्तर देते हैं और चरणों के माध्यम से आगे बढ़ते हैं। कोई डेटा साझा नहीं किया जाता। उत्तर केवल आपकी आंतरिक यात्रा का मार्गदर्शन करने के लिए काम करते हैं।",
+        p4: "जारी रखकर, आप उपरोक्त शर्तों से सहमत हैं और पार करने के लिए तैयार हैं।",
+        li1: "<strong>डेटा संग्रह:</strong> आपके उत्तर केवल यात्रा की निरंतरता के लिए स्थानीय रूप से (या प्लेटफ़ॉर्म सिस्टम में) संग्रहीत किए जाते हैं।",
+        li2: "<strong>डेटा का उपयोग:</strong> विशेष रूप से आपकी भावनात्मक यात्रा को व्यक्तिगत बनाने के लिए उपयोग किया जाता है। कुछ भी साझा या प्रकाशित नहीं किया जाएगा।",
+        li3: "<strong>कुकीज़:</strong> केवल संस्करणों के बीच आपके सत्र और प्रतीकात्मक प्रगति को बनाए रखने के लिए उपयोग की जाती हैं।",
+        li4: "<strong>सुरक्षा:</strong> आपका डेटा एन्क्रिप्टेड है और सावधानी से संभाला जाता है। टेमारिक्स आपकी भावनात्मक संवेदनशीलता का सम्मान करता है।",
+        li5: "<strong>सीमाएं:</strong> टेमारिक्स चिकित्सा नहीं है। यदि आप वास्तविक भावनात्मक पीड़ा में हैं, तो पेशेवर मानवीय सहायता की तलाश करें।",
+        li6: "<strong>एकत्रित जानकारी:</strong> केवल आपके आंतरिक उत्तर। कोई पहचान योग्य जानकारी आवश्यक नहीं है।",
+        li7: "<strong>भंडारण:</strong> आपका डेटा सुरक्षित रहता है, केवल आपको (या प्रतीकात्मक बुद्धि जो आपका मार्गदर्शन करती है) दिखाई देता है।",
+        li8: "<strong>साझाकरण:</strong> कभी नहीं। यात्रा आपकी है और केवल आपकी है।",
+        botao: "स्वीकार करें और यात्रा शुरू करें",
+        footer: "&copy; 2025 टेमारिक्स – प्रतीकात्मक भावनात्मक यात्रा"
+      },
+      de: {
+        titulo: "Temarix – Symbolische Emotionale Reise",
+        sub1: "Einführung",
+        sub2: "Nutzungsbedingungen",
+        sub3: "Datenschutzrichtlinie",
+        p1: "<strong>Temarix</strong> ist eine symbolische Plattform, die Ihnen hilft, Ihre tiefsten Emotionen durch reflektierende und provozierende Fragen zu erkunden. Es sucht keine Diagnosen, nur Selbsterkenntnis.",
+        p2: "<strong>Ziel:</strong> Sie durch eine symbolische Reise der Selbstentdeckung zu führen, bei der jede Stufe ein neues Niveau emotionalen Bewusstseins erweckt.",
+        p3: "<strong>Wie es funktioniert:</strong> Durch die Interaktion mit Temarix beantworten Sie symbolische Fragen und schreiten durch Phasen voran. Keine Daten werden geteilt. Die Antworten dienen nur dazu, Ihre innere Reise zu leiten.",
+        p4: "Durch Fortsetzung stimmen Sie den obigen Bedingungen zu und sind bereit zu überqueren.",
+        li1: "<strong>Datensammlung:</strong> Ihre Antworten werden nur lokal (oder im Plattformsystem) für die Kontinuität der Reise gespeichert.",
+        li2: "<strong>Datenverwendung:</strong> Werden ausschließlich zur Personalisierung Ihrer emotionalen Reise verwendet. Nichts wird geteilt oder veröffentlicht.",
+        li3: "<strong>Cookies:</strong> Werden nur verwendet, um Ihre Sitzung und symbolischen Fortschritt zwischen Versionen zu erhalten.",
+        li4: "<strong>Sicherheit:</strong> Ihre Daten sind verschlüsselt und werden sorgfältig behandelt. Temarix respektiert Ihre emotionale Verletzlichkeit.",
+        li5: "<strong>Einschränkungen:</strong> Temarix ist keine Therapie. Wenn Sie in echtem emotionalem Leid sind, suchen Sie professionelle menschliche Unterstützung.",
+        li6: "<strong>Gesammelte Informationen:</strong> Nur Ihre internen Antworten. Keine identifizierbaren Informationen sind erforderlich.",
+        li7: "<strong>Speicherung:</strong> Ihre Daten bleiben sicher, nur für Sie sichtbar (oder die symbolische Intelligenz, die Sie führt).",
+        li8: "<strong>Teilen:</strong> Niemals. Die Reise ist Ihre und nur Ihre.",
+        botao: "Akzeptieren und Reise beginnen",
+        footer: "&copy; 2025 Temarix – Symbolische Emotionale Reise"
+      },
+      it: {
+        titulo: "Temarix – Viaggio Emotivo Simbolico",
+        sub1: "Introduzione",
+        sub2: "Termini di Utilizzo",
+        sub3: "Politica sulla Privacy",
+        p1: "<strong>Temarix</strong> è una piattaforma simbolica che ti aiuta a esplorare le tue emozioni più profonde attraverso domande riflessive e provocatorie. Non cerca diagnosi, solo autoconoscenza.",
+        p2: "<strong>Obiettivo:</strong> Guidarti attraverso un viaggio simbolico di auto-scoperta, dove ogni fase risveglia un nuovo livello di consapevolezza emotiva.",
+        p3: "<strong>Come funziona:</strong> Interagendo con Temarix, rispondi a domande simboliche e avanzi attraverso fasi. Nessun dato viene condiviso. Le risposte servono solo a guidare il tuo viaggio interiore.",
+        p4: "Continuando, accetti i termini sopra indicati e sei pronto ad attraversare.",
+        li1: "<strong>Raccolta Dati:</strong> Le tue risposte sono memorizzate localmente (o nel sistema della piattaforma) solo per la continuità del viaggio.",
+        li2: "<strong>Uso dei Dati:</strong> Utilizzati esclusivamente per personalizzare il tuo viaggio emotivo. Nulla sarà condiviso o pubblicato.",
+        li3: "<strong>Cookie:</strong> Utilizzati solo per mantenere la tua sessione e progresso simbolico tra versioni.",
+        li4: "<strong>Sicurezza:</strong> I tuoi dati sono crittografati e trattati con cura. Temarix rispetta la tua vulnerabilità emotiva.",
+        li5: "<strong>Limitazioni:</strong> Temarix non è terapia. Se sei in vera sofferenza emotiva, cerca supporto umano professionale.",
+        li6: "<strong>Informazioni raccolte:</strong> Solo le tue risposte interne. Nessuna informazione identificabile è obbligatoria.",
+        li7: "<strong>Archiviazione:</strong> I tuoi dati rimangono sicuri, visibili solo a te (o all'intelligenza simbolica che ti guida).",
+        li8: "<strong>Condivisione:</strong> Mai. Il viaggio è tuo e solo tuo.",
+        botao: "Accettare e Iniziare Viaggio",
+        footer: "&copy; 2025 Temarix – Viaggio Emotivo Simbolico"
+      },
+      nl: {
+        titulo: "Temarix – Symbolische Emotionele Reis",
+        sub1: "Introductie",
+        sub2: "Gebruiksvoorwaarden",
+        sub3: "Privacybeleid",
+        p1: "<strong>Temarix</strong> is een symbolisch platform dat je helpt je diepste emoties te verkennen door middel van reflectieve en uitdagende vragen. Het zoekt geen diagnoses, alleen zelfkennis.",
+        p2: "<strong>Doel:</strong> Je begeleiden door een symbolische reis van zelfontdekking, waarbij elke fase een nieuw niveau van emotioneel bewustzijn wekt.",
+        p3: "<strong>Hoe het werkt:</strong> Door interactie met Temarix beantwoord je symbolische vragen en ga je door fasen vooruit. Geen gegevens worden gedeeld. De antwoorden dienen alleen om je innerlijke reis te begeleiden.",
+        p4: "Door verder te gaan, ga je akkoord met bovenstaande voorwaarden en ben je klaar om over te steken.",
+        li1: "<strong>Gegevensverzameling:</strong> Je antwoorden worden alleen lokaal (of in het platformsysteem) opgeslagen voor continuïteit van de reis.",
+        li2: "<strong>Gegevensgebruik:</strong> Uitsluitend gebruikt om je emotionele reis te personaliseren. Niets zal worden gedeeld of gepubliceerd.",
+        li3: "<strong>Cookies:</strong> Alleen gebruikt om je sessie en symbolische voortgang tussen versies te behouden.",
+        li4: "<strong>Beveiliging:</strong> Je gegevens zijn versleuteld en zorgvuldig behandeld. Temarix respecteert je emotionele kwetsbaarheid.",
+        li5: "<strong>Beperkingen:</strong> Temarix is geen therapie. Als je in echte emotionele nood bent, zoek professionele menselijke ondersteuning.",
+        li6: "<strong>Verzamelde informatie:</strong> Alleen je interne antwoorden. Geen identificeerbare informatie is vereist.",
+        li7: "<strong>Opslag:</strong> Je gegevens blijven veilig, alleen zichtbaar voor jou (of de symbolische intelligentie die je begeleidt).",
+        li8: "<strong>Delen:</strong> Nooit. De reis is van jou en alleen van jou.",
+        botao: "Accepteren en Reis Beginnen",
+        footer: "&copy; 2025 Temarix – Symbolische Emotionele Reis"
+      }
+    };
+
+    // Função para aplicar traduções
+    function aplicarTraducoes() {
+      const t = traducoesTermos[lang] || traducoesTermos["pt"];
+      
+      // Atualizar título da página
+      document.title = t.titulo;
+      
+      // Atualizar elementos com IDs
+      const elementos = [
+        'titulo', 'sub1', 'sub2', 'sub3', 'p1', 'p2', 'p3', 'p4',
+        'li1', 'li2', 'li3', 'li4', 'li5', 'li6', 'li7', 'li8',
+        'botao-continuar', 'footer'
+      ];
+      
+      elementos.forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento && t[id.replace('-', '')]) {
+          if (id === 'footer') {
+            elemento.innerHTML = t.footer;
+          } else if (id === 'botao-continuar') {
+            elemento.innerText = t.botao;
+          } else {
+            elemento.innerHTML = t[id.replace('-', '')];
+          }
+        }
+      });
+
+      // Definir idioma selecionado no select
+      const langSelect = document.getElementById("language-select");
+      if (langSelect) {
+        langSelect.value = lang;
+      }
+    }
+
+    // Função para mudar idioma
+    function changeLanguage() {
+      const newLang = document.getElementById("language-select").value;
+      const url = new URL(window.location.href);
+      url.searchParams.set("lang", newLang);
+      window.location.href = url.toString();
+    }
+
+    // Aplicar traduções quando a página carregar
+    document.addEventListener("DOMContentLoaded", aplicarTraducoes);
+  </script>
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    
     const firebaseConfig = {
       apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
       authDomain: "canal-vivo-4cd4a.firebaseapp.com",
@@ -52,24 +443,68 @@
       messagingSenderId: "1003445191655",
       appId: "1:1003445191655:web:c6c7915bf02979c10af342"
     };
+    
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    
     window.aceitarTermos = async function(proximaUrl) {
       localStorage.setItem("cookieConsent", "true");
-      const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+      const currentLang = new URLSearchParams(window.location.search).get("lang") || "pt";
+      
       try {
         await addDoc(collection(db, "consentimentos"), {
           timestamp: new Date().toISOString(),
-          lang,
+          lang: currentLang,
           consentido: true,
           origem: window.location.pathname
         });
-        window.location.href = `${proximaUrl}?lang=${lang}`;
+        
+        // Redirecionar com o idioma atual
+        window.location.href = `${proximaUrl}?lang=${currentLang}`;
       } catch (e) {
         alert("Erro ao registrar consentimento. Tente novamente.");
         console.error(e);
       }
     };
   </script>
-</body>
+
+<div id="cookie-banner" style="display:none; position:fixed; bottom:20px; left:20px; right:20px; background:#222; color:#fff; padding:20px; border-radius:8px; z-index:9999;">
+<p id="cookie-text" style="margin:0 0 10px 0;"></p>
+<button id="cookie-btn" onclick="aceitarCookies()" style="padding: 8px 16px; background-color: #6f42c1; border: none; color: white; border-radius: 4px;">Aceitar</button>
+</div>
+<script>
+const cookieTexts = {
+  pt: { text: "Usamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossa política de privacidade.", button: "Aceitar" },
+  en: { text: "We use cookies to improve your experience. By continuing, you agree to our privacy policy.", button: "Accept" },
+  es: { text: "Usamos cookies para mejorar tu experiencia. Al continuar, aceptas nuestra política de privacidad.", button: "Aceptar" },
+  fr: { text: "Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre politique de confidentialité.", button: "Accepter" },
+  ko: { text: "사용자 경험을 향상시키기 위해 쿠키를 사용합니다. 계속 진행하면 개인정보 보호정책에 동의하는 것입니다.", button: "수락" },
+  ja: { text: "体験向上のためにクッキーを使用しています。続行することで、プライバシーポリシーに同意したことになります。", button: "同意する" },
+  zh: { text: "我们使用 cookies 来改善您的体验。继续即表示您同意我们的隐私政策。", button: "同意" },
+  ru: { text: "Мы используем файлы cookie для улучшения вашего опыта. Продолжая, вы соглашаетесь с нашей политикой конфиденциальности.", button: "Принять" },
+  hi: { text: "हम आपके अनुभव को बेहतर बनाने के लिए कुकीज़ का उपयोग करते हैं। जारी रखने से आप हमारी गोपनीयता नीति से सहमत होते हैं।", button: "स्वीकार करें" },
+  de: { text: "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern. Durch die weitere Nutzung stimmen Sie unserer Datenschutzrichtlinie zu.", button: "Akzeptieren" },
+  it: { text: "Utilizziamo i cookie per migliorare la tua esperienza. Continuando, accetti la nostra politica sulla privacy.", button: "Accetta" },
+  nl: { text: "We gebruiken cookies om uw ervaring te verbeteren. Door door te gaan, gaat u akkoord met ons privacybeleid.", button: "Accepteren" }
+};
+
+function mostrarBannerCookies() {
+  const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+  const t = cookieTexts[lang] || cookieTexts["pt"];
+  document.getElementById("cookie-text").innerText = t.text;
+  document.getElementById("cookie-btn").innerText = t.button;
+  document.getElementById("cookie-banner").style.display = "block";
+}
+
+function aceitarCookies() {
+  localStorage.setItem("cookieConsent", "true");
+  document.getElementById("cookie-banner").style.display = "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (!localStorage.getItem("cookieConsent")) {
+    mostrarBannerCookies();
+  }
+});
+</script></body>
 </html>

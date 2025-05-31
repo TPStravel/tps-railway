@@ -5,6 +5,246 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Canal Vivo - Escolha seu Caminho</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet" />
+  
+  <!-- Script de leitura do idioma -->
+  <script>
+    const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+  </script>
+  
+  <!-- Dicionário de traduções -->
+  <script>
+    const traducoes = {
+      pt: {
+        title: "Canal Vivo - Escolha seu Caminho",
+        mainTitle: "CANAL VIVO",
+        subtitle: "Quatro mundos. Quatro caminhos simbólicos. Escolha por onde começar sua jornada.",
+        adminBtn: "⚙️ Admin",
+        loginTitle: "Login de Administrador",
+        emailPlaceholder: "Email",
+        passwordPlaceholder: "Senha",
+        loginBtn: "Entrar",
+        enterBtn: "Entrar",
+        tpsTitle: "TPS",
+        tpsDesc: "Viagens aéreas, hotéis, aluguel de carros e seguros. O mundo físico em transição.",
+        temarixTitle: "Temarix",
+        temarixDesc: "Jornada emocional. Encontro com o que vibra dentro de você.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "Sabores, culturas e sentidos. Um portal pela alimentação.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "Conhecimento, silêncio, transição. Reflexões profundas."
+      },
+      en: {
+        title: "Canal Vivo - Choose your Path",
+        mainTitle: "CANAL VIVO",
+        subtitle: "Four worlds. Four symbolic paths. Choose where to begin your journey.",
+        adminBtn: "⚙️ Admin",
+        loginTitle: "Administrator Login",
+        emailPlaceholder: "Email",
+        passwordPlaceholder: "Password",
+        loginBtn: "Login",
+        enterBtn: "Enter",
+        tpsTitle: "TPS",
+        tpsDesc: "Air travel, hotels, car rentals and insurance. The physical world in transition.",
+        temarixTitle: "Temarix",
+        temarixDesc: "Emotional journey. Meeting what vibrates within you.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "Flavors, cultures and senses. A portal through food.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "Knowledge, silence, transition. Deep reflections."
+      },
+      es: {
+        title: "Canal Vivo - Elige tu Camino",
+        mainTitle: "CANAL VIVO",
+        subtitle: "Cuatro mundos. Cuatro caminos simbólicos. Elige por dónde comenzar tu viaje.",
+        adminBtn: "⚙️ Admin",
+        loginTitle: "Login de Administrador",
+        emailPlaceholder: "Email",
+        passwordPlaceholder: "Contraseña",
+        loginBtn: "Entrar",
+        enterBtn: "Entrar",
+        tpsTitle: "TPS",
+        tpsDesc: "Viajes aéreos, hoteles, alquiler de coches y seguros. El mundo físico en transición.",
+        temarixTitle: "Temarix",
+        temarixDesc: "Viaje emocional. Encuentro con lo que vibra dentro de ti.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "Sabores, culturas y sentidos. Un portal a través de la alimentación.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "Conocimiento, silencio, transición. Reflexiones profundas."
+      },
+      fr: {
+        title: "Canal Vivo - Choisissez votre Chemin",
+        mainTitle: "CANAL VIVO",
+        subtitle: "Quatre mondes. Quatre chemins symboliques. Choisissez par où commencer votre voyage.",
+        adminBtn: "⚙️ Admin",
+        loginTitle: "Connexion Administrateur",
+        emailPlaceholder: "Email",
+        passwordPlaceholder: "Mot de passe",
+        loginBtn: "Se connecter",
+        enterBtn: "Entrer",
+        tpsTitle: "TPS",
+        tpsDesc: "Voyages aériens, hôtels, location de voitures et assurances. Le monde physique en transition.",
+        temarixTitle: "Temarix",
+        temarixDesc: "Voyage émotionnel. Rencontre avec ce qui vibre en vous.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "Saveurs, cultures et sens. Un portail par l'alimentation.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "Connaissance, silence, transition. Réflexions profondes."
+      },
+      ko: {
+        title: "카날 비보 - 길을 선택하세요",
+        mainTitle: "CANAL VIVO",
+        subtitle: "네 개의 세계. 네 개의 상징적 길. 여행을 시작할 곳을 선택하세요.",
+        adminBtn: "⚙️ 관리자",
+        loginTitle: "관리자 로그인",
+        emailPlaceholder: "이메일",
+        passwordPlaceholder: "비밀번호",
+        loginBtn: "로그인",
+        enterBtn: "입장",
+        tpsTitle: "TPS",
+        tpsDesc: "항공 여행, 호텔, 렌터카 및 보험. 전환 중인 물리적 세계.",
+        temarixTitle: "Temarix",
+        temarixDesc: "감정적 여행. 당신 안에서 진동하는 것과의 만남.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "맛, 문화, 감각. 음식을 통한 포털.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "지식, 침묵, 전환. 깊은 성찰."
+      },
+      zh: {
+        title: "Canal Vivo - 选择你的道路",
+        mainTitle: "CANAL VIVO",
+        subtitle: "四个世界。四条象征性的道路。选择你旅程的起点。",
+        adminBtn: "⚙️ 管理",
+        loginTitle: "管理员登录",
+        emailPlaceholder: "电子邮件",
+        passwordPlaceholder: "密码",
+        loginBtn: "登录",
+        enterBtn: "进入",
+        tpsTitle: "TPS",
+        tpsDesc: "航空旅行、酒店、汽车租赁和保险。物理世界的转变。",
+        temarixTitle: "Temarix",
+        temarixDesc: "情感之旅。与内心的震动相遇。",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "味道、文化和感官。通过食物的门户。",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "知识、沉默、过渡。深刻的反思。"
+      },
+      ru: {
+        title: "Canal Vivo - Выберите свой путь",
+        mainTitle: "CANAL VIVO",
+        subtitle: "Четыре мира. Четыре символических пути. Выберите, с чего начать свое путешествие.",
+        adminBtn: "⚙️ Админ",
+        loginTitle: "Вход для администратора",
+        emailPlaceholder: "Эл. почта",
+        passwordPlaceholder: "Пароль",
+        loginBtn: "Войти",
+        enterBtn: "Вход",
+        tpsTitle: "TPS",
+        tpsDesc: "Авиаперелеты, отели, аренда автомобилей и страхование. Физический мир в переходе.",
+        temarixTitle: "Temarix",
+        temarixDesc: "Эмоциональное путешествие. Встреча с тем, что вибрирует внутри вас.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "Вкусы, культуры и чувства. Портал через еду.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "Знание, тишина, переход. Глубокие размышления."
+      },
+      hi: {
+        title: "Canal Vivo - अपना मार्ग चुनें",
+        mainTitle: "CANAL VIVO",
+        subtitle: "चार दुनिया। चार प्रतीकात्मक रास्ते। अपनी यात्रा शुरू करने के लिए चुनें।",
+        adminBtn: "⚙️ व्यवस्थापक",
+        loginTitle: "व्यवस्थापक लॉगिन",
+        emailPlaceholder: "ईमेल",
+        passwordPlaceholder: "पासवर्ड",
+        loginBtn: "लॉगिन",
+        enterBtn: "प्रवेश करें",
+        tpsTitle: "TPS",
+        tpsDesc: "हवाई यात्रा, होटल, कार किराए और बीमा। संक्रमण में भौतिक दुनिया।",
+        temarixTitle: "Temarix",
+        temarixDesc: "भावनात्मक यात्रा। अपने भीतर की कंपन से मिलना।",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "स्वाद, संस्कृतियाँ और इंद्रियाँ। भोजन के माध्यम से एक पोर्टल।",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "ज्ञान, मौन, संक्रमण। गहरी सोच।"
+      },
+      de: {
+        title: "Canal Vivo - Wähle deinen Weg",
+        mainTitle: "CANAL VIVO",
+        subtitle: "Vier Welten. Vier symbolische Wege. Wähle, wo deine Reise beginnt.",
+        adminBtn: "⚙️ Admin",
+        loginTitle: "Administratoranmeldung",
+        emailPlaceholder: "E-Mail",
+        passwordPlaceholder: "Passwort",
+        loginBtn: "Anmelden",
+        enterBtn: "Eintreten",
+        tpsTitle: "TPS",
+        tpsDesc: "Flugreisen, Hotels, Autovermietung und Versicherungen. Die physische Welt im Wandel.",
+        temarixTitle: "Temarix",
+        temarixDesc: "Emotionale Reise. Begegnung mit dem, was in dir schwingt.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "Geschmack, Kulturen und Sinne. Ein Portal durch Essen.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "Wissen, Stille, Übergang. Tiefe Reflexionen."
+      },
+      it: {
+        title: "Canal Vivo - Scegli il tuo percorso",
+        mainTitle: "CANAL VIVO",
+        subtitle: "Quattro mondi. Quattro percorsi simbolici. Scegli da dove iniziare il tuo viaggio.",
+        adminBtn: "⚙️ Admin",
+        loginTitle: "Login Amministratore",
+        emailPlaceholder: "Email",
+        passwordPlaceholder: "Password",
+        loginBtn: "Accedi",
+        enterBtn: "Entra",
+        tpsTitle: "TPS",
+        tpsDesc: "Viaggi aerei, hotel, noleggio auto e assicurazioni. Il mondo fisico in transizione.",
+        temarixTitle: "Temarix",
+        temarixDesc: "Viaggio emotivo. Incontro con ciò che vibra dentro di te.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "Sapori, culture e sensi. Un portale attraverso il cibo.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "Conoscenza, silenzio, transizione. Riflessioni profonde."
+      },
+      nl: {
+        title: "Canal Vivo - Kies je pad",
+        mainTitle: "CANAL VIVO",
+        subtitle: "Vier werelden. Vier symbolische paden. Kies waar je je reis begint.",
+        adminBtn: "⚙️ Admin",
+        loginTitle: "Beheerder Login",
+        emailPlaceholder: "E-mail",
+        passwordPlaceholder: "Wachtwoord",
+        loginBtn: "Inloggen",
+        enterBtn: "Betreed",
+        tpsTitle: "TPS",
+        tpsDesc: "Luchtreizen, hotels, autoverhuur en verzekeringen. De fysieke wereld in transitie.",
+        temarixTitle: "Temarix",
+        temarixDesc: "Emotionele reis. Ontmoeting met wat er in je resoneert.",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "Smaken, culturen en zintuigen. Een poort via voedsel.",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "Kennis, stilte, overgang. Diepe reflecties."
+      },
+      ja: {
+        title: "カナル・ビボ - 道を選んでください",
+        mainTitle: "CANAL VIVO",
+        subtitle: "四つの世界。四つの象徴的な道。旅を始める場所を選んでください。",
+        adminBtn: "⚙️ 管理者",
+        loginTitle: "管理者ログイン",
+        emailPlaceholder: "メール",
+        passwordPlaceholder: "パスワード",
+        loginBtn: "ログイン",
+        enterBtn: "入る",
+        tpsTitle: "TPS",
+        tpsDesc: "航空旅行、ホテル、レンタカー、保険。移行中の物理的世界。",
+        temarixTitle: "Temarix",
+        temarixDesc: "感情の旅。あなたの中で振動するものとの出会い。",
+        bocanaTitle: "Bocana",
+        bocanaDesc: "味、文化、感覚。食を通じたポータル。",
+        liminaxTitle: "Liminax",
+        liminaxDesc: "知識、沈黙、移行。深い反省。"
+      }
+    };
+  </script>
+  
   <style>
     body {
       margin: 0;
@@ -130,9 +370,50 @@
     .card-btn:hover {
       background-color: #1a90d5;
     }
+    
+    /* Language Selector */
+    .language-selector {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+    .language-selector select {
+      background: rgba(46, 166, 255, 0.9);
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+    .language-selector select option {
+      background: #2ea6ff;
+      color: white;
+    }
   </style>
 </head>
 <body>
+
+<!-- Seletor de idioma -->
+<div class="language-selector">
+  <select id="language-select" onchange="changeLanguage()">
+    <option value="pt">🇧🇷 Português</option>
+    <option value="en">🇺🇸 English</option>
+    <option value="es">🇪🇸 Español</option>
+    <option value="fr">🇫🇷 Français</option>
+    <option value="ko">🇰🇷 한국어</option>
+    <option value="ja">🇯🇵 日本語</option>
+    <option value="zh">🇨🇳 中文</option>
+    <option value="ru">🇷🇺 Русский</option>
+    <option value="hi">🇮🇳 हिन्दी</option>
+    <option value="de">🇩🇪 Deutsch</option>
+    <option value="it">🇮🇹 Italiano</option>
+    <option value="nl">🇳🇱 Nederlands</option>
+  </select>
+</div>
 
 <!-- Botão Admin -->
 <div id="admin-btn" style="position: absolute; top: 20px; right: 20px; z-index: 10;">
@@ -146,7 +427,7 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     border: none;
     cursor: pointer;
-  ">⚙️ Admin</button>
+  " id="admin-button"></button>
 </div>
 
 <!-- Modal de login -->
@@ -154,10 +435,10 @@
   background: rgba(0,0,0,0.6); z-index: 999; justify-content: center; align-items: center;">
 
   <div style="background: #222; padding: 30px; border-radius: 10px; color: white;">
-    <h3>Login de Administrador</h3>
-    <input id="email" type="email" placeholder="Email" style="margin-bottom: 10px; width: 100%; padding: 8px;"><br>
-    <input id="senha" type="password" placeholder="Senha" style="margin-bottom: 10px; width: 100%; padding: 8px;"><br>
-    <button onclick="loginAdmin()" style="padding: 8px 20px; background: #2ea6ff; color: white; border: none; border-radius: 6px;">Entrar</button>
+    <h3 id="login-title"></h3>
+    <input id="email" type="email" style="margin-bottom: 10px; width: 100%; padding: 8px;"><br>
+    <input id="senha" type="password" style="margin-bottom: 10px; width: 100%; padding: 8px;"><br>
+    <button onclick="loginAdmin()" style="padding: 8px 20px; background: #2ea6ff; color: white; border: none; border-radius: 6px;" id="login-btn"></button>
   </div>
 </div>
 
@@ -168,32 +449,32 @@
 <div class="smog"></div>
 <div class="overlay">
   <div class="logo">V</div>
-  <div class="main-title">CANAL VIVO</div>
-  <div class="subtitle">Quatro mundos. Quatro caminhos simbólicos. Escolha por onde começar sua jornada.</div>
+  <div class="main-title" id="main-title"></div>
+  <div class="subtitle" id="subtitle"></div>
   <div class="cards-container">
     <div class="card">
       <img src="https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?auto=format&fit=crop&w=400&q=80" alt="TPS" loading="lazy" />
-      <div class="card-title">TPS</div>
-      <div class="card-text">Viagens aéreas, hotéis, aluguel de carros e seguros. O mundo físico em transição.</div>
-      <a href="tps-terms-and-privacy.html" class="card-btn">Entrar</a>
+      <div class="card-title" id="tps-title"></div>
+      <div class="card-text" id="tps-desc"></div>
+      <a href="#" class="card-btn" id="tps-btn" onclick="navigateToTPS()"></a>
     </div>
     <div class="card">
       <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Temarix" />
-      <div class="card-title">Temarix</div>
-      <div class="card-text">Jornada emocional. Encontro com o que vibra dentro de você.</div>
-      <a href="temarix-terms-and-privacy.html" class="card-btn">Entrar</a>
+      <div class="card-title" id="temarix-title"></div>
+      <div class="card-text" id="temarix-desc"></div>
+      <a href="#" class="card-btn" id="temarix-btn" onclick="navigateToTemarix()"></a>
     </div>
     <div class="card">
       <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=400&q=80" alt="Bocana" />
-      <div class="card-title">Bocana</div>
-      <div class="card-text">Sabores, culturas e sentidos. Um portal pela alimentação.</div>
-      <a href="bocana-terms-and-privacy.html" class="card-btn">Entrar</a>
+      <div class="card-title" id="bocana-title"></div>
+      <div class="card-text" id="bocana-desc"></div>
+      <a href="#" class="card-btn" id="bocana-btn" onclick="navigateToBocana()"></a>
     </div>
     <div class="card">
       <img src="https://cdn.pixabay.com/photo/2022/08/02/18/29/lifestyle-7361023_1280.jpg" alt="Liminax" />
-      <div class="card-title">Liminax</div>
-      <div class="card-text">Conhecimento, silêncio, transição. Reflexões profundas.</div>
-      <a href="liminax-terms-and-privacy.html" class="card-btn">Entrar</a>
+      <div class="card-title" id="liminax-title"></div>
+      <div class="card-text" id="liminax-desc"></div>
+      <a href="#" class="card-btn" id="liminax-btn" onclick="navigateToLiminax()"></a>
     </div>
   </div>
 </div>
@@ -221,12 +502,79 @@
 
     try {
       await signInWithEmailAndPassword(auth, email, senha);
-      window.open('painel-admin-v3.html', '_blank');
+      window.open(`painel-admin-v3.html?lang=${lang}`, '_blank');
       document.getElementById('login-modal').style.display = 'none';
     } catch (error) {
       alert('Login inválido');
     }
   };
+
+  // Função para aplicar traduções
+  function applyTranslations() {
+    const t = traducoes[lang] || traducoes["pt"];
+    
+    // Atualizar título da página
+    document.title = t.title;
+    
+    // Atualizar elementos da interface
+    document.getElementById("main-title").innerText = t.mainTitle;
+    document.getElementById("subtitle").innerText = t.subtitle;
+    document.getElementById("admin-button").innerHTML = t.adminBtn;
+    document.getElementById("login-title").innerText = t.loginTitle;
+    document.getElementById("email").placeholder = t.emailPlaceholder;
+    document.getElementById("senha").placeholder = t.passwordPlaceholder;
+    document.getElementById("login-btn").innerText = t.loginBtn;
+    
+    // Cards
+    document.getElementById("tps-title").innerText = t.tpsTitle;
+    document.getElementById("tps-desc").innerText = t.tpsDesc;
+    document.getElementById("tps-btn").innerText = t.enterBtn;
+    
+    document.getElementById("temarix-title").innerText = t.temarixTitle;
+    document.getElementById("temarix-desc").innerText = t.temarixDesc;
+    document.getElementById("temarix-btn").innerText = t.enterBtn;
+    
+    document.getElementById("bocana-title").innerText = t.bocanaTitle;
+    document.getElementById("bocana-desc").innerText = t.bocanaDesc;
+    document.getElementById("bocana-btn").innerText = t.enterBtn;
+    
+    document.getElementById("liminax-title").innerText = t.liminaxTitle;
+    document.getElementById("liminax-desc").innerText = t.liminaxDesc;
+    document.getElementById("liminax-btn").innerText = t.enterBtn;
+    
+    // Atualizar seletor de idioma
+    document.getElementById("language-select").value = lang;
+  }
+
+  // Função para mudar idioma
+  window.changeLanguage = () => {
+    const newLang = document.getElementById("language-select").value;
+    const url = new URL(window.location);
+    url.searchParams.set("lang", newLang);
+    window.location.href = url.toString();
+  };
+
+  // Funções de navegação com preservação do idioma
+  window.navigateToTPS = () => {
+    window.location.href = `tps-terms-and-privacy.html?lang=${lang}`;
+  };
+
+  window.navigateToTemarix = () => {
+    window.location.href = `temarix-terms-and-privacy.html?lang=${lang}`;
+  };
+
+  window.navigateToBocana = () => {
+    window.location.href = `bocana-terms-and-privacy.html?lang=${lang}`;
+  };
+
+  window.navigateToLiminax = () => {
+    window.location.href = `liminax-terms-and-privacy.html?lang=${lang}`;
+  };
+
+  // Aplicar traduções quando a página carregar
+  document.addEventListener("DOMContentLoaded", () => {
+    applyTranslations();
+  });
 </script>
 
 </body>

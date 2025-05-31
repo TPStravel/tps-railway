@@ -1,8 +1,9 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Parceria com o TPS</title>
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <style>
@@ -52,72 +53,58 @@
 </head>
 <body>
 
-  <h2 id="titulo">🤝 Quero ser parceiro do TPS</h2>
-  <form id="parceria-form">
-    <label id="lbl-empresa">Nome da empresa</label>
-    <input type="text" name="empresa" required>
+<h2 id="titulo">🤝 Quero ser parceiro do TPS</h2>
+<form id="parceria-form">
+  <label id="lbl-empresa">Nome da empresa</label>
+  <input type="text" name="empresa" required>
 
-    <label id="lbl-responsavel">Responsável</label>
-    <input type="text" name="responsavel" required>
+  <label id="lbl-responsavel">Responsável</label>
+  <input type="text" name="responsavel" required>
 
-    <label id="lbl-email">Email para contato</label>
-    <input type="email" name="email" required>
+  <label id="lbl-email">Email para contato</label>
+  <input type="email" name="email" required>
 
-    <label id="lbl-tipo">Tipo de parceria</label>
-    <select name="tipo">
-      <option value="Hotel">Hotel</option>
-      <option value="Transporte">Transporte</option>
-      <option value="Experiências/Gastronomia">Experiências/Gastronomia</option>
-      <option value="Outro">Outro</option>
-    </select>
+  <label id="lbl-tipo">Tipo de parceria</label>
+  <select name="tipo">
+    <option value="Hotel">Hotel</option>
+    <option value="Transporte">Transporte</option>
+    <option value="Experiências/Gastronomia">Experiências/Gastronomia</option>
+    <option value="Outro">Outro</option>
+  </select>
 
-    <label id="lbl-msg">Mensagem simbólica</label>
-    <textarea name="mensagem" id="mensagem" rows="4" placeholder="Conte o que representa essa parceria para você..."></textarea>
+  <label id="lbl-msg">Mensagem simbólica</label>
+  <textarea name="mensagem" id="mensagem" rows="4" placeholder="Conte o que representa essa parceria para você..."></textarea>
 
-    <button type="submit" id="botao">Enviar proposta</button>
-    <div class="success-message" id="status-msg"></div>
-  </form>
+  <button type="submit" id="botao">Enviar proposta</button>
+  <div class="success-message" id="status-msg"></div>
+</form>
 
-  <script>
-    emailjs.init('vzhWIF8CJ3fedb6a9');
+<script>
+  emailjs.init('vzhWIF8CJ3fedb6a9');
 
-    const translations = {
-      pt: {...},
-      en: {...},
-      es: {...},
-      fr: {...},
-      de: {...},
-      it: {...},
-      ja: {...},
-      ko: {...},
-      zh: {...},
-      ru: {...},
-      hi: {...},
-      nl: {...}
-    };
+  const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+  const t = {
+    sucesso: {
+      pt: "✅ Proposta enviada com sucesso!",
+      en: "✅ Proposal sent successfully!",
+    },
+    erro: {
+      pt: "❌ Erro no envio. Tente novamente.",
+      en: "❌ Submission failed. Please try again.",
+    }
+  };
 
-    const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
-    const t = translations[lang] || translations['pt'];
+  document.getElementById("parceria-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+    emailjs.sendForm('service_gtnit3q', 'template_ab12cd34', this)
+      .then(() => {
+        document.getElementById("status-msg").innerText = t.sucesso[lang] || t.sucesso.pt;
+        this.reset();
+      }, () => {
+        document.getElementById("status-msg").innerText = t.erro[lang] || t.erro.pt;
+      });
+  });
+</script>
 
-    document.getElementById('titulo').innerText = t.titulo;
-    document.getElementById('lbl-empresa').innerText = t.empresa;
-    document.getElementById('lbl-responsavel').innerText = t.responsavel;
-    document.getElementById('lbl-email').innerText = t.email;
-    document.getElementById('lbl-tipo').innerText = t.tipo;
-    document.getElementById('lbl-msg').innerText = t.mensagem;
-    document.getElementById('mensagem').placeholder = t.placeholder;
-    document.getElementById('botao').innerText = t.botao;
-
-    document.getElementById('parceria-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      emailjs.sendForm('service_k8wii9p', 'template_2d49ofu', this)
-        .then(() => {
-          document.getElementById('status-msg').innerText = t.sucesso;
-          this.reset();
-        }, (error) => {
-          document.getElementById('status-msg').innerText = t.erro;
-        });
-    });
-  </script>
 </body>
 </html>

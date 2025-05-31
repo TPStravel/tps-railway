@@ -3,61 +3,194 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bocana – Termos e Privacidade</title>
+  <title id="page-title">Bocana – Termos e Privacidade</title>
   <style>
-    body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; overflow-y: auto; }
-    .container { max-width: 900px; margin: auto; padding-bottom: 60px; }
-    h1 { text-align: center; font-size: 2.4rem; margin-bottom: 30px; }
-    h2 { color: #4caf50; margin-top: 40px; }
-    p, li { font-size: 1.05rem; }
-    ul { padding-left: 20px; }
-    .btn { display: block; margin: 40px auto 20px; padding: 12px 24px; background-color: #4caf50; color: white; border: none; font-size: 1rem; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; }
-    .btn:hover { background-color: #45a049; }
-    footer { text-align: center; font-size: 0.8rem; margin-top: 50px; }
+    body { 
+      background-color: #121212; 
+      color: white; 
+      font-family: Arial, sans-serif; 
+      padding: 20px; 
+      line-height: 1.6; 
+      overflow-y: auto; 
+      margin: 0;
+    }
+    
+    /* Seletor de idiomas no canto superior esquerdo */
+    .language-selector {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+    }
+    
+    #language-select {
+      background-color: #2c2c2c;
+      color: white;
+      border: 1px solid #4caf50;
+      padding: 8px 12px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    
+    #language-select:hover {
+      background-color: #3c3c3c;
+    }
+    
+    .container { 
+      max-width: 900px; 
+      margin: auto; 
+      padding-bottom: 120px; 
+      padding-top: 40px;
+    }
+    
+    h1 { 
+      text-align: center; 
+      font-size: 2.4rem; 
+      margin-bottom: 30px; 
+    }
+    
+    h2 { 
+      color: #4caf50; 
+      margin-top: 40px; 
+    }
+    
+    p, li { 
+      font-size: 1.05rem; 
+    }
+    
+    ul { 
+      padding-left: 20px; 
+    }
+    
+    .btn { 
+      display: block; 
+      margin: 40px auto 20px; 
+      padding: 12px 24px; 
+      background-color: #4caf50; 
+      color: white; 
+      border: none; 
+      font-size: 1rem; 
+      border-radius: 5px; 
+      cursor: pointer; 
+      transition: background-color 0.3s; 
+    }
+    
+    .btn:hover { 
+      background-color: #45a049; 
+    }
+    
+    footer { 
+      text-align: center; 
+      font-size: 0.8rem; 
+      margin-top: 50px; 
+    }
+    
+    /* Banner de cookies */
+    .cookie-banner {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #2c2c2c;
+      border-top: 2px solid #4caf50;
+      padding: 15px 20px;
+      z-index: 999;
+      display: none;
+      text-align: center;
+    }
+    
+    .cookie-banner.show {
+      display: block;
+    }
+    
+    .cookie-banner p {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+    }
+    
+    .cookie-banner button {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .cookie-banner button:hover {
+      background-color: #45a049;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Bocana – Nutrição com Presença</h1>
-
-    <h2>Introdução</h2>
-    <p>O <strong>Bocana</strong> é uma plataforma que recomenda experiências sensoriais e nutricionais com base no seu estado emocional, humor e energia.</p>
-
-    <p><strong>Objetivo:</strong> Sugerir alimentos, bebidas e estímulos sensoriais que promovam equilíbrio emocional e bem-estar.</p>
-    <p><strong>Como funciona:</strong> Você informa como está se sentindo, e o Bocana usa esses dados para entregar sugestões adaptadas ao seu estado atual.</p>
-
-    <h2>Como Funciona</h2>
-    <ul>
-      <li><strong>Alimentos e Bebidas:</strong> Para melhorar humor, energia, foco ou relaxamento.</li>
-      <li><strong>Experiências Sensorias:</strong> Sons, aromas e texturas que acompanham seu estado emocional.</li>
-    </ul>
-
-    <h2>Termos de Uso</h2>
-    <ul>
-      <li><strong>Coleta de Dados:</strong> Apenas humor, energia e preferências alimentares.</li>
-      <li><strong>Uso dos Dados:</strong> Para personalizar suas recomendações e acompanhar seu estado ao longo do tempo.</li>
-      <li><strong>Cookies:</strong> Usados para salvar preferências locais e manter seu estado entre sessões.</li>
-      <li><strong>Segurança:</strong> Dados criptografados e tratados com responsabilidade.</li>
-      <li><strong>Limitações:</strong> O Bocana não substitui orientação médica, nutricional ou psicológica.</li>
-    </ul>
-
-    <h2>Política de Privacidade</h2>
-    <ul>
-      <li><strong>Informações coletadas:</strong> Apenas as necessárias para recomendação alimentar e emocional.</li>
-      <li><strong>Uso interno:</strong> Nenhum dado é compartilhado com terceiros.</li>
-      <li><strong>Controle total:</strong> Você pode limpar ou excluir seus dados a qualquer momento.</li>
-    </ul>
-
-    <p>Ao continuar, você concorda com os termos acima e está pronto para sentir com presença.</p>
-
-    <button class="btn" onclick="aceitarTermos('bocana-inicio.html')">Aceitar e Continuar</button>
+  <!-- Seletor de idiomas -->
+  <div class="language-selector">
+    <select id="language-select" onchange="changeLanguage()">
+      <option value="pt">Português</option>
+      <option value="en">English</option>
+      <option value="es">Español</option>
+      <option value="fr">Français</option>
+      <option value="ko">한국어</option>
+      <option value="ja">日本語</option>
+      <option value="zh">中文</option>
+      <option value="ru">Русский</option>
+      <option value="hi">हिन्दी</option>
+      <option value="de">Deutsch</option>
+      <option value="it">Italiano</option>
+      <option value="nl">Nederlands</option>
+    </select>
   </div>
 
-  <footer>&copy; 2025 Bocana – Nutrição com Presença</footer>
+  <div class="container">
+    <h1 id="titulo">Bocana – Nutrição com Presença</h1>
+
+    <h2 id="sub1">Introdução</h2>
+    <p id="p1">O <strong>Bocana</strong> é uma plataforma que recomenda experiências sensoriais e nutricionais com base no seu estado emocional, humor e energia.</p>
+
+    <p id="p2"><strong id="objetivo-label">Objetivo:</strong> <span id="objetivo-texto">Sugerir alimentos, bebidas e estímulos sensoriais que promovam equilíbrio emocional e bem-estar.</span></p>
+    <p id="p3"><strong id="funciona-label">Como funciona:</strong> <span id="funciona-texto">Você informa como está se sentindo, e o Bocana usa esses dados para entregar sugestões adaptadas ao seu estado atual.</span></p>
+
+    <h2 id="sub2">Como Funciona</h2>
+    <ul>
+      <li id="li1"><strong id="alimentos-label">Alimentos e Bebidas:</strong> <span id="alimentos-texto">Para melhorar humor, energia, foco ou relaxamento.</span></li>
+      <li id="li2"><strong id="sensoriais-label">Experiências Sensoriais:</strong> <span id="sensoriais-texto">Sons, aromas e texturas que acompanham seu estado emocional.</span></li>
+    </ul>
+
+    <h2 id="sub3">Termos de Uso</h2>
+    <ul>
+      <li id="li3"><strong id="coleta-label">Coleta de Dados:</strong> <span id="coleta-texto">Apenas humor, energia e preferências alimentares.</span></li>
+      <li id="li4"><strong id="uso-label">Uso dos Dados:</strong> <span id="uso-texto">Para personalizar suas recomendações e acompanhar seu estado ao longo do tempo.</span></li>
+      <li id="li5"><strong id="cookies-label">Cookies:</strong> <span id="cookies-texto">Usados para salvar preferências locais e manter seu estado entre sessões.</span></li>
+      <li id="li6"><strong id="seguranca-label">Segurança:</strong> <span id="seguranca-texto">Dados criptografados e tratados com responsabilidade.</span></li>
+      <li id="li7"><strong id="limitacoes-label">Limitações:</strong> <span id="limitacoes-texto">O Bocana não substitui orientação médica, nutricional ou psicológica.</span></li>
+    </ul>
+
+    <h2 id="sub4">Política de Privacidade</h2>
+    <ul>
+      <li id="li8"><strong id="info-label">Informações coletadas:</strong> <span id="info-texto">Apenas as necessárias para recomendação alimentar e emocional.</span></li>
+      <li id="li9"><strong id="interno-label">Uso interno:</strong> <span id="interno-texto">Nenhum dado é compartilhado com terceiros.</span></li>
+      <li id="li10"><strong id="controle-label">Controle total:</strong> <span id="controle-texto">Você pode limpar ou excluir seus dados a qualquer momento.</span></li>
+    </ul>
+
+    <p id="p4">Ao continuar, você concorda com os termos acima e está pronto para sentir com presença.</p>
+
+    <button class="btn" id="botao-continuar" onclick="aceitarTermos()">Aceitar e Continuar</button>
+  </div>
+
+  <footer id="footer">&copy; 2025 Bocana – Nutrição com Presença</footer>
+
+  <!-- Banner de cookies -->
+  <div class="cookie-banner" id="cookie-banner">
+    <p id="cookie-message">Usamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossa política de cookies.</p>
+    <button id="cookie-accept" onclick="acceptCookies()">Aceitar</button>
+  </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    
     const firebaseConfig = {
       apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
       authDomain: "canal-vivo-4cd4a.firebaseapp.com",
@@ -66,11 +199,557 @@
       messagingSenderId: "1003445191655",
       appId: "1:1003445191655:web:c6c7915bf02979c10af342"
     };
+    
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    window.aceitarTermos = async function(proximaUrl) {
-      localStorage.setItem("cookieConsent", "true");
-      const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+
+    // Traduções completas
+    const traducoesTermos = {
+      pt: {
+        pageTitle: "Bocana – Termos e Privacidade",
+        titulo: "Bocana – Nutrição com Presença",
+        sub1: "Introdução",
+        p1: "O <strong>Bocana</strong> é uma plataforma que recomenda experiências sensoriais e nutricionais com base no seu estado emocional, humor e energia.",
+        objetivoLabel: "Objetivo:",
+        objetivoTexto: "Sugerir alimentos, bebidas e estímulos sensoriais que promovam equilíbrio emocional e bem-estar.",
+        funcionaLabel: "Como funciona:",
+        funcionaTexto: "Você informa como está se sentindo, e o Bocana usa esses dados para entregar sugestões adaptadas ao seu estado atual.",
+        sub2: "Como Funciona",
+        alimentosLabel: "Alimentos e Bebidas:",
+        alimentosTexto: "Para melhorar humor, energia, foco ou relaxamento.",
+        sensoriaisLabel: "Experiências Sensoriais:",
+        sensoriaisTexto: "Sons, aromas e texturas que acompanham seu estado emocional.",
+        sub3: "Termos de Uso",
+        coletaLabel: "Coleta de Dados:",
+        coletaTexto: "Apenas humor, energia e preferências alimentares.",
+        usoLabel: "Uso dos Dados:",
+        usoTexto: "Para personalizar suas recomendações e acompanhar seu estado ao longo do tempo.",
+        cookiesLabel: "Cookies:",
+        cookiesTexto: "Usados para salvar preferências locais e manter seu estado entre sessões.",
+        segurancaLabel: "Segurança:",
+        segurancaTexto: "Dados criptografados e tratados com responsabilidade.",
+        limitacoesLabel: "Limitações:",
+        limitacoesTexto: "O Bocana não substitui orientação médica, nutricional ou psicológica.",
+        sub4: "Política de Privacidade",
+        infoLabel: "Informações coletadas:",
+        infoTexto: "Apenas as necessárias para recomendação alimentar e emocional.",
+        internoLabel: "Uso interno:",
+        internoTexto: "Nenhum dado é compartilhado com terceiros.",
+        controleLabel: "Controle total:",
+        controleTexto: "Você pode limpar ou excluir seus dados a qualquer momento.",
+        p4: "Ao continuar, você concorda com os termos acima e está pronto para sentir com presença.",
+        botaoContinuar: "Aceitar e Continuar",
+        footer: "&copy; 2025 Bocana – Nutrição com Presença",
+        cookieMessage: "Usamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossa política de cookies.",
+        cookieAccept: "Aceitar"
+      },
+      en: {
+        pageTitle: "Bocana – Terms and Privacy",
+        titulo: "Bocana – Nutrition with Presence",
+        sub1: "Introduction",
+        p1: "<strong>Bocana</strong> is a platform that recommends sensory and nutritional experiences based on your emotional state, mood, and energy.",
+        objetivoLabel: "Objective:",
+        objetivoTexto: "To suggest foods, drinks, and sensory stimuli that promote emotional balance and well-being.",
+        funcionaLabel: "How it works:",
+        funcionaTexto: "You inform how you're feeling, and Bocana uses this data to deliver suggestions adapted to your current state.",
+        sub2: "How It Works",
+        alimentosLabel: "Food and Drinks:",
+        alimentosTexto: "To improve mood, energy, focus, or relaxation.",
+        sensoriaisLabel: "Sensory Experiences:",
+        sensoriaisTexto: "Sounds, aromas, and textures that accompany your emotional state.",
+        sub3: "Terms of Use",
+        coletaLabel: "Data Collection:",
+        coletaTexto: "Only mood, energy, and food preferences.",
+        usoLabel: "Data Usage:",
+        usoTexto: "To personalize your recommendations and track your state over time.",
+        cookiesLabel: "Cookies:",
+        cookiesTexto: "Used to save local preferences and maintain your state between sessions.",
+        segurancaLabel: "Security:",
+        segurancaTexto: "Data encrypted and handled responsibly.",
+        limitacoesLabel: "Limitations:",
+        limitacoesTexto: "Bocana does not replace medical, nutritional, or psychological guidance.",
+        sub4: "Privacy Policy",
+        infoLabel: "Information collected:",
+        infoTexto: "Only what's necessary for food and emotional recommendations.",
+        internoLabel: "Internal use:",
+        internoTexto: "No data is shared with third parties.",
+        controleLabel: "Full control:",
+        controleTexto: "You can clear or delete your data at any time.",
+        p4: "By continuing, you agree to the terms above and are ready to feel with presence.",
+        botaoContinuar: "Accept and Continue",
+        footer: "&copy; 2025 Bocana – Nutrition with Presence",
+        cookieMessage: "We use cookies to improve your experience. By continuing, you agree to our cookie policy.",
+        cookieAccept: "Accept"
+      },
+      es: {
+        pageTitle: "Bocana – Términos y Privacidad",
+        titulo: "Bocana – Nutrición con Presencia",
+        sub1: "Introducción",
+        p1: "<strong>Bocana</strong> es una plataforma que recomienda experiencias sensoriales y nutricionales basadas en tu estado emocional, humor y energía.",
+        objetivoLabel: "Objetivo:",
+        objetivoTexto: "Sugerir alimentos, bebidas y estímulos sensoriales que promuevan equilibrio emocional y bienestar.",
+        funcionaLabel: "Cómo funciona:",
+        funcionaTexto: "Informas cómo te sientes, y Bocana usa estos datos para entregar sugerencias adaptadas a tu estado actual.",
+        sub2: "Cómo Funciona",
+        alimentosLabel: "Alimentos y Bebidas:",
+        alimentosTexto: "Para mejorar humor, energía, foco o relajación.",
+        sensoriaisLabel: "Experiencias Sensoriales:",
+        sensoriaisTexto: "Sonidos, aromas y texturas que acompañan tu estado emocional.",
+        sub3: "Términos de Uso",
+        coletaLabel: "Recolección de Datos:",
+        coletaTexto: "Solo humor, energía y preferencias alimentarias.",
+        usoLabel: "Uso de Datos:",
+        usoTexto: "Para personalizar tus recomendaciones y seguir tu estado a lo largo del tiempo.",
+        cookiesLabel: "Cookies:",
+        cookiesTexto: "Usadas para guardar preferencias locales y mantener tu estado entre sesiones.",
+        segurancaLabel: "Seguridad:",
+        segurancaTexto: "Datos encriptados y tratados con responsabilidad.",
+        limitacoesLabel: "Limitaciones:",
+        limitacoesTexto: "Bocana no sustituye orientación médica, nutricional o psicológica.",
+        sub4: "Política de Privacidad",
+        infoLabel: "Información recolectada:",
+        infoTexto: "Solo la necesaria para recomendación alimentaria y emocional.",
+        internoLabel: "Uso interno:",
+        internoTexto: "Ningún dato es compartido con terceros.",
+        controleLabel: "Control total:",
+        controleTexto: "Puedes limpiar o eliminar tus datos en cualquier momento.",
+        p4: "Al continuar, aceptas los términos anteriores y estás listo para sentir con presencia.",
+        botaoContinuar: "Aceptar y Continuar",
+        footer: "&copy; 2025 Bocana – Nutrición con Presencia",
+        cookieMessage: "Usamos cookies para mejorar tu experiencia. Al continuar, aceptas nuestra política de cookies.",
+        cookieAccept: "Aceptar"
+      },
+      fr: {
+        pageTitle: "Bocana – Conditions et Confidentialité",
+        titulo: "Bocana – Nutrition avec Présence",
+        sub1: "Introduction",
+        p1: "<strong>Bocana</strong> est une plateforme qui recommande des expériences sensorielles et nutritionnelles basées sur votre état émotionnel, humeur et énergie.",
+        objetivoLabel: "Objectif:",
+        objetivoTexto: "Suggérer des aliments, boissons et stimuli sensoriels qui favorisent l'équilibre émotionnel et le bien-être.",
+        funcionaLabel: "Comment ça marche:",
+        funcionaTexto: "Vous informez comment vous vous sentez, et Bocana utilise ces données pour livrer des suggestions adaptées à votre état actuel.",
+        sub2: "Comment Ça Marche",
+        alimentosLabel: "Aliments et Boissons:",
+        alimentosTexto: "Pour améliorer l'humeur, l'énergie, la concentration ou la relaxation.",
+        sensoriaisLabel: "Expériences Sensorielles:",
+        sensoriaisTexto: "Sons, arômes et textures qui accompagnent votre état émotionnel.",
+        sub3: "Conditions d'Utilisation",
+        coletaLabel: "Collecte de Données:",
+        coletaTexto: "Seulement l'humeur, l'énergie et les préférences alimentaires.",
+        usoLabel: "Utilisation des Données:",
+        usoTexto: "Pour personnaliser vos recommandations et suivre votre état au fil du temps.",
+        cookiesLabel: "Cookies:",
+        cookiesTexto: "Utilisés pour sauvegarder les préférences locales et maintenir votre état entre les sessions.",
+        segurancaLabel: "Sécurité:",
+        segurancaTexto: "Données cryptées et traitées de manière responsable.",
+        limitacoesLabel: "Limitations:",
+        limitacoesTexto: "Bocana ne remplace pas les conseils médicaux, nutritionnels ou psychologiques.",
+        sub4: "Politique de Confidentialité",
+        infoLabel: "Informations collectées:",
+        infoTexto: "Seulement celles nécessaires pour les recommandations alimentaires et émotionnelles.",
+        internoLabel: "Usage interne:",
+        internoTexto: "Aucune donnée n'est partagée avec des tiers.",
+        controleLabel: "Contrôle total:",
+        controleTexto: "Vous pouvez effacer ou supprimer vos données à tout moment.",
+        p4: "En continuant, vous acceptez les conditions ci-dessus et êtes prêt à sentir avec présence.",
+        botaoContinuar: "Accepter et Continuer",
+        footer: "&copy; 2025 Bocana – Nutrition avec Présence",
+        cookieMessage: "Nous utilisons des cookies pour améliorer votre expérience. En continuant, vous acceptez notre politique de cookies.",
+        cookieAccept: "Accepter"
+      },
+      ko: {
+        pageTitle: "Bocana – 약관 및 개인정보처리방침",
+        titulo: "Bocana – 존재감 있는 영양",
+        sub1: "소개",
+        p1: "<strong>Bocana</strong>는 귀하의 감정 상태, 기분, 에너지를 바탕으로 감각적이고 영양적인 경험을 추천하는 플랫폼입니다.",
+        objetivoLabel: "목표:",
+        objetivoTexto: "감정적 균형과 웰빙을 촉진하는 음식, 음료 및 감각적 자극을 제안합니다.",
+        funcionaLabel: "작동 방식:",
+        funcionaTexto: "귀하의 감정 상태를 알려주시면, Bocana가 이 데이터를 사용하여 현재 상태에 맞는 제안을 제공합니다.",
+        sub2: "작동 방식",
+        alimentosLabel: "음식과 음료:",
+        alimentosTexto: "기분, 에너지, 집중력 또는 이완을 개선하기 위해.",
+        sensoriaisLabel: "감각적 경험:",
+        sensoriaisTexto: "귀하의 감정 상태에 맞는 소리, 향기, 질감.",
+        sub3: "이용 약관",
+        coletaLabel: "데이터 수집:",
+        coletaTexto: "기분, 에너지 및 음식 선호도만.",
+        usoLabel: "데이터 사용:",
+        usoTexto: "귀하의 추천을 개인화하고 시간에 따른 상태를 추적하기 위해.",
+        cookiesLabel: "쿠키:",
+        cookiesTexto: "로컬 설정을 저장하고 세션 간 상태를 유지하는 데 사용됩니다.",
+        segurancaLabel: "보안:",
+        segurancaTexto: "데이터는 암호화되어 책임감 있게 처리됩니다.",
+        limitacoesLabel: "제한사항:",
+        limitacoesTexto: "Bocana는 의학적, 영양학적 또는 심리학적 지도를 대체하지 않습니다.",
+        sub4: "개인정보처리방침",
+        infoLabel: "수집되는 정보:",
+        infoTexto: "음식 및 감정 추천에 필요한 것만.",
+        internoLabel: "내부 사용:",
+        internoTexto: "제3자와 데이터를 공유하지 않습니다.",
+        controleLabel: "완전한 통제:",
+        controleTexto: "언제든지 데이터를 지우거나 삭제할 수 있습니다.",
+        p4: "계속하면 위의 약관에 동의하며 존재감 있게 느낄 준비가 된 것입니다.",
+        botaoContinuar: "동의하고 계속하기",
+        footer: "&copy; 2025 Bocana – 존재감 있는 영양",
+        cookieMessage: "경험 개선을 위해 쿠키를 사용합니다. 계속하면 쿠키 정책에 동의하는 것입니다.",
+        cookieAccept: "동의"
+      },
+      ja: {
+        pageTitle: "Bocana – 利用規約とプライバシー",
+        titulo: "Bocana – 存在感のある栄養",
+        sub1: "はじめに",
+        p1: "<strong>Bocana</strong>は、あなたの感情状態、気分、エネルギーに基づいて感覚的で栄養的な体験を推奨するプラットフォームです。",
+        objetivoLabel: "目的:",
+        objetivoTexto: "感情のバランスと幸福感を促進する食べ物、飲み物、感覚刺激を提案します。",
+        funcionaLabel: "仕組み:",
+        funcionaTexto: "あなたの気持ちをお聞かせください。Bocanaがそのデータを使用して、現在の状態に適した提案をお届けします。",
+        sub2: "仕組み",
+        alimentosLabel: "食べ物と飲み物:",
+        alimentosTexto: "気分、エネルギー、集中力、またはリラクゼーションを改善するため。",
+        sensoriaisLabel: "感覚体験:",
+        sensoriaisTexto: "あなたの感情状態に合わせた音、香り、質感。",
+        sub3: "利用規約",
+        coletaLabel: "データ収集:",
+        coletaTexto: "気分、エネルギー、食べ物の好みのみ。",
+        usoLabel: "データ使用:",
+        usoTexto: "推奨をパーソナライズし、時間の経過とともにあなたの状態を追跡するため。",
+        cookiesLabel: "クッキー:",
+        cookiesTexto: "ローカル設定を保存し、セッション間で状態を維持するために使用されます。",
+        segurancaLabel: "セキュリティ:",
+        segurancaTexto: "データは暗号化され、責任を持って取り扱われます。",
+        limitacoesLabel: "制限事項:",
+        limitacoesTexto: "Bocanaは医学的、栄養学的、または心理学的な指導に代わるものではありません。",
+        sub4: "プライバシーポリシー",
+        infoLabel: "収集される情報:",
+        infoTexto: "食事と感情の推奨に必要なもののみ。",
+        internoLabel: "内部使用:",
+        internoTexto: "第三者とデータを共有することはありません。",
+        controleLabel: "完全な制御:",
+        controleTexto: "いつでもデータをクリアまたは削除できます。",
+        p4: "続行することで、上記の規約に同意し、存在感を持って感じる準備ができています。",
+        botaoContinuar: "同意して続行",
+        footer: "&copy; 2025 Bocana – 存在感のある栄養",
+        cookieMessage: "体験向上のためクッキーを使用しています。続行することでクッキーポリシーに同意したものとみなします。",
+        cookieAccept: "同意"
+      },
+      zh: {
+        pageTitle: "Bocana – 条款与隐私",
+        titulo: "Bocana – 有存在感的营养",
+        sub1: "介绍",
+        p1: "<strong>Bocana</strong> 是一个基于您的情绪状态、心情和能量推荐感官和营养体验的平台。",
+        objetivoLabel: "目标:",
+        objetivoTexto: "建议促进情绪平衡和健康的食物、饮料和感官刺激。",
+        funcionaLabel: "工作原理:",
+        funcionaTexto: "您告诉我们您的感受，Bocana使用这些数据为您提供适合当前状态的建议。",
+        sub2: "工作原理",
+        alimentosLabel: "食物和饮料:",
+        alimentosTexto: "改善心情、能量、专注力或放松。",
+        sensoriaisLabel: "感官体验:",
+        sensoriaisTexto: "配合您情绪状态的声音、香气和质感。",
+        sub3: "使用条款",
+        coletaLabel: "数据收集:",
+        coletaTexto: "仅收集心情、能量和食物偏好。",
+        usoLabel: "数据使用:",
+        usoTexto: "个性化您的推荐并跟踪您随时间的状态。",
+        cookiesLabel: "Cookie:",
+        cookiesTexto: "用于保存本地偏好并在会话间维持您的状态。",
+        segurancaLabel: "安全:",
+        segurancaTexto: "数据加密并负责任地处理。",
+        limitacoesLabel: "限制:",
+        limitacoesTexto: "Bocana不能替代医疗、营养或心理指导。",
+        sub4: "隐私政策",
+        infoLabel: "收集的信息:",
+        infoTexto: "仅收集食物和情绪推荐所需的信息。",
+        internoLabel: "内部使用:",
+        internoTexto: "不与第三方共享任何数据。",
+        controleLabel: "完全控制:",
+        controleTexto: "您可以随时清除或删除您的数据。",
+        p4: "继续即表示您同意上述条款，准备好有存在感地感受。",
+        botaoContinuar: "同意并继续",
+        footer: "&copy; 2025 Bocana – 有存在感的营养",
+        cookieMessage: "我们使用Cookie来改善您的体验。继续即表示您同意我们的Cookie政策。",
+        cookieAccept: "同意"
+      },
+      ru: {
+        pageTitle: "Bocana – Условия и Конфиденциальность",
+        titulo: "Bocana – Питание с Присутствием",
+        sub1: "Введение",
+        p1: "<strong>Bocana</strong> - это платформа, которая рекомендует сенсорные и пищевые опыты на основе вашего эмоционального состояния, настроения и энергии.",
+        objetivoLabel: "Цель:",
+        objetivoTexto: "Предлагать продукты, напитки и сенсорные стимулы, которые способствуют эмоциональному балансу и благополучию.",
+        funcionaLabel: "Как это работает:",
+        funcionaTexto: "Вы сообщаете о своих чувствах, а Bocana использует эти данные для предоставления рекомендаций, адаптированных к вашему текущему состоянию.",
+        sub2: "Как Это Работает",
+        alimentosLabel: "Еда и Напитки:",
+        alimentosTexto: "Для улучшения настроения, энергии, концентрации или расслабления.",
+        sensoriaisLabel: "Сенсорные Переживания:",
+        sensoriaisTexto: "Звуки, ароматы и текстуры, которые сопровождают ваше эмоциональное состояние.",
+        sub3: "Условия Использования",
+        coletaLabel: "Сбор Данных:",
+        coletaTexto: "Только настроение, энергия и пищевые предпочтения.",
+        usoLabel: "Использование Данных:",
+        usoTexto: "Для персонализации ваших рекомендаций и отслеживания вашего состояния со временем.",
+        cookiesLabel: "Cookies:",
+        cookiesTexto: "Используются для сохранения локальных предпочтений и поддержания вашего состояния между сессиями.",
+        segurancaLabel: "Безопасность:",
+        segurancaTexto: "Данные зашифрованы и обрабатываются ответственно.",
+        limitacoesLabel: "Ограничения:",
+        limitacoesTexto: "Bocana не заменяет медицинские, диетологические или психологические консультации.",
+        sub4: "Политика Конфиденциальности",
+        infoLabel: "Собираемая информация:",
+        infoTexto: "Только необходимая для пищевых и эмоциональных рекомендаций.",
+        internoLabel: "Внутреннее использование:",
+        internoTexto: "Никакие данные не передаются третьим лицам.",
+        controleLabel: "Полный контроль:",
+        controleTexto: "Вы можете очистить или удалить свои данные в любое время.",
+        p4: "Продолжая, вы соглашаетесь с вышеуказанными условиями и готовы чувствовать с присутствием.",
+        botaoContinuar: "Принять и Продолжить",
+        footer: "&copy; 2025 Bocana – Питание с Присутствием",
+        cookieMessage: "Мы используем cookies для улучшения вашего опыта. Продолжая, вы соглашаетесь с нашей политикой cookies.",
+        cookieAccept: "Принять"
+      },
+      hi: {
+        pageTitle: "Bocana – नियम और गोपनीयता",
+        titulo: "Bocana – उपस्थिति के साथ पोषण",
+        sub1: "परिचय",
+        p1: "<strong>Bocana</strong> एक मंच है जो आपकी भावनात्मक स्थिति, मूड और ऊर्जा के आधार पर संवेदी और पोषण संबंधी अनुभवों की सिफारिश करता है।",
+        objetivoLabel: "उद्देश्य:",
+        objetivoTexto: "भावनात्मक संतुलन और कल्याण को बढ़ावा देने वाले खाद्य पदार्थ, पेय और संवेदी उत्तेजनाओं का सुझाव देना।",
+        funcionaLabel: "यह कैसे काम करता है:",
+        funcionaTexto: "आप बताते हैं कि आप कैसा महसूस कर रहे हैं, और Bocana इस डेटा का उपयोग करके आपकी वर्तमान स्थिति के अनुकूल सुझाव प्रदान करता है।",
+        sub2: "यह कैसे काम करता है",
+        alimentosLabel: "खाना और पेय:",
+        alimentosTexto: "मूड, ऊर्जा, फोकस या आराम में सुधार के लिए।",
+        sensoriaisLabel: "संवेदी अनुभव:",
+        sensoriaisTexto: "ध्वनि, सुगंध और बनावट जो आपकी भावनात्मक स्थिति के साथ मेल खाते हैं।",
+        sub3: "उपयोग की शर्तें",
+        coletaLabel: "डेटा संग्रह:",
+        coletaTexto: "केवल मूड, ऊर्जा और खाद्य प्राथमिकताएं।",
+        usoLabel: "डेटा उपयोग:",
+        usoTexto: "आपकी सिफारिशों को व्यक्तिगत बनाने और समय के साथ आपकी स्थिति को ट्रैक करने के लिए।",
+        cookiesLabel: "कुकीज़:",
+        cookiesTexto: "स्थानीय प्राथमिकताओं को सहेजने और सत्रों के बीच आपकी स्थिति बनाए रखने के लिए उपयोग की जाती हैं।",
+        segurancaLabel: "सुरक्षा:",
+        segurancaTexto: "डेटा एन्क्रिप्टेड और जिम्मेदारी से संभाला जाता है।",
+        limitacoesLabel: "सीमाएं:",
+        limitacoesTexto: "Bocana चिकित्सा, पोषण या मनोवैज्ञानिक मार्गदर्शन का विकल्प नहीं है।",
+        sub4: "गोपनीयता नीति",
+        infoLabel: "एकत्र की गई जानकारी:",
+        infoTexto: "केवल खाद्य और भावनात्मक सिफारिशों के लिए आवश्यक।",
+        internoLabel: "आंतरिक उपयोग:",
+        internoTexto: "कोई भी डेटा तीसरे पक्ष के साथ साझा नहीं किया जाता।",
+        controleLabel: "पूर्ण नियंत्रण:",
+        controleTexto: "आप किसी भी समय अपना डेटा साफ़ या हटा सकते हैं।",
+        p4: "जारी रखकर, आप उपरोक्त शर्तों से सहमत हैं और उपस्थिति के साथ महसूस करने के लिए तैयार हैं।",
+        botaoContinuar: "स्वीकार करें और जारी रखें",
+        footer: "&copy; 2025 Bocana – उपस्थिति के साथ पोषण",
+        cookieMessage: "हम आपके अनुभव को बेहतर बनाने के लिए कुकीज़ का उपयोग करते हैं। जारी रखकर, आप हमारी कुकी नीति से सहमत हैं।",
+        cookieAccept: "स्वीकार करें"
+      },
+      de: {
+        pageTitle: "Bocana – Bedingungen und Datenschutz",
+        titulo: "Bocana – Ernährung mit Präsenz",
+        sub1: "Einführung",
+        p1: "<strong>Bocana</strong> ist eine Plattform, die sensorische und ernährungsbezogene Erfahrungen basierend auf Ihrem emotionalen Zustand, Ihrer Stimmung und Energie empfiehlt.",
+        objetivoLabel: "Ziel:",
+        objetivoTexto: "Lebensmittel, Getränke und sensorische Stimuli vorschlagen, die emotionales Gleichgewicht und Wohlbefinden fördern.",
+        funcionaLabel: "Wie es funktioniert:",
+        funcionaTexto: "Sie teilen mit, wie Sie sich fühlen, und Bocana nutzt diese Daten, um Vorschläge zu liefern, die an Ihren aktuellen Zustand angepasst sind.",
+        sub2: "Wie Es Funktioniert",
+        alimentosLabel: "Essen und Getränke:",
+        alimentosTexto: "Zur Verbesserung von Stimmung, Energie, Fokus oder Entspannung.",
+        sensoriaisLabel: "Sensorische Erfahrungen:",
+        sensoriaisTexto: "Klänge, Düfte und Texturen, die Ihren emotionalen Zustand begleiten.",
+        sub3: "Nutzungsbedingungen",
+        coletaLabel: "Datensammlung:",
+        coletaTexto: "Nur Stimmung, Energie und Lebensmittelpräferenzen.",
+        usoLabel: "Datennutzung:",
+        usoTexto: "Um Ihre Empfehlungen zu personalisieren und Ihren Zustand über die Zeit zu verfolgen.",
+        cookiesLabel: "Cookies:",
+        cookiesTexto: "Verwendet, um lokale Präferenzen zu speichern und Ihren Zustand zwischen Sitzungen zu erhalten.",
+        segurancaLabel: "Sicherheit:",
+        segurancaTexto: "Daten verschlüsselt und verantwortungsvoll behandelt.",
+        limitacoesLabel: "Einschränkungen:",
+        limitacoesTexto: "Bocana ersetzt keine medizinische, ernährungsbezogene oder psychologische Beratung.",
+        sub4: "Datenschutzrichtlinie",
+        infoLabel: "Gesammelte Informationen:",
+        infoTexto: "Nur die für Lebensmittel- und emotionale Empfehlungen notwendigen.",
+        internoLabel: "Interne Nutzung:",
+        internoTexto: "Keine Daten werden mit Dritten geteilt.",
+        controleLabel: "Vollständige Kontrolle:",
+        controleTexto: "Sie können Ihre Daten jederzeit löschen oder entfernen.",
+        p4: "Durch Fortfahren stimmen Sie den obigen Bedingungen zu und sind bereit, mit Präsenz zu fühlen.",
+        botaoContinuar: "Akzeptieren und Fortfahren",
+        footer: "&copy; 2025 Bocana – Ernährung mit Präsenz",
+        cookieMessage: "Wir verwenden Cookies, um Ihre Erfahrung zu verbessern. Durch Fortfahren stimmen Sie unserer Cookie-Richtlinie zu.",
+        cookieAccept: "Akzeptieren"
+      },
+      it: {
+        pageTitle: "Bocana – Termini e Privacy",
+        titulo: "Bocana – Nutrizione con Presenza",
+        sub1: "Introduzione",
+        p1: "<strong>Bocana</strong> è una piattaforma che raccomanda esperienze sensoriali e nutrizionali basate sul tuo stato emotivo, umore ed energia.",
+        objetivoLabel: "Obiettivo:",
+        objetivoTexto: "Suggerire cibi, bevande e stimoli sensoriali che promuovono equilibrio emotivo e benessere.",
+        funcionaLabel: "Come funziona:",
+        funcionaTexto: "Comunichi come ti senti, e Bocana usa questi dati per fornire suggerimenti adattati al tuo stato attuale.",
+        sub2: "Come Funziona",
+        alimentosLabel: "Cibo e Bevande:",
+        alimentosTexto: "Per migliorare umore, energia, concentrazione o rilassamento.",
+        sensoriaisLabel: "Esperienze Sensoriali:",
+        sensoriaisTexto: "Suoni, profumi e texture che accompagnano il tuo stato emotivo.",
+        sub3: "Termini di Utilizzo",
+        coletaLabel: "Raccolta Dati:",
+        coletaTexto: "Solo umore, energia e preferenze alimentari.",
+        usoLabel: "Uso dei Dati:",
+        usoTexto: "Per personalizzare le tue raccomandazioni e monitorare il tuo stato nel tempo.",
+        cookiesLabel: "Cookies:",
+        cookiesTexto: "Utilizzati per salvare preferenze locali e mantenere il tuo stato tra le sessioni.",
+        segurancaLabel: "Sicurezza:",
+        segurancaTexto: "Dati crittografati e trattati responsabilmente.",
+        limitacoesLabel: "Limitazioni:",
+        limitacoesTexto: "Bocana non sostituisce consulenza medica, nutrizionale o psicologica.",
+        sub4: "Politica sulla Privacy",
+        infoLabel: "Informazioni raccolte:",
+        infoTexto: "Solo quelle necessarie per raccomandazioni alimentari ed emotive.",
+        internoLabel: "Uso interno:",
+        internoTexto: "Nessun dato è condiviso con terze parti.",
+        controleLabel: "Controllo totale:",
+        controleTexto: "Puoi cancellare o eliminare i tuoi dati in qualsiasi momento.",
+        p4: "Continuando, accetti i termini sopra e sei pronto a sentire con presenza.",
+        botaoContinuar: "Accetta e Continua",
+        footer: "&copy; 2025 Bocana – Nutrizione con Presenza",
+        cookieMessage: "Utilizziamo cookies per migliorare la tua esperienza. Continuando, accetti la nostra politica sui cookies.",
+        cookieAccept: "Accetta"
+      },
+      nl: {
+        pageTitle: "Bocana – Voorwaarden en Privacy",
+        titulo: "Bocana – Voeding met Aanwezigheid",
+        sub1: "Introductie",
+        p1: "<strong>Bocana</strong> is een platform dat zintuiglijke en voedingsgerelateerde ervaringen aanbeveelt op basis van je emotionele toestand, stemming en energie.",
+        objetivoLabel: "Doel:",
+        objetivoTexto: "Voedsel, dranken en zintuiglijke stimuli voorstellen die emotionele balans en welzijn bevorderen.",
+        funcionaLabel: "Hoe het werkt:",
+        funcionaTexto: "Je vertelt hoe je je voelt, en Bocana gebruikt deze gegevens om suggesties te leveren die zijn aangepast aan je huidige toestand.",
+        sub2: "Hoe Het Werkt",
+        alimentosLabel: "Voedsel en Dranken:",
+        alimentosTexto: "Om stemming, energie, focus of ontspanning te verbeteren.",
+        sensoriaisLabel: "Zintuiglijke Ervaringen:",
+        sensoriaisTexto: "Geluiden, geuren en texturen die je emotionele toestand begeleiden.",
+        sub3: "Gebruiksvoorwaarden",
+        coletaLabel: "Gegevensverzameling:",
+        coletaTexto: "Alleen stemming, energie en voedselvoorkeuren.",
+        usoLabel: "Gegevensgebruik:",
+        usoTexto: "Om je aanbevelingen te personaliseren en je toestand in de tijd te volgen.",
+        cookiesLabel: "Cookies:",
+        cookiesTexto: "Gebruikt om lokale voorkeuren op te slaan en je toestand tussen sessies te behouden.",
+        segurancaLabel: "Beveiliging:",
+        segurancaTexto: "Gegevens versleuteld en verantwoordelijk behandeld.",
+        limitacoesLabel: "Beperkingen:",
+        limitacoesTexto: "Bocana vervangt geen medische, voedings- of psychologische begeleiding.",
+        sub4: "Privacybeleid",
+        infoLabel: "Verzamelde informatie:",
+        infoTexto: "Alleen wat nodig is voor voedsel- en emotionele aanbevelingen.",
+        internoLabel: "Intern gebruik:",
+        internoTexto: "Geen gegevens worden gedeeld met derden.",
+        controleLabel: "Volledige controle:",
+        controleTexto: "Je kunt je gegevens op elk moment wissen of verwijderen.",
+        p4: "Door door te gaan, ga je akkoord met bovenstaande voorwaarden en ben je klaar om met aanwezigheid te voelen.",
+        botaoContinuar: "Accepteren en Doorgaan",
+        footer: "&copy; 2025 Bocana – Voeding met Aanwezigheid",
+        cookieMessage: "We gebruiken cookies om je ervaring te verbeteren. Door door te gaan, ga je akkoord met ons cookiebeleid.",
+        cookieAccept: "Accepteren"
+      }
+    };
+
+    // Função para obter o idioma atual
+    function getCurrentLanguage() {
+      return new URLSearchParams(window.location.search).get('lang') || 'pt';
+    }
+
+    // Função para aplicar traduções
+    function applyTranslations(lang) {
+      const translations = traducoesTermos[lang] || traducoesTermos.pt;
+      
+      // Atualizar título da página
+      document.title = translations.pageTitle;
+      document.getElementById('page-title').textContent = translations.pageTitle;
+      
+      // Atualizar todos os elementos com ID
+      const elements = {
+        'titulo': translations.titulo,
+        'sub1': translations.sub1,
+        'p1': translations.p1,
+        'objetivo-label': translations.objetivoLabel,
+        'objetivo-texto': translations.objetivoTexto,
+        'funciona-label': translations.funcionaLabel,
+        'funciona-texto': translations.funcionaTexto,
+        'sub2': translations.sub2,
+        'alimentos-label': translations.alimentosLabel,
+        'alimentos-texto': translations.alimentosTexto,
+        'sensoriais-label': translations.sensoriaisLabel,
+        'sensoriais-texto': translations.sensoriaisTexto,
+        'sub3': translations.sub3,
+        'coleta-label': translations.coletaLabel,
+        'coleta-texto': translations.coletaTexto,
+        'uso-label': translations.usoLabel,
+        'uso-texto': translations.usoTexto,
+        'cookies-label': translations.cookiesLabel,
+        'cookies-texto': translations.cookiesTexto,
+        'seguranca-label': translations.segurancaLabel,
+        'seguranca-texto': translations.segurancaTexto,
+        'limitacoes-label': translations.limitacoesLabel,
+        'limitacoes-texto': translations.limitacoesTexto,
+        'sub4': translations.sub4,
+        'info-label': translations.infoLabel,
+        'info-texto': translations.infoTexto,
+        'interno-label': translations.internoLabel,
+        'interno-texto': translations.internoTexto,
+        'controle-label': translations.controleLabel,
+        'controle-texto': translations.controleTexto,
+        'p4': translations.p4,
+        'botao-continuar': translations.botaoContinuar,
+        'footer': translations.footer,
+        'cookie-message': translations.cookieMessage,
+        'cookie-accept': translations.cookieAccept
+      };
+
+      Object.keys(elements).forEach(id => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.innerHTML = elements[id];
+        }
+      });
+    }
+
+    // Função para mudar idioma
+    window.changeLanguage = function() {
+      const select = document.getElementById('language-select');
+      const newLang = select.value;
+      const currentUrl = new URL(window.location);
+      currentUrl.searchParams.set('lang', newLang);
+      window.location.href = currentUrl.toString();
+    };
+
+    // Função para mostrar/esconder banner de cookies
+    function showCookieBanner() {
+      const cookieConsent = localStorage.getItem('cookieConsent');
+      if (!cookieConsent) {
+        document.getElementById('cookie-banner').classList.add('show');
+      }
+    }
+
+    // Função para aceitar cookies
+    window.acceptCookies = function() {
+      localStorage.setItem('cookieConsent', 'true');
+      document.getElementById('cookie-banner').classList.remove('show');
+    };
+
+    // Função para aceitar termos e redirecionar
+    window.aceitarTermos = async function() {
+      const lang = getCurrentLanguage();
+      
       try {
         await addDoc(collection(db, "consentimentos"), {
           timestamp: new Date().toISOString(),
@@ -78,12 +757,29 @@
           consentido: true,
           origem: window.location.pathname
         });
-        window.location.href = `${proximaUrl}?lang=${lang}`;
+        
+        // Redirecionar para bocana-portal.html mantendo o idioma
+        window.location.href = `bocana-portal.html?lang=${lang}`;
       } catch (e) {
+        const translations = traducoesTermos[lang] || traducoesTermos.pt;
         alert("Erro ao registrar consentimento. Tente novamente.");
         console.error(e);
       }
     };
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentLang = getCurrentLanguage();
+      
+      // Definir idioma selecionado no select
+      document.getElementById('language-select').value = currentLang;
+      
+      // Aplicar traduções
+      applyTranslations(currentLang);
+      
+      // Mostrar banner de cookies se necessário
+      showCookieBanner();
+    });
   </script>
 </body>
 </html>

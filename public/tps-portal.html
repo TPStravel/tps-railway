@@ -398,10 +398,10 @@
             <h1 class="hero-title">TPS</h1>
             <p class="hero-subtitle">O mundo físico em transição.<br>Aqui, a jornada é real. Mas sua alma ainda escolhe.</p>
             
-            <div class="video-placeholder">
-                <p>🎬 Área reservada para cards de vídeo promocional</p>
-                <p>Em breve: depoimentos, trailers e experiências reais</p>
-            </div>
+        <div class="video-placeholder">
+            <p style="font-size: 1.2rem;">🎭 Vozes de quem escolheu partir</p>
+            <p style="font-style: italic; opacity: 0.8;">"A viagem não termina. Ela se transforma."</p>
+        </div>
             
             <a href="#sobre" class="btn btn-primary">Descobrir o TPS</a>
         </div>
@@ -557,7 +557,7 @@
                         <li>✅ Suporte via plataforma</li>
                         <li>✅ Cancelamento a qualquer momento</li>
                     </ul>
-                    <a href="#" class="btn btn-outline">Escolher Básico</a>
+                    <a href="#" class="btn btn-outline" onclick="alert('📌 Em breve você poderá ativar seu plano. Por enquanto, o TPS está disponível gratuitamente.')">Escolher Básico</a>
                 </div>
                 
                 <div class="pricing-card featured">
@@ -571,7 +571,7 @@
                         <li>⚠️ Mensagens extras cobradas à parte</li>
                         <li>✅ Atendimento prioritário</li>
                     </ul>
-                    <a href="#" class="btn btn-primary">Escolher Pro</a>
+                    <a href="#" class="btn btn-primary" onclick="alert('📌 Em breve você poderá ativar seu plano. Por enquanto, o TPS está disponível gratuitamente.')">Escolher Pro</a>
                 </div>
             </div>
             
@@ -607,7 +607,7 @@
                 
                 <p style="margin: 30px 0;"><strong>Política de parceria:</strong> Todas as ofertas devem ser coerentes com a proposta simbólica e respeitosa do TPS. As integrações são feitas por contexto — a IA só mostra sua marca quando ela fizer sentido.</p>
                 
-                <a href="mailto:parcerias@tps.com" class="btn btn-secondary">💌 Quero ser parceiro</a>
+                <a href="tps-parceria.html" class="btn btn-secondary" target="_blank">💌 Quero ser parceiro</a>
             </div>
         </div>
     </section>
@@ -617,8 +617,8 @@
     <div class="container" style="text-align: center;">
         <h3 style="color: white; margin-bottom: 30px;">Pronto para começar sua jornada?</h3>
         
-        <a onclick="mostrarConsentimento()" class="btn btn-primary" style="cursor: pointer;">🚀 Entrar no TPS</a>
-        <a href="worlds.html" class="btn btn-secondary">🌍 🌍 Escolher outro portal</a>
+        <a href="tps-gpt.html" class="btn btn-primary">🚀 Entrar no TPS</a>
+        <a href="portal4.html" class="btn btn-secondary">🌍 🌍 Escolher outro portal</a>
         <a href="index.html" class="btn btn-secondary">🏠 Voltar à Origem</a>
     </div>
 </section>
@@ -648,53 +648,50 @@
             });
         }, observerOptions);
 
-        document.querySelectorAll('.step-card').forEach(card => {
-            observer.observe(card);
-        });
+   <script>
+  // Smooth scrolling for internal links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.querySelector(this.getAttribute('href')).scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+  });
 
-        // Firestore integration placeholder (activate when ready)
-        function logAccess() {
-            const data = {
-                mundo: 'tps',
-                idioma: navigator.language || 'pt',
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent
-            };
-            
-            console.log('TPS Access:', data);
-            // TODO: Integrate with Firestore when ready
-        }
+  // Fade in animation on scroll
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
 
-        // Log access on page load
-        window.addEventListener('load', logAccess);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('fade-in');
+      }
+    });
+  }, observerOptions);
 
-        // Language detection and preparation for multilingual support
-        const supportedLanguages = ['pt', 'en', 'es', 'fr', 'de', 'it', 'ru', 'zh', 'ja', 'ko', 'ar', 'hi'];
-        const urlParams = new URLSearchParams(window.location.search);
-        const lang = urlParams.get('lang') || navigator.language.substr(0, 2) || 'pt';
-        
-        if (supportedLanguages.includes(lang) && lang !== 'pt') {
-            console.log(`Language ${lang} detected - translation system ready for activation`);
-        }
-   <!-- Botão com nova função -->
-<a href="#" onclick="mostrarConsentimento()" class="btn btn-primary">🚀 Entrar no TPS</a>
+  document.querySelectorAll('.step-card').forEach(card => {
+    observer.observe(card);
+  });
 
-<script>
-  function mostrarConsentimento() {
-    if (!localStorage.getItem('cookieConsent')) {
-      const banner = document.createElement('div');
-      banner.innerHTML = `
-        <div style="position:fixed;bottom:0;width:100%;background:#111;color:white;padding:10px;text-align:center;z-index:9999;">
-          Este site usa cookies para melhorar sua experiência.
-          <button style="margin-left:10px;padding:5px 10px;background:#4CAF50;border:none;color:white;cursor:pointer;" onclick="aceitarConsentimento(this)">Aceitar</button>
-        </div>
-      `;
-      document.body.appendChild(banner);
-    } else {
-      redirecionarParaTPS();
-    }
+  // Firestore integration placeholder (activate when ready)
+  function logAccess() {
+    const data = {
+      mundo: 'tps',
+      idioma: navigator.language || 'pt',
+      timestamp: new Date().toISOString(),
+      userAgent: navigator.userAgent
+    };
+    console.log('TPS Access:', data);
   }
 
+  // Log access on page load
+  window.addEventListener('load', logAccess);
+
+  // Redirecionamento para TPS funcional
   function aceitarConsentimento(botao) {
     localStorage.setItem('cookieConsent', 'true');
     botao.parentElement.remove();
@@ -702,7 +699,6 @@
   }
 
   function redirecionarParaTPS() {
-    // Aqui você pode registrar o acesso se quiser (Firestore)
     window.location.href = 'tps-gpt.html';
   }
 </script>
