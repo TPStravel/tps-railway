@@ -1,14 +1,750 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>CANAL VIVO – Bem-vindo</title>
-  </head>
-  <body style="font-family: sans-serif; text-align: center; padding-top: 20%;">
-    <h1>Bem-vindo ao Canal Vivo</h1>
-    <p>Escolha como deseja começar:</p>
-    <a href="intro.html">
-      <button style="padding: 10px 20px; font-size: 16px;">Entrar</button>
-    </a>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>CANAL VIVO</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- PWA CONFIG -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#0d0d0d">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+      projectId: "canal-vivo-4cd4a",
+      storageBucket: "canal-vivo-4cd4a.appspot.com",
+      messagingSenderId: "1003445191655",
+      appId: "1:1003445191655:web:c6c7915bf02979c10af342"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.registerAccess = async function(lang) {
+      try {
+        await addDoc(collection(db, "acessos_index"), {
+          timestamp: new Date().toISOString(),
+          lang,
+          consent: true
+        });
+        console.log(`✅ Access registered for language: ${lang}`);
+      } catch (e) {
+        console.error("Erro ao registrar acesso:", e);
+      }
+    };
+  </script>
+  
+  <style>
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+    
+    body {
+      font-family: 'Inter', 'Montserrat', Arial, sans-serif;
+      background: #0a0a0f;
+      color: #ffffff;
+      position: relative;
+    }
+    
+    /* Enhanced Dark Mist Background with Depth */
+    .background-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: radial-gradient(ellipse at center, 
+        rgba(15, 23, 42, 0.9) 0%,
+        rgba(8, 12, 25, 0.95) 40%,
+        rgba(2, 6, 15, 0.98) 80%,
+        rgba(0, 0, 0, 1) 100%);
+    }
+    
+    /* Enhanced Mist with More Layers */
+    .mist-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(46, 166, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 60%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 70% 30%, rgba(16, 185, 129, 0.04) 0%, transparent 60%),
+        radial-gradient(circle at 10% 70%, rgba(236, 72, 153, 0.03) 0%, transparent 55%);
+      animation: mistFlow 25s ease-in-out infinite alternate;
+    }
+    
+    @keyframes mistFlow {
+      0% { 
+        opacity: 0.4; 
+        transform: translateX(-15px) translateY(-10px) scale(1); 
+      }
+      25% { 
+        opacity: 0.7; 
+        transform: translateX(10px) translateY(15px) scale(1.05); 
+      }
+      50% { 
+        opacity: 0.6; 
+        transform: translateX(5px) translateY(-5px) scale(0.98); 
+      }
+      75% { 
+        opacity: 0.8; 
+        transform: translateX(-8px) translateY(12px) scale(1.02); 
+      }
+      100% { 
+        opacity: 0.5; 
+        transform: translateX(-5px) translateY(-15px) scale(1); 
+      }
+    }
+    
+    /* Floating Bubbles Animation */
+    .bubbles-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    
+    .bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, 
+        rgba(46, 166, 255, 0.15), 
+        rgba(46, 166, 255, 0.05), 
+        rgba(46, 166, 255, 0.02));
+      backdrop-filter: blur(2px);
+      animation: bubbleFloat linear infinite;
+    }
+    
+    .bubble:nth-child(1) {
+      width: 8px;
+      height: 8px;
+      left: 10%;
+      animation-duration: 15s;
+      animation-delay: 0s;
+    }
+    
+    .bubble:nth-child(2) {
+      width: 12px;
+      height: 12px;
+      left: 25%;
+      animation-duration: 18s;
+      animation-delay: 2s;
+    }
+    
+    .bubble:nth-child(3) {
+      width: 6px;
+      height: 6px;
+      left: 45%;
+      animation-duration: 20s;
+      animation-delay: 4s;
+    }
+    
+    .bubble:nth-child(4) {
+      width: 10px;
+      height: 10px;
+      left: 65%;
+      animation-duration: 16s;
+      animation-delay: 1s;
+    }
+    
+    .bubble:nth-child(5) {
+      width: 14px;
+      height: 14px;
+      left: 80%;
+      animation-duration: 22s;
+      animation-delay: 3s;
+    }
+    
+    .bubble:nth-child(6) {
+      width: 9px;
+      height: 9px;
+      left: 90%;
+      animation-duration: 19s;
+      animation-delay: 5s;
+    }
+    
+    @keyframes bubbleFloat {
+      0% {
+        transform: translateY(120vh) scale(0.8);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateY(-20vh) scale(1.2);
+        opacity: 0;
+      }
+    }
+    
+    /* Main Container */
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* Enhanced Logo with Deeper Pulsing */
+    .logo-container {
+      margin-bottom: 30px;
+      animation: logoAppear 2s ease-out;
+    }
+    
+    .logo {
+      font-size: 120px;
+      font-weight: 900;
+      color: #2ea6ff;
+      letter-spacing: -8px;
+      text-shadow: 
+        0 0 30px rgba(46, 166, 255, 0.4),
+        0 0 60px rgba(46, 166, 255, 0.3),
+        0 0 100px rgba(46, 166, 255, 0.2),
+        0 0 150px rgba(46, 166, 255, 0.1);
+      animation: logoPulse 3.5s ease-in-out infinite;
+      user-select: none;
+    }
+    
+    @keyframes logoPulse {
+      0%, 100% { 
+        transform: scale(1); 
+        opacity: 0.85;
+        text-shadow: 
+          0 0 30px rgba(46, 166, 255, 0.4),
+          0 0 60px rgba(46, 166, 255, 0.3),
+          0 0 100px rgba(46, 166, 255, 0.2);
+      }
+      50% { 
+        transform: scale(1.08); 
+        opacity: 1;
+        text-shadow: 
+          0 0 40px rgba(46, 166, 255, 0.6),
+          0 0 80px rgba(46, 166, 255, 0.4),
+          0 0 120px rgba(46, 166, 255, 0.3),
+          0 0 180px rgba(46, 166, 255, 0.2);
+      }
+    }
+    
+    @keyframes logoAppear {
+      0% { opacity: 0; transform: translateY(-30px) scale(0.9); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    
+    /* Enhanced Title */
+    .main-title {
+      font-size: 42px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 40px;
+      text-align: center;
+      letter-spacing: 3px;
+      text-shadow: 
+        2px 2px 0 rgba(46, 166, 255, 0.3),
+        0 0 20px rgba(46, 166, 255, 0.2);
+      animation: titleFadeIn 2s ease-out 0.5s both;
+    }
+    
+    @keyframes titleFadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Enhanced Slogan */
+    .slogan {
+      font-size: 24px;
+      font-weight: 400;
+      color: #a8b3cf;
+      text-align: center;
+      max-width: 800px;
+      line-height: 1.7;
+      margin-bottom: 60px;
+      animation: sloganFadeIn 2s ease-out 1s both;
+    }
+    
+    .slogan .highlight {
+      color: #2ea6ff;
+      font-weight: 600;
+      text-shadow: 0 0 10px rgba(46, 166, 255, 0.3);
+    }
+    
+    @keyframes sloganFadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Optimized Flags Grid - 6 per row */
+    .flags-container {
+      animation: flagsAppear 2s ease-out 1.5s both;
+    }
+    
+    .flags-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 25px;
+      max-width: 900px;
+      justify-items: center;
+      margin-bottom: 40px;
+    }
+    
+    @keyframes flagsAppear {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Enhanced Flag Cards */
+    .flag-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #ffffff;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      padding: 18px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .flag-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, 
+        rgba(46, 166, 255, 0.05) 0%, 
+        rgba(139, 92, 246, 0.03) 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    
+    .flag-card:hover::before {
+      opacity: 1;
+    }
+    
+    .flag-card:hover {
+      transform: translateY(-12px) scale(1.08);
+      background: rgba(46, 166, 255, 0.1);
+      border-color: rgba(46, 166, 255, 0.3);
+      box-shadow: 
+        0 15px 50px rgba(46, 166, 255, 0.2),
+        0 0 30px rgba(46, 166, 255, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    
+    .flag-img {
+      width: 70px;
+      height: 47px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid rgba(46, 166, 255, 0.3);
+      transition: all 0.4s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .flag-card:hover .flag-img {
+      border-color: #2ea6ff;
+      box-shadow: 
+        0 8px 25px rgba(46, 166, 255, 0.3),
+        0 0 15px rgba(46, 166, 255, 0.2);
+      transform: scale(1.05);
+    }
+    
+    .flag-label {
+      margin-top: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #a8b3cf;
+      transition: all 0.4s ease;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .flag-card:hover .flag-label {
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(46, 166, 255, 0.5);
+    }
+    
+    /* Enhanced Interactive Message */
+    .interaction-hint {
+      text-align: center;
+      color: #6b7280;
+      font-size: 16px;
+      font-weight: 400;
+      margin-top: 50px;
+      animation: hintPulse 4s ease-in-out infinite;
+    }
+    
+    @keyframes hintPulse {
+      0%, 100% { opacity: 0.5; transform: translateY(0); }
+      50% { opacity: 1; transform: translateY(-2px); }
+    }
+    
+    /* Responsive Design - Improved */
+    @media (max-width: 1200px) {
+      .flags-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        max-width: 700px;
+      }
+    }
+    
+    @media (max-width: 900px) {
+      .flags-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        max-width: 500px;
+      }
+      
+      .flag-img {
+        width: 60px;
+        height: 40px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 30px 15px;
+      }
+      
+      .logo {
+        font-size: 90px;
+        letter-spacing: -6px;
+      }
+      
+      .main-title {
+        font-size: 32px;
+        margin-bottom: 30px;
+        letter-spacing: 2px;
+      }
+      
+      .slogan {
+        font-size: 20px;
+        margin-bottom: 50px;
+        max-width: 600px;
+      }
+      
+      .flags-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        max-width: 400px;
+      }
+      
+      .flag-img {
+        width: 55px;
+        height: 37px;
+      }
+      
+      .flag-label {
+        font-size: 11px;
+      }
+      
+      .flag-card {
+        padding: 15px 10px;
+      }
+    }
+    
+    @media (max-width: 600px) {
+      .flags-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        max-width: 320px;
+      }
+      
+      .logo {
+        font-size: 70px;
+        letter-spacing: -4px;
+      }
+      
+      .main-title {
+        font-size: 28px;
+      }
+      
+      .slogan {
+        font-size: 18px;
+        max-width: 500px;
+      }
+      
+      .flag-img {
+        width: 65px;
+        height: 43px;
+      }
+      
+      .flag-card {
+        padding: 18px 15px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .logo {
+        font-size: 60px;
+        letter-spacing: -3px;
+      }
+      
+      .main-title {
+        font-size: 24px;
+      }
+      
+      .slogan {
+        font-size: 16px;
+      }
+      
+      .flag-img {
+        width: 60px;
+        height: 40px;
+      }
+    }
+    
+    /* Performance Optimizations */
+    .flag-img, .flag-card, .logo, .bubble {
+      will-change: transform;
+    }
+    
+    /* Touch-friendly mobile interactions */
+    @media (hover: none) and (pointer: coarse) {
+      .flag-card:active {
+        transform: translateY(-8px) scale(1.05);
+        background: rgba(46, 166, 255, 0.08);
+        border-color: rgba(46, 166, 255, 0.2);
+      }
+    }
+    
+    /* Loading States */
+    .loading {
+      opacity: 0;
+      animation: fadeIn 0.6s ease-in-out forwards;
+    }
+    
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* Debug helper for language verification */
+    .debug-info {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.8);
+      color: #00ff00;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 10px;
+      z-index: 1000;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- Debug info for language verification -->
+  <div class="debug-info" id="debugInfo">Loading...</div>
+
+  <!-- Enhanced Dark Mist Background -->
+  <div class="background-container">
+    <div class="mist-overlay"></div>
+    <!-- Floating Bubbles -->
+    <div class="bubbles-container">
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+      <div class="bubble"></div>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-container">
+    <div class="logo-container">
+      <div class="logo">V</div>
+    </div>
+    
+    <h1 class="main-title">CANAL VIVO</h1>
+    
+    <div class="slogan">
+      <span class="highlight">Four worlds. One inner path.</span><br>
+      Where technology meets your soul.<br>
+      Choose your start... and cross over.
+    </div>
+    
+    <div class="flags-container">
+      <div class="flags-grid">
+        <a class="flag-card" href="intro.html?lang=en" data-lang="en" onclick="handleLanguageClick('en', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/us.png" alt="English" loading="lazy">
+          <div class="flag-label">English</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=es" data-lang="es" onclick="handleLanguageClick('es', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/es.png" alt="Español" loading="lazy">
+          <div class="flag-label">Español</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=fr" data-lang="fr" onclick="handleLanguageClick('fr', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/fr.png" alt="Français" loading="lazy">
+          <div class="flag-label">Français</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=de" data-lang="de" onclick="handleLanguageClick('de', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/de.png" alt="Deutsch" loading="lazy">
+          <div class="flag-label">Deutsch</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=ja" data-lang="ja" onclick="handleLanguageClick('ja', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/jp.png" alt="日本語" loading="lazy">
+          <div class="flag-label">日本語</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=zh" data-lang="zh" onclick="handleLanguageClick('zh', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/cn.png" alt="中文" loading="lazy">
+          <div class="flag-label">中文</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=ru" data-lang="ru" onclick="handleLanguageClick('ru', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/ru.png" alt="Русский" loading="lazy">
+          <div class="flag-label">Русский</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=hi" data-lang="hi" onclick="handleLanguageClick('hi', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/in.png" alt="हिन्दी" loading="lazy">
+          <div class="flag-label">हिन्दी</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=pt" data-lang="pt" onclick="handleLanguageClick('pt', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/br.png" alt="Português" loading="lazy">
+          <div class="flag-label">Português</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=ko" data-lang="ko" onclick="handleLanguageClick('ko', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/kr.png" alt="한국어" loading="lazy">
+          <div class="flag-label">한국어</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=it" data-lang="it" onclick="handleLanguageClick('it', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/it.png" alt="Italiano" loading="lazy">
+          <div class="flag-label">Italiano</div>
+        </a>
+        
+        <a class="flag-card" href="intro.html?lang=nl" data-lang="nl" onclick="handleLanguageClick('nl', this)">
+          <img class="flag-img" src="https://flagcdn.com/w320/nl.png" alt="Nederlands" loading="lazy">
+          <div class="flag-label">Nederlands</div>
+        </a>
+      </div>
+      
+      <div class="interaction-hint" id="langHint">
+        Select your language to begin your journey
+      </div>
+    </div>
+  </div>
+  
+  <!-- Service Worker Registration -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js')
+        .then(() => console.log('✅ Service Worker registrado!'))
+        .catch((err) => console.error('❌ Erro ao registrar Service Worker:', err));
+    }
+    
+    // Enhanced language handling with better debugging
+    function handleLanguageClick(lang, element) {
+      console.log(`🌐 Language selected: ${lang}`);
+      
+      // Register access first
+      if (window.registerAccess) {
+        window.registerAccess(lang);
+      }
+      
+      // Visual feedback
+      element.style.transform = 'scale(1.1)';
+      element.style.background = 'rgba(46, 166, 255, 0.2)';
+      
+      // Debug info
+      const debugEl = document.getElementById('debugInfo');
+      debugEl.textContent = `Selected: ${lang} → intro.html?lang=${lang}`;
+      debugEl.style.display = 'block';
+      
+      // Small delay to show feedback, then navigate
+      setTimeout(() => {
+        const targetUrl = `intro.html?lang=${lang}`;
+        console.log(`🚀 Navigating to: ${targetUrl}`);
+        window.location.href = targetUrl;
+      }, 300);
+      
+      // Prevent default to ensure our handling works
+      return false;
+    }
+    
+    // Performance optimization: Preload critical resources
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add loading class to elements for smooth transitions
+      const elements = document.querySelectorAll('.flag-card');
+      elements.forEach((el, index) => {
+        el.style.animationDelay = `${index * 0.15}s`;
+        el.classList.add('loading');
+      });
+      
+      // Initialize hint text
+      updateHintText();
+    });
+    
+    // Enhanced multilingual hint text
+    function updateHintText() {
+      const lang = new URLSearchParams(window.location.search).get("lang") || "en";
+      
+      const traducoes = {
+        pt: "Selecione seu idioma para iniciar sua jornada",
+        en: "Select your language to begin your journey",
+        ja: "言語を選択して旅を始めましょう",
+        ko: "언어를 선택하고 여정을 시작하세요",
+        es: "Selecciona tu idioma para comenzar tu viaje",
+        fr: "Sélectionnez votre langue pour commencer votre voyage",
+        de: "Wähle deine Sprache, um deine Reise zu beginnen",
+        it: "Seleziona la tua lingua per iniziare il viaggio",
+        zh: "选择你的语言开始旅程",
+        ru: "Выберите язык, чтобы начать свое путешествие",
+        hi: "अपनी यात्रा शुरू करने के लिए भाषा चुनें",
+        nl: "Selecteer je taal om je reis te beginnen"
+      };
+
+      const texto = traducoes[lang] || traducoes["en"];
+      document.getElementById("langHint").innerText = texto;
+      
+      // Debug info
+      console.log(`💬 Hint text set to: ${lang} → "${texto}"`);
+    }
+  </script>
+</body>
 </html>
