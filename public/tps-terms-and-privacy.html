@@ -382,11 +382,15 @@
       try {
         await addDoc(collection(db, "consentimentos"), {
           timestamp: new Date().toISOString(),
-          lang,
+          lang: lang || "pt",
           consentido: true,
-          origem: window.location.pathname
+          origem: window.location.pathname || "desconhecido"
         });
-        window.location.href = `${proximaUrl}?lang=${lang}`;
+
+       const nextUrl = new URL(proximaUrl, window.location.origin);
+       nextUrl.searchParams.set("lang", lang);
+       window.location.href = nextUrl.toString();
+
       } catch (e) {
         alert("Erro ao registrar consentimento. Tente novamente.");
         console.error(e);
