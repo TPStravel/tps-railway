@@ -1,0 +1,6 @@
+<script>
+  if (!localStorage.getItem('temarix_navigator_pass')) {
+    alert("🔒 이 여정은 Navigator 구독이 필요합니다.");
+    window.location.href = "temarix-portal.html";
+  }
+</script>

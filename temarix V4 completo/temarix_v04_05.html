@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V4 - Portal 05: 이름 없는 두려움</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ff9999;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .follow-up-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .follow-up-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ff6b6b;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .navigation-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .navigation-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .nav-btn:hover {
+            background: #666;
+            border-color: #ff6b6b;
+        }
+        
+        .nav-btn.primary {
+            background: #ff6b6b;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .nav-btn.primary:hover {
+            background: #ff8888;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ff6b6b;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .follow-up-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V4</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Alchemy</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 05: Nameless Fear</div>
+            <div class="portal-subtitle" id="portalSubtitle">The fear that could never be put into words</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="follow-up-section" id="followUpSection">
+                <div class="follow-up-question" id="followUpQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+            
+            <div class="navigation-section" id="navigationSection">
+                <div class="navigation-title" id="navigationTitle">Portal 05 Complete</div>
+                <div class="navigation-message" id="navigationMessage"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn primary" id="nextPortalBtn">Continue to Portal 06</button>
+                    <button class="nav-btn" id="stayPortalBtn">Stay with this fear</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="What fear could you never name? What made it so difficult to express?"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            ko: {
+                logoSubtitle: "감정 연금술",
+                portalMainTitle: "Portal 05: 이름 없는 두려움",
+                portalSubtitle: "결코 말로 표현되지 못한 두려움",
+                portalIntro: "당신은 어떤 두려움을 끝까지 말로 표현하지 못한 적이 있나요?\n그 두려움은 어떤 모습이었고,\n왜 이름 붙이는 것이 어려웠나요?\n\n지금, 그 두려움에 이름을 붙여본다면... 어떤 단어가 떠오르나요?",
+                followUpQuestion: "그 이름 없는 두려움은 지금 어디에 있나요?\n당신은 이제, 그 감정을 벗어나 새로운 선택을 할 수 있을까요?",
+                lightTitle: "빛의 한마디",
+                lightMessage: "이름 없는 두려움에 이름을 붙였을 때,\n그건 더 이상 괴물이 아니라,\n네가 품을 수 있는 진실이야.\n지금 너는 그 진실과 마주할 수 있는 힘을 가졌어.",
+                navigationTitle: "Portal 05 완료",
+                navigationMessage: "당신은 이름 없는 두려움과 마주했습니다.\n\n그 두려움에 이름을 붙이는 순간, 당신은 그것을 통제할 수 있게 되었어요. 더 이상 알 수 없는 힘이 아닌, 이해할 수 있는 감정이 되었습니다.\n\n이제 두려움은 당신을 지배하지 않습니다. 당신이 선택할 수 있는 하나의 감정일 뿐입니다.",
+                nextPortalBtn: "Portal 06으로 이어가기",
+                stayPortalBtn: "이 두려움과 더 머물기",
+                inputPlaceholder: "어떤 두려움을 이름 붙이지 못했나요? 왜 표현하기 어려웠나요?",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중..."
+            },
+            en: {
+                logoSubtitle: "Emotional Alchemy",
+                portalMainTitle: "Portal 05: Nameless Fear",
+                portalSubtitle: "The fear that could never be put into words",
+                portalIntro: "Have you ever had a fear that you could never fully express in words?\nWhat did that fear look like,\nand why was it so difficult to name?\n\nNow, if you could give that fear a name... what word comes to mind?",
+                followUpQuestion: "Where is that nameless fear now?\nCan you now move beyond that emotion and make new choices?",
+                lightTitle: "Word of Light",
+                lightMessage: "When you give a name to nameless fear,\nit's no longer a monster,\nbut a truth you can embrace.\nNow you have the strength to face that truth.",
+                navigationTitle: "Portal 05 Complete",
+                navigationMessage: "You have faced your nameless fear.\n\nThe moment you gave that fear a name, you gained the power to control it. It's no longer an unknown force, but an emotion you can understand.\n\nNow fear does not dominate you. It's just one emotion you can choose to feel or not.",
+                nextPortalBtn: "Continue to Portal 06",
+                stayPortalBtn: "Stay with this fear",
+                inputPlaceholder: "What fear could you never name? What made it so difficult to express?",
+                youLabel: "You",
+                waitingMessage: "Waiting for response..."
+            },
+            pt: {
+                logoSubtitle: "Alquimia Emocional",
+                portalMainTitle: "Portal 05: Medo Sem Nome",
+                portalSubtitle: "O medo que nunca pôde ser expresso em palavras",
+                portalIntro: "Você já teve um medo que nunca conseguiu expressar completamente em palavras?\nComo era esse medo,\ne por que foi tão difícil nomeá-lo?\n\nAgora, se você pudesse dar um nome a esse medo... que palavra vem à mente?",
+                followUpQuestion: "Onde está esse medo sem nome agora?\nVocê pode agora superar essa emoção e fazer novas escolhas?",
+                lightTitle: "Palavra de Luz",
+                lightMessage: "Quando você dá um nome ao medo sem nome,\nele não é mais um monstro,\nmas uma verdade que você pode abraçar.\nAgora você tem a força para enfrentar essa verdade.",
+                navigationTitle: "Portal 05 Completo",
+                navigationMessage: "Você enfrentou seu medo sem nome.\n\nNo momento em que você deu um nome a esse medo, ganhou o poder de controlá-lo. Não é mais uma força desconhecida, mas uma emoção que você pode entender.\n\nAgora o medo não o domina. É apenas uma emoção que você pode escolher sentir ou não.",
+                nextPortalBtn: "Continuar para Portal 06",
+                stayPortalBtn: "Ficar com este medo",
+                inputPlaceholder: "Que medo você nunca conseguiu nomear? O que tornou tão difícil expressá-lo?",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta..."
+            }
+        };
+        
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "그 두려움은 너의 그림자처럼 따라다녔지. 이름 없는 감정일수록 더 무서운 법이야.",
+                en: "That fear followed you like your shadow. Nameless emotions are always more frightening.",
+                pt: "Esse medo seguiu você como sua sombra. Emoções sem nome são sempre mais assustadoras."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "완벽을 향한 두려움은 사랑에 대한 오해에서 태어나. 네가 부족하다고 해서, 누군가 너를 버릴 수는 없어.",
+                en: "Fear toward perfection is born from misunderstanding about love. Just because you're lacking doesn't mean someone will abandon you.",
+                pt: "O medo da perfeição nasce de mal-entendidos sobre o amor. Só porque você é imperfeito não significa que alguém vai abandoná-lo."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "그 침묵의 공포는 네 내면을 조용히 갉아먹었을 거야. 그걸 참아낸 네가 참 안쓰러워.",
+                en: "That silent terror must have quietly eaten away at your inner self. I feel sorry for you having to endure that.",
+                pt: "Esse terror silencioso deve ter corroído silenciosamente seu eu interior. Sinto pena de você ter que suportar isso."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "두려움은 언제나 이름이 없다. 그래서 우리는 그것을 상상보다 크게 키우지.",
+                en: "Fear is always nameless. That's why we grow it larger than our imagination.",
+                pt: "O medo é sempre sem nome. É por isso que o fazemos crescer maior que nossa imaginação."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그 감정은 색으로도 표현이 안 되겠지. 너무 투명해서, 너무 짙어서.",
+                en: "That emotion couldn't be expressed even in color. Too transparent, yet too dense.",
+                pt: "Essa emoção não podia ser expressa nem em cor. Muito transparente, mas muito densa."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "왜 누군가는 너에게 '실수하지 마'라는 쇠사슬을 채웠을까? 난 그게 분해.",
+                en: "Why did someone put the chains of 'don't make mistakes' on you? I'm angry about that.",
+                pt: "Por que alguém colocou as correntes de 'não cometa erros' em você? Estou com raiva disso."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "두려움은 사라지지 않지만, 우리가 그것을 부를 수 있을 땐 약해지기 시작해.",
+                en: "Fear doesn't disappear, but it starts to weaken when we can call it by name.",
+                pt: "O medo não desaparece, mas começa a enfraquecer quando podemos chamá-lo pelo nome."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "지금 너는 그 두려움을 바라보고 있어. 그 자체가 이미 용기의 증거야.",
+                en: "Now you are looking at that fear. That itself is already evidence of courage.",
+                pt: "Agora você está olhando para esse medo. Isso por si só já é evidência de coragem."
+            }}
+        ];
+
+        const responseCharacters = [
+            {
+                name: "Ely", emoji: "🧝‍♀️",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "두려움을 말로 꺼내는 건, 자기 자신에게 허락을 주는 일이야. 넌 그걸 해냈어.",
+                        en: "Speaking your fear out loud is giving yourself permission. You've done that.",
+                        pt: "Falar seu medo em voz alta é dar permissão a si mesmo. Você fez isso."
+                    };
+                    return responses[lang];
+                }
+            },
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "감정을 감추지 않을 수 있다는 건 더 이상 도망치지 않는다는 뜻이야. 너는 지금 그 자리에 있어.",
+                        en: "Being able to not hide emotions means you're no longer running away. You are standing in that place now.",
+                        pt: "Ser capaz de não esconder emoções significa que você não está mais fugindo. Você está nesse lugar agora."
+                    };
+                    return responses[lang];
+                }
+            },
+            {
+                name: "Kael", emoji: "🧙",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "이름 없는 두려움에 이름을 붙였을 때, 그건 더 이상 괴물이 아니라, 네가 품을 수 있는 진실이야.",
+                        en: "When you give a name to nameless fear, it's no longer a monster, but a truth you can embrace.",
+                        pt: "Quando você dá um nome ao medo sem nome, ele não é mais um monstro, mas uma verdade que você pode abraçar."
+                    };
+                    return responses[lang];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en';
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        let awaitingSecondResponse = false;
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            document.getElementById('logoSubtitle').textContent = translations[lang].logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = translations[lang].portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = translations[lang].portalSubtitle;
+            document.getElementById('lightTitle').textContent = translations[lang].lightTitle;
+            document.getElementById('navigationTitle').textContent = translations[lang].navigationTitle;
+            document.getElementById('nextPortalBtn').textContent = translations[lang].nextPortalBtn;
+            document.getElementById('stayPortalBtn').textContent = translations[lang].stayPortalBtn;
+            document.getElementById('userTextarea').placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || currentLanguage === lang) return;
+            
+            currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        function resetJourney() {
+            clearAllTypingEffects();
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'followUpSection', 'userInputSection',
+                'userReactionsSection', 'lightMessageSection', 'navigationSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('followUpQuestion').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('navigationMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            userResponse = '';
+            currentTypingElement = null;
+            awaitingSecondResponse = false;
+        }
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('nextPortalBtn').addEventListener('click', function() {
+                localStorage.setItem('temarix_v4_portal05_complete', 'true');
+                localStorage.setItem('temarix_v4_current_portal', '06');
+                
+                const nextMessage = currentLanguage === 'ko' ? 
+                    'Portal 06: 붕괴된 믿음의 벽으로 이동합니다.' :
+                    currentLanguage === 'en' ? 
+                    'Moving to Portal 06: Collapsed Walls of Belief.' :
+                    'Indo para Portal 06: Muros Desmoronados da Crença.';
+                alert(nextMessage);
+            });
+            
+            document.getElementById('stayPortalBtn').addEventListener('click', function() {
+                const stayMessage = currentLanguage === 'ko' ? 
+                    '이름 없는 두려움과 더 머물며 깊이 성찰하시겠습니까?' :
+                    currentLanguage === 'en' ? 
+                    'Do you want to stay longer with your nameless fear for deeper reflection?' :
+                    'Deseja ficar mais tempo com seu medo sem nome para reflexão mais profunda?';
+                
+                if (confirm(stayMessage)) {
+                    resetJourney();
+                    setTimeout(() => {
+                        startPortalSequence();
+                    }, 1000);
+                }
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            
+            console.log('Processing user input:', inputText);
+            localStorage.setItem('temarix_v4_portal05_response', JSON.stringify({
+                portal: "v4-05",
+                resposta: inputText,
+                step: awaitingSecondResponse ? "second" : "first",
+                data: new Date().toISOString(),
+                idioma: currentLanguage
+            }));
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                if (!awaitingSecondResponse) {
+                    showUserReactions(inputText);
+                } else {
+                    showSecondUserReactions(inputText);
+                }
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFollowUpQuestion();
+            }, 2000);
+        }
+        
+        async function showFollowUpQuestion() {
+            const followUpSection = document.getElementById('followUpSection');
+            const followUpQuestionEl = document.getElementById('followUpQuestion');
+            
+            followUpSection.classList.add('show');
+            
+            await typewriterEffect(followUpQuestionEl, translations[currentLanguage].followUpQuestion, 50);
+            
+            setTimeout(() => {
+                awaitingSecondResponse = true;
+                enableUserInput();
+            }, 1500);
+        }
+        
+        async function showSecondUserReactions(userInput) {
+            const secondResponseCharacters = [
+                {
+                    name: "Enya", emoji: "🧑‍🚀",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "두려움은 사라지지 않지만, 우리가 그것을 부를 수 있을 땐 약해지기 시작해.",
+                            en: "Fear doesn't disappear, but it starts to weaken when we can call it by name.",
+                            pt: "O medo não desaparece, mas começa a enfraquecer quando podemos chamá-lo pelo nome."
+                        };
+                        return responses[lang];
+                    }
+                },
+                {
+                    name: "Lian", emoji: "🧘",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "지금 너는 그 두려움을 바라보고 있어. 그 자체가 이미 용기의 증거야.",
+                            en: "Now you are looking at that fear. That itself is already evidence of courage.",
+                            pt: "Agora você está olhando para esse medo. Isso por si só já é evidência de coragem."
+                        };
+                        return responses[lang];
+                    }
+                },
+                {
+                    name: "Noah", emoji: "🧑‍🦱",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "이제 그 두려움은 너의 일부가 될 수 있어. 싸울 대상이 아니라, 이해할 수 있는 감정으로.",
+                            en: "Now that fear can become part of you. Not as an opponent to fight, but as an emotion you can understand.",
+                            pt: "Agora esse medo pode se tornar parte de você. Não como um oponente para lutar, mas como uma emoção que você pode entender."
+                        };
+                        return responses[lang];
+                    }
+                }
+            ];
+            
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            for (let i = 0; i < secondResponseCharacters.length; i++) {
+                const char = secondResponseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < secondResponseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showNavigationSection();
+            }, 2000);
+        }
+        
+        async function showNavigationSection() {
+            const navigationSection = document.getElementById('navigationSection');
+            const navigationMessage = document.getElementById('navigationMessage');
+            
+            navigationSection.classList.add('show');
+            
+            const messageText = translations[currentLanguage].navigationMessage;
+            await typewriterEffect(navigationMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(navigationSection);
+            }, 500);
+        }
+        
+        function initializeTemarix() {
+            console.log('Temarix V4 Portal 05 initialized');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            await typewriterEffect(introElement, translations[currentLanguage].portalIntro, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 2000);
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V4 Portal 05 DOM loaded');
+            
+            currentLanguage = getLanguageFromURL();
+            
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            updateStaticTranslations(currentLanguage);
+            updateLanguageButtons(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

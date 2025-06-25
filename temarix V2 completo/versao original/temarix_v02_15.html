@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 15: To Me Who Fears Change</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 15: To Me Who Fears Change</div>
+            <div class="portal-subtitle" id="portalSubtitle">The first step outside of safety</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">🌙 Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 16</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Share about your fears and courage regarding change... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 15: 변화가 두려운 나에게",
+                portalSubtitle: "안전함을 벗어나는 첫 걸음",
+                portalIntro: "지금까지의 삶이 편하지는 않았지만\n그래도 익숙했습니다.\n예측 가능하고, 통제할 수 있고,\n적어도 '어떻게 살아야 하는지'는 알고 있었죠.\n\n하지만 진짜 욕망을 마주하고 나니\n변화가 필요하다는 걸 알게 되었습니다.\n그리고 동시에...\n변화가 너무 두렵다는 것도.\n\n새로운 길은 어떨지 모르고,\n실패할 수도 있고,\n지금보다 더 힘들 수도 있으니까요.",
+                lightTitle: "🌙 빛의 한마디",
+                lightMessage: "두려움 속에서 한 걸음 내딛는 것이\n용기의 진정한 모습입니다.\n두렵지 않다면, 그건 용기가 아니라 무모함일 뿐입니다.",
+                portalQuestion: "당신이 가장 두려워하는 변화는 무엇인가요?\n그 두려움 너머에는 무엇이 기다리고 있을까요?",
+                continueText: "변화에 대한 두려움을 마주한 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 16으로 계속하기",
+                continueNo: "여정을 일시정지하기",
+                inputPlaceholder: "변화에 대한 두려움과 용기에 대해 털어놓아 보세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "변화를 두려워하는 것은\n아직 당신 안에 지킬 가치가 있는 것들이 남아있다는 뜻입니다.",
+                charCris: "나도 변화 무서워요!\n근데 가만히 있는 것도 은근 무서워요.\n그래서... 그냥 무서운 걸로 가자! 🤷‍♀️",
+                charZafirah: "변화가 두렵다는 건\n지금의 당신이 소중하다는 마음에서 나오는 것이에요.",
+                charRami: "두려움은 변화의 전조입니다.\n나비가 되기 전, 애벌레도 번데기 안에서 떨었을 거예요.",
+                charSamir: "(그는 문 앞에 서서 손잡이를 만지작거립니다.\n열지도, 돌아서지도 않은 채\n그 순간의 떨림을 함께 느끼고 있습니다.)",
+                charLayla: "변화를 두려워하는 당신도,\n변화를 선택하는 당신도\n똑같이 용감한 사람이에요.",
+                charNabir: "변하고 싶다면서 왜 안 변해?\n결국 무서워서 못 하는 거잖아.\n그냥 지금대로 살아.",
+                charAzhar: "변화? 그거 다 착각이야.\n넌 변할 수도 없고, 변해도 결국 실패해.\n편하게 포기해."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 15: To Me Who Fears Change",
+                portalSubtitle: "The first step outside of safety",
+                portalIntro: "Life so far wasn't comfortable,\nbut it was familiar.\nPredictable, controllable,\nand at least I knew 'how to live'.\n\nBut after facing my real desires,\nI realized change is necessary.\nAnd at the same time...\nI also realized how terrifying change is.\n\nThe new path is unknown,\nI might fail,\nit might be harder than now.",
+                lightTitle: "🌙 Word of Light",
+                lightMessage: "Taking one step forward in fear\nis the true face of courage.\nIf you're not afraid, that's not courage but recklessness.",
+                portalQuestion: "What change do you fear most?\nWhat might be waiting beyond that fear?",
+                continueText: "Will you continue this journey of facing fear of change?",
+                continueYes: "Continue to Portal 16",
+                continueNo: "Pause the journey",
+                inputPlaceholder: "Share about your fears and courage regarding change... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "Fearing change means\nthere are still valuable things left in you worth protecting.",
+                charCris: "I'm scared of change too!\nBut staying still is also kinda scary.\nSo... let's just go with scary! 🤷‍♀️",
+                charZafirah: "Being afraid of change comes from\na heart that treasures who you are now.",
+                charRami: "Fear is a harbinger of change.\nEven caterpillars must have trembled inside their cocoons before becoming butterflies.",
+                charSamir: "(He stands at the door, fidgeting with the handle.\nNeither opening nor turning away,\nhe feels the trembling of that moment together with you.)",
+                charLayla: "You who fear change\nand you who choose change\nare equally brave people.",
+                charNabir: "You want to change but why don't you?\nIn the end, you can't because you're scared.\nJust live as you are now.",
+                charAzhar: "Change? That's all an illusion.\nYou can't change, and even if you do, you'll fail eventually.\nJust give up comfortably."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 15: Para Mim Que Temo a Mudança",
+                portalSubtitle: "O primeiro passo fora da segurança",
+                portalIntro: "A vida até agora não era confortável,\nmas era familiar.\nPrevisível, controlável,\ne pelo menos eu sabia 'como viver'.\n\nMas depois de enfrentar meus verdadeiros desejos,\npercebi que a mudança é necessária.\nE ao mesmo tempo...\ntambém percebi como a mudança é aterrorizante.\n\nO novo caminho é desconhecido,\neu posso falhar,\npode ser mais difícil que agora.",
+                lightTitle: "🌙 Palavra de Luz",
+                lightMessage: "Dar um passo à frente no medo\né a verdadeira face da coragem.\nSe você não tem medo, isso não é coragem mas imprudência.",
+                portalQuestion: "Qual mudança você mais teme?\nO que pode estar esperando além desse medo?",
+                continueText: "Você continuará esta jornada de enfrentar o medo da mudança?",
+                continueYes: "Continuar para o Portal 16",
+                continueNo: "Pausar a jornada",
+                inputPlaceholder: "Compartilhe sobre seus medos e coragem em relação à mudança... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "Temer a mudança significa\nque ainda há coisas valiosas em você que vale a pena proteger.",
+                charCris: "Eu também tenho medo de mudança!\nMas ficar parado também é meio assustador.\nEntão... vamos com o assustador! 🤷‍♀️",
+                charZafirah: "Ter medo de mudança vem de\num coração que valoriza quem você é agora.",
+                charRami: "O medo é um prenúncio de mudança.\nAté as lagartas devem ter tremido dentro de seus casulos antes de se tornarem borboletas.",
+                charSamir: "(Ele fica na porta, mexendo na maçaneta.\nSem abrir nem se afastar,\nele sente o tremor daquele momento junto com você.)",
+                charLayla: "Você que teme a mudança\ne você que escolhe a mudança\nsão igualmente pessoas corajosas.",
+                charNabir: "Você quer mudar mas por que não muda?\nNo final, você não consegue porque tem medo.\nApenas viva como está agora.",
+                charAzhar: "Mudança? Isso é tudo ilusão.\nVocê não pode mudar, e mesmo se mudar, eventualmente falhará.\nApenas desista confortavelmente."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑 (Portal 15 특화)
+            const emotionKeywords = {
+                fear: ['두려운', '무서운', '불안한', '걱정', 'fear', 'scared', 'afraid', 'anxious', 'medo', 'assustado', 'ansioso'],
+                comfort_zone: ['편안한', '익숙한', '안전한', '현재', 'comfort', 'familiar', 'safe', 'current', 'conforto', 'familiar', 'seguro'],
+                failure: ['실패', '망할', '안될', '포기', 'failure', 'fail', 'give up', 'falha', 'falhar', 'desistir'],
+                unknown: ['모르는', '알수없는', '예측불가', 'unknown', 'uncertain', 'unpredictable', 'desconhecido', 'incerto'],
+                courage: ['용기', '용감한', '도전', 'courage', 'brave', 'challenge', 'coragem', 'corajoso', 'desafio'],
+                growth: ['성장', '발전', '나아지는', 'growth', 'development', 'improve', 'crescimento', 'desenvolvimento'],
+                relationships: ['관계', '사람들', '가족', '친구', 'relationships', 'people', 'family', 'friends', 'relacionamentos', 'pessoas'],
+                career: ['직업', '일', '커리어', 'career', 'job', 'work', 'carreira', 'trabalho'],
+                identity: ['정체성', '나다움', '자아', 'identity', 'self', 'who I am', 'identidade', 'eu mesmo'],
+                past: ['과거', '예전', '전에', 'past', 'before', 'used to', 'passado', 'antes'],
+                stuck: ['갇힌', '막힌', '정체된', 'stuck', 'trapped', 'stagnant', 'preso', 'estagnado'],
+                regret: ['후회', '아쉬운', '놓친', 'regret', 'remorse', 'missed', 'arrependimento', 'perdido']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (Portal 15 전용)
+        const responseCharacters = [
+            {
+                name: "Bridge", emoji: "🌉",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            fear: "다리는 두 곳을 연결하지만, 걸어가는 동안에는 어느 쪽에도 속하지 않습니다. 그 중간 지점에서의 두려움을 이해해요. 하지만 그 떨림이 바로 변화의 순간입니다.",
+                            comfort_zone: "편안한 곳에서 새로운 곳으로 가는 통로가 다리입니다. 익숙함을 뒤로하고 건너오는 모든 발걸음을 저는 견뎌내고 지지해왔어요. 당신도 그럴 수 있습니다.",
+                            failure: "다리 위에서 넘어져도 다리가 무너지지는 않습니다. 실패는 목적지가 아니라 지나가는 순간일 뿐이에요. 다시 일어나서 계속 걸어갈 수 있습니다.",
+                            unknown: "다리 건너편이 어떨지 모르는 것은 당연합니다. 하지만 다리는 그 '모름'을 건드리지 않고 단지 안전한 길을 제공할 뿐이에요. 모르는 것도 괜찮습니다.",
+                            courage: "용기는 무서워하지 않는 것이 아니라, 무서워하면서도 계속 걷는 것입니다. 다리 위의 모든 발걸음이 용기입니다.",
+                            growth: "다리를 건너는 사람은 같은 사람이지만, 건너고 나면 다른 사람이 됩니다. 성장은 이처럼 한 걸음 한 걸음으로 이루어져요.",
+                            relationships: "때로는 사람들과의 관계에서 다리가 필요합니다. 서로 다른 곳에 있는 마음들을 연결하는 다리. 변화가 관계를 끊는 것이 아니라 새로운 연결을 만들 수도 있어요.",
+                            career: "새로운 일, 새로운 길로 가는 것도 다리를 건너는 것과 같습니다. 이전의 경험이 없어지는 것이 아니라, 그것이 다리가 되어 새로운 곳으로 데려다줍니다.",
+                            identity: "정체성의 변화는 자신을 잃는 것이 아니라, 더 넓은 자신을 발견하는 것입니다. 다리 양쪽에 모두 당신이 있어요.",
+                            past: "과거는 다리의 시작점입니다. 그곳에서 출발했기에 지금 여기 다리 위에 설 수 있는 거예요. 과거를 버리는 것이 아니라 딛고 일어서는 것입니다.",
+                            stuck: "갇힌 느낌이 들 때, 다리는 출구를 제공합니다. 한 곳에 머물러 있을 필요는 없어요. 언제든 건널 수 있습니다.",
+                            regret: "후회도 다리를 건너는 이유가 될 수 있습니다. 놓친 것들을 찾아가는 새로운 길, 그것도 의미 있는 여정이에요.",
+                            general: "변화는 다리를 건너는 것과 같습니다. 중요한 것은 목적지가 아니라 그 다리가 당신을 안전히 떠받치고 있다는 것입니다. 한 걸음씩, 천천히 가세요."
+                        },
+                        en: {
+                            fear: "A bridge connects two places, but while walking across, you don't belong to either side. I understand the fear in that middle point. But that trembling is exactly the moment of change.",
+                            comfort_zone: "A bridge is a passage from comfort to newness. I've endured and supported every step that leaves familiarity behind. You can do it too.",
+                            failure: "Even if you fall on the bridge, the bridge doesn't collapse. Failure is just a passing moment, not a destination. You can get up and keep walking.",
+                            unknown: "It's natural not to know what's across the bridge. But the bridge doesn't disturb that 'unknown' - it simply provides a safe path. It's okay not to know.",
+                            courage: "Courage isn't being unafraid, but continuing to walk while being afraid. Every step on the bridge is courage.",
+                            growth: "The person crossing the bridge is the same person, but becomes different after crossing. Growth happens one step at a time like this.",
+                            relationships: "Sometimes relationships need bridges. Bridges that connect hearts in different places. Change might not break relationships but create new connections.",
+                            career: "Going to new work, new paths is like crossing a bridge. Previous experiences don't disappear - they become the bridge taking you to new places.",
+                            identity: "Identity change isn't losing yourself but discovering a broader self. You exist on both sides of the bridge.",
+                            past: "The past is the starting point of the bridge. Because you started there, you can now stand on this bridge. It's not about abandoning the past but standing upon it.",
+                            stuck: "When feeling trapped, bridges provide exits. You don't need to stay in one place. You can always cross over.",
+                            regret: "Regret can also be a reason to cross bridges. A new path to find what was missed - that's also a meaningful journey.",
+                            general: "Change is like crossing a bridge. What matters isn't the destination but that the bridge safely supports you. Go slowly, step by step."
+                        },
+                        pt: {
+                            fear: "Uma ponte conecta dois lugares, mas enquanto caminha através dela, você não pertence a nenhum dos lados. Entendo o medo nesse ponto médio. Mas esse tremor é exatamente o momento da mudança.",
+                            comfort_zone: "Uma ponte é uma passagem do conforto para o novo. Tenho suportado e apoiado cada passo que deixa a familiaridade para trás. Você também pode fazer isso.",
+                            failure: "Mesmo se você cair na ponte, a ponte não desaba. O fracasso é apenas um momento passageiro, não um destino. Você pode se levantar e continuar caminhando.",
+                            unknown: "É natural não saber o que está do outro lado da ponte. Mas a ponte não perturba esse 'desconhecido' - simplesmente fornece um caminho seguro. Não há problema em não saber.",
+                            courage: "Coragem não é não ter medo, mas continuar a caminhar mesmo tendo medo. Cada passo na ponte é coragem.",
+                            growth: "A pessoa que cruza a ponte é a mesma pessoa, mas se torna diferente depois de cruzar. O crescimento acontece um passo de cada vez assim.",
+                            relationships: "Às vezes relacionamentos precisam de pontes. Pontes que conectam corações em lugares diferentes. A mudança pode não quebrar relacionamentos mas criar novas conexões.",
+                            career: "Ir para novos trabalhos, novos caminhos é como cruzar uma ponte. Experiências anteriores não desaparecem - elas se tornam a ponte levando você a novos lugares.",
+                            identity: "Mudança de identidade não é se perder mas descobrir um eu mais amplo. Você existe em ambos os lados da ponte.",
+                            past: "O passado é o ponto de partida da ponte. Porque você começou lá, agora pode ficar nesta ponte. Não é sobre abandonar o passado mas se apoiar nele.",
+                            stuck: "Quando se sente preso, pontes fornecem saídas. Você não precisa ficar em um lugar. Sempre pode atravessar.",
+                            regret: "Arrependimento também pode ser uma razão para cruzar pontes. Um novo caminho para encontrar o que foi perdido - isso também é uma jornada significativa.",
+                            general: "Mudança é como cruzar uma ponte. O que importa não é o destino mas que a ponte te apoie com segurança. Vá devagar, passo a passo."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Lighthouse", emoji: "🗼",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            fear: "어둠 속에서 배들이 길을 잃을 때, 등대는 두려움을 없애는 것이 아니라 방향을 보여줍니다. 당신의 두려움도 마찬가지예요. 완전히 사라질 필요는 없어요.",
+                            comfort_zone: "등대는 항구의 안전함을 떠나는 배들을 위해 세워졌습니다. 편안함을 떠나는 것이 위험하지만, 그 여정에 빛을 비춰주는 것이 제 역할이에요.",
+                            failure: "많은 배들이 폭풍을 만나고 돌아오기도 합니다. 하지만 등대는 그들을 실패했다고 여기지 않아요. 다시 출항할 때를 위해 계속 빛을 비춰줄 뿐입니다.",
+                            unknown: "등대의 빛이 닿지 않는 먼 바다가 있다는 걸 알고 있습니다. 하지만 보이는 만큼이라도 안전한 길을 밝혀주는 것이 의미가 있어요.",
+                            courage: "용기는 등대처럼 혼자서 어둠을 견디는 힘입니다. 폭풍이 와도, 안개가 껴도, 계속 빛을 내는 그 꾸준함이 진짜 용기예요.",
+                            growth: "등대는 높은 곳에 서서 멀리 봅니다. 성장도 마찬가지예요. 조금씩 높아질 때마다 더 넓은 세상이 보이게 됩니다.",
+                            relationships: "등대는 혼자 있지만 외롭지 않습니다. 수많은 배들과 연결되어 있거든요. 변화 속에서도 진정한 관계는 계속될 거예요.",
+                            career: "새로운 항로를 개척하는 배들처럼, 새로운 일을 시작하는 것도 모험입니다. 등대는 그 여정의 이정표가 되어줄 수 있어요.",
+                            identity: "등대는 위치가 바뀌지 않지만, 비추는 바다는 매일 달라집니다. 당신의 본질은 그대로이면서도 새로운 면을 비출 수 있어요.",
+                            past: "등대는 과거의 모든 폭풍을 기억합니다. 그 경험이 더 밝은 빛을 만들어내요. 당신의 과거도 지금의 빛이 됩니다.",
+                            stuck: "등대는 바다 한가운데 고정되어 있지만, 그 빛은 자유롭게 바다를 훑습니다. 몸은 한 곳에 있어도 마음은 어디든 갈 수 있어요.",
+                            regret: "등대는 구하지 못한 배들을 기억합니다. 하지만 그 아픔이 더 밝은 빛을 만들어내는 원동력이 되기도 해요.",
+                            general: "변화의 바다에서 당신 자신이 등대가 되세요. 완벽한 길을 제시할 필요는 없어요. 지금 할 수 있는 만큼의 빛만 비춰주면 됩니다."
+                        },
+                        en: {
+                            fear: "When ships lose their way in darkness, lighthouses don't eliminate fear but show direction. Your fear is the same. It doesn't need to completely disappear.",
+                            comfort_zone: "Lighthouses are built for ships leaving the safety of harbors. Leaving comfort is dangerous, but my role is to shine light on that journey.",
+                            failure: "Many ships encounter storms and return. But lighthouses don't consider them failures. They just keep shining for when they set sail again.",
+                            unknown: "I know there are distant seas where my light doesn't reach. But illuminating a safe path as far as I can see has meaning.",
+                            courage: "Courage is the strength to endure darkness alone like a lighthouse. That steadiness of continuing to shine despite storms and fog is true courage.",
+                            growth: "Lighthouses stand high and see far. Growth is the same. Each time you rise a little higher, you see a wider world.",
+                            relationships: "Lighthouses are alone but not lonely. They're connected to countless ships. True relationships will continue even through change.",
+                            career: "Like ships pioneering new routes, starting new work is also an adventure. Lighthouses can be milestones on that journey.",
+                            identity: "Lighthouses don't change position, but the sea they illuminate is different every day. Your essence remains while you can illuminate new aspects.",
+                            past: "Lighthouses remember all past storms. That experience creates brighter light. Your past also becomes today's light.",
+                            stuck: "Lighthouses are fixed in the middle of the sea, but their light freely sweeps across the ocean. Even if your body is in one place, your heart can go anywhere.",
+                            regret: "Lighthouses remember ships they couldn't save. But that pain sometimes becomes the driving force for creating brighter light.",
+                            general: "Become a lighthouse yourself in the sea of change. You don't need to present a perfect path. Just shine as much light as you can now."
+                        },
+                        pt: {
+                            fear: "Quando navios se perdem na escuridão, faróis não eliminam o medo mas mostram direção. Seu medo é o mesmo. Não precisa desaparecer completamente.",
+                            comfort_zone: "Faróis são construídos para navios deixando a segurança dos portos. Deixar o conforto é perigoso, mas meu papel é brilhar luz nessa jornada.",
+                            failure: "Muitos navios encontram tempestades e retornam. Mas faróis não os consideram fracassos. Apenas continuam brilhando para quando zarpar novamente.",
+                            unknown: "Sei que há mares distantes onde minha luz não alcança. Mas iluminar um caminho seguro até onde posso ver tem significado.",
+                            courage: "Coragem é a força de suportar a escuridão sozinho como um farol. Essa constância de continuar brilhando apesar de tempestades e névoa é verdadeira coragem.",
+                            growth: "Faróis ficam altos e veem longe. Crescimento é igual. Cada vez que você sobe um pouco mais alto, vê um mundo mais amplo.",
+                            relationships: "Faróis estão sozinhos mas não solitários. Estão conectados a incontáveis navios. Relacionamentos verdadeiros continuarão mesmo através da mudança.",
+                            career: "Como navios pioneirando novas rotas, começar novo trabalho também é uma aventura. Faróis podem ser marcos nessa jornada.",
+                            identity: "Faróis não mudam de posição, mas o mar que iluminam é diferente todos os dias. Sua essência permanece enquanto você pode iluminar novos aspectos.",
+                            past: "Faróis lembram de todas as tempestades passadas. Essa experiência cria luz mais brilhante. Seu passado também se torna a luz de hoje.",
+                            stuck: "Faróis estão fixos no meio do mar, mas sua luz varre livremente o oceano. Mesmo se seu corpo está em um lugar, seu coração pode ir a qualquer lugar.",
+                            regret: "Faróis lembram de navios que não conseguiram salvar. Mas essa dor às vezes se torna a força motriz para criar luz mais brilhante.",
+                            general: "Torne-se você mesmo um farol no mar da mudança. Não precisa apresentar um caminho perfeito. Apenas brilhe tanta luz quanto pode agora."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Butterfly", emoji: "🦋",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            fear: "애벌레일 때는 하늘을 나는 것이 상상도 안 됐어요. 번데기가 되는 것도 죽는 것 같아서 무서웠고요. 하지만 두려움 속에서도 변화는 계속됐어요.",
+                            comfort_zone: "땅 위를 기어다니는 것이 편했어요. 예측 가능하고 안전했거든요. 하지만 그 안전함이 진짜 나를 가두고 있었다는 걸 나중에 알았어요.",
+                            failure: "첫 번째 날갯짓에서 떨어졌어요. 바람에 휘둘려서 어디로 갈지도 몰랐고요. 하지만 실패가 날아오르는 연습이었다는 걸 깨달았어요.",
+                            unknown: "하늘이 어떤 곳인지 전혀 몰랐어요. 땅에서는 상상할 수 없는 세상이었거든요. 하지만 모르는 세상이 더 아름다웠어요.",
+                            courage: "용기는 날개가 있다고 믿는 것이었어요. 아직 써본 적도 없는 날개를, 그저 믿고 펼치는 것. 그게 저에게는 가장 큰 용기였어요.",
+                            growth: "성장은 완전히 다른 존재가 되는 것이었어요. 애벌레의 기억을 가진 나비가 되는 것. 과거를 버리는 게 아니라 포함하면서 더 큰 존재가 되는 거예요.",
+                            relationships: "애벌레 친구들은 제가 나비가 된 후 처음엔 알아보지 못했어요. 하지만 진짜 친구들은 변한 모습도 사랑해줬어요.",
+                            career: "애벌레로서의 '일'은 잎을 먹는 것이었어요. 나비가 되고 나서는 꽃가루를 옮기는 일을 하게 됐고요. 완전히 다른 역할이지만, 둘 다 의미 있는 일이었어요.",
+                            identity: "나는 애벌레였던 나비일까요, 나비가 된 애벌레일까요? 아마 둘 다일 거예요. 정체성은 하나로 고정되지 않는다는 걸 배웠어요.",
+                            past: "애벌레였던 시간을 후회하지 않아요. 그 시간이 있었기에 지금의 날개가 있거든요. 과거는 현재를 만드는 재료였어요.",
+                            stuck: "번데기 안에서는 정말 갇힌 것 같았어요. 움직일 수도, 볼 수도 없었거든요. 하지만 그곳에서 가장 큰 변화가 일어나고 있었어요.",
+                            regret: "더 일찍 변하지 못한 걸 아쉬워했어요. 하지만 모든 변화에는 때가 있다는 걸 알게 됐어요. 나만의 시간이 있었던 거예요.",
+                            general: "변화는 무서운 일이에요. 하지만 그 끝에는 지금은 상상할 수 없는 아름다운 세상이 기다리고 있어요. 날개를 믿고 한 번 펼쳐보세요."
+                        },
+                        en: {
+                            fear: "As a caterpillar, I couldn't even imagine flying in the sky. Becoming a chrysalis was scary too, like dying. But change continued even within that fear.",
+                            comfort_zone: "Crawling on the ground was comfortable. It was predictable and safe. But I later realized that safety was actually trapping the real me.",
+                            failure: "I fell during my first wingbeat. I was swept by the wind and didn't know where to go. But I realized failure was practice for taking flight.",
+                            unknown: "I had no idea what the sky was like. It was a world unimaginable from the ground. But the unknown world was more beautiful.",
+                            courage: "Courage was believing I had wings. Spreading wings I'd never used, just believing in them. That was the greatest courage for me.",
+                            growth: "Growth was becoming a completely different being. Becoming a butterfly with caterpillar memories. Not abandoning the past but including it while becoming something greater.",
+                            relationships: "My caterpillar friends didn't recognize me at first after I became a butterfly. But true friends loved my changed form too.",
+                            career: "My 'job' as a caterpillar was eating leaves. After becoming a butterfly, I started carrying pollen. Completely different roles, but both were meaningful work.",
+                            identity: "Am I a butterfly who was a caterpillar, or a caterpillar who became a butterfly? Probably both. I learned that identity isn't fixed to one thing.",
+                            past: "I don't regret the time I was a caterpillar. Without that time, I wouldn't have these wings now. The past was material for creating the present.",
+                            stuck: "Inside the chrysalis, I really felt trapped. I couldn't move or see anything. But the greatest change was happening there.",
+                            regret: "I regretted not changing sooner. But I learned that every change has its time. I had my own timing.",
+                            general: "Change is scary. But at the end, there's a beautiful world waiting that you can't imagine now. Trust your wings and try spreading them once."
+                        },
+                        pt: {
+                            fear: "Como lagarta, eu nem conseguia imaginar voar no céu. Tornar-se crisálida também era assustador, como morrer. Mas a mudança continuou mesmo dentro desse medo.",
+                            comfort_zone: "Rastejar no chão era confortável. Era previsível e seguro. Mas depois percebi que essa segurança estava na verdade prendendo o verdadeiro eu.",
+                            failure: "Caí durante meu primeiro bater de asas. Fui levada pelo vento e não sabia para onde ir. Mas percebi que o fracasso era prática para alçar voo.",
+                            unknown: "Eu não tinha ideia de como era o céu. Era um mundo inimaginável do chão. Mas o mundo desconhecido era mais bonito.",
+                            courage: "Coragem era acreditar que eu tinha asas. Abrir asas que nunca tinha usado, apenas acreditando nelas. Essa foi a maior coragem para mim.",
+                            growth: "Crescimento era tornar-se um ser completamente diferente. Tornar-se uma borboleta com memórias de lagarta. Não abandonar o passado mas incluí-lo enquanto se torna algo maior.",
+                            relationships: "Meus amigos lagartas não me reconheceram no início depois que me tornei borboleta. Mas verdadeiros amigos amaram minha forma mudada também.",
+                            career: "Meu 'trabalho' como lagarta era comer folhas. Depois de me tornar borboleta, comecei a carregar pólen. Papéis completamente diferentes, mas ambos eram trabalho significativo.",
+                            identity: "Sou uma borboleta que foi lagarta, ou uma lagarta que se tornou borboleta? Provavelmente ambas. Aprendi que identidade não é fixa a uma coisa.",
+                            past: "Não me arrependo do tempo que fui lagarta. Sem esse tempo, não teria essas asas agora. O passado foi material para criar o presente.",
+                            stuck: "Dentro da crisálida, realmente me senti presa. Não conseguia me mover ou ver nada. Mas a maior mudança estava acontecendo ali.",
+                            regret: "Me arrependi de não ter mudado mais cedo. Mas aprendi que toda mudança tem seu tempo. Eu tinha meu próprio timing.",
+                            general: "Mudança é assustadora. Mas no final, há um mundo bonito esperando que você não pode imaginar agora. Confie em suas asas e tente abri-las uma vez."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 15 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 16이 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 16 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 16 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 15 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

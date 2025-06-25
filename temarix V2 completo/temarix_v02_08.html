@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 08: Am I Really a Good Person?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 08: Am I Really a Good Person?</div>
+            <div class="portal-subtitle" id="portalSubtitle">The heart that can't give itself a complete 'yes'</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 09</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Share your thoughts about whether you're a good person... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+        
+        // Firebase 모의 객체 (실제 구현에서는 Firebase SDK 사용)
+        const firebase = {
+            auth: () => ({
+                onAuthStateChanged: (callback) => {
+                    // 모의 인증 상태 체크 (메모리 기반)
+                    setTimeout(() => {
+                        callback(memoryStorage.mockUser);
+                    }, 100);
+                }
+            })
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 08: 나는 정말 괜찮은 사람이 맞을까?",
+                portalSubtitle: "스스로에게 완전한 '예'를 주지 못하는 마음",
+                portalIntro: "아무리 잘해도,\n마음 한구석에 늘 남아 있는 의문이 있습니다.\n\"나는 괜찮은 사람일까?\"\n\"혹시… 누군가에게는 나도 상처였을까?\"\n\n사람들의 말,\n내 안의 후회,\n기억 속 어긋난 장면들 사이에서\n우리는 스스로에게 완전한 '예'를 주지 못합니다.\n\n지금, 당신은\n스스로를 괜찮은 사람이라 말할 수 있나요?",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "당신이 매일 묻는 그 질문 속에는\n당신이 계속 사람으로 살아가려는 의지가 담겨 있습니다.",
+                portalQuestion: "당신은 스스로를, 정말 괜찮은 사람이라고 느끼시나요?\n\n무엇이 당신을 의심하게 만들고,\n무엇이 당신을 확신하게 만드나요?",
+                continueText: "자신의 괜찮음에 대해 돌아본 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 09로 계속하시겠습니까?",
+                continueNo: "여정을 일시정지하시겠습니까?",
+                inputPlaceholder: "자신이 괜찮은 사람인지에 대한 생각을 털어놓아 보세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "'괜찮은 사람'이라는 말은\n항상 옳았던 사람이 아니라,\n끝까지 물어보는 사람에게 주어지는 것입니다.",
+                charCris: "아냐~ 그런 거 고민하는 시점에서\n이미 당신은 괜찮은 사람임.\n인증 완료~ 🤙😆",
+                charZafirah: "당신이 괜찮지 않다고 느꼈던 날들조차\n사실은 당신이 진심이었다는 증거였습니다.",
+                charRami: "내면에서 솟아나는 의문은\n자기 회피가 아니라 자기 충성입니다.",
+                charSamir: "(그는 작은 거울 하나를 당신에게 건넵니다.\n그 안에 비친 얼굴은 지쳐 있지만 정직합니다.)",
+                charLayla: "당신의 '괜찮음'은\n누군가의 인정으로 만들어지는 게 아니에요.\n당신이 당신을 품는 순간, 이미 충분해요.",
+                charNabir: "괜찮긴 뭐가 괜찮아?\n그 생각하는 거 자체가 벌써 자격 없음 인증이야.",
+                charAzhar: "넌 늘 괜찮은 척만 했잖아.\n진짜 괜찮은 사람은 그렇게 증명하려고 애쓰지 않아."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 08: Am I Really a Good Person?",
+                portalSubtitle: "The heart that can't give itself a complete 'yes'",
+                portalIntro: "No matter how well you do,\nthere's always a doubt lingering in a corner of your heart.\n\"Am I a good person?\"\n\"Was I... perhaps a source of pain to someone?\"\n\nAmong people's words,\nregrets within me,\nmisaligned scenes in memory,\nwe cannot give ourselves a complete 'yes.'\n\nNow, can you\nsay you're a good person?",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "In that question you ask yourself every day\nlies your will to continue living as a person.",
+                portalQuestion: "Do you truly feel you're a good person?\n\nWhat makes you doubt yourself,\nand what gives you confidence?",
+                continueText: "Will you continue this journey of reflecting on your own goodness?",
+                continueYes: "Continue to Portal 09?",
+                continueNo: "Pause the journey?",
+                inputPlaceholder: "Share your thoughts about whether you're a good person... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "Being called a 'good person'\nisn't given to those who were always right,\nbut to those who keep asking until the end.",
+                charCris: "No way~ Just the fact that you're worrying about it\nmeans you're already a good person.\nCertification complete~ 🤙😆",
+                charZafirah: "Even the days you felt you weren't good\nwere actually proof that you were sincere.",
+                charRami: "The doubts arising from within\nare not self-avoidance but self-loyalty.",
+                charSamir: "(He hands you a small mirror.\nThe face reflected in it is tired but honest.)",
+                charLayla: "Your 'goodness'\nisn't created by someone else's approval.\nThe moment you embrace yourself, that's already enough.",
+                charNabir: "Good? What's good about you?\nJust thinking about it proves you're not qualified.",
+                charAzhar: "You've always just pretended to be okay.\nReally good people don't struggle to prove it like that."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 08: Eu Sou Realmente Uma Boa Pessoa?",
+                portalSubtitle: "O coração que não consegue se dar um 'sim' completo",
+                portalIntro: "Não importa quão bem você faça,\nhá sempre uma dúvida persistindo em um canto do seu coração.\n\"Eu sou uma boa pessoa?\"\n\"Eu fui... talvez uma fonte de dor para alguém?\"\n\nEntre as palavras das pessoas,\narrependimentos dentro de mim,\ncenas desalinhadas na memória,\nnão conseguimos nos dar um 'sim' completo.\n\nAgora, você consegue\ndizer que é uma boa pessoa?",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Nessa pergunta que você faz a si mesmo todos os dias\nreside sua vontade de continuar vivendo como pessoa.",
+                portalQuestion: "Você realmente sente que é uma boa pessoa?\n\nO que faz você duvidar de si mesmo,\ne o que lhe dá confiança?",
+                continueText: "Você continuará esta jornada de refletir sobre sua própria bondade?",
+                continueYes: "Continuar para o Portal 09?",
+                continueNo: "Pausar a jornada?",
+                inputPlaceholder: "Compartilhe seus pensamentos sobre se você é uma boa pessoa... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "Ser chamado de 'boa pessoa'\nnão é dado àqueles que sempre estiveram certos,\nmas àqueles que continuam perguntando até o fim.",
+                charCris: "Não pode ser~ Só o fato de você estar se preocupando com isso\nsignifica que você já é uma boa pessoa.\nCertificação completa~ 🤙😆",
+                charZafirah: "Até os dias em que você sentiu que não era bom\nforam na verdade prova de que você era sincero.",
+                charRami: "As dúvidas surgindo de dentro\nnão são auto-evitação mas auto-lealdade.",
+                charSamir: "(Ele lhe entrega um pequeno espelho.\nO rosto refletido nele está cansado mas honesto.)",
+                charLayla: "Sua 'bondade'\nnão é criada pela aprovação de outra pessoa.\nNo momento em que você se abraça, isso já é suficiente.",
+                charNabir: "Bom? O que há de bom em você?\nSó pensar sobre isso prova que você não está qualificado.",
+                charAzhar: "Você sempre apenas fingiu estar bem.\nPessoas realmente boas não lutam para provar isso assim."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑 (Portal 08 특화)
+            const emotionKeywords = {
+                selfdoubt: ['자신없', '확신없', '의심', '괜찮은지', '모르겠', 'doubt', 'unsure', 'not sure', 'uncertain', 'dúvida', 'incerto'],
+                guilt: ['죄책감', '미안', '죄송', '잘못', '상처줬', 'guilt', 'sorry', 'hurt someone', 'wrong', 'culpa', 'machuquei'],
+                inadequacy: ['부족', '못나', '자격없', '능력없', '실패', 'inadequate', 'not enough', 'failure', 'inadequad', 'fracasso'],
+                shame: ['부끄러', '창피', '수치', '민망', 'shame', 'embarrass', 'humiliat', 'vergonha', 'envergonhad'],
+                impostor: ['가짜', '척하', '연기', '속이', '진짜가 아닌', 'fake', 'pretend', 'impostor', 'fraud', 'falso', 'fingindo'],
+                perfectionism: ['완벽', '잘해야', '실수하면', '모든걸', 'perfect', 'must do well', 'mistake', 'everything', 'perfeito', 'preciso fazer bem'],
+                validation: ['인정받', '승인', '좋은 사람', '괜찮다고', 'validation', 'approval', 'good person', 'recognition', 'validação', 'aprovação'],
+                anxiety: ['불안', '걱정', '두려', '떨려', 'anxiety', 'worry', 'fear', 'nervous', 'ansiedade', 'preocup'],
+                selfacceptance: ['받아들', '인정', '괜찮', '사랑', 'accept', 'okay', 'love myself', 'embrace', 'aceitar', 'amar-me'],
+                compassion: ['자비', '이해', '용서', '따뜻', 'compassion', 'understand', 'forgive', 'kind', 'compaixão', 'perdoar']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (Portal 08 전용)
+        const responseCharacters = [
+            {
+                name: "Affirmation", emoji: "✨",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            selfdoubt: "자신을 의심하는 것 자체가 당신이 성찰하는 사람이라는 증거예요. 진짜 문제가 있는 사람들은 이런 고민조차 하지 않아요. 의심한다는 건 더 나아지고 싶다는 마음이 있다는 뜻이에요.",
+                            guilt: "죄책감을 느끼는 건 당신에게 양심이 있다는 증거예요. 완벽한 사람은 없어요. 실수했다면 그것에서 배우고 더 나은 사람이 되려고 노력하는 당신의 모습이 이미 괜찮은 사람임을 보여줘요.",
+                            inadequacy: "부족하다고 느끼는 마음도 성장하고 싶다는 욕구에서 나와요. 완벽하지 않아도 괜찮아요. 노력하는 과정 자체가 당신을 괜찮은 사람으로 만들어가고 있어요.",
+                            shame: "부끄러움을 느끼는 건 당신이 더 나은 기준을 가지고 있다는 뜻이에요. 그 기준에 못 미쳤다고 해서 나쁜 사람은 아니에요. 계속 노력하려는 마음이 있다면 그것으로 충분해요.",
+                            impostor: "가짜 같다고 느끼는 건 당신이 진짜가 되고 싶어한다는 마음의 표현이에요. 진정성을 추구하는 사람만이 이런 고민을 해요. 그 고민 자체가 당신의 진정성을 증명해요.",
+                            perfectionism: "완벽해야 한다는 압박감을 느끼는 건 당신이 책임감 있는 사람이라는 증거예요. 하지만 완벽하지 않아도 충분히 가치 있는 사람이에요. 노력하는 과정이 더 중요해요.",
+                            validation: "인정받고 싶어하는 마음은 자연스러운 거예요. 하지만 가장 중요한 인정은 자기 자신의 인정이에요. 당신은 이미 인정받을 만한 가치가 충분한 사람이에요.",
+                            anxiety: "불안해하는 것도 당신이 신중하고 책임감 있는 사람이라는 증거예요. 불안은 때로 우리를 더 나은 선택으로 이끌어주기도 해요. 그 마음을 부정하지 마세요.",
+                            selfacceptance: "자신을 받아들이려는 마음이 생겼다는 것 자체가 큰 성장이에요. 있는 그대로의 자신을 사랑하는 것이 진정한 괜찮음의 시작이에요.",
+                            compassion: "자신에게 자비로운 마음을 갖는 건 지혜로운 일이에요. 자신을 이해하고 용서할 수 있는 사람이야말로 다른 사람도 이해할 수 있는 괜찮은 사람이에요.",
+                            general: "괜찮은 사람인지 고민한다는 것 자체가 당신이 괜찮은 사람이라는 증거예요. 진짜 문제가 있는 사람들은 이런 생각조차 하지 않거든요. 당신은 충분히 괜찮은 사람이에요."
+                        },
+                        en: {
+                            selfdoubt: "Doubting yourself is proof that you're a reflective person. People with real problems don't even have these concerns. Doubting means you have the desire to be better.",
+                            guilt: "Feeling guilt is proof that you have a conscience. No one is perfect. If you made mistakes, learning from them and trying to be better shows you're already a good person.",
+                            inadequacy: "Feeling inadequate also comes from wanting to grow. It's okay not to be perfect. The process of trying itself is making you into a good person.",
+                            shame: "Feeling shame means you have better standards. Not meeting those standards doesn't make you a bad person. Having the desire to keep trying is enough.",
+                            impostor: "Feeling fake is your heart's expression of wanting to be real. Only people pursuing authenticity have these concerns. That concern itself proves your authenticity.",
+                            perfectionism: "Feeling pressure to be perfect is proof that you're a responsible person. But you're valuable enough even without being perfect. The process of trying is more important.",
+                            validation: "Wanting recognition is natural. But the most important recognition is self-recognition. You're already a person worthy of recognition.",
+                            anxiety: "Being anxious is also proof that you're careful and responsible. Anxiety sometimes leads us to better choices. Don't deny that feeling.",
+                            selfacceptance: "Having the desire to accept yourself is itself great growth. Loving yourself as you are is the beginning of true goodness.",
+                            compassion: "Having compassion for yourself is wise. Someone who can understand and forgive themselves is a good person who can also understand others.",
+                            general: "Wondering if you're a good person is itself proof that you are. People with real problems don't even think about this. You're good enough."
+                        },
+                        pt: {
+                            selfdoubt: "Duvidar de si mesmo é prova de que você é uma pessoa reflexiva. Pessoas com problemas reais nem têm essas preocupações. Duvidar significa que você tem o desejo de ser melhor.",
+                            guilt: "Sentir culpa é prova de que você tem consciência. Ninguém é perfeito. Se você cometeu erros, aprender com eles e tentar ser melhor mostra que você já é uma boa pessoa.",
+                            inadequacy: "Sentir-se inadequado também vem de querer crescer. Está bem não ser perfeito. O processo de tentar em si está fazendo de você uma boa pessoa.",
+                            shame: "Sentir vergonha significa que você tem padrões melhores. Não atender a esses padrões não faz de você uma pessoa má. Ter o desejo de continuar tentando é suficiente.",
+                            impostor: "Sentir-se falso é a expressão do seu coração de querer ser real. Apenas pessoas buscando autenticidade têm essas preocupações. Essa preocupação em si prova sua autenticidade.",
+                            perfectionism: "Sentir pressão para ser perfeito é prova de que você é uma pessoa responsável. Mas você é valioso o suficiente mesmo sem ser perfeito. O processo de tentar é mais importante.",
+                            validation: "Querer reconhecimento é natural. Mas o reconhecimento mais importante é o auto-reconhecimento. Você já é uma pessoa digna de reconhecimento.",
+                            anxiety: "Estar ansioso também é prova de que você é cuidadoso e responsável. A ansiedade às vezes nos leva a melhores escolhas. Não negue esse sentimento.",
+                            selfacceptance: "Ter o desejo de se aceitar é em si um grande crescimento. Amar-se como você é é o início da verdadeira bondade.",
+                            compassion: "Ter compaixão por si mesmo é sábio. Alguém que pode entender e perdoar a si mesmo é uma boa pessoa que também pode entender outros.",
+                            general: "Se perguntar se você é uma boa pessoa é em si prova de que você é. Pessoas com problemas reais nem pensam sobre isso. Você é bom o suficiente."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Growth", emoji: "🌱",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            selfdoubt: "의심은 성장의 출발점이에요. 확신만 있는 사람은 발전하지 않아요. 당신의 의심은 더 나은 사람이 되고 싶다는 신호예요. 그 에너지를 성장으로 바꿀 수 있어요.",
+                            guilt: "죄책감을 성장의 연료로 사용할 수 있어요. 과거의 실수에서 배운 교훈들이 미래의 당신을 더 현명하게 만들어줄 거예요. 완벽하지 않았기에 더 완전해질 수 있어요.",
+                            inadequacy: "부족함을 인정하는 것이 성장의 첫 걸음이에요. 모자란 부분을 알아야 채울 수 있어요. 지금의 부족함은 미래의 풍요로움을 위한 준비 과정이에요.",
+                            shame: "부끄러웠던 경험들이 당신을 더 겸손하고 공감 능력 있는 사람으로 만들었어요. 그 경험들 없이는 지금의 깊이 있는 당신이 될 수 없었을 거예요.",
+                            impostor: "진정성에 대한 고민이 있다는 건 당신이 계속 성장하고 있다는 증거예요. 정체된 사람은 이런 고민을 하지 않아요. 변화하는 과정에서 느끼는 자연스러운 감정이에요.",
+                            perfectionism: "완벽주의는 높은 기준을 가진 증거예요. 그 기준을 조금 낮추면서도 계속 발전해나갈 수 있어요. 완벽하지 않은 과정 속에서도 성장은 일어나고 있어요.",
+                            validation: "외부 인정을 구하는 마음에서 내적 확신으로 나아가는 것도 성장이에요. 다른 사람의 평가보다 자신의 성장에 집중할 때 진정한 만족을 얻을 수 있어요.",
+                            anxiety: "불안은 변화의 신호예요. 새로운 단계로 넘어갈 때 느끼는 자연스러운 감정이에요. 그 불안을 통과하면 더 강해진 자신을 만날 수 있어요.",
+                            selfacceptance: "자기 수용은 가장 큰 성장이에요. 자신을 있는 그대로 받아들일 때 진정한 변화가 시작돼요. 스스로를 사랑하는 법을 배우고 있는 중이에요.",
+                            compassion: "자기 자비는 성장을 위한 최고의 토양이에요. 자신에게 친절할 때 더 용기 있게 도전하고 실패해도 다시 일어설 수 있어요.",
+                            general: "모든 고민과 의문들이 당신을 더 깊이 있는 사람으로 만들어가고 있어요. 쉬운 길을 택하지 않고 스스로를 돌아보는 용기가 진정한 성장의 증거예요."
+                        },
+                        en: {
+                            selfdoubt: "Doubt is the starting point of growth. People with only certainty don't develop. Your doubt is a signal of wanting to be better. You can transform that energy into growth.",
+                            guilt: "You can use guilt as fuel for growth. Lessons learned from past mistakes will make future you wiser. Because you weren't perfect, you can become more complete.",
+                            inadequacy: "Acknowledging inadequacy is the first step of growth. You need to know what's lacking to fill it. Current inadequacy is preparation for future abundance.",
+                            shame: "Shameful experiences made you more humble and empathetic. Without those experiences, you couldn't have become the deep person you are now.",
+                            impostor: "Having concerns about authenticity is proof you're continuously growing. Stagnant people don't have these concerns. It's a natural feeling in the process of change.",
+                            perfectionism: "Perfectionism is proof of having high standards. You can keep developing while lowering those standards a bit. Growth happens even in imperfect processes.",
+                            validation: "Moving from seeking external validation to internal confidence is also growth. You can find true satisfaction when focusing on your growth rather than others' evaluations.",
+                            anxiety: "Anxiety is a signal of change. It's a natural feeling when moving to a new stage. Passing through that anxiety will help you meet a stronger self.",
+                            selfacceptance: "Self-acceptance is the greatest growth. True change begins when you accept yourself as you are. You're learning how to love yourself.",
+                            compassion: "Self-compassion is the best soil for growth. When you're kind to yourself, you can challenge more courageously and rise again even after failure.",
+                            general: "All your concerns and questions are making you a deeper person. The courage to reflect on yourself instead of taking easy paths is proof of true growth."
+                        },
+                        pt: {
+                            selfdoubt: "A dúvida é o ponto de partida do crescimento. Pessoas com apenas certeza não se desenvolvem. Sua dúvida é um sinal de querer ser melhor. Você pode transformar essa energia em crescimento.",
+                            guilt: "Você pode usar a culpa como combustível para crescimento. Lições aprendidas de erros passados tornarão o futuro você mais sábio. Porque você não era perfeito, pode se tornar mais completo.",
+                            inadequacy: "Reconhecer inadequação é o primeiro passo do crescimento. Você precisa saber o que está faltando para preenchê-lo. A inadequação atual é preparação para abundância futura.",
+                            shame: "Experiências vergonhosas fizeram de você uma pessoa mais humilde e empática. Sem essas experiências, você não poderia ter se tornado a pessoa profunda que é agora.",
+                            impostor: "Ter preocupações sobre autenticidade é prova de que você está crescendo continuamente. Pessoas estagnadas não têm essas preocupações. É um sentimento natural no processo de mudança.",
+                            perfectionism: "Perfeccionismo é prova de ter padrões altos. Você pode continuar se desenvolvendo enquanto abaixa esses padrões um pouco. O crescimento acontece mesmo em processos imperfeitos.",
+                            validation: "Mover-se de buscar validação externa para confiança interna também é crescimento. Você pode encontrar verdadeira satisfação quando foca no seu crescimento ao invés das avaliações dos outros.",
+                            anxiety: "Ansiedade é um sinal de mudança. É um sentimento natural ao mover-se para um novo estágio. Passar por essa ansiedade ajudará você a encontrar um eu mais forte.",
+                            selfacceptance: "Auto-aceitação é o maior crescimento. Mudança verdadeira começa quando você se aceita como é. Você está aprendendo como se amar.",
+                            compassion: "Auto-compaixão é o melhor solo para crescimento. Quando você é gentil consigo mesmo, pode desafiar mais corajosamente e se erguer novamente mesmo após falha.",
+                            general: "Todas as suas preocupações e questões estão fazendo de você uma pessoa mais profunda. A coragem de refletir sobre si mesmo ao invés de tomar caminhos fáceis é prova de verdadeiro crescimento."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Wisdom", emoji: "🦉",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            selfdoubt: "의심은 지혜로운 사람의 특징이에요. 소크라테스도 '나는 내가 모른다는 것을 안다'고 했죠. 확신 없음이 때로는 가장 현명한 자세일 수 있어요. 열린 마음으로 계속 배워가세요.",
+                            guilt: "죄책감은 도덕적 나침반이 살아있다는 증거예요. 그 감정을 통해 더 나은 판단을 할 수 있게 돼요. 완벽한 사람은 없지만, 반성할 줄 아는 사람은 지혜로운 사람이에요.",
+                            inadequacy: "부족함을 아는 것이 진정한 지혜의 시작이에요. 모든 것을 안다고 생각하는 순간 성장이 멈춰요. 겸손한 마음으로 계속 배워나가는 당신이 현명한 사람이에요.",
+                            shame: "부끄러움을 느낄 줄 아는 것은 내적 기준이 있다는 뜻이에요. 그 기준이 당신을 더 나은 방향으로 이끌어주고 있어요. 부끄러움도 성장을 위한 감정의 선물이에요.",
+                            impostor: "진정성에 대한 고민은 철학자들이 수천 년간 해온 질문이에요. '나는 누구인가?'라는 질문을 던지는 것 자체가 깊이 있는 삶을 사는 증거예요.",
+                            perfectionism: "완벽함에 대한 욕구는 탁월함을 추구하는 마음에서 나와요. 다만 그 기준을 현실적으로 조정하는 지혜가 필요해요. 완벽보다는 진전에 집중하는 것이 현명해요.",
+                            validation: "타인의 인정을 구하는 것은 인간의 기본 욕구예요. 하지만 진정한 평가는 내면에서 나와야 해요. 외부 평가와 내적 확신의 균형을 찾는 것이 지혜예요.",
+                            anxiety: "불안은 미래를 생각할 줄 아는 지성의 증거예요. 다만 그 불안을 건설적으로 활용하는 법을 배워야 해요. 불안을 대비로 바꾸는 것이 현명한 방법이에요.",
+                            selfacceptance: "자기 수용은 가장 어려우면서도 가장 중요한 지혜예요. 자신의 한계를 인정하면서도 가능성을 포기하지 않는 균형잡힌 시각이 필요해요.",
+                            compassion: "자기 자비는 동양 철학에서 말하는 '자애'와 같은 개념이에요. 자신에게 친절할 줄 아는 사람이 다른 사람에게도 진정한 친절을 베풀 수 있어요.",
+                            general: "스스로를 성찰하는 능력이야말로 인간을 인간답게 만드는 가장 큰 특징이에요. 그 고민하는 마음 자체가 당신의 인간다움을 증명하고 있어요."
+                        },
+                        en: {
+                            selfdoubt: "Doubt is a characteristic of wise people. Socrates also said 'I know that I know nothing.' Sometimes uncertainty can be the wisest attitude. Keep learning with an open mind.",
+                            guilt: "Guilt is proof that your moral compass is alive. Through that emotion, you can make better judgments. No one is perfect, but someone who can reflect is wise.",
+                            inadequacy: "Knowing inadequacy is the beginning of true wisdom. Growth stops the moment you think you know everything. You're wise for continuing to learn with humility.",
+                            shame: "Being able to feel shame means you have internal standards. Those standards are leading you toward better directions. Shame is also an emotional gift for growth.",
+                            impostor: "Concerns about authenticity are questions philosophers have asked for thousands of years. Asking 'Who am I?' is itself proof of living a deep life.",
+                            perfectionism: "The desire for perfection comes from pursuing excellence. However, you need wisdom to adjust those standards realistically. Focusing on progress rather than perfection is wise.",
+                            validation: "Seeking others' recognition is a basic human need. But true evaluation must come from within. Finding balance between external evaluation and internal confidence is wisdom.",
+                            anxiety: "Anxiety is proof of intelligence that can think about the future. However, you need to learn how to use that anxiety constructively. Turning anxiety into preparation is a wise method.",
+                            selfacceptance: "Self-acceptance is the most difficult yet most important wisdom. You need a balanced perspective that acknowledges your limitations while not giving up on possibilities.",
+                            compassion: "Self-compassion is the same concept as 'loving-kindness' in Eastern philosophy. Someone who knows how to be kind to themselves can show true kindness to others.",
+                            general: "The ability to reflect on yourself is the greatest characteristic that makes humans human. That contemplative heart itself proves your humanity."
+                        },
+                        pt: {
+                            selfdoubt: "A dúvida é uma característica de pessoas sábias. Sócrates também disse 'Sei que nada sei.' Às vezes a incerteza pode ser a atitude mais sábia. Continue aprendendo com mente aberta.",
+                            guilt: "Culpa é prova de que sua bússola moral está viva. Através dessa emoção, você pode fazer melhores julgamentos. Ninguém é perfeito, mas alguém que pode refletir é sábio.",
+                            inadequacy: "Conhecer inadequação é o início da verdadeira sabedoria. O crescimento para no momento que você pensa que sabe tudo. Você é sábio por continuar aprendendo com humildade.",
+                            shame: "Ser capaz de sentir vergonha significa que você tem padrões internos. Esses padrões estão levando você para direções melhores. Vergonha também é um presente emocional para crescimento.",
+                            impostor: "Preocupações sobre autenticidade são questões que filósofos fazem há milhares de anos. Perguntar 'Quem sou eu?' é em si prova de viver uma vida profunda.",
+                            perfectionism: "O desejo de perfeição vem de buscar excelência. No entanto, você precisa de sabedoria para ajustar esses padrões realisticamente. Focar no progresso ao invés de perfeição é sábio.",
+                            validation: "Buscar reconhecimento dos outros é uma necessidade humana básica. Mas avaliação verdadeira deve vir de dentro. Encontrar equilíbrio entre avaliação externa e confiança interna é sabedoria.",
+                            anxiety: "Ansiedade é prova de inteligência que pode pensar sobre o futuro. No entanto, você precisa aprender como usar essa ansiedade construtivamente. Transformar ansiedade em preparação é um método sábio.",
+                            selfacceptance: "Auto-aceitação é a sabedoria mais difícil e mais importante. Você precisa de uma perspectiva equilibrada que reconhece suas limitações enquanto não desiste das possibilidades.",
+                            compassion: "Auto-compaixão é o mesmo conceito que 'bondade amorosa' na filosofia oriental. Alguém que sabe como ser gentil consigo mesmo pode mostrar verdadeira gentileza aos outros.",
+                            general: "A capacidade de refletir sobre si mesmo é a maior característica que torna humanos humanos. Esse coração contemplativo em si prova sua humanidade."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 08 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 09가 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 09 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 09 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 08 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

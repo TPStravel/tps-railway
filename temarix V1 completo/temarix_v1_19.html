@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Language" content="ko,en,pt">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V1 - Portal 19</title>
+</head>
+<body>
+<!-- Temarix V2 - Portal 19: 나를 위해 처음 한 선택 -->
+<section class="portal portal-19" id="portal-19">
+  <!-- Temarix Logo - Fixed Left Top -->
+  <div class="temarix-logo">
+    <h1 class="logo-text">🌌 TEMARIX</h1>
+    <p class="slogan" data-i18n="common.slogan">당신 안에 숨은 이야기를 말 해 주세요</p>
+  </div>
+
+  <!-- Language Selector - Fixed Right Top -->
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="kr">KR</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="pt">PT</button>
+  </div>
+
+  <!-- Portal Header - Center Top -->
+  <div class="portal-header">
+    <h1 data-i18n="portal19.title">감정의 문지방 19</h1>
+    <h2 data-i18n="portal19.subtitle">나를 위해 처음 한 선택</h2>
+  </div>
+
+  <!-- Message Stream -->
+  <div class="message-stream" id="messageStream19">
+    <!-- Messages will be added here via JavaScript -->
+  </div>
+
+  <!-- User Input Area -->
+  <div class="input-area" id="inputArea19" style="display: none;">
+    <div class="input-container">
+      <textarea 
+        id="userInput19" 
+        rows="3" 
+        placeholder="처음으로 나를 위해 내린 그 결정을 적어보세요..."
+        data-i18n-placeholder="portal19.input.placeholder"
+      ></textarea>
+      <button class="submit-btn" onclick="submitResponse(19)">
+        <span data-i18n="portal19.submit">💎 자존감의 첫걸음 나누기</span>
+      </button>
+      <p class="input-hint" data-i18n="portal19.input.hint">Enter 키를 눌러도 전달할 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- Next Portal Navigation -->
+  <div class="next-portal-nav" id="nextPortalNav19" style="display: none;">
+    <div class="nav-buttons">
+      <button class="nav-btn yes-btn" onclick="goToNextPortal(20)" data-i18n="common.yes">예</button>
+      <button class="nav-btn no-btn" onclick="stayInPortal(19)" data-i18n="common.no">아니요</button>
+    </div>
+  </div>
+
+  <!-- Back to Main -->
+  <div class="back-to-main">
+    <button onclick="window.location.href='portal4.html'" data-i18n="common.back_to_main">
+      🏠 메인 포탈로 돌아가기
+    </button>
+  </div>
+</section>
+
+<style>
+/* Portal Base Styles */
+.portal {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1b4b 0%, #2d1b69 100%);
+  color: white;
+  padding: 80px 20px 20px 20px;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Logo Glow Animation */
+@keyframes glowCycle {
+  0%, 100% { text-shadow: 0 0 8px rgba(255,255,255,0.2); }
+  50% { text-shadow: 0 0 25px rgba(255,255,255,0.7); }
+}
+
+/* Temarix Logo - Fixed Left Top */
+.temarix-logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.slogan {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Language Selector - Fixed Right Top */
+.lang-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 120px;
+  z-index: 1000;
+}
+
+.lang-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.lang-btn.active {
+  background: #9c27b0;
+  border-color: #9c27b0;
+}
+
+/* Portal Header - Center Top */
+.portal-header {
+  text-align: center;
+  margin: 40px 0 30px 0;
+  padding-top: 40px;
+}
+
+.portal-header h1 {
+  font-size: 2.2rem;
+  margin: 10px 0;
+  color: #ffd700;
+}
+
+.portal-header h2 {
+  font-size: 1.3rem;
+  color: #e1bee7;
+  font-weight: 300;
+}
+
+/* Message Stream */
+.message-stream {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.message-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.message-card.prologue {
+  border-left: 4px solid #e1bee7;
+}
+
+.message-card.ely {
+  border-left: 4px solid #ffd700;
+}
+
+.message-card.sora {
+  border-left: 4px solid #4dd0e1;
+}
+
+.message-card.noah {
+  border-left: 4px solid #9c27b0;
+}
+
+.message-card.enya {
+  border-left: 4px solid #ff9800;
+}
+
+.message-card.kaia {
+  border-left: 4px solid #607d8b;
+}
+
+.message-card.cris {
+  border-left: 4px solid #4caf50;
+}
+
+.message-card.kael {
+  border-left: 4px solid #f44336;
+}
+
+.message-card.mira {
+  border-left: 4px solid #9e9e9e;
+}
+
+.message-card.light {
+  border-left: 4px solid #ffffff;
+  background: rgba(255,255,255,0.15);
+}
+
+.message-card.question {
+  border-left: 4px solid #f48fb1;
+}
+
+.message-card.user-input {
+  border-left: 4px solid #81c784;
+  background: rgba(129, 199, 132, 0.1);
+}
+
+.character-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.ely .character-name { color: #ffd700; }
+.sora .character-name { color: #4dd0e1; }
+.noah .character-name { color: #9c27b0; }
+.enya .character-name { color: #ff9800; }
+.kaia .character-name { color: #607d8b; }
+.cris .character-name { color: #4caf50; }
+.kael .character-name { color: #f44336; }
+.mira .character-name { color: #9e9e9e; }
+
+.message-text {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  white-space: nowrap;
+  animation: blink-caret 1s step-end infinite;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: rgba(255,255,255,0.7); }
+}
+
+/* Input Area */
+.input-area {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.input-container textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.input-container textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #9c27b0, #e1bee7);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+}
+
+.input-hint {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+
+/* Next Portal Navigation */
+.next-portal-nav {
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+  border-color: #4caf50;
+}
+
+.yes-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.no-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.no-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Back to Main */
+.back-to-main {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.back-to-main button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-to-main button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .portal {
+    padding: 100px 15px 20px 15px;
+  }
+  
+  .temarix-logo {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .slogan {
+    font-size: 0.7rem;
+  }
+  
+  .lang-selector {
+    top: 15px;
+    right: 15px;
+    max-width: 100px;
+  }
+  
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .portal-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .portal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .message-card {
+    padding: 15px;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-btn {
+    width: 200px;
+  }
+}
+</style>
+
+<script>
+// Portal 19 Complete Data with Character Responses
+const portal19Data = {
+  kr: {
+    title: "감정의 문지방 19",
+    subtitle: "나를 위해 처음 한 선택",
+    prologue: "그날 처음, 누구도 아닌 '나'를 위해 무언가를 결정했습니다. 작은 것이었지만, 그건 스스로를 존중한다는 첫 신호였죠. 그 작은 결심이 당신을 조금씩 회복하게 했어요. 첫 선택은 작았지만, 그 방향은 지금도 당신을 이끌고 있습니다.",
+    ely: "자기 자신을 선택하는 건 사랑의 시작이에요.",
+    sora: "그 작은 결심이 당신을 조금씩 회복하게 했어요.",
+    noah: "첫 선택은 작았지만, 그 방향은 지금도 당신을 이끌고 있어요.",
+    enya: "나는 그 장면을 기억해요. 그건 당신이 처음으로 자신에게 준 '허락'이었어요.",
+    kaia: "자기 자신을 위해 한 선택... 그건 당신이 절대 잃지 말아야 할 목소리예요.",
+    cris: "처음 나를 위해 선택한 거? 혼자 영화 보러 간 거~ 근데 팝콘 2개 시킨 건 왜였지? 🍿😂",
+    kael: "네가 그때 '네'라고 했을 때, 세상이 달라졌다는 거 몰라? 그게 시작이었어.",
+    mira: "그 선택이 두려우면서도 설레었죠. 그 감정... 아직도 남아있나요?",
+    light: "자신을 위한 선택은 작아도, 그 여운은 평생을 흔듭니다.",
+    question: "당신은 처음으로 나를 위해 내린 결정이 무엇인지 기억하나요?",
+    input: { 
+      placeholder: "처음으로 나를 위해 내린 그 결정을 적어보세요...",
+      hint: "Enter 키를 눌러도 전달할 수 있습니다"
+    },
+    submit: "💎 자존감의 첫걸음 나누기",
+    slogan: "당신 안에 숨은 이야기를 말 해 주세요",
+    response_ely: "그 첫 선택이 얼마나 용감했는지... 당신은 그때부터 자신을 사랑하기 시작한 거예요.",
+    response_sora: "그 순간의 떨림과 설렘을 저도 함께 느꼈어요. 그것이 진정한 자유의 시작이었어요.",
+    response_noah: "그 작은 선택이 지금의 당신을 만든 토대가 되었습니다. 이제 더 큰 선택들이 기다리고 있어요.\n\n👉 다음 문지방으로 함께 나아가도 괜찮을까요?",
+    user_input_prefix: "나를 위한 첫 선택:",
+    yes: "예",
+    no: "아니요"
+  },
+  en: {
+    title: "Emotional Threshold 19",
+    subtitle: "The First Choice I Made for Myself",
+    prologue: "That day, for the first time, I decided something for 'me' and no one else. It was small, but it was the first signal of respecting myself. That small decision gradually helped you recover. The first choice was small, but its direction still guides you today.",
+    ely: "Choosing yourself is the beginning of love.",
+    sora: "That small decision gradually helped you recover.",
+    noah: "The first choice was small, but its direction still guides you today.",
+    enya: "I remember that scene. It was the first 'permission' you gave to yourself.",
+    kaia: "The choice you made for yourself... that's the voice you should never lose.",
+    cris: "The first choice I made for myself? Going to see a movie alone~ But why did I order two popcorns? 🍿😂",
+    kael: "Don't you know that when you said 'yes' to yourself then, the world changed? That was the beginning.",
+    mira: "That choice was scary but also exciting, wasn't it? That feeling... is it still there?",
+    light: "A choice for yourself may be small, but its echo resonates for a lifetime.",
+    question: "Do you remember what was the first decision you made for yourself?",
+    input: { 
+      placeholder: "Write about that first decision you made for yourself...",
+      hint: "You can also press Enter to submit"
+    },
+    submit: "💎 Share the First Step of Self-Respect",
+    slogan: "Please tell me the story hidden within you",
+    response_ely: "How brave that first choice was... You started loving yourself from that moment.",
+    response_sora: "I felt the trembling and excitement of that moment with you. That was the beginning of true freedom.",
+    response_noah: "That small choice became the foundation that created who you are today. Now bigger choices await you.\n\n👉 Shall we move forward to the next threshold together?",
+    user_input_prefix: "My first choice for myself:",
+    yes: "Yes",
+    no: "No"
+  },
+  pt: {
+    title: "Limiar Emocional 19",
+    subtitle: "A Primeira Escolha que Fiz por Mim",
+    prologue: "Naquele dia, pela primeira vez, decidi algo por 'mim' e mais ninguém. Era pequeno, mas foi o primeiro sinal de me respeitar. Essa pequena decisão gradualmente ajudou você a se recuperar. A primeira escolha foi pequena, mas sua direção ainda te guia hoje.",
+    ely: "Escolher a si mesmo é o começo do amor.",
+    sora: "Essa pequena decisão gradualmente ajudou você a se recuperar.",
+    noah: "A primeira escolha foi pequena, mas sua direção ainda te guia hoje.",
+    enya: "Eu me lembro daquela cena. Foi a primeira 'permissão' que você deu a si mesmo.",
+    kaia: "A escolha que você fez por si mesmo... essa é a voz que você nunca deve perder.",
+    cris: "A primeira escolha que fiz por mim? Ir ao cinema sozinho~ Mas por que pedi duas pipocas? 🍿😂",
+    kael: "Você não sabe que quando disse 'sim' para si mesmo então, o mundo mudou? Esse foi o começo.",
+    mira: "Essa escolha foi assustadora mas também emocionante, não foi? Esse sentimento... ainda está lá?",
+    light: "Uma escolha por si mesmo pode ser pequena, mas seu eco ressoa por toda a vida.",
+    question: "Você se lembra qual foi a primeira decisão que tomou por si mesmo?",
+    input: { 
+      placeholder: "Escreva sobre aquela primeira decisão que você tomou por si mesmo...",
+      hint: "Você também pode pressionar Enter para enviar"
+    },
+    submit: "💎 Compartilhar o Primeiro Passo do Autorrespeito",
+    slogan: "Por favor, me conte a história escondida dentro de você",
+    response_ely: "Quão corajosa foi aquela primeira escolha... Você começou a se amar a partir daquele momento.",
+    response_sora: "Senti o tremor e a emoção daquele momento com você. Esse foi o começo da verdadeira liberdade.",
+    response_noah: "Aquela pequena escolha se tornou a fundação que criou quem você é hoje. Agora escolhas maiores te aguardam.\n\n👉 Vamos avançar para o próximo limiar juntos?",
+    user_input_prefix: "Minha primeira escolha por mim:",
+    yes: "Sim",
+    no: "Não"
+  },
+  
+};
+
+// Current language and state for Portal 19
+let currentLang19 = 'kr';
+let userInputText19 = '';
+
+// Initialize Portal 19
+function initPortal19() {
+  displayInitialMessages19();
+  setupLanguageSwitching19();
+  setupEnterKeySubmission19();
+}
+
+// Display initial messages with typing effect
+async function displayInitialMessages19() {
+  const stream = document.getElementById('messageStream19');
+  const messages = [
+    { type: 'prologue', content: portal19Data[currentLang19].prologue },
+    { type: 'ely', name: '👑 Ely', content: portal19Data[currentLang19].ely },
+    { type: 'sora', name: '💧 Sora', content: portal19Data[currentLang19].sora },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: portal19Data[currentLang19].noah },
+    { type: 'enya', name: '🕯️ Enya', content: portal19Data[currentLang19].enya },
+    { type: 'kaia', name: '😶 Kaia', content: portal19Data[currentLang19].kaia },
+    { type: 'cris', name: '🃏 Cris', content: portal19Data[currentLang19].cris },
+    { type: 'kael', name: '💥 Kael', content: portal19Data[currentLang19].kael },
+    { type: 'mira', name: '🌫️ Mira', content: portal19Data[currentLang19].mira },
+    { type: 'light', content: portal19Data[currentLang19].light },
+    { type: 'question', content: portal19Data[currentLang19].question }
+  ];
+
+  for (let i = 0; i < messages.length; i++) {
+    const messageCard = createMessageCard19(messages[i]);
+    stream.appendChild(messageCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText19(messageCard.querySelector('.message-text'), messages[i].content);
+    await sleep19(1200);
+  }
+  
+  // Show input area after all messages
+  document.getElementById('inputArea19').style.display = 'block';
+}
+
+// Setup Enter key submission
+function setupEnterKeySubmission19() {
+  document.getElementById('userInput19').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitResponse(19);
+    }
+  });
+}
+
+// Display character responses after user input
+async function displayCharacterResponses19(userInput) {
+  const stream = document.getElementById('messageStream19');
+  
+  // Show user input first
+  const userCard = createMessageCard19({
+    type: 'user-input',
+    content: `${portal19Data[currentLang19].user_input_prefix}\n"${userInput}"`
+  });
+  stream.appendChild(userCard);
+  stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+  await typeText19(userCard.querySelector('.message-text'), userCard.querySelector('.message-text').textContent);
+  await sleep19(1500);
+  
+  // Character responses
+  const responses = [
+    { type: 'ely', name: '👑 Ely', content: `"${userInput}"... ${portal19Data[currentLang19].response_ely}` },
+    { type: 'sora', name: '💧 Sora', content: `${portal19Data[currentLang19].response_sora}` },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: `"${userInput}" ${portal19Data[currentLang19].response_noah}` }
+  ];
+
+  for (let i = 0; i < responses.length; i++) {
+    const responseCard = createMessageCard19(responses[i]);
+    stream.appendChild(responseCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText19(responseCard.querySelector('.message-text'), responses[i].content);
+    await sleep19(1500);
+  }
+  
+  // Show navigation buttons
+  document.getElementById('nextPortalNav19').style.display = 'block';
+}
+
+function createMessageCard19(message) {
+  const card = document.createElement('div');
+  card.className = `message-card ${message.type}`;
+  
+  let cardHTML = '';
+  if (message.name) {
+    cardHTML += `<div class="character-name">${message.name}</div>`;
+  }
+  cardHTML += `<div class="message-text">${message.content || ''}</div>`;
+  
+  card.innerHTML = cardHTML;
+  return card;
+}
+
+async function typeText19(element, text, speed = 80) {
+  return new Promise((resolve) => {
+    let i = 0;
+    element.textContent = '';
+    element.classList.add('typewriter');
+    
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+        element.classList.remove('typewriter');
+        resolve();
+      }
+    }, speed);
+  });
+}
+
+function sleep19(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setupLanguageSwitching19() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newLang = btn.dataset.lang;
+      if (portal19Data[newLang] && newLang !== currentLang19) {
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentLang19 = newLang;
+        document.getElementById('messageStream19').innerHTML = '';
+        document.getElementById('inputArea19').style.display = 'none';
+        document.getElementById('nextPortalNav19').style.display = 'none';
+        displayInitialMessages19();
+        updatePortalTexts19();
+      }
+    });
+  });
+}
+
+function updatePortalTexts19() {
+  // Update title and subtitle
+  document.querySelector('[data-i18n="portal19.title"]').textContent = portal19Data[currentLang19].title;
+  document.querySelector('[data-i18n="portal19.subtitle"]').textContent = portal19Data[currentLang19].subtitle;
+  
+  // Update slogan
+  document.querySelector('[data-i18n="common.slogan"]').textContent = portal19Data[currentLang19].slogan;
+  
+  // Update placeholder and hint
+  document.getElementById('userInput19').placeholder = portal19Data[currentLang19].input.placeholder;
+  document.querySelector('[data-i18n="portal19.input.hint"]').textContent = portal19Data[currentLang19].input.hint;
+  
+  // Update submit button
+  document.querySelector('[data-i18n="portal19.submit"]').textContent = portal19Data[currentLang19].submit;
+  
+  // Update navigation buttons
+  const yesBtn = document.querySelector('[data-i18n="common.yes"]');
+  const noBtn = document.querySelector('[data-i18n="common.no"]');
+  if (yesBtn) yesBtn.textContent = portal19Data[currentLang19].yes;
+  if (noBtn) noBtn.textContent = portal19Data[currentLang19].no;
+  
+  // Update back to main button
+  document.querySelector('[data-i18n="common.back_to_main"]').textContent = 
+    currentLang19 === 'kr' ? '🏠 메인 포탈로 돌아가기' :
+    currentLang19 === 'en' ? '🏠 Back to Main Portal' :
+    currentLang19 === 'pt' ? '🏠 Voltar ao Portal Principal' :
+    currentLang19 === 'es' ? '🏠 Volver al Portal Principal' :
+    currentLang19 === 'fr' ? '🏠 Retour au Portail Principal' :
+    currentLang19 === 'de' ? '🏠 Zurück zum Hauptportal' :
+    currentLang19 === 'it' ? '🏠 Torna al Portale Principale' :
+    currentLang19 === 'ru' ? '🏠 Вернуться к Главному Порталу' :
+    currentLang19 === 'ja' ? '🏠 メインポータルに戻る' :
+    currentLang19 === 'zh' ? '🏠 返回主门户' :
+    currentLang19 === 'ar' ? '🏠 العودة إلى البوابة الرئيسية' :
+    currentLang19 === 'hi' ? '🏠 मुख्य पोर्टल पर वापस जाएं' :
+    '🏠 메인 포탈로 돌아가기';
+}
+
+function submitResponse(portalNum) {
+  if (portalNum !== 19) return;
+  
+  const input = document.getElementById(`userInput${portalNum}`);
+  const response = input.value.trim();
+  
+  if (response) {
+    userInputText19 = response;
+    
+    // Hide input area
+    document.getElementById(`inputArea${portalNum}`).style.display = 'none';
+    
+    // Display character responses
+    displayCharacterResponses19(response);
+    
+    // Clear input
+    input.value = '';
+  } else {
+    // No alert, just focus on input
+    input.focus();
+    input.style.borderColor = '#f48fb1';
+    setTimeout(() => {
+      input.style.borderColor = 'rgba(255,255,255,0.3)';
+    }, 2000);
+  }
+}
+
+function stayInPortal(portalNum) {
+  document.getElementById(`nextPortalNav${portalNum}`).style.display = 'none';
+  document.getElementById(`inputArea${portalNum}`).style.display = 'block';
+  document.getElementById(`userInput${portalNum}`).focus();
+}
+
+function goToNextPortal(nextNumber) {
+  const nextUrl = `temarix_v1_${String(nextNumber).padStart(2, '0')}.html`;
+  window.location.href = nextUrl;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('portal-19')) {
+    initPortal19();
+  }
+});
+</script>
+</body>
+</html>

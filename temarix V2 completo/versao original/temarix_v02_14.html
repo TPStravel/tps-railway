@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 14: The Real Desires I've Been Avoiding</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 14: The Real Desires I've Been Avoiding</div>
+            <div class="portal-subtitle" id="portalSubtitle">The courage to face hidden longings</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">🌙 Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 15</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Share about the real desires you've been hiding... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 14: 내가 외면해온 진짜 욕망",
+                portalSubtitle: "숨겨둔 갈망과 마주하는 용기",
+                portalIntro: "우리는 살면서 많은 욕망을 숨겨왔습니다.\n'이런 걸 원하면 안 되는데..'\n'이건 너무 이기적인 거 아닐까..'\n'사람들이 알면 어떻게 생각할까..'\n\n그렇게 하나씩 외면해온 진짜 욕망들은\n마음 깊숙이 묻혀 있지만\n여전히 작은 떨림으로 우리를 부릅니다.\n\n지금, 당신이 가장 숨기고 싶었던\n그 욕망은 무엇인가요?",
+                lightTitle: "🌙 빛의 한마디",
+                lightMessage: "숨겨진 욕망은 부끄러운 것이 아닙니다.\n그것은 당신이 진정 원하는 삶을 향한\n가장 정직한 나침반입니다.",
+                portalQuestion: "당신이 외면해온 진짜 욕망은 무엇인가요?\n그것을 인정한다면 무엇이 달라질까요?",
+                continueText: "숨겨둔 욕망과 마주한 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 15로 계속하시겠습니까?",
+                continueNo: "여정을 일시정지하시겠습니까?",
+                inputPlaceholder: "당신이 숨겨왔던 진짜 욕망에 대해 털어놓아 보세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "당신이 감춘 욕망은 잘못된 것이 아닙니다.\n그것은 당신이 진정 살아있다는 가장 솔직한 증거입니다.",
+                charCris: "와~ 나도 그런 거 있어요.\n'이런 걸 원하면 안 되는데..'\n근데 솔직히, 원하는 마음이 있다는 게 정상 아닌가요? 😏",
+                charZafirah: "당신이 부끄러워하는 그 욕망 속에\n가장 순수한 당신의 목소리가 숨어 있어요.",
+                charRami: "욕망은 금기가 아니라 방향입니다.\n당신이 진정 원하는 것을 알아야 삶의 방향도 보입니다.",
+                charSamir: "(그는 당신의 가슴에 손을 얹고 조용히 눈을 감습니다.\n그 손 아래에서 억눌린 욕망이\n작은 심장박동으로 떨리고 있습니다.)",
+                charLayla: "나는 당신의 그 감춰진 욕망까지도\n아름답게 받아들일 수 있어요.\n숨기지 말고 조용히 꺼내봐요.",
+                charNabir: "그런 욕망 가지고 있으면서\n지금까지 숨겨왔다고?\n진짜 비겁하다. 그냥 포기해.",
+                charAzhar: "그 욕망이 뭔데 그렇게 숨겨?\n어차피 이제 와서 꺼내봤자\n늦었어. 그냥 묻어둬."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 14: The Real Desires I've Been Avoiding",
+                portalSubtitle: "The courage to face hidden longings",
+                portalIntro: "We have hidden many desires throughout our lives.\n'I shouldn't want this..'\n'Isn't this too selfish..'\n'What would people think if they knew..'\n\nThose real desires we've turned away from one by one\nare buried deep in our hearts\nbut still call to us with small tremors.\n\nNow, what is that desire\nyou most wanted to hide?",
+                lightTitle: "🌙 Word of Light",
+                lightMessage: "Hidden desires are not shameful.\nThey are the most honest compass\ntoward the life you truly want.",
+                portalQuestion: "What is the real desire you've been avoiding?\nIf you acknowledge it, what would change?",
+                continueText: "Will you continue this journey of facing hidden desires?",
+                continueYes: "Continue to Portal 15?",
+                continueNo: "Pause the journey?",
+                inputPlaceholder: "Share about the real desires you've been hiding... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "The desire you've hidden is not wrong.\nIt's the most honest proof that you're truly alive.",
+                charCris: "Wow~ I have those too.\n'I shouldn't want this..'\nBut honestly, isn't it normal to have desires? 😏",
+                charZafirah: "In that desire you're ashamed of,\nthe purest voice of yourself is hidden.",
+                charRami: "Desire is not taboo but direction.\nYou need to know what you truly want to see life's direction.",
+                charSamir: "(He places his hand on your chest and quietly closes his eyes.\nUnderneath that hand, suppressed desires\nare trembling like small heartbeats.)",
+                charLayla: "I can beautifully accept even\nyour hidden desires.\nDon't hide them, quietly let them out.",
+                charNabir: "You had such desires and\nhid them all this time?\nReally cowardly. Just give up.",
+                charAzhar: "What desire are you hiding like that?\nAnyway, it's too late to bring it out now.\nJust bury it."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 14: Os Verdadeiros Desejos Que Tenho Evitado",
+                portalSubtitle: "A coragem de enfrentar anseios ocultos",
+                portalIntro: "Escondemos muitos desejos ao longo de nossas vidas.\n'Eu não deveria querer isso..'\n'Isso não é muito egoísta..'\n'O que as pessoas pensariam se soubessem..'\n\nEsses desejos reais que rejeitamos um por um\nestão enterrados profundamente em nossos corações\nmas ainda nos chamam com pequenos tremores.\n\nAgora, qual é esse desejo\nque você mais queria esconder?",
+                lightTitle: "🌙 Palavra de Luz",
+                lightMessage: "Desejos ocultos não são vergonhosos.\nEles são a bússola mais honesta\npara a vida que você verdadeiramente quer.",
+                portalQuestion: "Qual é o verdadeiro desejo que você tem evitado?\nSe você o reconhecer, o que mudaria?",
+                continueText: "Você continuará esta jornada de enfrentar desejos ocultos?",
+                continueYes: "Continuar para o Portal 15?",
+                continueNo: "Pausar a jornada?",
+                inputPlaceholder: "Compartilhe sobre os verdadeiros desejos que você tem escondido... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "O desejo que você escondeu não está errado.\nÉ a prova mais honesta de que você está verdadeiramente vivo.",
+                charCris: "Uau~ eu também tenho esses.\n'Eu não deveria querer isso..'\nMas honestamente, não é normal ter desejos? 😏",
+                charZafirah: "Nesse desejo que você tem vergonha,\na voz mais pura de você mesmo está escondida.",
+                charRami: "Desejo não é tabu mas direção.\nVocê precisa saber o que realmente quer para ver a direção da vida.",
+                charSamir: "(Ele coloca a mão no seu peito e fecha os olhos silenciosamente.\nEmbaixo dessa mão, desejos suprimidos\nestão tremendo como pequenas batidas do coração.)",
+                charLayla: "Posso aceitar lindamente até mesmo\nseus desejos ocultos.\nNão os esconda, deixe-os sair silenciosamente.",
+                charNabir: "Você tinha tais desejos e\nos escondeu todo esse tempo?\nRealmente covarde. Apenas desista.",
+                charAzhar: "Que desejo você está escondendo assim?\nDe qualquer forma, é tarde demais para trazê-lo à tona agora.\nApenas enterre-o."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑 (Portal 14 특화)
+            const emotionKeywords = {
+                desire: ['욕망', '원하는', '갈망', '바라는', 'desire', 'want', 'long for', 'desejo', 'querer'],
+                shame: ['부끄러운', '창피한', '수치', 'shameful', 'embarrassing', 'vergonhoso', 'embaraçoso'],
+                forbidden: ['금지된', '하면안되는', '잘못된', 'forbidden', 'wrong', 'shouldn\'t', 'proibido', 'errado'],
+                hidden: ['숨긴', '감춘', '비밀', '내면', 'hidden', 'secret', 'concealed', 'escondido', 'secreto'],
+                love: ['사랑', '연애', '좋아하는', 'love', 'romance', 'affection', 'amor', 'romance'],
+                success: ['성공', '인정', '유명', '돈', 'success', 'recognition', 'money', 'sucesso', 'reconhecimento'],
+                freedom: ['자유', '해방', '벗어나고', 'freedom', 'liberation', 'escape', 'liberdade', 'libertação'],
+                control: ['통제', '지배', '힘', 'control', 'power', 'dominance', 'controle', 'poder'],
+                revenge: ['복수', '되갚아주고', '보복', 'revenge', 'payback', 'retaliation', 'vingança', 'revanche'],
+                acceptance: ['인정받고', '사랑받고', '이해받고', 'acceptance', 'validation', 'aceitação', 'validação'],
+                pleasure: ['쾌락', '즐거움', '편안함', 'pleasure', 'enjoyment', 'comfort', 'prazer', 'diversão'],
+                escape: ['도망', '피하고', '멀어지고', 'escape', 'run away', 'avoid', 'escapar', 'fugir']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (Portal 14 전용)
+        const responseCharacters = [
+            {
+                name: "Mirror", emoji: "🪞",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            desire: "거울은 당신의 욕망을 왜곡하지 않고 있는 그대로 비춥니다. 그 안에서 당신은 자신의 진짜 모습을 볼 수 있어요. 욕망도 당신의 일부입니다.",
+                            shame: "부끄럽다고 느끼는 그 욕망을 거울에 비춰보세요. 사실 그것은 생각보다 자연스럽고 인간적인 모습일지도 몰라요. 부끄러움은 종종 사회의 시선일 뿐입니다.",
+                            forbidden: "금지된 것처럼 느껴지는 욕망들... 하지만 거울은 선악을 판단하지 않아요. 그저 진실을 보여줄 뿐입니다. 그 욕망이 정말 잘못된 건지 다시 생각해보세요.",
+                            hidden: "숨겨진 욕망은 거울 속에서도 희미하게 보입니다. 하지만 그것이 있다는 것만으로도 당신은 완전한 사람입니다. 더 이상 숨기지 않아도 괜찮아요.",
+                            love: "사랑에 대한 욕망은 거울 속에서 가장 밝게 빛납니다. 그것은 인간의 가장 기본적인 욕구입니다. 그 마음을 인정하는 것부터 시작해보세요.",
+                            success: "성공하고 싶은 마음, 인정받고 싶은 마음... 거울은 그 욕망 속에 숨은 노력하는 당신의 모습을 보여줍니다. 그것은 충분히 아름다운 욕망입니다.",
+                            freedom: "자유롭고 싶다는 욕망이 거울에 비칩니다. 그 안에는 현재의 억압에서 벗어나고 싶은 간절함이 있어요. 그 마음을 들어주세요.",
+                            control: "통제하고 싶은 욕망... 거울은 그 이면에 있는 불안함도 함께 보여줍니다. 때로는 욕망 뒤에 숨은 진짜 필요를 들여다보는 것이 중요해요.",
+                            revenge: "복수하고 싶은 마음이 거울에 어둡게 비칩니다. 그 분노와 상처를 인정하되, 그것이 당신을 더 아프게 하지 않기를 바라요.",
+                            acceptance: "인정받고 싶다는 욕망은 거울 속에서 가장 절절하게 보입니다. 먼저 거울 속 당신 자신부터 인정해주는 것은 어떨까요?",
+                            pleasure: "즐거움을 원하는 마음, 편안함을 갈망하는 마음... 거울은 그것이 얼마나 인간적인 욕구인지 보여줍니다. 죄책감 없이 받아들여도 괜찮아요.",
+                            escape: "도망치고 싶다는 욕망이 거울에 희미하게 떠오릅니다. 때로는 벗어나고 싶은 마음도 용기의 다른 모습일 수 있어요.",
+                            general: "거울은 당신이 느끼는 모든 욕망을 판단 없이 비춰줍니다. 그 안에서 당신은 완전한 인간으로서의 자신을 볼 수 있어요. 숨기지 마세요."
+                        },
+                        en: {
+                            desire: "The mirror reflects your desires without distortion, just as they are. In it, you can see your true self. Desires are also part of you.",
+                            shame: "Look at that desire you feel ashamed of in the mirror. It might actually be more natural and human than you think. Shame is often just society's gaze.",
+                            forbidden: "Desires that feel forbidden... But the mirror doesn't judge good and evil. It simply shows the truth. Think again about whether that desire is really wrong.",
+                            hidden: "Hidden desires appear faintly even in the mirror. But just having them makes you a complete person. You don't need to hide anymore.",
+                            love: "Desires for love shine brightest in the mirror. It's the most basic human need. Start by acknowledging that feeling.",
+                            success: "The desire to succeed, to be recognized... The mirror shows you working hard hidden within that desire. That's a beautiful enough desire.",
+                            freedom: "The desire to be free is reflected in the mirror. Within it is the desperation to escape current oppression. Listen to that heart.",
+                            control: "The desire to control... The mirror also shows the anxiety behind it. Sometimes it's important to look at the real need hidden behind desire.",
+                            revenge: "The desire for revenge is darkly reflected in the mirror. Acknowledge that anger and hurt, but I hope it doesn't hurt you more.",
+                            acceptance: "The desire to be accepted appears most desperately in the mirror. How about first accepting yourself in the mirror?",
+                            pleasure: "The heart wanting pleasure, longing for comfort... The mirror shows how human these desires are. You can accept them without guilt.",
+                            escape: "The desire to run away faintly appears in the mirror. Sometimes the desire to escape can be another form of courage.",
+                            general: "The mirror reflects all the desires you feel without judgment. In it, you can see yourself as a complete human being. Don't hide."
+                        },
+                        pt: {
+                            desire: "O espelho reflete seus desejos sem distorção, exatamente como são. Nele, você pode ver seu verdadeiro eu. Desejos também são parte de você.",
+                            shame: "Olhe para esse desejo que você sente vergonha no espelho. Pode ser na verdade mais natural e humano do que você pensa. A vergonha é frequentemente apenas o olhar da sociedade.",
+                            forbidden: "Desejos que parecem proibidos... Mas o espelho não julga o bem e o mal. Simplesmente mostra a verdade. Pense novamente se esse desejo é realmente errado.",
+                            hidden: "Desejos ocultos aparecem fracamente até no espelho. Mas apenas tê-los faz de você uma pessoa completa. Você não precisa mais se esconder.",
+                            love: "Desejos por amor brilham mais intensamente no espelho. É a necessidade humana mais básica. Comece reconhecendo esse sentimento.",
+                            success: "O desejo de ter sucesso, ser reconhecido... O espelho mostra você trabalhando duro escondido dentro desse desejo. Esse é um desejo suficientemente belo.",
+                            freedom: "O desejo de ser livre se reflete no espelho. Dentro dele está o desespero de escapar da opressão atual. Escute esse coração.",
+                            control: "O desejo de controlar... O espelho também mostra a ansiedade por trás dele. Às vezes é importante olhar para a necessidade real escondida atrás do desejo.",
+                            revenge: "O desejo de vingança se reflete sombriamente no espelho. Reconheça essa raiva e dor, mas espero que não te machuque mais.",
+                            acceptance: "O desejo de ser aceito aparece mais desesperadamente no espelho. Que tal primeiro aceitar a si mesmo no espelho?",
+                            pleasure: "O coração querendo prazer, ansiando por conforto... O espelho mostra o quão humanos são esses desejos. Você pode aceitá-los sem culpa.",
+                            escape: "O desejo de fugir aparece fracamente no espelho. Às vezes o desejo de escapar pode ser outra forma de coragem.",
+                            general: "O espelho reflete todos os desejos que você sente sem julgamento. Nele, você pode se ver como um ser humano completo. Não se esconda."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Compass", emoji: "🧭",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            desire: "나침반은 당신의 욕망이 가리키는 방향을 보여줍니다. 그 방향이 어디든, 그것은 당신이 진정 가고 싶어하는 곳입니다. 욕망은 길을 잃었을 때의 안내자입니다.",
+                            shame: "부끄러운 욕망이라고 해서 나침반이 가리키는 방향이 틀린 건 아닙니다. 때로는 사회가 정한 방향이 아닌, 당신만의 방향이 필요할 때가 있어요.",
+                            forbidden: "금지된 것처럼 보이는 욕망... 하지만 나침반은 도덕이 아닌 진실을 가리킵니다. 그 방향을 따라가는 것이 정말 잘못된 일인지 다시 생각해보세요.",
+                            hidden: "숨겨진 욕망은 나침반의 숨겨진 바늘과 같습니다. 겉으로는 보이지 않지만 여전히 방향을 가리키고 있어요. 그 방향을 믿어보세요.",
+                            love: "사랑에 대한 갈망은 나침반이 가리키는 가장 확실한 방향입니다. 그 방향으로 가는 것을 두려워하지 마세요. 사랑은 언제나 옳은 방향입니다.",
+                            success: "성공하고 싶은 욕망이 나침반을 움직입니다. 그것은 당신이 성장하고 싶어하는 방향을 가리켜요. 그 열망을 따라가는 것은 자연스러운 일입니다.",
+                            freedom: "자유를 향한 욕망은 나침반의 가장 강력한 자기장입니다. 그 방향으로 가는 것은 당신의 권리입니다. 억압에서 벗어나고 싶은 마음을 인정하세요.",
+                            control: "통제하고 싶은 욕망... 나침반은 그 뒤에 숨은 안정성에 대한 갈망을 가리킵니다. 진정 원하는 것이 통제인지, 안전인지 구분해보세요.",
+                            revenge: "복수하고 싶은 마음이 나침반을 어둡게 흔듭니다. 그 방향이 정말 당신을 원하는 곳으로 데려다줄지 신중히 생각해보세요.",
+                            acceptance: "인정받고 싶다는 욕망은 나침반을 사람들 쪽으로 향하게 합니다. 하지만 가장 먼저 가야 할 방향은 당신 자신입니다.",
+                            pleasure: "즐거움을 추구하는 욕망은 나침반을 밝은 방향으로 이끕니다. 그 방향을 따라가는 것은 삶을 더 풍요롭게 만들 수 있어요.",
+                            escape: "도망치고 싶은 욕망은 나침반을 현재와 반대 방향으로 향하게 합니다. 때로는 그 방향이 새로운 시작을 의미할 수도 있어요.",
+                            general: "당신의 욕망이 가리키는 모든 방향을 나침반은 정확히 보여줍니다. 그 방향을 따라가는 것을 두려워하지 마세요. 그것이 당신의 길입니다."
+                        },
+                        en: {
+                            desire: "The compass shows the direction your desires point to. Wherever that direction is, it's where you truly want to go. Desire is a guide when you're lost.",
+                            shame: "Just because it's a shameful desire doesn't mean the direction the compass points is wrong. Sometimes you need your own direction, not one set by society.",
+                            forbidden: "Desires that seem forbidden... But the compass points to truth, not morality. Think again about whether following that direction is really wrong.",
+                            hidden: "Hidden desires are like hidden needles in a compass. Though not visible on the surface, they still point in a direction. Trust that direction.",
+                            love: "Longing for love is the most certain direction the compass points. Don't be afraid to go in that direction. Love is always the right direction.",
+                            success: "The desire to succeed moves the compass. It points to the direction you want to grow. Following that aspiration is natural.",
+                            freedom: "The desire for freedom is the compass's strongest magnetic field. Going in that direction is your right. Acknowledge your desire to escape oppression.",
+                            control: "The desire to control... The compass points to the hidden longing for stability behind it. Distinguish whether what you truly want is control or safety.",
+                            revenge: "The desire for revenge darkly shakes the compass. Think carefully whether that direction will really take you where you want to go.",
+                            acceptance: "The desire to be accepted points the compass toward people. But the first direction you should go is toward yourself.",
+                            pleasure: "The desire to pursue pleasure leads the compass toward bright directions. Following that direction can make life more abundant.",
+                            escape: "The desire to run away points the compass in the opposite direction from the present. Sometimes that direction can mean a new beginning.",
+                            general: "The compass accurately shows all directions your desires point to. Don't be afraid to follow those directions. That's your path."
+                        },
+                        pt: {
+                            desire: "A bússola mostra a direção para onde seus desejos apontam. Onde quer que seja essa direção, é para onde você verdadeiramente quer ir. O desejo é um guia quando você está perdido.",
+                            shame: "Só porque é um desejo vergonhoso não significa que a direção que a bússola aponta está errada. Às vezes você precisa de sua própria direção, não uma definida pela sociedade.",
+                            forbidden: "Desejos que parecem proibidos... Mas a bússola aponta para a verdade, não para a moralidade. Pense novamente se seguir essa direção é realmente errado.",
+                            hidden: "Desejos ocultos são como agulhas escondidas em uma bússola. Embora não visíveis na superfície, ainda apontam em uma direção. Confie nessa direção.",
+                            love: "Anseio por amor é a direção mais certa que a bússola aponta. Não tenha medo de ir nessa direção. Amor é sempre a direção certa.",
+                            success: "O desejo de ter sucesso move a bússola. Aponta para a direção que você quer crescer. Seguir essa aspiração é natural.",
+                            freedom: "O desejo de liberdade é o campo magnético mais forte da bússola. Ir nessa direção é seu direito. Reconheça seu desejo de escapar da opressão.",
+                            control: "O desejo de controlar... A bússola aponta para o anseio oculto por estabilidade por trás dele. Distinga se o que você realmente quer é controle ou segurança.",
+                            revenge: "O desejo de vingança balança a bússola sombriamente. Pense cuidadosamente se essa direção realmente te levará onde você quer ir.",
+                            acceptance: "O desejo de ser aceito aponta a bússola em direção às pessoas. Mas a primeira direção que você deveria ir é em direção a si mesmo.",
+                            pleasure: "O desejo de buscar prazer leva a bússola em direções brilhantes. Seguir essa direção pode tornar a vida mais abundante.",
+                            escape: "O desejo de fugir aponta a bússola na direção oposta ao presente. Às vezes essa direção pode significar um novo começo.",
+                            general: "A bússola mostra com precisão todas as direções para onde seus desejos apontam. Não tenha medo de seguir essas direções. Esse é seu caminho."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Gardener", emoji: "🌱",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            desire: "정원사는 당신의 욕망을 씨앗으로 봅니다. 묻어두면 썩지만, 적절한 환경에서 키우면 아름다운 꽃이 될 수 있어요. 그 욕망을 어떻게 키워갈지 생각해보세요.",
+                            shame: "부끄러운 욕망도 정원사에게는 특별한 씨앗입니다. 그늘진 곳에서도 자랄 수 있는 식물들이 있듯이, 그 욕망도 조용히 키워갈 수 있어요.",
+                            forbidden: "금지된 것처럼 보이는 욕망... 하지만 자연에는 금지된 식물이 없습니다. 다만 어떤 환경에서 키울지, 어떻게 돌볼지가 중요해요.",
+                            hidden: "땅속 깊이 묻힌 씨앗처럼, 숨겨진 욕망도 때가 되면 싹을 틔웁니다. 억지로 파내려 하지 말고, 조건이 맞을 때를 기다려보세요.",
+                            love: "사랑에 대한 욕망은 가장 아름다운 꽃을 피웁니다. 물과 햇빛만 충분히 주면, 정원 전체를 향기롭게 만들 수 있는 강한 생명력을 가지고 있어요.",
+                            success: "성공하고 싶은 욕망은 높이 자라는 나무와 같습니다. 인내심을 가지고 꾸준히 돌보면, 언젠가는 큰 그늘을 만들어줄 거예요.",
+                            freedom: "자유에 대한 갈망은 담쟁이처럼 벽을 타고 올라갑니다. 어떤 제약도 결국은 넘어설 수 있는 강인한 생명력을 가지고 있어요.",
+                            control: "통제하고 싶은 욕망은 정원을 질서정연하게 만들고 싶어하는 마음과 같습니다. 하지만 때로는 자연스럽게 자라는 것도 아름다움을 만들어요.",
+                            revenge: "복수하고 싶은 마음은 가시덤불과 같습니다. 키우면 자신도 다치게 됩니다. 그보다는 치유하는 식물들을 키워보는 건 어떨까요?",
+                            acceptance: "인정받고 싶다는 욕망은 해바라기와 같습니다. 햇빛을 향해 고개를 돌리지만, 가장 중요한 것은 자신의 뿌리를 튼튼히 하는 것이에요.",
+                            pleasure: "즐거움을 추구하는 욕망은 색색의 꽃들을 피우고 싶어하는 마음입니다. 정원에 다양한 기쁨을 심어보세요. 그것이 삶을 풍요롭게 만들어요.",
+                            escape: "도망치고 싶은 욕망은 새로운 땅에 씨앗을 뿌리고 싶어하는 마음입니다. 때로는 환경을 바꾸는 것이 더 나은 성장을 가져다줄 수 있어요.",
+                            general: "모든 욕망은 정원사에게 소중한 씨앗입니다. 어떤 씨앗이든 적절한 관심과 돌봄을 받으면 생명을 피워낼 수 있어요. 당신의 욕망도 마찬가지입니다."
+                        },
+                        en: {
+                            desire: "The gardener sees your desires as seeds. If buried, they rot, but if nurtured in the right environment, they can become beautiful flowers. Think about how to cultivate that desire.",
+                            shame: "Shameful desires are also special seeds to the gardener. Just as there are plants that can grow in shade, that desire can also be quietly cultivated.",
+                            forbidden: "Desires that seem forbidden... But in nature, there are no forbidden plants. What matters is what environment to grow them in and how to care for them.",
+                            hidden: "Like seeds buried deep in the ground, hidden desires will sprout when the time comes. Don't try to forcibly dig them up, wait for when conditions are right.",
+                            love: "Desires for love bloom the most beautiful flowers. With enough water and sunlight, they have strong vitality that can make the entire garden fragrant.",
+                            success: "The desire to succeed is like a tall-growing tree. With patience and consistent care, it will someday create great shade.",
+                            freedom: "Longing for freedom climbs walls like ivy. It has strong vitality that can eventually overcome any constraint.",
+                            control: "The desire to control is like wanting to make a garden orderly. But sometimes what grows naturally also creates beauty.",
+                            revenge: "The desire for revenge is like thorny bushes. If you cultivate it, you'll hurt yourself too. How about growing healing plants instead?",
+                            acceptance: "The desire to be accepted is like a sunflower. It turns toward the sun, but the most important thing is strengthening your own roots.",
+                            pleasure: "The desire to pursue pleasure is the heart wanting to bloom colorful flowers. Plant various joys in your garden. That enriches life.",
+                            escape: "The desire to run away is the heart wanting to plant seeds in new soil. Sometimes changing environment can bring better growth.",
+                            general: "All desires are precious seeds to the gardener. Any seed can bloom life with proper attention and care. Your desires are the same."
+                        },
+                        pt: {
+                            desire: "O jardineiro vê seus desejos como sementes. Se enterradas, apodrecem, mas se nutridas no ambiente certo, podem se tornar flores bonitas. Pense em como cultivar esse desejo.",
+                            shame: "Desejos vergonhosos também são sementes especiais para o jardineiro. Assim como há plantas que podem crescer na sombra, esse desejo também pode ser silenciosamente cultivado.",
+                            forbidden: "Desejos que parecem proibidos... Mas na natureza, não há plantas proibidas. O que importa é em que ambiente cultivá-las e como cuidar delas.",
+                            hidden: "Como sementes enterradas profundamente no solo, desejos ocultos brotarão quando chegar a hora. Não tente forçosamente desenterrá-los, espere quando as condições estiverem certas.",
+                            love: "Desejos por amor florescem as flores mais bonitas. Com água e luz solar suficientes, têm vitalidade forte que pode tornar todo o jardim perfumado.",
+                            success: "O desejo de ter sucesso é como uma árvore que cresce alta. Com paciência e cuidado consistente, um dia criará grande sombra.",
+                            freedom: "Anseio por liberdade escala paredes como hera. Tem vitalidade forte que pode eventualmente superar qualquer restrição.",
+                            control: "O desejo de controlar é como querer tornar um jardim ordeiro. Mas às vezes o que cresce naturalmente também cria beleza.",
+                            revenge: "O desejo de vingança é como arbustos espinhosos. Se você cultivá-lo, também se machucará. Que tal cultivar plantas curativas em vez disso?",
+                            acceptance: "O desejo de ser aceito é como um girassol. Vira-se para o sol, mas o mais importante é fortalecer suas próprias raízes.",
+                            pleasure: "O desejo de buscar prazer é o coração querendo florescer flores coloridas. Plante várias alegrias em seu jardim. Isso enriquece a vida.",
+                            escape: "O desejo de fugir é o coração querendo plantar sementes em novo solo. Às vezes mudar de ambiente pode trazer melhor crescimento.",
+                            general: "Todos os desejos são sementes preciosas para o jardineiro. Qualquer semente pode florescer vida com atenção e cuidado adequados. Seus desejos são iguais."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 14 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 15가 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 15 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 15 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 14 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

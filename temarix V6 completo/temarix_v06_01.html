@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix Navigator - The Journey Awakens</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 40px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .symbol {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .message {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .message p {
+            margin-bottom: 20px;
+        }
+
+        .highlight {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border-left: 4px solid rgba(255, 255, 255, 0.6);
+        }
+
+        .language-btns {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            padding: 12px 20px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .lang-btn.active {
+            background: rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .lang-content {
+            display: none;
+        }
+
+        .lang-content.active {
+            display: block;
+        }
+
+        .flag {
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 30px 25px;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .message {
+                font-size: 1rem;
+            }
+            
+            .language-btns {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .lang-btn {
+                width: 200px;
+                justify-content: center;
+            }
+        }
+
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots::after {
+            content: '';
+            animation: dots 2s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="symbol">🌱</div>
+        
+        <!-- English Content -->
+        <div class="lang-content lang-en active">
+            <h1 class="title">The Seed of Transformation</h1>
+            <div class="message">
+                <p>Welcome, brave navigator. You stand at the threshold of a profound inner journey.</p>
+                
+                <div class="highlight">
+                    <p><strong>The paths V06~V15 are currently being woven into existence.</strong></p>
+                    <p>Like a garden in preparation, each step is being carefully cultivated to guide you deeper into your authentic self.</p>
+                </div>
+                
+                <p>Your Navigator pass holds the promise of these unfolding mysteries.</p>
+                <p>The doors will open soon<span class="loading-dots"></span></p>
+                <p><em>Trust the timing. Trust the process. Trust yourself.</em></p>
+            </div>
+        </div>
+
+        <!-- Korean Content -->
+        <div class="lang-content lang-kr">
+            <h1 class="title">변화의 씨앗</h1>
+            <div class="message">
+                <p>용감한 항해자여, 환영합니다. 당신은 깊은 내면 여행의 문턱에 서 있습니다.</p>
+                
+                <div class="highlight">
+                    <p><strong>V06~V15 여정들이 현재 탄생하고 있습니다.</strong></p>
+                    <p>준비 중인 정원처럼, 각 단계는 당신의 진정한 자아로 더 깊이 안내하기 위해 정성스럽게 가꾸어지고 있습니다.</p>
+                </div>
+                
+                <p>당신의 Navigator 패스는 이 펼쳐질 신비의 약속을 담고 있습니다.</p>
+                <p>문들이 곧 열릴 것입니다<span class="loading-dots"></span></p>
+                <p><em>타이밍을 믿으세요. 과정을 믿으세요. 자신을 믿으세요.</em></p>
+            </div>
+        </div>
+
+        <!-- Portuguese Content -->
+        <div class="lang-content lang-pt">
+            <h1 class="title">A Semente da Transformação</h1>
+            <div class="message">
+                <p>Bem-vindo, corajoso navegador. Você está no limiar de uma profunda jornada interior.</p>
+                
+                <div class="highlight">
+                    <p><strong>Os caminhos V06~V15 estão sendo tecidos para a existência.</strong></p>
+                    <p>Como um jardim em preparação, cada passo está sendo cuidadosamente cultivado para guiá-lo mais profundamente ao seu eu autêntico.</p>
+                </div>
+                
+                <p>Seu passe Navigator carrega a promessa desses mistérios que se desdobram.</p>
+                <p>As portas se abrirão em breve<span class="loading-dots"></span></p>
+                <p><em>Confie no tempo. Confie no processo. Confie em si mesmo.</em></p>
+            </div>
+        </div>
+
+        <div class="language-btns">
+            <button class="lang-btn active" onclick="switchLanguage('en')">
+                <span class="flag">🇺🇸</span> English
+            </button>
+            <button class="lang-btn" onclick="switchLanguage('kr')">
+                <span class="flag">🇰🇷</span> 한국어
+            </button>
+            <button class="lang-btn" onclick="switchLanguage('pt')">
+                <span class="flag">🇧🇷</span> Português
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function switchLanguage(lang) {
+            // Hide all language content
+            document.querySelectorAll('.lang-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected language content
+            document.querySelector('.lang-' + lang).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.closest('.lang-btn').classList.add('active');
+            
+            // Update page language attribute
+            document.documentElement.lang = lang === 'kr' ? 'ko' : lang === 'pt' ? 'pt-BR' : 'en';
+        }
+    </script>
+</body>
+</html>

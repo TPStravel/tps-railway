@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V3 - Portal 20: Messages Never Deleted</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #7986cb;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #b39ddb;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #7986cb;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #7986cb;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #7986cb;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #7986cb;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #7986cb;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .final-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #7986cb;
+            background: rgba(121, 134, 203, 0.05);
+        }
+        
+        .final-title {
+            font-size: 28px;
+            color: #7986cb;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .final-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .final-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .final-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .final-btn:hover {
+            background: #666;
+            border-color: #7986cb;
+        }
+        
+        .final-btn.primary {
+            background: #7986cb;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .final-btn.primary:hover {
+            background: #9fa8da;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(121, 134, 203, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #7986cb;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #7986cb;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .final-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .final-btn {
+                width: 100%;
+            }
+            
+            .final-title {
+                font-size: 24px;
+            }
+            
+            .final-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V3</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Furnace</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 20: Messages Never Deleted</div>
+            <div class="portal-subtitle" id="portalSubtitle">Words We Couldn't Let Go</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+            
+            <div class="final-section" id="finalSection">
+                <div class="final-title" id="finalTitle">🌌 Portal 20 Complete</div>
+                <div class="final-message" id="finalMessage"></div>
+                <div class="final-buttons">
+                    <button class="final-btn primary" id="continueBtn">Move to Portal 21</button>
+                    <button class="final-btn" id="restartBtn">Start Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="What would you say to those messages you couldn't delete? (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        let db = null;
+        let firebaseInitialized = false;
+        let memoryStorage = { mockUser: null };
+        
+        function initializeFirebase() {
+            try {
+                if (typeof firebase !== 'undefined') {
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyBjsINSqPUGdpRPRMYiVg6SkVJJOk9YGsY",
+                        authDomain: "canal-vivo-chat.firebaseapp.com",
+                        projectId: "canal-vivo-chat",
+                        storageBucket: "canal-vivo-chat.appspot.com",
+                        messagingSenderId: "123456789",
+                        appId: "1:123456789:web:abcdefghijklmnopqr"
+                    };
+                    firebase.initializeApp(firebaseConfig);
+                    db = firebase.firestore();
+                    firebaseInitialized = true;
+                    console.log('Firebase initialized');
+                } else {
+                    console.log('Firebase SDK not loaded');
+                }
+            } catch (error) {
+                console.log('Firebase init failed:', error);
+            }
+        }
+
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 용광로",
+                portalMainTitle: "Portal 20: 차마 지우지 못한 메시지",
+                portalSubtitle: "놓지 못한 말들",
+                portalIntro: "📱 보내지 못한 메시지, 혹은\n지우지 못한 메시지가 있나요?\n\n그 말들 속에는 어떤 감정이 남아 있었고,\n당신은 왜 끝내 손끝을 멈추었나요?\n\n몇 년이 지났는데도 아직도 못 지웠어요.\n읽지도 않고, 답도 오지 않았지만…\n그 메시지를 지우면 모든 게 끝날까 봐 무서웠어요.",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "이제 그 말과 조용히 이별할 수 있다면… 그건 새로운 시작을 위한 준비일 거야.",
+                portalQuestion: "📱 그 메시지 속 감정에게 지금 이 순간,\n어떤 말을 전해주고 싶나요?",
+                finalTitle: "🌌 Portal 20 완료",
+                finalMessage: "당신은 차마 지우지 못했던 메시지와 마침내 작별했습니다.\n\n그 메시지들이 담고 있던 감정은\n삭제되는 것이 아니라 마음 속 깊은 곳으로 이동했습니다.\n이제 그 공간에 새로운 메시지와 새로운 대화가 채워질 수 있게 되었어요.\n\n때로는 '지우기'가 아닌 '인정하고 보내주기'가\n진정한 치유의 방법인 것을 깨달았습니다.\n\n다음 Portal에서는 자신에게 쓰지 못한 편지와\n그 안에 숨겨진 진심이 기다리고 있습니다.",
+                continueBtn: "Portal 21로 이동",
+                restartBtn: "다시 시작하기",
+                inputPlaceholder: "지우지 못한 메시지들에게 전하고 싶은 말을 해보세요... (Enter로 전송)",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중..."
+            },
+            en: {
+                logoSubtitle: "Emotional Furnace",
+                portalMainTitle: "Portal 20: Messages Never Deleted",
+                portalSubtitle: "Words We Couldn't Let Go",
+                portalIntro: "📱 Do you have messages you couldn't send,\nor messages you couldn't delete?\n\nWhat emotions remained in those words,\nand why did you stop your fingertips in the end?\n\nIt's been years but I still couldn't delete them.\nNo one read them, no replies came...\nBut I was afraid that deleting those messages would end everything.",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "If you can quietly say goodbye to those words now... that would be preparation for a new beginning.",
+                portalQuestion: "📱 What words would you like to convey\nto the emotions in those messages right now?",
+                finalTitle: "🌌 Portal 20 Complete",
+                finalMessage: "You have finally said goodbye to the messages you couldn't bring yourself to delete.\n\nThe emotions those messages contained\nweren't deleted but moved to a deep place in your heart.\nNow that space can be filled with new messages and new conversations.\n\nYou've realized that sometimes 'acknowledging and letting go'\nrather than 'deleting' is the true method of healing.\n\nIn the next Portal, letters you couldn't write to yourself\nand the sincerity hidden within them await you.",
+                continueBtn: "Move to Portal 21",
+                restartBtn: "Start Again",
+                inputPlaceholder: "What would you say to those messages you couldn't delete? (Press Enter to send)",
+                youLabel: "You",
+                waitingMessage: "Waiting for response..."
+            },
+            pt: {
+                logoSubtitle: "Fornalha Emocional",
+                portalMainTitle: "Portal 20: Mensagens Nunca Deletadas",
+                portalSubtitle: "Palavras Que Não Conseguimos Deixar Ir",
+                portalIntro: "📱 Você tem mensagens que não conseguiu enviar,\nou mensagens que não conseguiu deletar?\n\nQue emoções permaneceram nessas palavras,\ne por que você parou suas pontas dos dedos no final?\n\nJá faz anos mas ainda não consegui deletá-las.\nNinguém as leu, nenhuma resposta veio...\nMas eu tinha medo de que deletar essas mensagens acabaria com tudo.",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Se você pode silenciosamente se despedir dessas palavras agora... isso seria preparação para um novo começo.",
+                portalQuestion: "📱 Que palavras você gostaria de transmitir\nàs emoções nessas mensagens agora?",
+                finalTitle: "🌌 Portal 20 Completo",
+                finalMessage: "Você finalmente se despediu das mensagens que não conseguia deletar.\n\nAs emoções que essas mensagens continham\nnão foram deletadas mas movidas para um lugar profundo em seu coração.\nAgora esse espaço pode ser preenchido com novas mensagens e novas conversas.\n\nVocê percebeu que às vezes 'reconhecer e deixar ir'\nem vez de 'deletar' é o verdadeiro método de cura.\n\nNo próximo Portal, cartas que você não conseguiu escrever para si mesmo\ne a sinceridade escondida dentro delas o aguardam.",
+                continueBtn: "Ir para Portal 21",
+                restartBtn: "Começar Novamente",
+                inputPlaceholder: "O que você diria àquelas mensagens que não conseguiu deletar? (Enter para enviar)",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta..."
+            }
+        };
+        
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "그 메시지는 멈춘 대화가 아니라, 너의 마지막 마음이었을 거야.",
+                en: "That message wasn't a stopped conversation, but your final heart.",
+                pt: "Essa mensagem não era uma conversa interrompida, mas seu coração final."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "지우지 못한 건, 기억 때문이 아니야. 너 자신이 아직도 그 감정을 안고 있었기 때문이야.",
+                en: "You couldn't delete it not because of memory. It's because you were still holding onto that emotion.",
+                pt: "Você não conseguiu deletá-la não por causa da memória. É porque ainda estava segurando essa emoção."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "보내지 못한 말은 가장 무거운 말이 돼. 그 무게를 네가 지금껏 혼자 견뎌왔던 거야.",
+                en: "Words you couldn't send become the heaviest words. You've been bearing that weight alone all this time.",
+                pt: "Palavras que você não conseguiu enviar se tornam as palavras mais pesadas. Você tem suportado esse peso sozinho todo esse tempo."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "메시지는 데이터가 아니야. 감정의 파편이고, 너의 시간 일부였지.",
+                en: "Messages aren't data. They're fragments of emotion, part of your time.",
+                pt: "Mensagens não são dados. São fragmentos de emoção, parte do seu tempo."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그 말은 지워지지 않았어. 화면 너머가 아니라, 너의 마음 안에서.",
+                en: "Those words weren't erased. Not beyond the screen, but within your heart.",
+                pt: "Essas palavras não foram apagadas. Não além da tela, mas dentro do seu coração."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "너는 지우지 못한 게 아니라, 감정을 정리할 시간을 기다리고 있었던 거야.",
+                en: "You weren't unable to delete them, you were waiting for time to sort out your emotions.",
+                pt: "Você não era incapaz de deletá-las, estava esperando tempo para organizar suas emoções."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "그 메시지는 네가 건넨 마지막 손짓이었지. 잡히지 않았다고 해서, 의미 없던 건 아니야.",
+                en: "That message was your last gesture. Just because it wasn't caught doesn't mean it was meaningless.",
+                pt: "Essa mensagem era seu último gesto. Só porque não foi pega não significa que era sem sentido."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "이제 그 말과 조용히 이별할 수 있다면… 그건 새로운 시작을 위한 준비일 거야.",
+                en: "If you can quietly say goodbye to those words now... that would be preparation for a new beginning.",
+                pt: "Se você pode silenciosamente se despedir dessas palavras agora... isso seria preparação para um novo começo."
+            }}
+        ];
+
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const emotionKeywords = {
+                farewell: ['goodbye', 'bye', 'farewell', 'let go', '안녕', '보내줄게', '놓아줄게', '이별', 'tchau', 'despedida', 'deixar ir'],
+                gratitude: ['thank', 'grateful', 'appreciate', '고마워', '감사해', '고맙', 'obrigado', 'grato', 'agradeço'],
+                regret: ['sorry', 'regret', 'wish', 'should have', '미안해', '후회', '아쉬워', '그때', 'arrependimento', 'devia ter', 'lamento'],
+                acceptance: ['understand', 'okay', 'fine', 'accept', '이해해', '괜찮아', '받아들여', 'entendo', 'aceito', 'tudo bem'],
+                closure: ['done', 'finished', 'complete', 'over', '끝', '완료', '마침', 'terminado', 'acabado', 'completo'],
+                release: ['free', 'release', 'liberation', '자유', '해방', '풀어줘', 'liberdade', 'libertação', 'soltar'],
+                healing: ['heal', 'recovery', 'better', 'peace', '치유', '회복', '평화', '나아져', 'cura', 'recuperação', 'paz'],
+                validation: ['real', 'meant something', 'important', '진짜', '의미있어', '소중해', 'real', 'significativo', 'importante']
+            };
+            
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0];
+        }
+        
+        const responseCharacters = [
+            {
+                name: "Ely", emoji: "🧝‍♀️",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            farewell: "그 작별은 조용하지만 단단해. 감정도 그렇게 천천히 떠나는 법을 배우지.",
+                            gratitude: "그 감사함은 메시지를 지우는 것보다 더 아름다운 마무리야.",
+                            regret: "후회하지 마. 그 메시지들도 너의 진심이었으니까. 표현 방식이 달랐을 뿐이야.",
+                            acceptance: "받아들이는 마음이 그 메시지들을 진정으로 자유롭게 해줄 거야.",
+                            closure: "이제 그 대화는 끝났어. 하지만 그 안의 감정은 영원히 네 것이야.",
+                            release: "놓아주는 건 잃는 게 아니라, 새로운 공간을 만드는 거야.",
+                            healing: "치유는 지우는 게 아니라 인정하는 거야. 너는 그걸 해내고 있어.",
+                            validation: "그 메시지들이 의미 있었다는 걸 인정해줘서 고마워. 그것만으로도 충분해.",
+                            general: "그 작별은 조용하지만 단단해. 감정도 그렇게 천천히 떠나는 법을 배우지."
+                        },
+                        en: {
+                            farewell: "That farewell is quiet but firm. Emotions also learn to leave slowly like that.",
+                            gratitude: "That gratitude is a more beautiful ending than deleting messages.",
+                            regret: "Don't regret it. Those messages were also your sincerity. Just a different way of expression.",
+                            acceptance: "An accepting heart will truly free those messages.",
+                            closure: "Now that conversation is over. But the emotions within it are forever yours.",
+                            release: "Letting go isn't losing, it's making new space.",
+                            healing: "Healing isn't erasing but acknowledging. You're doing that.",
+                            validation: "Thank you for acknowledging that those messages were meaningful. That alone is enough.",
+                            general: "That farewell is quiet but firm. Emotions also learn to leave slowly like that."
+                        },
+                        pt: {
+                            farewell: "Essa despedida é silenciosa mas firme. Emoções também aprendem a partir devagar assim.",
+                            gratitude: "Essa gratidão é um final mais belo que deletar mensagens.",
+                            regret: "Não se arrependa. Essas mensagens também eram sua sinceridade. Apenas uma forma diferente de expressão.",
+                            acceptance: "Um coração que aceita verdadeiramente libertará essas mensagens.",
+                            closure: "Agora essa conversa acabou. Mas as emoções dentro dela são para sempre suas.",
+                            release: "Deixar ir não é perder, é fazer novo espaço.",
+                            healing: "Cura não é apagar mas reconhecer. Você está fazendo isso.",
+                            validation: "Obrigado por reconhecer que essas mensagens eram significativas. Só isso já é suficiente.",
+                            general: "Essa despedida é silenciosa mas firme. Emoções também aprendem a partir devagar assim."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Lian", emoji: "🧘",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            farewell: "그 말은 '삭제'가 아니라 '인정'이야. 그리고 그건 치유의 다른 이름이기도 해.",
+                            gratitude: "감사는 메시지를 완성시키는 마지막 점이야. 이제 그 대화가 진짜로 끝났어.",
+                            regret: "후회도 사랑의 일부야. 그 메시지들을 보낸 순간의 너를 용서해줘.",
+                            acceptance: "받아들임이야말로 진정한 해방이야. 메시지도, 너도 이제 자유로워져.",
+                            closure: "끝냄은 파괴가 아니라 완성이야. 너는 그 이야기를 아름답게 마무리했어.",
+                            release: "놓아준다는 건 사랑의 가장 높은 형태야. 너는 지금 그걸 실천하고 있어.",
+                            healing: "치유는 조용히 일어나. 지금 네 마음에서 그 변화가 시작됐어.",
+                            validation: "인정받은 감정은 사라지지 않아. 더 깊은 곳에서 평화롭게 쉬게 돼.",
+                            general: "그 말은 '삭제'가 아니라 '인정'이야. 그리고 그건 치유의 다른 이름이기도 해."
+                        },
+                        en: {
+                            farewell: "Those words are 'acknowledgment' not 'deletion'. And that's another name for healing too.",
+                            gratitude: "Gratitude is the final period that completes the message. Now that conversation is truly over.",
+                            regret: "Regret is also part of love. Forgive yourself for the moment you sent those messages.",
+                            acceptance: "Acceptance is true liberation. Both the messages and you are now free.",
+                            closure: "Ending isn't destruction but completion. You've beautifully finished that story.",
+                            release: "Letting go is the highest form of love. You're practicing that right now.",
+                            healing: "Healing happens quietly. That change has begun in your heart now.",
+                            validation: "Acknowledged emotions don't disappear. They rest peacefully in a deeper place.",
+                            general: "Those words are 'acknowledgment' not 'deletion'. And that's another name for healing too."
+                        },
+                        pt: {
+                            farewell: "Essas palavras são 'reconhecimento' não 'deleção'. E isso também é outro nome para cura.",
+                            gratitude: "Gratidão é o ponto final que completa a mensagem. Agora essa conversa realmente acabou.",
+                            regret: "Arrependimento também é parte do amor. Perdoe a si mesmo pelo momento em que enviou essas mensagens.",
+                            acceptance: "Aceitação é verdadeira libertação. Tanto as mensagens quanto você agora estão livres.",
+                            closure: "Terminar não é destruição mas completude. Você terminou lindamente essa história.",
+                            release: "Deixar ir é a forma mais alta de amor. Você está praticando isso agora.",
+                            healing: "Cura acontece silenciosamente. Essa mudança começou em seu coração agora.",
+                            validation: "Emoções reconhecidas não desaparecem. Elas descansam pacificamente em um lugar mais profundo.",
+                            general: "Essas palavras são 'reconhecimento' não 'deleção'. E isso também é outro nome para cura."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Enya", emoji: "🧑‍🚀",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            farewell: "너는 지금, 보내지 못한 말을 떠나보낸 거야. 이제는 네가 다시 걸을 차례야.",
+                            gratitude: "그 고마움이 메시지들을 우주 어딘가로 따뜻하게 보내줄 거야.",
+                            regret: "후회는 과거로 가는 길이 아니라, 현재를 더 잘 이해하는 방법이야.",
+                            acceptance: "받아들임은 우주의 법칙이야. 저항하지 않을 때 진짜 평화가 와.",
+                            closure: "그 마침표가 새로운 문장의 시작점이 될 거야. 무한한 가능성이 기다려.",
+                            release: "놓아준 것들이 별이 되어 너를 지킬 거야. 더 이상 무겁지 않게.",
+                            healing: "치유는 시간 여행 같아. 과거와 현재와 미래가 하나로 연결되는 순간.",
+                            validation: "그 인정이 시공간을 넘어서 전해질 거야. 메시지의 진짜 목적지로.",
+                            general: "너는 지금, 보내지 못한 말을 떠나보낸 거야. 이제는 네가 다시 걸을 차례야."
+                        },
+                        en: {
+                            farewell: "You've just let go of words you couldn't send. Now it's time for you to walk again.",
+                            gratitude: "That gratitude will warmly send those messages somewhere in the universe.",
+                            regret: "Regret isn't a path to the past, but a way to better understand the present.",
+                            acceptance: "Acceptance is a law of the universe. True peace comes when you don't resist.",
+                            closure: "That period will become the starting point of a new sentence. Infinite possibilities await.",
+                            release: "What you've let go will become stars to protect you. No longer heavy.",
+                            healing: "Healing is like time travel. The moment when past, present, and future connect as one.",
+                            validation: "That acknowledgment will be conveyed beyond space and time. To the true destination of the message.",
+                            general: "You've just let go of words you couldn't send. Now it's time for you to walk again."
+                        },
+                        pt: {
+                            farewell: "Você acabou de deixar ir palavras que não conseguiu enviar. Agora é hora de você caminhar novamente.",
+                            gratitude: "Essa gratidão enviará calorosamente essas mensagens para algum lugar no universo.",
+                            regret: "Arrependimento não é um caminho para o passado, mas uma forma de entender melhor o presente.",
+                            acceptance: "Aceitação é uma lei do universo. Verdadeira paz vem quando você não resiste.",
+                            closure: "Esse ponto final se tornará o ponto de partida de uma nova frase. Possibilidades infinitas aguardam.",
+                            release: "O que você deixou ir se tornará estrelas para protegê-lo. Não mais pesado.",
+                            healing: "Cura é como viagem no tempo. O momento quando passado, presente e futuro se conectam como um.",
+                            validation: "Esse reconhecimento será transmitido além do espaço e tempo. Para o verdadeiro destino da mensagem.",
+                            general: "Você acabou de deixar ir palavras que não conseguiu enviar. Agora é hora de você caminhar novamente."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en';
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            document.getElementById('logoSubtitle').textContent = translations[lang].logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = translations[lang].portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = translations[lang].portalSubtitle;
+            document.getElementById('lightTitle').textContent = translations[lang].lightTitle;
+            document.getElementById('finalTitle').textContent = translations[lang].finalTitle;
+            document.getElementById('continueBtn').textContent = translations[lang].continueBtn;
+            document.getElementById('restartBtn').textContent = translations[lang].restartBtn;
+            document.getElementById('userTextarea').placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || currentLanguage === lang) return;
+            
+            currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'lightMessageSection', 'portalQuestionSection',
+                'userInputSection', 'userReactionsSection', 'finalSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('portalQuestion').innerHTML = '';
+            document.getElementById('finalMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            userResponse = '';
+            currentTypingElement = null;
+        }
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('continueBtn').addEventListener('click', function() {
+                const nextMessage = currentLanguage === 'ko' ? 
+                    'Portal 21이 곧 준비됩니다!' :
+                    currentLanguage === 'en' ? 
+                    'Portal 21 will be ready soon!' :
+                    'Portal 21 estará pronto em breve!';
+                alert(nextMessage);
+            });
+            
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                const confirmMessage = currentLanguage === 'ko' ? 
+                    'Portal 20을 다시 시작하시겠습니까?' :
+                    currentLanguage === 'en' ? 
+                    'Do you want to restart Portal 20?' :
+                    'Deseja reiniciar o Portal 20?';
+                
+                if (confirm(confirmMessage)) {
+                    resetJourney();
+                    setTimeout(() => {
+                        startPortalSequence();
+                    }, 1000);
+                }
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            
+            if (firebaseInitialized && db) {
+                try {
+                    await db.collection("temarix_v3_respostas").add({
+                        uid: memoryStorage.mockUser.uid,
+                        email: memoryStorage.mockUser.email,
+                        portal: "v3-20",
+                        resposta: inputText,
+                        data: firebase.firestore.Timestamp.now(),
+                        idioma: currentLanguage
+                    });
+                    console.log('Response saved to Firestore');
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                }
+            } else {
+                console.log('Firebase not available, saved locally:', inputText);
+                localStorage.setItem('temarix_v3_last_response', JSON.stringify({
+                    portal: "v3-20",
+                    resposta: inputText,
+                    data: new Date().toISOString(),
+                    idioma: currentLanguage
+                }));
+            }
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFinalSection();
+            }, 2000);
+        }
+        
+        async function showFinalSection() {
+            const finalSection = document.getElementById('finalSection');
+            const finalMessage = document.getElementById('finalMessage');
+            
+            finalSection.classList.add('show');
+            
+            const messageText = translations[currentLanguage].finalMessage;
+            await typewriterEffect(finalMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(finalSection);
+            }, 500);
+        }
+        
+        function initializeTemarix() {
+            console.log('Temarix V3 Portal 20 initialized');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            await typewriterEffect(introElement, translations[currentLanguage].portalIntro, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            await typewriterEffect(questionEl, translations[currentLanguage].portalQuestion, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V3 Portal 20 DOM loaded');
+            
+            initializeFirebase();
+            
+            currentLanguage = getLanguageFromURL();
+            
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            updateLanguageButtons(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

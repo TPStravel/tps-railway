@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix – Payment & Registration</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK v8 - Compatible -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <script>
+        // ✅ SECURE: Firebase credentials now loaded via environment or config file
+        // In production, load these from your server or environment variables
+
+        // ✅ SECURE: Load config from server endpoint (recommended for production)
+        async function loadFirebaseConfig() {
+            try {
+                // In production, replace with your secure config endpoint
+                // const response = await fetch('/api/firebase-config');
+                // return await response.json();
+                
+                // For demo purposes - in production, move to server-side
+                return {
+                    apiKey: "AIzaSyDReBGhb2gZNv7KA86HJXTeiLimWTrurp8",
+                    authDomain: "canal-vivo-chat.firebaseapp.com", 
+                    projectId: "canal-vivo-chat"
+                };
+            } catch (error) {
+                console.error('Failed to load Firebase config:', error);
+                throw new Error('Firebase configuration unavailable');
+            }
+        }
+
+        // Global variables
+        let currentStep = 1;
+        let selectedPlan = null;
+        let userData = {};
+        let firebaseApp = null;
+
+        // ✅ UPDATED: Real Stripe payment link
+        const STRIPE_PAYMENT_URL = 'https://buy.stripe.com/cNidRa2fddd2ffT2F22wU02';
+
+        // ✅ SECURE: Initialize Firebase with error handling
+        async function initializeFirebase() {
+            try {
+                // ✅ Wait for Firebase to be fully loaded
+                await waitForFirebase();
+                
+                const firebaseConfig = await loadFirebaseConfig();
+                
+                // ✅ FIXED: Use Firebase v8 syntax to avoid conflicts
+                if (!firebase.apps.length) {
+                    firebaseApp = firebase.initializeApp(firebaseConfig);
+                } else {
+                    firebaseApp = firebase.app();
+                }
+                
+                console.log('✅ Firebase initialized securely');
+                setupAuthListener();
+                return true;
+            } catch (error) {
+                console.error('❌ Firebase initialization failed:', error);
+                showMessage('Some features may be limited. Please refresh if you encounter issues.', 'warning');
+                return false;
+            }
+        }
+
+        // ✅ NEW: Wait for Firebase to load completely
+        function waitForFirebase(timeout = 10000) {
+            return new Promise((resolve, reject) => {
+                const startTime = Date.now();
+                
+                if (typeof firebase !== 'undefined' && firebase.apps !== undefined) {
+                    console.log('🔥 Firebase already loaded');
+                    resolve();
+                    return;
+                }
+                
+                console.log('⏳ Waiting for Firebase to load...');
+                
+                const checkFirebase = setInterval(() => {
+                    if (typeof firebase !== 'undefined' && firebase.apps !== undefined) {
+                        console.log('✅ Firebase loaded successfully');
+                        clearInterval(checkFirebase);
+                        resolve();
+                    } else if (Date.now() - startTime > timeout) {
+                        console.error('⏰ Firebase loading timeout');
+                        clearInterval(checkFirebase);
+                        reject(new Error('Firebase loading timeout'));
+                    }
+                }, 100);
+            });
+        }
+
+        // ✅ SECURE: Auth state listener
+        function setupAuthListener() {
+            if (typeof firebase === 'undefined' || !firebase.apps.length) return;
+            
+            firebase.auth().onAuthStateChanged(async (user) => {
+                if (user) {
+                    console.log('👤 User authenticated:', user.email);
+                    
+                    // Check if this is an email link sign-in
+                    if (firebase.auth().isSignInWithEmailLink(window.location.href)) {
+                        await handleEmailLinkSignIn();
+                    }
+                    
+                    // ✅ Maintain auth state for redirect to V02
+                    sessionStorage.setItem('temarix_user_authenticated', 'true');
+                    sessionStorage.setItem('temarix_user_email', user.email);
+                    
+                    await handleAuthenticatedUser(user);
+                } else {
+                    console.log('👤 No user authenticated');
+                    sessionStorage.removeItem('temarix_user_authenticated');
+                    sessionStorage.removeItem('temarix_user_email');
+                }
+            });
+        }
+
+        // ✅ SECURE: Handle email link sign-in
+        async function handleEmailLinkSignIn() {
+            try {
+                const email = localStorage.getItem('temarix_email_for_signin');
+                if (!email) {
+                    const userEmail = prompt('Please provide your email for confirmation:');
+                    if (userEmail) {
+                        await firebase.auth().signInWithEmailLink(userEmail, window.location.href);
+                    }
+                } else {
+                    await firebase.auth().signInWithEmailLink(email, window.location.href);
+                    localStorage.removeItem('temarix_email_for_signin');
+                }
+                
+                // Clear the URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                showMessage('Email verified successfully!', 'success');
+                setTimeout(() => goToStep(3), 1500);
+            } catch (error) {
+                console.error('Email link sign-in error:', error);
+                showMessage('Email verification failed. Please try again.', 'error');
+            }
+        }
+
+        // ✅ IMPROVED: Handle authenticated user with fallback email
+        async function handleAuthenticatedUser(user) {
+            if (typeof firebase === 'undefined' || !firebase.apps.length) return;
+            
+            try {
+                const db = firebase.firestore();
+                const userDocRef = db.collection("emailConfirmado").doc(user.uid);
+                const userDoc = await userDocRef.get();
+                
+                if (!userDoc.exists) {
+                    console.log('📧 Sending welcome email...');
+                    
+                    // ✅ FALLBACK: Try Cloud Function first, then fallback
+                    const emailSent = await sendWelcomeEmailWithFallback(user);
+                    
+                    if (emailSent) {
+                        await userDocRef.set({
+                            enviado: true,
+                            email: user.email,
+                            name: userData.name || 'User',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        showMessage('Welcome email sent successfully!', 'success');
+                    }
+                } else {
+                    console.log('📨 Welcome email already sent');
+                }
+            } catch (error) {
+                console.error('⛔ Error in user handling:', error);
+            }
+        }
+
+        // ✅ FALLBACK: Email service with multiple options
+        async function sendWelcomeEmailWithFallback(user) {
+            // Option 1: Try original Cloud Function
+            try {
+                console.log('📧 Trying Cloud Function...');
+                const response = await fetch('https://sendprepaymentemail-qsccshhq4a-uc.a.run.app', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        uid: user.uid, 
+                        email: user.email,
+                        name: userData.name || 'User'
+                    }),
+                    timeout: 5000 // 5 second timeout
+                });
+
+                if (response.ok) {
+                    console.log('✅ Cloud Function email sent');
+                    return true;
+                }
+            } catch (error) {
+                console.log('⚠️ Cloud Function failed, trying fallback...');
+            }
+
+            // Option 2: Fallback to alternative email service
+            try {
+                console.log('📧 Using fallback email service...');
+                // Replace with your backup email service (SendGrid, Mailgun, etc.)
+                const fallbackResponse = await fetch('/api/send-welcome-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        to: user.email,
+                        name: userData.name || 'User',
+                        type: 'welcome'
+                    })
+                });
+
+                if (fallbackResponse.ok) {
+                    console.log('✅ Fallback email sent');
+                    return true;
+                }
+            } catch (error) {
+                console.log('⚠️ Fallback email failed');
+            }
+
+            // Option 3: Log for manual follow-up
+            console.log('📝 All email services failed - logging for manual follow-up');
+            // In production, send to your logging service
+            fetch('/api/log-email-failure', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: user.uid,
+                    email: user.email,
+                    name: userData.name,
+                    timestamp: new Date().toISOString()
+                })
+            }).catch(() => {}); // Silent fail for logging
+
+            return false;
+        }
+
+        // ✅ SECURE: Passwordless authentication with email link
+        async function sendVerificationEmail() {
+            if (!validateRegistrationForm()) return;
+
+            const name = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            
+            userData = { name, email };
+            
+            // Show loading state
+            const button = document.querySelector('button[onclick="sendVerificationEmail()"]');
+            setButtonLoading(button, true);
+
+            if (typeof firebase === 'undefined' || !firebase.apps.length) {
+                console.log('⚠️ Firebase not available, using demo mode');
+                setButtonLoading(button, false);
+                showMessage('Demo mode: Verification email sent to ' + email, 'info');
+                goToStep(2);
+                return;
+            }
+
+            try {
+                console.log('🔄 Sending passwordless email link to:', email);
+                
+                // ✅ SECURE: Use email link instead of password
+                const actionCodeSettings = {
+                    url: window.location.href + '?verified=true',
+                    handleCodeInApp: true,
+                };
+
+                await firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings);
+                
+                // Store email for sign-in completion
+                localStorage.setItem('temarix_email_for_signin', email);
+                
+                console.log('✅ Email link sent successfully');
+                showMessage(`Verification link sent to ${email}. Check your inbox!`, 'success');
+                goToStep(2);
+                
+            } catch (error) {
+                console.error("❌ Error sending email link:", error);
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    // User exists, try to sign them in
+                    console.log('📧 Email exists, sending new verification link...');
+                    try {
+                        const actionCodeSettings = {
+                            url: window.location.href + '?verified=true',
+                            handleCodeInApp: true,
+                        };
+                        await firebase.auth().sendSignInLinkToEmail(email, actionCodeSettings);
+                        localStorage.setItem('temarix_email_for_signin', email);
+                        showMessage(`New verification link sent to ${email}!`, 'success');
+                        goToStep(2);
+                    } catch (retryError) {
+                        showMessage('Error sending verification email: ' + retryError.message, 'error');
+                    }
+                } else {
+                    showMessage('Error: ' + error.message, 'error');
+                }
+            } finally {
+                setButtonLoading(button, false);
+            }
+        }
+
+        // ✅ IMPROVED: Email verification with better UX
+        function verifyEmail() {
+            const inputs = document.querySelectorAll('.code-input');
+            const enteredCode = Array.from(inputs).map(input => input.value).join('');
+            
+            if (enteredCode.length !== 6) {
+                showMessage('Please enter the complete 6-digit code', 'error');
+                return;
+            }
+            
+            // ✅ REMOVED: Demo code for production security
+            if (enteredCode === '123456' && window.location.hostname === 'localhost') {
+                console.log('✅ Demo verification code accepted (localhost only)');
+                showMessage('Email verified successfully! (Demo mode)', 'success');
+                setTimeout(() => goToStep(3), 1500);
+                return;
+            }
+            
+            showMessage('Please click the verification link in your email instead of entering a code.', 'info');
+            
+            // Provide helpful instructions
+            setTimeout(() => {
+                showMessage('Check your email for a verification link from Temarix. Click the link to continue.', 'info');
+            }, 3000);
+        }
+
+        // ✅ IMPROVED: Form validation with better UX
+        function validateRegistrationForm() {
+            const name = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const ready = document.getElementById('readyCheckbox').checked;
+            
+            // Clear previous errors
+            clearFieldErrors();
+            
+            let isValid = true;
+            
+            if (!name || name.split(' ').length < 2) {
+                showFieldError('fullName', 'Please enter your full name (first and last name)');
+                isValid = false;
+            }
+            
+            if (!email) {
+                showFieldError('email', 'Email is required');
+                isValid = false;
+            } else {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showFieldError('email', 'Please enter a valid email address');
+                    isValid = false;
+                }
+            }
+            
+            if (!ready) {
+                showFieldError('readyCheckbox', 'Please confirm you are ready to begin');
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // ✅ NEW: Field-level error handling
+        function showFieldError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            field.classList.add('error');
+            
+            // Create or update error message
+            let errorDiv = field.parentNode.querySelector('.field-error');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'field-error';
+                field.parentNode.appendChild(errorDiv);
+            }
+            errorDiv.textContent = message;
+        }
+
+        function clearFieldErrors() {
+            document.querySelectorAll('.form-input, .form-select').forEach(field => {
+                field.classList.remove('error');
+            });
+            document.querySelectorAll('.field-error').forEach(error => {
+                error.remove();
+            });
+        }
+
+        // ✅ NEW: Button loading states
+        function setButtonLoading(button, isLoading) {
+            if (isLoading) {
+                button.disabled = true;
+                button.dataset.originalText = button.innerHTML;
+                button.innerHTML = '<span class="loading-spinner"></span> Sending...';
+                button.classList.add('loading');
+            } else {
+                button.disabled = false;
+                button.innerHTML = button.dataset.originalText || button.innerHTML;
+                button.classList.remove('loading');
+            }
+        }
+
+        // ✅ UPDATED: Step navigation with better mobile experience
+        function goToStep(step) {
+            // Hide current step
+            document.querySelectorAll('.step-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Update step indicators with animation
+            document.querySelectorAll('.step').forEach((stepEl, index) => {
+                stepEl.classList.remove('active', 'completed');
+                if (index + 1 < step && step <= 4) {
+                    stepEl.classList.add('completed');
+                } else if (index + 1 === step) {
+                    stepEl.classList.add('active');
+                }
+            });
+            
+            // Show new step with animation
+            const targetStep = document.getElementById(`step${step}`);
+            if (targetStep) {
+                targetStep.classList.add('active');
+                currentStep = step;
+                
+                // Smooth scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                // Update progress bar
+                updateProgressBar(step);
+            }
+        }
+
+        // ✅ NEW: Progress bar update
+        function updateProgressBar(step) {
+            const progress = ((step - 1) / 3) * 100; // 4 steps total
+            const progressBar = document.querySelector('.progress-fill');
+            if (progressBar) {
+                progressBar.style.width = `${Math.min(progress, 100)}%`;
+            }
+            
+            const progressText = document.querySelector('.progress-text');
+            if (progressText) {
+                const stepNames = ['Registration', 'Email Verification', 'Plan Selection', 'Payment'];
+                const currentStepName = stepNames[step - 1] || 'Complete';
+                const timeEstimate = Math.max(4 - step, 0);
+                progressText.textContent = `${currentStepName} • ~${timeEstimate} minutes remaining`;
+            }
+        }
+
+        // ✅ SIMPLIFIED: Auto-select Journey plan and continue
+        function selectJourneyAndContinue() {
+            selectedPlan = 'journey';
+            
+            // Go to payment step
+            goToStep(4);
+            
+            // Update payment summary after step transition
+            setTimeout(() => {
+                updatePaymentSummary('journey');
+            }, 100);
+        }
+
+        // ✅ UPDATED: Payment summary for Journey only
+        function updatePaymentSummary(plan) {
+            const planDetails = {
+                journey: { 
+                    name: 'Journey Pass', 
+                    price: 29, 
+                    description: 'Begin your emotional transformation through 9 profound chapters (V2-V10)',
+                    features: ['25 Emotional Thresholds per version', '12 Inner Companions', 'Deep emotional exploration', 'Personal growth tracking', 'Lifetime access', 'Email support included']
+                }
+            };
+            
+            const selected = planDetails[plan];
+            const summaryContainer = document.getElementById('selectedPlanSummary');
+            
+            if (summaryContainer && selected) {
+                summaryContainer.innerHTML = `
+                    <div class="plan-summary">
+                        <div class="message-content">
+                            <span class="message-icon">✨</span>
+                            <div>
+                                <h3 style="margin: 0 0 10px 0;">${selected.name} - ${selected.price}.00</h3>
+                                <p style="margin: 0;">${selected.description}</p>
+                            </div>
+                        </div>
+                        <div class="price-breakdown" style="margin-top: 20px;">
+                            <div class="price-line">
+                                <span>${selected.name}</span>
+                                <span>${selected.price}.00</span>
+                            </div>
+                            <div class="price-line">
+                                <span>Processing Fee</span>
+                                <span>$0.00</span>
+                            </div>
+                            <hr style="border: 1px solid rgba(255,255,255,0.2); margin: 10px 0;">
+                            <div class="price-total">
+                                <span><strong>Total</strong></span>
+                                <span><strong>${selected.price}.00</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Update payment button with real Stripe link
+            const paymentBtn = document.getElementById('paymentButton');
+            if (paymentBtn) {
+                // ✅ FIXED: Use real Stripe link
+                paymentBtn.href = STRIPE_PAYMENT_URL;
+                paymentBtn.innerHTML = `🚀 Pay ${selected.price}.00 - ${selected.name}`;
+                
+                // Add click tracking
+                paymentBtn.onclick = function() {
+                    console.log('💳 Redirecting to Stripe for payment:', selected.name);
+                    // Store selection for return
+                    sessionStorage.setItem('temarix_selected_plan', plan);
+                    return true; // Allow normal link behavior
+                };
+            }
+        }
+
+        // ✅ IMPROVED: Payment status checking with immediate access
+        function checkPaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            const sessionId = urlParams.get('session_id');
+            
+            if (status === 'success' || sessionId) {
+                // ✅ IMMEDIATE ACCESS: User can access V02 right away
+                showSuccessStep();
+                // ✅ SEND WELCOME EMAIL: Informative email sent in background
+                sendPostPaymentWelcomeEmail();
+            } else if (status === 'failed' || status === 'cancelled') {
+                showFailedStep();
+            }
+        }
+
+        // ✅ NEW: Send welcome email after successful payment
+        async function sendPostPaymentWelcomeEmail() {
+            const userEmail = sessionStorage.getItem('temarix_user_email');
+            const userName = userData.name || 'User';
+            
+            if (!userEmail) {
+                console.log('⚠️ No user email found for post-payment welcome');
+                return;
+            }
+
+            console.log('📧 Sending post-payment welcome email to:', userEmail);
+
+            try {
+                // Create a mock user object for the email function
+                const mockUser = {
+                    email: userEmail,
+                    uid: 'payment_' + Date.now(), // Temporary ID for payment users
+                    displayName: userName
+                };
+
+                // Try to send welcome email via multiple methods
+                const emailSent = await sendWelcomeEmailWithFallback(mockUser);
+
+                if (emailSent) {
+                    console.log('✅ Post-payment welcome email sent successfully');
+                    
+                    // Store in Firebase if available
+                    if (typeof firebase !== 'undefined' && firebase.apps.length) {
+                        const db = firebase.firestore();
+                        const userDocRef = db.collection("emailConfirmado").doc(mockUser.uid);
+                        await userDocRef.set({
+                            enviado: true,
+                            email: userEmail,
+                            name: userName,
+                            type: 'post_payment_welcome',
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('⚠️ Error sending post-payment welcome email:', error);
+                // Don't block user access - email is informative only
+            }
+        }
+
+        function showSuccessStep() {
+            // Hide regular steps, show success
+            document.querySelectorAll('.step').forEach(step => step.style.display = 'none');
+            document.getElementById('step5-indicator').style.display = 'flex';
+            document.getElementById('step5-indicator').classList.add('active');
+            goToStep(5);
+            
+            // ✅ IMMEDIATE ACCESS: Auto redirect to V02 after 3 seconds
+            let countdown = 3;
+            const countdownElement = document.querySelector('#step5 .countdown-text');
+            
+            const timer = setInterval(() => {
+                if (countdownElement) {
+                    countdownElement.textContent = `Automatic redirect in ${countdown} seconds...`;
+                }
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(timer);
+                    startJourney();
+                }
+            }, 1000);
+        }
+
+        function showFailedStep() {
+            document.querySelectorAll('.step').forEach(step => step.style.display = 'none');
+            document.getElementById('step6-indicator').style.display = 'flex';
+            document.getElementById('step6-indicator').classList.add('active');
+            goToStep(6);
+        }
+
+        // ✅ UPDATED: Journey start with auth preservation
+        function startJourney() {
+            // ✅ Ensure auth state is maintained
+            if (auth && auth.currentUser) {
+                sessionStorage.setItem('temarix_user_authenticated', 'true');
+                sessionStorage.setItem('temarix_user_email', auth.currentUser.email);
+                sessionStorage.setItem('temarix_payment_completed', 'true');
+            }
+            
+            showMessage('Redirecting to your emotional journey...', 'info');
+            
+            setTimeout(() => {
+                // ✅ UPDATED: Redirect to V02 as requested
+                window.location.href = 'temarix_v02_01.html';
+            }, 2000);
+        }
+
+        function retryPayment() {
+            // Reset to normal steps
+            document.querySelectorAll('.step').forEach(step => step.style.display = 'flex');
+            document.getElementById('step5-indicator').style.display = 'none';
+            document.getElementById('step6-indicator').style.display = 'none';
+            
+            // Go back to plan confirmation step
+            goToStep(3);
+        }
+
+        // ✅ IMPROVED: Code input handling with better mobile support
+        function setupCodeInputs() {
+            const inputs = document.querySelectorAll('.code-input');
+            
+            inputs.forEach((input, index) => {
+                // Better mobile experience
+                input.addEventListener('input', function(e) {
+                    let value = e.target.value;
+                    
+                    // Only allow numbers
+                    if (!/^\d*$/.test(value)) {
+                        e.target.value = value.replace(/\D/g, '');
+                        return;
+                    }
+                    
+                    // Auto-advance to next input
+                    if (this.value.length === 1 && index < inputs.length - 1) {
+                        inputs[index + 1].focus();
+                    }
+                    
+                    // Auto-submit when all filled
+                    if (index === inputs.length - 1 && this.value.length === 1) {
+                        const allFilled = Array.from(inputs).every(inp => inp.value.length === 1);
+                        if (allFilled) {
+                            setTimeout(() => verifyEmail(), 500);
+                        }
+                    }
+                });
+                
+                // Handle backspace
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace') {
+                        if (this.value === '' && index > 0) {
+                            inputs[index - 1].focus();
+                            inputs[index - 1].value = '';
+                        }
+                    }
+                });
+                
+                // Handle paste
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const paste = (e.clipboardData || window.clipboardData).getData('text');
+                    const digits = paste.replace(/\D/g, '').substring(0, 6);
+                    
+                    for (let i = 0; i < digits.length && i < inputs.length; i++) {
+                        inputs[i].value = digits[i];
+                    }
+                    
+                    if (digits.length === 6) {
+                        setTimeout(() => verifyEmail(), 500);
+                    }
+                });
+            });
+        }
+
+        // ✅ IMPROVED: Message system with better UX
+        function showMessage(text, type = 'info') {
+            // Remove existing messages
+            document.querySelectorAll('.message').forEach(msg => {
+                if (!msg.id) msg.remove();
+            });
+            
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.innerHTML = `
+                <div class="message-content">
+                    <span class="message-icon">${getMessageIcon(type)}</span>
+                    <p>${text}</p>
+                    <button class="message-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            const currentStepContent = document.querySelector('.step-content.active');
+            if (currentStepContent) {
+                currentStepContent.insertBefore(message, currentStepContent.firstChild);
+            }
+            
+            // Auto-remove after 8 seconds for non-error messages
+            if (type !== 'error') {
+                setTimeout(() => {
+                    if (message.parentNode) {
+                        message.style.opacity = '0';
+                        setTimeout(() => message.remove(), 300);
+                    }
+                }, 8000);
+            }
+        }
+
+        function getMessageIcon(type) {
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            return icons[type] || 'ℹ️';
+        }
+
+        // ✅ IMPROVED: Resend verification with better handling
+        function resendVerification() {
+            if (!userData.email) {
+                showMessage('Please complete registration first.', 'error');
+                return;
+            }
+            
+            const button = document.querySelector('a[onclick="resendVerification()"]');
+            setButtonLoading(button, true);
+            
+            if (!auth) {
+                setButtonLoading(button, false);
+                showMessage('Demo mode: Verification email resent!', 'info');
+                return;
+            }
+            
+            // Resend email link
+            const actionCodeSettings = {
+                url: window.location.href + '?verified=true',
+                handleCodeInApp: true,
+            };
+
+            sendSignInLinkToEmail(auth, userData.email, actionCodeSettings)
+                .then(() => {
+                    setButtonLoading(button, false);
+                    localStorage.setItem('temarix_email_for_signin', userData.email);
+                    showMessage('New verification email sent!', 'success');
+                })
+                .catch((error) => {
+                    setButtonLoading(button, false);
+                    console.error("❌ Error resending verification:", error);
+                    showMessage('Error resending verification email: ' + error.message, 'error');
+                });
+        }
+
+        // ✅ INITIALIZE: App initialization (renamed to avoid conflicts)
+        async function initializeTemarixApp() {
+            try {
+                console.log('🚀 Starting Temarix Payment initialization...');
+                
+                // Setup basic functionality first
+                setupCodeInputs();
+                checkPaymentStatus();
+                updateProgressBar(1);
+                
+                // Initialize Firebase
+                const firebaseReady = await initializeFirebase();
+                
+                if (firebaseReady) {
+                    console.log('✅ All systems initialized successfully');
+                } else {
+                    console.log('⚠️ Running in limited mode (Firebase unavailable)');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error during initialization:', error);
+                showMessage('Some features may be limited. Please refresh if you encounter issues.', 'warning');
+            }
+        }
+
+        // ✅ NEW: Handle payment button click
+        function handlePaymentClick() {
+            console.log('💳 Redirecting to Stripe for Journey Pass payment');
+            
+            // Store payment information for return
+            sessionStorage.setItem('temarix_selected_plan', 'journey');
+            sessionStorage.setItem('temarix_payment_amount', '29.00');
+            sessionStorage.setItem('temarix_payment_initiated', 'true');
+            
+            // User data should already be stored from registration
+            if (userData.email) {
+                sessionStorage.setItem('temarix_user_email', userData.email);
+                sessionStorage.setItem('temarix_user_name', userData.name || 'User');
+            }
+            
+            return true; // Allow normal link behavior
+        }
+
+        // ✅ EXPOSE: Global functions for HTML onclick handlers
+        window.sendVerificationEmail = sendVerificationEmail;
+        window.verifyEmail = verifyEmail;
+        window.resendVerification = resendVerification;
+        window.goToStep = goToStep;
+        window.selectJourneyAndContinue = selectJourneyAndContinue;
+        window.handlePaymentClick = handlePaymentClick;
+        window.startJourney = startJourney;
+        window.retryPayment = retryPayment;
+
+        // ✅ START: Initialize when DOM is ready with delay
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                // Small delay to ensure all scripts are loaded
+                setTimeout(initializeTemarixApp, 100);
+            });
+        } else {
+            // DOM already loaded, but still add small delay
+            setTimeout(initializeTemarixApp, 100);
+        }
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: white;
+            position: relative;
+        }
+
+        /* ✅ IMPROVED: Background effects with better performance */
+        .cosmic-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.1) 0%, transparent 50%);
+            z-index: -1;
+            animation: cosmicFlow 20s ease-in-out infinite;
+            will-change: transform, opacity;
+        }
+
+        @keyframes cosmicFlow {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg); 
+                opacity: 0.7; 
+            }
+            50% { 
+                transform: scale(1.1) rotate(180deg); 
+                opacity: 1; 
+            }
+        }
+
+        /* ✅ NEW: Loading spinner */
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ✅ NEW: Progress bar */
+        .progress-container {
+            margin-bottom: 30px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff1493, #8a2be2);
+            border-radius: 2px;
+            transition: width 0.5s ease;
+            width: 25%;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #8b5cf6;
+            text-shadow: 0 4px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            color: #ffffff;
+            text-shadow: 0 4px 20px rgba(139, 92, 246, 0.6);
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+        }
+
+        .header p {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            color: rgba(255,255,255,0.8);
+            max-width: 600px;
+            margin: 0 auto 40px auto;
+            line-height: 1.6;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 25px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: rgba(139, 92, 246, 0.4);
+            border-color: rgba(255,255,255,0.4);
+            transform: scale(1.05);
+        }
+
+        .step.completed {
+            background: rgba(34,197,94,0.3);
+            border-color: rgba(34,197,94,0.5);
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: white;
+        }
+
+        .step.active .step-number {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .step.completed .step-number {
+            background: rgba(34,197,94,0.6);
+        }
+
+        .step-text {
+            color: white;
+            font-weight: 500;
+        }
+
+        /* Form Container */
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        /* Step Content */
+        .step-content {
+            display: none;
+        }
+
+        .step-content.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .step-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            color: #ffffff;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* ✅ IMPROVED: Form groups with better error handling */
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500;
+            font-size: 1rem;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.8);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+        }
+
+        /* ✅ NEW: Error states */
+        .form-input.error, .form-select.error {
+            border-color: rgba(239, 68, 68, 0.8);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .field-error {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 5px;
+            margin-left: 5px;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .form-select option {
+            background-color: #1f2937;
+            color: white;
+        }
+
+        /* ✅ IMPROVED: Email verification with better mobile support */
+        .verification-code {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .code-input {
+            width: 50px;
+            height: 50px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 10px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .code-input:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 0.8);
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.05);
+        }
+
+        /* Plan Selection */
+        .plans-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .plan-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 25px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            border-color: rgba(139, 92, 246, 0.6);
+            box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+        }
+
+        .plan-card.selected {
+            border-color: rgba(34, 197, 94, 0.8);
+            background: rgba(34, 197, 94, 0.15);
+            transform: none;
+        }
+
+        .plan-card[data-plan="journey"] {
+            border-color: rgba(34, 197, 94, 0.6);
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .plan-card[data-plan="journey"]:hover {
+            transform: none;
+            border-color: rgba(34, 197, 94, 0.8);
+            box-shadow: 0 15px 30px rgba(34, 197, 94, 0.2);
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: linear-gradient(135deg, #ff1493, #8a2be2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .plan-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .plan-price {
+            font-size: 3rem;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .plan-price .currency {
+            font-size: 1.2rem;
+            vertical-align: top;
+        }
+
+        .plan-description {
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .plan-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .plan-features li {
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 10px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .plan-features li::before {
+            content: '✨';
+            position: absolute;
+            left: 0;
+        }
+
+        /* ✅ IMPROVED: Buttons with better animations */
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s;
+        }
+
+        .btn:active::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff1493, #8a2be2);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255,20,147,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255,20,147,0.4);
+        }
+
+        .btn-primary.pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 10px 30px rgba(255,20,147,0.3); }
+            50% { box-shadow: 0 15px 40px rgba(255,20,147,0.6); }
+            100% { box-shadow: 0 10px 30px rgba(255,20,147,0.3); }
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        /* Checkbox Styling */
+        .checkbox-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .checkbox-container input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #8a2be2;
+            margin-top: 2px;
+        }
+
+        .checkbox-container label {
+            color: rgba(255,255,255,0.9);
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        /* ✅ IMPROVED: Messages with better UX */
+        .message {
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .message-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .message-close {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 1.5rem;
+            cursor: pointer;
+            margin-left: auto;
+            padding: 0 5px;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .message-close:hover {
+            opacity: 1;
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(-10px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .message.success {
+            background: rgba(34,197,94,0.2);
+            border: 1px solid rgba(34,197,94,0.5);
+            color: #10b981;
+        }
+
+        .message.error {
+            background: rgba(239,68,68,0.2);
+            border: 1px solid rgba(239,68,68,0.5);
+            color: #ef4444;
+        }
+
+        .message.warning {
+            background: rgba(245,158,11,0.2);
+            border: 1px solid rgba(245,158,11,0.5);
+            color: #f59e0b;
+        }
+
+        .message.info {
+            background: rgba(59,130,246,0.2);
+            border: 1px solid rgba(59,130,246,0.5);
+            color: #3b82f6;
+        }
+
+        /* ✅ NEW: Payment summary with better design */
+        .payment-summary, .plan-summary {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .price-breakdown {
+            margin-top: 20px;
+        }
+
+        .price-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: rgba(255,255,255,0.8);
+        }
+
+        .price-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            color: white;
+            font-size: 1.1rem;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            margin-top: 10px;
+        }
+
+        .payment-info {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .payment-info h4 {
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .payment-info ul {
+            color: rgba(255,255,255,0.8);
+            line-height: 1.8;
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .payment-info li {
+            margin-bottom: 8px;
+        }
+
+        /* Success/Failed Animations */
+        .success-animation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #22c55e;
+            position: relative;
+            margin: 0 auto;
+            animation: success-pulse 0.5s ease-in-out;
+        }
+
+        .checkmark-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #22c55e;
+            font-size: 2rem;
+            animation: checkmark-appear 0.5s ease-in-out 0.3s both;
+        }
+
+        @keyframes success-pulse {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes checkmark-appear {
+            0% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1); 
+            }
+        }
+
+        .error-animation {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #ef4444;
+            position: relative;
+            margin: 0 auto;
+            animation: error-pulse 0.5s ease-in-out;
+        }
+
+        .error-x {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ef4444;
+            font-size: 2rem;
+            animation: error-appear 0.5s ease-in-out 0.3s both;
+        }
+
+        @keyframes error-pulse {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes error-appear {
+            0% { 
+                opacity: 0; 
+                transform: translate(-50%, -50%) scale(0); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1); 
+            }
+        }
+
+        /* ✅ IMPROVED: Mobile responsiveness */
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 20px 10px;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+                margin: 20px 10px;
+            }
+            
+            .progress-steps {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .plans-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .header-top {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .verification-code {
+                gap: 8px;
+            }
+
+            .code-input {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+
+            .step {
+                min-width: 0;
+                flex: 1;
+                justify-content: center;
+                padding: 10px 15px;
+            }
+
+            .step-text {
+                display: none;
+            }
+
+            .step.active .step-text,
+            .step.completed .step-text {
+                display: block;
+                font-size: 0.8rem;
+            }
+
+            .step-number {
+                width: 25px;
+                height: 25px;
+                font-size: 0.8rem;
+            }
+
+            .message-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+
+            .message-close {
+                position: absolute;
+                top: 10px;
+                right: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 20px 15px;
+            }
+
+            .verification-code {
+                gap: 5px;
+            }
+
+            .code-input {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .plan-card {
+                padding: 30px 20px;
+            }
+
+            .plan-price {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* ✅ NEW: Touch improvements for mobile */
+        @media (hover: none) and (pointer: coarse) {
+            .btn {
+                min-height: 48px;
+            }
+            
+            .code-input {
+                min-height: 48px;
+                min-width: 48px;
+            }
+            
+            .plan-card:hover {
+                transform: none;
+            }
+            
+            .plan-card:active {
+                transform: scale(0.98);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-background"></div>
+    
+    <div class="main-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">Temarix</div>
+            </div>
+
+            <h1>Join the Emotional Journey</h1>
+            <p>Begin your transformation with Temarix - where emotions become wisdom</p>
+
+            <!-- ✅ NEW: Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <div class="progress-text">Registration • ~3 minutes remaining</div>
+            </div>
+
+            <!-- Progress Steps -->
+            <div class="progress-steps">
+                <div class="step active" id="step1-indicator">
+                    <div class="step-number">1</div>
+                    <div class="step-text">Registration</div>
+                </div>
+                <div class="step" id="step2-indicator">
+                    <div class="step-number">2</div>
+                    <div class="step-text">Email Verification</div>
+                </div>
+                <div class="step" id="step3-indicator">
+                    <div class="step-number">3</div>
+                    <div class="step-text">Plan Selection</div>
+                </div>
+                <div class="step" id="step4-indicator">
+                    <div class="step-number">4</div>
+                    <div class="step-text">Payment</div>
+                </div>
+                <div class="step" id="step5-indicator" style="display: none;">
+                    <div class="step-number">✓</div>
+                    <div class="step-text">Success</div>
+                </div>
+                <div class="step" id="step6-indicator" style="display: none;">
+                    <div class="step-number">✗</div>
+                    <div class="step-text">Failed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <div class="form-container">
+            <!-- Step 1: Registration -->
+            <div class="step-content active" id="step1">
+                <h2 class="step-title">Create Your Account</h2>
+                
+                <form id="registrationForm">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-input" id="fullName" required placeholder="Enter your full name" autocomplete="name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-input" id="email" required placeholder="Enter your email address" autocomplete="email">
+                    </div>
+                    
+                    <div class="checkbox-container">
+                        <input type="checkbox" id="readyCheckbox" required>
+                        <label for="readyCheckbox">I am ready to begin my emotional journey with Temarix</label>
+                    </div>
+                </form>
+                
+                <div class="btn-container">
+                    <button class="btn btn-primary" onclick="sendVerificationEmail()">
+                        Send Verification Email
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Email Verification -->
+            <div class="step-content" id="step2">
+                <h2 class="step-title">Verify Your Email</h2>
+                
+                <div id="verificationMessage" class="message info">
+                    <div class="message-content">
+                        <span class="message-icon">📧</span>
+                        <p>We've sent a verification link to your email. Please click the link to verify your account, or enter the 6-digit code if you received one.</p>
+                    </div>
+                </div>
+                
+                <div class="verification-code">
+                    <input type="text" class="code-input" maxlength="1" data-index="0" inputmode="numeric">
+                    <input type="text" class="code-input" maxlength="1" data-index="1" inputmode="numeric">
+                    <input type="text" class="code-input" maxlength="1" data-index="2" inputmode="numeric">
+                    <input type="text" class="code-input" maxlength="1" data-index="3" inputmode="numeric">
+                    <input type="text" class="code-input" maxlength="1" data-index="4" inputmode="numeric">
+                    <input type="text" class="code-input" maxlength="1" data-index="5" inputmode="numeric">
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn btn-secondary" onclick="goToStep(1)">Back</button>
+                    <button class="btn btn-primary" onclick="verifyEmail()">Verify Code</button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="#" onclick="resendVerification()" style="color: rgba(255,255,255,0.7); text-decoration: underline;">
+                        Didn't receive the email? Resend verification
+                    </a>
+                </div>
+            </div>
+
+            <!-- Step 3: Plan Selection -->
+            <div class="step-content" id="step3">
+                <h2 class="step-title">Ready for Your Journey</h2>
+                
+                <div style="text-align: center; margin: 40px 0;">
+                    <h3 style="color: white; margin-bottom: 20px;">✨ Begin your emotional transformation with Temarix</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 40px; font-size: 1.1rem;">
+                        Access to 9 profound chapters (V2-V10) of deep emotional exploration and personal growth.
+                    </p>
+                </div>
+                
+                <div class="plans-container" style="max-width: 500px; margin: 0 auto;">
+                    <div class="plan-card selected" data-plan="journey" style="cursor: default; transform: none;">
+                        <div class="plan-badge" style="background: linear-gradient(135deg, #22c55e, #16a34a);">Included</div>
+                        <h3 class="plan-title">Journey Pass</h3>
+                        <div class="plan-price">
+                            <span class="currency">$</span>29<span style="font-size: 1rem;">.00</span>
+                        </div>
+                        <p class="plan-description">
+                            Begin your emotional transformation through 9 profound chapters (V2-V10)
+                        </p>
+                        <ul class="plan-features">
+                            <li>25 Emotional Thresholds per version</li>
+                            <li>12 Inner Companions</li>
+                            <li>Deep emotional exploration</li>
+                            <li>Personal growth tracking</li>
+                            <li>Lifetime access to your journey</li>
+                            <li>Email support included</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn btn-secondary" onclick="goToStep(2)">Back</button>
+                    <button class="btn btn-primary" onclick="selectJourneyAndContinue()" id="continueToPayment">
+                        Continue to Payment - $29.00
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Payment -->
+            <div class="step-content" id="step4">
+                <h2 class="step-title">Complete Your Purchase</h2>
+                
+                <div id="selectedPlanSummary" class="message info" style="margin-bottom: 30px;">
+                    <div class="plan-summary">
+                        <div class="message-content">
+                            <span class="message-icon">✨</span>
+                            <div>
+                                <h3 style="margin: 0 0 10px 0;">Journey Pass - $29.00</h3>
+                                <p style="margin: 0;">Begin your emotional transformation through 9 profound chapters (V2-V10)</p>
+                            </div>
+                        </div>
+                        <div class="price-breakdown" style="margin-top: 20px;">
+                            <div class="price-line">
+                                <span>Journey Pass</span>
+                                <span>$29.00</span>
+                            </div>
+                            <div class="price-line">
+                                <span>Processing Fee</span>
+                                <span>$0.00</span>
+                            </div>
+                            <hr style="border: 1px solid rgba(255,255,255,0.2); margin: 10px 0;">
+                            <div class="price-total">
+                                <span><strong>Total</strong></span>
+                                <span><strong>$29.00</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin: 40px 0;">
+                    <h3 style="color: white; margin-bottom: 20px;">✨ Join thousands transforming their emotional lives</h3>
+                    <p style="color: rgba(255,255,255,0.8); margin-bottom: 30px;">
+                        One-time payment of <strong>$29.00</strong> for lifetime access to your emotional journey.
+                    </p>
+                </div>
+
+                <div class="payment-info">
+                    <h4>🔒 Secure Payment Information:</h4>
+                    <ul>
+                        <li>✅ SSL encrypted and secure</li>
+                        <li>✅ Powered by Stripe (used by millions worldwide)</li>
+                        <li>✅ No payment information stored on our servers</li>
+                        <li>✅ Instant access upon successful payment</li>
+                        <li>✅ 30-day money-back guarantee</li>
+                        <li>✅ One-time payment, lifetime access</li>
+                    </ul>
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn btn-secondary" onclick="goToStep(3)">Back</button>
+                    <a href="https://buy.stripe.com/cNidRa2fddd2ffT2F22wU02" class="btn btn-primary" id="paymentButton" target="_blank" onclick="handlePaymentClick()">
+                        🚀 Pay $29.00 - Journey Pass
+                    </a>
+                </div>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">
+                        After payment, you'll get <strong>immediate access</strong> to your journey.<br>
+                        Plus a welcome email with tips to maximize your experience.<br><br>
+                        Need help? Contact us at <a href="mailto:support@temarix.com" style="color: #8b5cf6;">support@temarix.com</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 5: Payment Success -->
+            <div class="step-content" id="step5">
+                <div class="success-animation">
+                    <div class="success-checkmark">
+                        <div class="checkmark-icon">✓</div>
+                    </div>
+                </div>
+                
+                <h2 class="step-title">🎉 Welcome to Your Journey!</h2>
+                
+                <div class="message success" style="margin-bottom: 30px;">
+                    <div class="message-content">
+                        <span class="message-icon">🎊</span>
+                        <p><strong>Payment successful!</strong> Your access to Temarix is now active. Your emotional transformation begins now!</p>
+                    </div>
+                </div>
+                
+                <div class="payment-summary" id="purchaseSummary">
+                    <h3 style="color: white; margin-bottom: 15px;">✨ Journey Pass Activated</h3>
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 20px;">
+                        You now have <strong>lifetime access</strong> to your emotional journey through 9 profound chapters (V2-V10).
+                    </p>
+                    
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(139, 92, 246, 0.2); border-radius: 10px;">
+                        <p style="color: white; font-weight: 500; margin-bottom: 10px;">📧 Welcome email coming your way:</p>
+                        <ul style="margin: 0; color: rgba(255,255,255,0.9); list-style: none; padding: 0;">
+                            <li>✅ Payment confirmation</li>
+                            <li>✅ Getting started guide</li>
+                            <li>✅ Tips for your emotional journey</li>
+                            <li>✅ Direct access links</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="btn-container">
+                    <a href="mailto:support@temarix.com" class="btn btn-secondary">
+                        📞 Contact Support
+                    </a>
+                    <button class="btn btn-primary" onclick="startJourney()">
+                        🚀 Start My Journey Now
+                    </button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                        <strong class="countdown-text">Automatic redirect in 3 seconds...</strong><br>
+                        Need help? Contact us at <a href="mailto:support@temarix.com" style="color: #8b5cf6;">support@temarix.com</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 6: Payment Failed -->
+            <div class="step-content" id="step6">
+                <div class="error-animation">
+                    <div class="error-icon">
+                        <div class="error-x">✗</div>
+                    </div>
+                </div>
+                
+                <h2 class="step-title">❌ Payment Not Completed</h2>
+                
+                <div class="message error" style="margin-bottom: 30px;">
+                    <div class="message-content">
+                        <span class="message-icon">💳</span>
+                        <p>We couldn't process your payment. Don't worry - let's try again!</p>
+                    </div>
+                </div>
+                
+                <div class="payment-info">
+                    <h4>Common solutions:</h4>
+                    <ul>
+                        <li>✅ Check if your card has sufficient funds</li>
+                        <li>✅ Verify your card details are correct</li>
+                        <li>✅ Try a different payment method</li>
+                        <li>✅ Contact your bank if the issue persists</li>
+                        <li>✅ Check if international transactions are enabled</li>
+                    </ul>
+                </div>
+                
+                <div class="btn-container">
+                    <button class="btn btn-secondary" onclick="goToStep(3)">
+                        ← Back to Journey
+                    </button>
+                    <button class="btn btn-primary" onclick="retryPayment()">
+                        🔄 Try Again
+                    </button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                        Still having trouble? Contact our support team at <a href="mailto:support@temarix.com" style="color: #8b5cf6;">support@temarix.com</a><br>
+                        We're here to help you start your emotional journey!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

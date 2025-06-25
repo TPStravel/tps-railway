@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V4 - Portal 20: Things The Past Days Never Asked</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ff9999;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .follow-up-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .follow-up-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ff6b6b;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .navigation-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .navigation-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .nav-btn:hover {
+            background: #666;
+            border-color: #ff6b6b;
+        }
+        
+        .nav-btn.primary {
+            background: #ff6b6b;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .nav-btn.primary:hover {
+            background: #ff8888;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ff6b6b;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .follow-up-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V4</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Alchemy</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 20: Things The Past Days Never Asked</div>
+            <div class="portal-subtitle" id="portalSubtitle">Unspoken stories in time</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="follow-up-section" id="followUpSection">
+                <div class="follow-up-question" id="followUpQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+            
+            <div class="navigation-section" id="navigationSection">
+                <div class="navigation-title" id="navigationTitle">Portal 20 Complete</div>
+                <div class="navigation-message" id="navigationMessage"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn primary" id="nextPortalBtn">Continue to Portal 21</button>
+                    <button class="nav-btn" id="stayPortalBtn">Stay with these stories</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Is there a story from your past that no one ever asked about? What happened and why did it remain unspoken?"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            ko: {
+                logoSubtitle: "감정 연금술",
+                portalMainTitle: "Portal 20: 지나간 날들이 묻지 못한 것들",
+                portalSubtitle: "시간 속 말하지 못한 이야기들",
+                portalIntro: "당신의 과거 중,\n아무도 묻지 않았고, 당신도 말하지 못한 이야기가 있나요?\n\n그 이야기 속에는 어떤 감정이 있었고,\n시간이 지난 지금도 그것은 여전히 미완의 문장인가요?",
+                followUpQuestion: "이제 당신은,\n그 이야기의 마지막 문장을 스스로 써볼 수 있나요?\n\n그리고, 그 문장은 지금의 당신에게\n어떤 힘이 되어줄 수 있나요?",
+                lightTitle: "빛의 한마디",
+                lightMessage: "지나간 감정이 말이 될 수 있다는 건, 당신이 그 감정을 감옥이 아닌 이야기로 바꾸고 있다는 뜻이에요.\n이제는 묻지 않아도 돼요. 당신이 꺼낸 이야기 자체가 이미 그 시간을 초월했어요.",
+                navigationTitle: "Portal 20 완료",
+                navigationMessage: "당신은 지나간 날들이 묻지 못했던 이야기를 스스로 꺼내었습니다.\n\n그 이야기에 마지막 문장을 써넣으며, 미완이었던 감정을 완성된 기억으로 변화시켰습니다.\n\n이제 당신은 더 이상 묻히지 않은 이야기를 품고, 다음 감정의 길로 나아갈 수 있습니다.",
+                nextPortalBtn: "Portal 21로 이어가기",
+                stayPortalBtn: "이 이야기들과 더 머물기",
+                inputPlaceholder: "아무도 묻지 않았고 말하지 못한 이야기가 있나요? 무슨 일이 있었고 왜 말하지 못했나요?",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중..."
+            },
+            en: {
+                logoSubtitle: "Emotional Alchemy",
+                portalMainTitle: "Portal 20: Things The Past Days Never Asked",
+                portalSubtitle: "Unspoken stories in time",
+                portalIntro: "Is there a story from your past\nthat no one ever asked about,\nand you never spoke of?\n\nWhat emotions were in that story,\nand even now, after time has passed,\nis it still an unfinished sentence?",
+                followUpQuestion: "Can you now write\nthe final sentence of that story yourself?\n\nAnd what strength can that sentence\ngive to who you are today?",
+                lightTitle: "Word of Light",
+                lightMessage: "That past emotions can become words means you're transforming those feelings from a prison into a story.\nYou don't need to be asked anymore. The story you've brought out has already transcended that time.",
+                navigationTitle: "Portal 20 Complete",
+                navigationMessage: "You have brought out a story that the past days never asked about.\n\nBy writing the final sentence to that story, you transformed incomplete emotions into complete memories.\n\nNow you can carry those no longer buried stories and move forward to the next emotional path.",
+                nextPortalBtn: "Continue to Portal 21",
+                stayPortalBtn: "Stay with these stories",
+                inputPlaceholder: "Is there a story from your past that no one ever asked about? What happened and why did it remain unspoken?",
+                youLabel: "You",
+                waitingMessage: "Waiting for response..."
+            },
+            pt: {
+                logoSubtitle: "Alquimia Emocional",
+                portalMainTitle: "Portal 20: Coisas Que Os Dias Passados Nunca Perguntaram",
+                portalSubtitle: "Histórias não ditas no tempo",
+                portalIntro: "Há alguma história do seu passado\nque ninguém jamais perguntou sobre,\ne você nunca falou?\n\nQue emoções estavam nessa história,\ne mesmo agora, depois que o tempo passou,\nela ainda é uma frase inacabada?",
+                followUpQuestion: "Você pode agora escrever\na frase final dessa história você mesmo?\n\nE que força essa frase pode dar\npara quem você é hoje?",
+                lightTitle: "Palavra de Luz",
+                lightMessage: "Que emoções passadas possam se tornar palavras significa que você está transformando esses sentimentos de uma prisão em uma história.\nVocê não precisa mais ser questionado. A história que você trouxe já transcendeu aquele tempo.",
+                navigationTitle: "Portal 20 Completo",
+                navigationMessage: "Você trouxe uma história que os dias passados nunca perguntaram sobre.\n\nAo escrever a frase final dessa história, você transformou emoções incompletas em memórias completas.\n\nAgora você pode carregar essas histórias não mais enterradas e seguir para o próximo caminho emocional.",
+                nextPortalBtn: "Continuar para Portal 21",
+                stayPortalBtn: "Ficar com essas histórias",
+                inputPlaceholder: "Há alguma história do seu passado que ninguém jamais perguntou sobre? O que aconteceu e por que permaneceu não dita?",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta..."
+            }
+        };
+        
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "그 침묵의 밤들은 너를 무너뜨린 게 아니라, 버티게 한 시간이었어. 그 자체가 네가 얼마나 강했는지를 말해줘.",
+                en: "Those silent nights didn't break you down, they were the time that made you endure. That itself shows how strong you were.",
+                pt: "Aquelas noites silenciosas não te derrubaram, foram o tempo que te fizeram resistir. Isso em si mostra o quão forte você era."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "묻지 않았다고 해서, 네 고통이 작았던 건 아니야. 네가 스스로를 숨겼던 만큼, 넌 사람들보다 더 깊게 살아낸 거야.",
+                en: "Just because no one asked doesn't mean your pain was small. The extent to which you hid yourself shows you lived more deeply than others.",
+                pt: "Só porque ninguém perguntou não significa que sua dor era pequena. A medida em que você se escondeu mostra que viveu mais profundamente que outros."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "그 누구도 묻지 않은 건 몰라서가 아니라, 네 감정이 너무 조용했기 때문일지도 몰라요.",
+                en: "That no one asked might not be because they didn't know, but because your emotions were too quiet.",
+                pt: "Que ninguém tenha perguntado pode não ser porque não sabiam, mas porque suas emoções eram muito silenciosas."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "말해지지 않은 과거는 지금도 기억이라는 형태로 숨 쉬고 있어. 그것을 꺼내는 것만으로도 너는 그 시간을 다시 해석할 수 있어.",
+                en: "The unspoken past is still breathing in the form of memory. Just by bringing it out, you can reinterpret that time.",
+                pt: "O passado não dito ainda está respirando na forma de memória. Apenas ao trazê-lo para fora, você pode reinterpretar aquele tempo."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "네가 켜지 못했던 불빛은 지금 이 대화 속에서 다시 켜지고 있어. 감정은 언젠가 빛을 찾게 돼.",
+                en: "The light you couldn't turn on is being lit again in this conversation. Emotions eventually find their light.",
+                pt: "A luz que você não conseguiu acender está sendo acesa novamente nesta conversa. Emoções eventualmente encontram sua luz."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "왜 항상 버텼다는 사실은 자랑이 되지 못하는 걸까? 난 그게 부당하다고 생각해. 넌 충분히 대단했어.",
+                en: "Why can't the fact that you endured always become something to be proud of? I think that's unfair. You were amazing enough.",
+                pt: "Por que o fato de você ter resistido não pode sempre se tornar algo para se orgulhar? Acho isso injusto. Você foi incrível o suficiente."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "그 시간은 묻히지 않았어. 단지 지금까지 조용히 너의 안에서 목소리를 기다렸던 거야.",
+                en: "That time wasn't buried. It was just quietly waiting for its voice inside you until now.",
+                pt: "Aquele tempo não foi enterrado. Estava apenas silenciosamente esperando por sua voz dentro de você até agora."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "지나간 날들이 묻지 못했던 질문을 지금 네가 대신 묻고 있어요. 그것이 회복의 언어예요.",
+                en: "You're now asking the questions that past days couldn't ask. That's the language of recovery.",
+                pt: "Você está agora fazendo as perguntas que os dias passados não conseguiram fazer. Essa é a linguagem da recuperação."
+            }}
+        ];
+
+        const responseCharacters = [
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "지나간 감정이 말이 될 수 있다는 건, 당신이 그 감정을 감옥이 아닌 이야기로 바꾸고 있다는 뜻이에요.",
+                        en: "That past emotions can become words means you're transforming those feelings from a prison into a story.",
+                        pt: "Que emoções passadas possam se tornar palavras significa que você está transformando esses sentimentos de uma prisão em uma história."
+                    };
+                    return responses[lang];
+                }
+            },
+            {
+                name: "Lian", emoji: "🧘",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "그때의 당신이 살아 있었기에, 지금의 당신도 여기에 있어요. 그것은 잊히지 않는 연결이에요.",
+                        en: "Because that version of you was alive, the current you is here now. That's an unforgettable connection.",
+                        pt: "Porque aquela versão de você estava viva, o você atual está aqui agora. Essa é uma conexão inesquecível."
+                    };
+                    return responses[lang];
+                }
+            },
+            {
+                name: "Enya", emoji: "🧑‍🚀",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "이제는 묻지 않아도 돼요. 당신이 꺼낸 이야기 자체가 이미 그 시간을 초월했어요.",
+                        en: "You don't need to be asked anymore. The story you've brought out has already transcended that time.",
+                        pt: "Você não precisa mais ser questionado. A história que você trouxe já transcendeu aquele tempo."
+                    };
+                    return responses[lang];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en';
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        let awaitingSecondResponse = false;
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            document.getElementById('logoSubtitle').textContent = translations[lang].logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = translations[lang].portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = translations[lang].portalSubtitle;
+            document.getElementById('lightTitle').textContent = translations[lang].lightTitle;
+            document.getElementById('navigationTitle').textContent = translations[lang].navigationTitle;
+            document.getElementById('nextPortalBtn').textContent = translations[lang].nextPortalBtn;
+            document.getElementById('stayPortalBtn').textContent = translations[lang].stayPortalBtn;
+            document.getElementById('userTextarea').placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || currentLanguage === lang) return;
+            
+            currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        function resetJourney() {
+            clearAllTypingEffects();
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'followUpSection', 'userInputSection',
+                'userReactionsSection', 'lightMessageSection', 'navigationSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('followUpQuestion').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('navigationMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            userResponse = '';
+            currentTypingElement = null;
+            awaitingSecondResponse = false;
+        }
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('nextPortalBtn').addEventListener('click', function() {
+                localStorage.setItem('temarix_v4_portal20_complete', 'true');
+                localStorage.setItem('temarix_v4_current_portal', '21');
+                
+                const nextMessage = currentLanguage === 'ko' ? 
+                    'Portal 21: 내가 아닌 척했던 나로 이동합니다.' :
+                    currentLanguage === 'en' ? 
+                    'Moving to Portal 21: The Me Who Pretended Not To Be Me.' :
+                    'Indo para Portal 21: O Eu Que Fingiu Não Ser Eu.';
+                alert(nextMessage);
+            });
+            
+            document.getElementById('stayPortalBtn').addEventListener('click', function() {
+                const stayMessage = currentLanguage === 'ko' ? 
+                    '이 이야기들과 더 머물며 깊이 성찰하시겠습니까?' :
+                    currentLanguage === 'en' ? 
+                    'Do you want to stay longer with these stories for deeper reflection?' :
+                    'Deseja ficar mais tempo com essas histórias para reflexão mais profunda?';
+                
+                if (confirm(stayMessage)) {
+                    resetJourney();
+                    setTimeout(() => {
+                        startPortalSequence();
+                    }, 1000);
+                }
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            
+            console.log('Processing user input:', inputText);
+            localStorage.setItem('temarix_v4_portal20_response', JSON.stringify({
+                portal: "v4-20",
+                resposta: inputText,
+                step: awaitingSecondResponse ? "second" : "first",
+                data: new Date().toISOString(),
+                idioma: currentLanguage
+            }));
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                if (!awaitingSecondResponse) {
+                    showUserReactions(inputText);
+                } else {
+                    showSecondUserReactions(inputText);
+                }
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFollowUpQuestion();
+            }, 2000);
+        }
+        
+        async function showFollowUpQuestion() {
+            const followUpSection = document.getElementById('followUpSection');
+            const followUpQuestionEl = document.getElementById('followUpQuestion');
+            
+            followUpSection.classList.add('show');
+            
+            await typewriterEffect(followUpQuestionEl, translations[currentLanguage].followUpQuestion, 50);
+            
+            setTimeout(() => {
+                awaitingSecondResponse = true;
+                enableUserInput();
+            }, 1500);
+        }
+        
+        async function showSecondUserReactions(userInput) {
+            const secondResponseCharacters = [
+                {
+                    name: "Noah", emoji: "🧑‍🦱",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "그 문장은 끝이 아니라 시작이에요. 이제 당신은 새로운 이야기를 쓸 수 있어요.",
+                            en: "That sentence isn't an ending but a beginning. Now you can write a new story.",
+                            pt: "Essa frase não é um fim, mas um começo. Agora você pode escrever uma nova história."
+                        };
+                        return responses[lang];
+                    }
+                },
+                {
+                    name: "Kael", emoji: "🧙",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "미완의 감정을 완성된 기억으로 바꾸는 건, 과거를 치유하는 마법이에요.",
+                            en: "Transforming incomplete emotions into complete memories is magic that heals the past.",
+                            pt: "Transformar emoções incompletas em memórias completas é mágica que cura o passado."
+                        };
+                        return responses[lang];
+                    }
+                },
+                {
+                    name: "Mira", emoji: "🧑‍🎨",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "당신이 써내려간 그 마지막 문장이, 앞으로의 모든 페이지를 밝힐 거예요.",
+                            en: "That final sentence you wrote will illuminate all the pages to come.",
+                            pt: "Essa frase final que você escreveu iluminará todas as páginas por vir."
+                        };
+                        return responses[lang];
+                    }
+                }
+            ];
+            
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            for (let i = 0; i < secondResponseCharacters.length; i++) {
+                const char = secondResponseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < secondResponseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showNavigationSection();
+            }, 2000);
+        }
+        
+        async function showNavigationSection() {
+            const navigationSection = document.getElementById('navigationSection');
+            const navigationMessage = document.getElementById('navigationMessage');
+            
+            navigationSection.classList.add('show');
+            
+            const messageText = translations[currentLanguage].navigationMessage;
+            await typewriterEffect(navigationMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(navigationSection);
+            }, 500);
+        }
+        
+        function initializeTemarix() {
+            console.log('Temarix V4 Portal 20 initialized');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            await typewriterEffect(introElement, translations[currentLanguage].portalIntro, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 2000);
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V4 Portal 20 DOM loaded');
+            
+            currentLanguage = getLanguageFromURL();
+            
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            updateStaticTranslations(currentLanguage);
+            updateLanguageButtons(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

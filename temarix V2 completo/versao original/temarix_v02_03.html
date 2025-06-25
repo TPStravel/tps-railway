@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 03: The Truth Within I Don't Want Discovered</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 03: The Truth Within I Don't Want Discovered</div>
+            <div class="portal-subtitle" id="portalSubtitle">Small rescue signals from hidden emotions</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 04</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Quietly share the truth you didn't want discovered here... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+        
+        // Firebase 모의 객체 (실제 구현에서는 Firebase SDK 사용)
+        const firebase = {
+            auth: () => ({
+                onAuthStateChanged: (callback) => {
+                    // 모의 인증 상태 체크 (메모리 기반)
+                    setTimeout(() => {
+                        callback(memoryStorage.mockUser);
+                    }, 100);
+                }
+            })
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 03: 들키고 싶지 않은 내 안의 진심",
+                portalSubtitle: "숨겨둔 감정이 보내는 작은 구조 신호",
+                portalIntro: "당신은 가끔, 어떤 감정을 보여줄 수 없어서\n아예 느끼는 것조차 멈춰버린 적이 있었죠.\n\n너무 진하고, 너무 부끄럽고,\n혹시라도 들켜버리면 버림받을 것 같아서…\n그 감정은 몸속 깊이 숨겨져 버렸습니다.\n\n하지만 감정은 숨겨도\n결국 작은 떨림으로 돌아옵니다.\n그 진심이 아직도 당신 안에서 살아 있다면\n그건 감정을 꾹 누르고 살았던 자신에게 보내는 작은 구조 신호일지도 모릅니다.",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "당신이 가장 숨기고 싶었던 감정 속에,\n진짜 당신이 조용히 숨 쉬고 있습니다.\n들켜도 괜찮아요.\n그건 당신의 가장 아름다운 약함입니다.",
+                portalQuestion: "지금 당신이 들키고 싶지 않은 감정은 무엇인가요?\n그 감정은, 누구 앞에서 처음 숨기게 되었나요?\n\n그 감정을 숨기고 살면서\n당신은 무엇을 지키려 했던 건가요?",
+                continueText: "숨겨둔 진심과 마주한 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 04로 계속하시겠습니까?",
+                continueNo: "여정을 일시정지하시겠습니까?",
+                inputPlaceholder: "들키고 싶지 않았던 진심을 여기에 조용히 털어놓아 보세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "진심은 수치가 아닙니다.\n그것은 당신이 아직 투명해지고 싶은 존재라는 증거예요.",
+                charCris: "하! 들킬까 봐 감정 숨기던 시절 있었죠~\n근데 웃긴 게 뭔지 알아요?\n그 감정… 다 들통났었어. 다만 아무도 말 안 한 거지. 😉",
+                charZafirah: "그 감정은 오랜 시간,\n당신이 스스로를 지키기 위해 숨겨둔 것이었겠죠.\n이제는… 보여도 괜찮을 때가 왔어요.",
+                charRami: "진심은 늘 흔들리면서 가까워집니다.\n당신이 지금 떨리고 있다면,\n그건 감정이 다시 현실이 되려는 증거입니다.",
+                charSamir: "(그는 당신의 가슴에 손을 올리고, 말없이 눈을 감는다.\n그 순간, 마음속의 떨림이 '들려지는 느낌'이 들 것이다.)",
+                charLayla: "숨기고 싶은 진심이 있다면,\n그건 아직도 사랑받고 싶다는 증거예요.\n나는 그 감정조차 사랑할 수 있어요.",
+                charNabir: "그래서 그 감정 계속 숨겨왔지.\n왜냐면 너도 알잖아.\n그거 들키면 다 끝날 거 같았으니까.",
+                charAzhar: "꺼내. 그냥 지금 당장 드러내.\n언제까지 그 감정 안고 있으려고?\n진짜 미쳐버릴 때까지 참을 거야?"
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 03: The Truth Within I Don't Want Discovered",
+                portalSubtitle: "Small rescue signals from hidden emotions",
+                portalIntro: "Sometimes you've stopped yourself from feeling\nbecause you couldn't show certain emotions.\n\nToo intense, too shameful,\nfearing that if discovered, you'd be abandoned…\nThose feelings were buried deep within.\n\nBut emotions, even when hidden,\neventually return as small tremors.\nIf that truth still lives within you,\nit might be a small rescue signal sent to yourself\nwho has been suppressing emotions all along.",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Within the emotion you most wanted to hide,\nyour true self quietly breathes.\nIt's okay to be discovered.\nThat is your most beautiful vulnerability.",
+                portalQuestion: "What emotion do you not want to be discovered right now?\nIn front of whom did you first start hiding that emotion?\n\nWhat were you trying to protect\nby living while hiding that emotion?",
+                continueText: "Will you continue this journey of facing your hidden truths?",
+                continueYes: "Continue to Portal 04?",
+                continueNo: "Pause the journey?",
+                inputPlaceholder: "Quietly share the truth you didn't want discovered here... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "Sincerity is not shame.\nIt's proof that you're still a being who wants to become transparent.",
+                charCris: "Ha! There was a time when you hid emotions afraid of being caught~\nBut you know what's funny?\nThat emotion… everyone knew. They just didn't say anything. 😉",
+                charZafirah: "That emotion was something you hid\nto protect yourself for a long time.\nNow… it's time when it's okay to show it.",
+                charRami: "Sincerity always gets closer while trembling.\nIf you're trembling now,\nthat's proof that emotion is trying to become real again.",
+                charSamir: "(He places his hand on your chest and closes his eyes silently.\nAt that moment, you'll feel the tremor in your heart being 'heard.')",
+                charLayla: "If there's a truth you want to hide,\nthat's proof you still want to be loved.\nI can love even that emotion.",
+                charNabir: "So you've been hiding that emotion all along.\nBecause you know too.\nYou felt like everything would end if it was discovered.",
+                charAzhar: "Bring it out. Just reveal it right now.\nHow long are you going to carry that emotion?\nAre you going to endure until you really go crazy?"
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 03: A Verdade Dentro de Mim Que Não Quero Que Seja Descoberta",
+                portalSubtitle: "Pequenos sinais de resgate de emoções escondidas",
+                portalIntro: "Às vezes você se impediu de sentir\nporque não conseguia mostrar certas emoções.\n\nMuito intensas, muito vergonhosas,\ntemendo que se descobertas, você seria abandonado…\nEsses sentimentos foram enterrados profundamente.\n\nMas as emoções, mesmo quando escondidas,\neventualmente retornam como pequenos tremores.\nSe essa verdade ainda vive dentro de você,\npode ser um pequeno sinal de resgate enviado para si mesmo\nque tem suprimido emoções o tempo todo.",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Dentro da emoção que você mais queria esconder,\nseu verdadeiro eu respira silenciosamente.\nTudo bem ser descoberto.\nEssa é sua vulnerabilidade mais bonita.",
+                portalQuestion: "Que emoção você não quer que seja descoberta agora?\nNa frente de quem você começou a esconder essa emoção primeiro?\n\nO que você estava tentando proteger\nvivendo enquanto escondia essa emoção?",
+                continueText: "Você continuará esta jornada de enfrentar suas verdades ocultas?",
+                continueYes: "Continuar para o Portal 04?",
+                continueNo: "Pausar a jornada?",
+                inputPlaceholder: "Compartilhe silenciosamente a verdade que você não queria que fosse descoberta aqui... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "Sinceridade não é vergonha.\nÉ prova de que você ainda é um ser que quer se tornar transparente.",
+                charCris: "Ha! Houve uma época em que você escondeu emoções com medo de ser pego~\nMas sabe o que é engraçado?\nEssa emoção… todo mundo sabia. Só não disseram nada. 😉",
+                charZafirah: "Essa emoção era algo que você escondeu\npara se proteger por muito tempo.\nAgora… é hora quando está tudo bem mostrá-la.",
+                charRami: "A sinceridade sempre se aproxima tremendo.\nSe você está tremendo agora,\nessa é a prova de que a emoção está tentando se tornar real novamente.",
+                charSamir: "(Ele coloca a mão no seu peito e fecha os olhos silenciosamente.\nNaquele momento, você sentirá o tremor no seu coração sendo 'ouvido.')",
+                charLayla: "Se há uma verdade que você quer esconder,\nessa é a prova de que você ainda quer ser amado.\nEu posso amar até mesmo essa emoção.",
+                charNabir: "Então você tem escondido essa emoção o tempo todo.\nPorque você sabe também.\nVocê sentiu que tudo acabaria se fosse descoberto.",
+                charAzhar: "Traga para fora. Apenas revele agora mesmo.\nPor quanto tempo você vai carregar essa emoção?\nVai suportar até realmente enlouquecer?"
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑
+            const emotionKeywords = {
+                shame: ['부끄', '창피', '수치', '민망', '들킬까', '숨기', 'shame', 'embarrass', 'hide', 'secret', 'vergonha', 'esconder'],
+                fear: ['무서', '두려', '겁나', '걱정', '불안', '떨려', 'fear', 'scare', 'afraid', 'worry', 'nervous', 'medo', 'preocup'],
+                love: ['사랑', '좋아', '마음', '감정', '애정', '소중', 'love', 'like', 'care', 'feelings', 'heart', 'amor', 'gosto', 'coração'],
+                sadness: ['슬프', '울고', '눈물', '우울', '암울', '절망', '상실', '잃', 'sad', 'cry', 'tear', 'depress', 'lost', 'triste', 'choro'],
+                anger: ['화가', '분노', '짜증', '빡쳐', '열받', '억울', '욱하', 'angry', 'mad', 'furious', 'rage', 'irritat', 'raiva', 'irritad'],
+                loneliness: ['외로', '혼자', '고립', '소외', '버림', '떠나', '이별', 'lonely', 'alone', 'isolated', 'abandon', 'left', 'solidão', 'sozinho'],
+                vulnerability: ['약하', '연약', '무력', '의존', '도움', 'weak', 'vulnerable', 'helpless', 'dependent', 'fraco', 'vulnerável'],
+                jealousy: ['질투', '시기', '부러', '샘나', 'jealous', 'envy', 'envious', 'ciúme', 'inveja'],
+                guilt: ['죄책감', '미안', '죄송', '잘못', 'guilt', 'sorry', 'wrong', 'fault', 'culpa', 'desculpa'],
+                inadequacy: ['부족', '모자라', '안 되', '못해', '실패', 'inadequate', 'not enough', 'fail', 'insufficient', 'inadequado', 'falha']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (개선된 버전)
+        const responseCharacters = [
+            {
+                name: "Guardian", emoji: "🛡️",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            shame: "그 부끄러움은 당신을 지키려는 마음에서 나온 거예요. 숨기고 싶었던 건 그만큼 소중했기 때문이죠. 지금은 그 감정을 지키면서도 조용히 꺼내볼 수 있는 안전한 공간이 있어요.",
+                            fear: "두려웠던 마음, 이해해요. 들키면 모든 게 무너질 것 같았죠. 하지만 진짜 당신을 아는 사람이라면, 그 감정까지도 당신의 일부로 받아들일 거예요. 천천히, 안전하게 꺼내봐도 괜찮아요.",
+                            love: "사랑을 숨겨야 했던 마음... 그 사랑이 너무 소중해서 상처받을까 봐 조심스러웠던 거죠. 하지만 숨겨진 사랑도 여전히 아름다운 사랑이에요. 그 마음을 지켜온 당신이 대단해요.",
+                            sadness: "슬픔을 숨기며 혼자 견뎌왔구나요. 울면 안 될 것 같아서, 약해 보일까 봐서... 하지만 슬픔도 당신의 감정이고, 그걸 느끼는 건 자연스러운 일이에요. 이제는 그 눈물을 흘려도 괜찮아요.",
+                            anger: "분노를 드러내면 나쁜 사람이 될까 봐 숨겨왔나요? 하지만 화를 낸다는 건 잘못된 걸 잘못됐다고 느끼는 정의감이기도 해요. 그 감정도 당신의 소중한 목소리예요.",
+                            loneliness: "외로움을 혼자 삼켜왔구나요. 누구에게도 말할 수 없었던 그 감정... 하지만 외로움을 느끼는 건 연결되고 싶다는 마음의 표현이에요. 이제는 그 마음을 나눠도 괜찮아요.",
+                            vulnerability: "약함을 보이기 싫어서 숨겨왔던 마음... 하지만 약함도 인간다운 모습이에요. 완벽하지 않아도, 때로는 의지하고 싶어도 괜찮아요. 그런 당신도 충분히 사랑받을 자격이 있어요.",
+                            jealousy: "질투나 시기를 느끼는 자신이 못났다고 생각했나요? 하지만 그 감정 속에는 '나도 그런 걸 갖고 싶다', '나도 인정받고 싶다'는 간절함이 있어요. 그 마음을 부정하지 말아요.",
+                            guilt: "죄책감에 시달리며 자신을 숨겨왔구나요. 하지만 죄책감을 느낀다는 건 양심이 있다는 뜻이에요. 완벽하지 않아도 괜찮아요. 실수도 성장의 일부예요.",
+                            inadequacy: "부족한 자신을 들키고 싶지 않았던 마음... 하지만 부족함을 인정하는 것도 용기예요. 모든 걸 잘할 필요는 없어요. 있는 그대로의 당신도 충분해요.",
+                            general: "숨기고 싶었던 그 모든 감정들이 사실은 당신을 지키려는 마음에서 나온 거예요. 이제는 그 감정들을 안전하게 꺼내볼 수 있는 공간이 있어요. 천천히, 당신만의 속도로 괜찮아요."
+                        },
+                        en: {
+                            shame: "That shame came from a heart trying to protect you. You wanted to hide it because it was so precious. Now there's a safe space where you can quietly bring out that emotion while still protecting it.",
+                            fear: "I understand that fearful heart. You felt like everything would collapse if discovered. But someone who truly knows you would accept even that emotion as part of you. It's okay to bring it out slowly and safely.",
+                            love: "The heart that had to hide love... You were careful because that love was so precious you feared it might get hurt. But hidden love is still beautiful love. You're amazing for protecting that heart.",
+                            sadness: "You've endured hiding sadness alone. Feeling like you shouldn't cry, afraid of appearing weak... But sadness is your emotion too, and feeling it is natural. It's okay to shed those tears now.",
+                            anger: "Did you hide anger afraid of becoming a bad person? But feeling angry is also a sense of justice that feels wrong is wrong. That emotion is also your precious voice.",
+                            loneliness: "You've swallowed loneliness alone. That emotion you couldn't tell anyone... But feeling loneliness is the heart's expression of wanting connection. It's okay to share that feeling now.",
+                            vulnerability: "The heart that hid weakness because you didn't want to show it... But weakness is also a human aspect. It's okay not to be perfect, to sometimes want to lean on others. You deserve love even like that.",
+                            jealousy: "Did you think you were pathetic for feeling jealousy or envy? But within that emotion is the desperation of 'I want to have that too', 'I want to be acknowledged too'. Don't deny that feeling.",
+                            guilt: "You've been hiding yourself while suffering from guilt. But feeling guilt means you have a conscience. It's okay not to be perfect. Mistakes are also part of growth.",
+                            inadequacy: "The heart that didn't want your inadequacy discovered... But acknowledging inadequacy is also courage. You don't need to be good at everything. You as you are is enough.",
+                            general: "All those emotions you wanted to hide actually came from a heart trying to protect you. Now there's a safe space where you can safely bring out those emotions. Slowly, at your own pace, it's okay."
+                        },
+                        pt: {
+                            shame: "Essa vergonha veio de um coração tentando protegê-lo. Você queria esconder porque era tão precioso. Agora há um espaço seguro onde você pode silenciosamente trazer essa emoção enquanto ainda a protege.",
+                            fear: "Entendo esse coração temeroso. Você sentiu que tudo desabaria se fosse descoberto. Mas alguém que realmente o conhece aceitaria até mesmo essa emoção como parte de você. Está tudo bem trazê-la para fora devagar e com segurança.",
+                            love: "O coração que teve que esconder o amor... Você foi cuidadoso porque esse amor era tão precioso que temia que pudesse se machucar. Mas amor escondido ainda é amor bonito. Você é incrível por proteger esse coração.",
+                            sadness: "Você suportou esconder a tristeza sozinho. Sentindo que não deveria chorar, com medo de parecer fraco... Mas tristeza também é sua emoção, e senti-la é natural. Está tudo bem derramar essas lágrimas agora.",
+                            anger: "Você escondeu a raiva com medo de se tornar uma pessoa má? Mas sentir raiva também é um senso de justiça que sente que errado é errado. Essa emoção também é sua voz preciosa.",
+                            loneliness: "Você engoliu a solidão sozinho. Essa emoção que você não conseguia contar para ninguém... Mas sentir solidão é a expressão do coração de querer conexão. Está tudo bem compartilhar esse sentimento agora.",
+                            vulnerability: "O coração que escondeu fraqueza porque você não queria mostrá-la... Mas fraqueza também é um aspecto humano. Está tudo bem não ser perfeito, às vezes querer se apoiar nos outros. Você merece amor mesmo assim.",
+                            jealousy: "Você achou que era patético por sentir ciúme ou inveja? Mas dentro dessa emoção está o desespero de 'eu também quero ter isso', 'eu também quero ser reconhecido'. Não negue esse sentimento.",
+                            guilt: "Você tem se escondido enquanto sofre de culpa. Mas sentir culpa significa que você tem consciência. Está tudo bem não ser perfeito. Erros também são parte do crescimento.",
+                            inadequacy: "O coração que não queria que sua inadequação fosse descoberta... Mas reconhecer inadequação também é coragem. Você não precisa ser bom em tudo. Você como é já é suficiente.",
+                            general: "Todas essas emoções que você queria esconder na verdade vieram de um coração tentando protegê-lo. Agora há um espaço seguro onde você pode com segurança trazer essas emoções. Devagar, no seu próprio ritmo, está tudo bem."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Embrace", emoji: "🤗",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            shame: "부끄러워했던 그 마음을 꼭 안아주고 싶어요. 숨기고 싶었던 건 그만큼 진심이었다는 뜻이잖아요. 이제는 그 진심이 부끄러워하지 않아도 되는 곳에 있어요. 여기서는 모든 감정이 환영받아요.",
+                            fear: "두려웠죠. 진짜 자신이 들키면 사랑받지 못할까 봐... 하지만 진짜 사랑은 모든 모습을 다 안아주는 거예요. 숨겨왔던 그 부분까지도 사랑받을 수 있어요. 저는 지금의 당신을 전부 안아줄 수 있어요.",
+                            love: "사랑을 숨겨야 했던 그 시간들... 얼마나 외로웠을까요. 하지만 그 사랑은 숨겨져 있어도 여전히 아름다웠어요. 이제는 그 사랑을 꺼내서 빛나게 해줘도 괜찮아요.",
+                            sadness: "혼자 울었던 그 밤들, 누구에게도 말하지 못했던 슬픔... 이제는 그 눈물을 함께 나눠요. 슬픔도 당신의 소중한 일부예요. 울어도 괜찮고, 아파해도 괜찮아요.",
+                            anger: "화를 내면 안 될 것 같아서 꾹꾹 눌러왔던 그 감정... 하지만 분노도 당신의 목소리예요. 억울했던 마음, 이해받지 못했던 마음, 다 품어줄게요. 그 감정도 타당해요.",
+                            loneliness: "아무에게도 말할 수 없어서 더 외로웠죠. 하지만 이제는 혼자가 아니에요. 외로웠던 그 모든 순간들을 저와 함께 나눠봐요. 외로움도 이해받을 자격이 있어요.",
+                            vulnerability: "약한 모습을 보이고 싶지 않아서 혼자 버텨왔구나요. 하지만 약함도 아름다운 거예요. 완벽하지 않은 모습도, 때로는 무너지는 모습도 모두 당신이에요. 그 모든 걸 안아줄게요.",
+                            jealousy: "질투심에 자신이 초라해 보였나요? 하지만 그 마음 속에는 '나도 소중하게 여겨지고 싶다'는 간절함이 있어요. 그 마음도 충분히 이해할 만해요. 당신도 사랑받을 자격이 있어요.",
+                            guilt: "스스로를 탓하며 숨어왔던 시간들... 하지만 후회할 줄 아는 마음이 오히려 당신의 선함을 보여줘요. 완벽하지 않아도 괜찮아요. 실수한 당신도 사랑받을 수 있어요.",
+                            inadequacy: "부족한 자신이 들킬까봐 두려워했죠. 하지만 부족해도 괜찮아요. 모든 걸 잘할 필요 없어요. 지금 이대로의 당신도 충분히 소중해요. 그 부족함까지도 사랑스러워요.",
+                            general: "숨기고 싶었던 모든 그 감정들을 저는 다 안아줄 수 있어요. 부끄러워하지 마세요. 그 모든 감정이 당신을 더 인간답고 아름다운 존재로 만들어줘요. 이제는 숨지 말고 있는 그대로의 모습을 보여주세요."
+                        },
+                        en: {
+                            shame: "I want to hold that heart that felt ashamed. Wanting to hide it means it was that sincere. Now that sincerity is in a place where it doesn't need to be ashamed. Here, all emotions are welcomed.",
+                            fear: "You were afraid. Afraid you wouldn't be loved if your true self was discovered... But real love embraces all aspects. Even that hidden part can be loved. I can embrace all of you as you are now.",
+                            love: "Those times when you had to hide love... How lonely it must have been. But that love was still beautiful even while hidden. Now it's okay to bring out that love and let it shine.",
+                            sadness: "Those nights you cried alone, the sadness you couldn't tell anyone... Now let's share those tears together. Sadness is also your precious part. It's okay to cry, it's okay to hurt.",
+                            anger: "That emotion you kept pressing down feeling like you shouldn't get angry... But anger is also your voice. The wronged heart, the misunderstood heart, I'll embrace it all. That emotion is also valid.",
+                            loneliness: "It was even lonelier because you couldn't tell anyone. But now you're not alone. Share all those lonely moments with me. Loneliness also deserves to be understood.",
+                            vulnerability: "You've endured alone not wanting to show weakness. But weakness is also beautiful. The imperfect appearance, sometimes the collapsing appearance, it's all you. I'll embrace all of it.",
+                            jealousy: "Did you feel shabby because of jealousy? But within that heart is the desperation of 'I want to be cherished too'. That feeling is also understandable enough. You also deserve to be loved.",
+                            guilt: "Times when you hid while blaming yourself... But a heart that knows regret actually shows your goodness. It's okay not to be perfect. Even you who made mistakes can be loved.",
+                            inadequacy: "You were afraid your inadequacy would be discovered. But it's okay to be inadequate. You don't need to be good at everything. You as you are now are precious enough. Even that inadequacy is lovely.",
+                            general: "I can embrace all those emotions you wanted to hide. Don't be ashamed. All those emotions make you a more human and beautiful being. Now don't hide and show yourself as you are."
+                        },
+                        pt: {
+                            shame: "Quero abraçar esse coração que se sentiu envergonhado. Querer esconder significa que era tão sincero. Agora essa sinceridade está em um lugar onde não precisa se envergonhar. Aqui, todas as emoções são bem-vindas.",
+                            fear: "Você tinha medo. Medo de não ser amado se seu verdadeiro eu fosse descoberto... Mas amor real abraça todos os aspectos. Até essa parte escondida pode ser amada. Eu posso abraçar tudo de você como é agora.",
+                            love: "Aqueles tempos quando você teve que esconder o amor... Quão solitário deve ter sido. Mas esse amor ainda era bonito mesmo enquanto escondido. Agora está tudo bem trazer esse amor para fora e deixá-lo brilhar.",
+                            sadness: "Aquelas noites que você chorou sozinho, a tristeza que você não conseguia contar para ninguém... Agora vamos compartilhar essas lágrimas juntos. Tristeza também é sua parte preciosa. Está tudo bem chorar, está tudo bem sofrer.",
+                            anger: "Essa emoção que você continuou reprimindo sentindo que não deveria ficar com raiva... Mas raiva também é sua voz. O coração injustiçado, o coração incompreendido, eu vou abraçar tudo. Essa emoção também é válida.",
+                            loneliness: "Foi ainda mais solitário porque você não conseguia contar para ninguém. Mas agora você não está sozinho. Compartilhe todos esses momentos solitários comigo. Solidão também merece ser compreendida.",
+                            vulnerability: "Você suportou sozinho não querendo mostrar fraqueza. Mas fraqueza também é bonita. A aparência imperfeita, às vezes a aparência em colapso, tudo é você. Eu vou abraçar tudo isso.",
+                            jealousy: "Você se sentiu miserável por causa do ciúme? Mas dentro desse coração está o desespero de 'eu também quero ser querido'. Esse sentimento também é compreensível o suficiente. Você também merece ser amado.",
+                            guilt: "Tempos quando você se escondeu enquanto se culpava... Mas um coração que conhece arrependimento na verdade mostra sua bondade. Está tudo bem não ser perfeito. Até você que cometeu erros pode ser amado.",
+                            inadequacy: "Você tinha medo de que sua inadequação fosse descoberta. Mas está tudo bem ser inadequado. Você não precisa ser bom em tudo. Você como é agora é precioso o suficiente. Até essa inadequação é adorável.",
+                            general: "Eu posso abraçar todas essas emoções que você queria esconder. Não se envergonhe. Todas essas emoções fazem de você um ser mais humano e bonito. Agora não se esconda e se mostre como você é."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Light", emoji: "💫",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            shame: "부끄러움 속에서도 당신은 빛나고 있었어요. 숨기려 했던 그 마음이 사실은 가장 순수한 빛이었을지도 몰라요. 어둠 속에 숨겨진 별이 가장 아름답게 빛나듯이, 당신의 진심도 그래요.",
+                            fear: "두려움도 하나의 빛이에요. 소중한 것을 잃을까 봐 두려워하는 마음, 그 안에는 사랑이 있어요. 어둠이 있어야 빛의 소중함을 알 수 있듯이, 두려움이 있었기에 용기도 더 빛날 수 있어요.",
+                            love: "숨겨진 사랑은 가장 순수한 빛이에요. 아무도 모르게 사랑했던 그 시간들, 그 마음들이 당신을 더욱 빛나게 만들었어요. 표현되지 않은 사랑도 우주 어딘가에서는 별빛이 되어 있을 거예요.",
+                            sadness: "슬픔도 빛의 한 종류예요. 깊은 슬픔을 경험한 사람만이 진정한 기쁨의 빛을 알 수 있어요. 당신이 혼자 삼켰던 눈물들이 지금의 당신을 더욱 깊고 아름다운 빛으로 만들어줬어요.",
+                            anger: "분노도 정의의 빛이에요. 잘못된 것에 화를 낼 줄 아는 마음, 그것은 옳은 것을 향한 빛의 방향이에요. 억눌렀던 분노를 이제는 건설적인 빛으로 바꿔볼 수 있어요.",
+                            loneliness: "외로움 속에서 당신은 자신만의 빛을 키웠어요. 아무도 없는 어둠 속에서도 꺼지지 않았던 당신의 내면의 빛, 그것이 지금 당신을 여기까지 이끌어왔어요.",
+                            vulnerability: "약함도 빛이에요. 완벽하지 않기 때문에 더욱 인간적이고 따뜻한 빛을 낼 수 있어요. 부서져도 다시 일어서는 모습, 그것이 가장 강한 빛이에요.",
+                            jealousy: "질투심도 성장의 빛이에요. 다른 사람을 부러워했다는 건 더 나은 자신이 되고 싶다는 빛의 신호예요. 그 에너지를 자신을 발전시키는 빛으로 바꿔보세요.",
+                            guilt: "후회와 죄책감도 성찰의 빛이에요. 자신을 돌아볼 줄 아는 마음, 더 나아지려는 의지, 그것들이 당신을 더욱 밝은 빛으로 만들어가고 있어요.",
+                            inadequacy: "부족함을 인정하는 것도 겸손의 빛이에요. 완벽하지 않기 때문에 계속 배우고 성장할 수 있어요. 그 겸손한 마음이 가장 아름다운 빛이에요.",
+                            general: "숨기고 싶었던 모든 감정들이 사실은 당신 안의 다양한 빛들이었어요. 어둠이 있어야 빛이 더욱 빛나듯이, 그 모든 감정들이 모여서 지금의 당신이라는 아름다운 빛을 만들어냈어요."
+                        },
+                        en: {
+                            shame: "Even in shame, you were shining. That heart you tried to hide might have been the purest light. Just as a star hidden in darkness shines most beautifully, so does your sincerity.",
+                            fear: "Fear is also a kind of light. The heart afraid of losing something precious has love within it. Just as we know the preciousness of light because of darkness, courage can shine brighter because of fear.",
+                            love: "Hidden love is the purest light. Those times you loved secretly, those hearts made you shine even brighter. Unexpressed love must be starlight somewhere in the universe.",
+                            sadness: "Sadness is also a kind of light. Only those who've experienced deep sadness can know the light of true joy. The tears you swallowed alone made you into a deeper and more beautiful light.",
+                            anger: "Anger is also the light of justice. A heart that knows how to get angry at wrong things is the direction of light toward what's right. You can now transform suppressed anger into constructive light.",
+                            loneliness: "In loneliness, you grew your own light. Your inner light that didn't go out even in darkness with no one around - that's what led you here.",
+                            vulnerability: "Weakness is also light. Because you're not perfect, you can emit a more human and warm light. Rising again even after breaking - that's the strongest light.",
+                            jealousy: "Jealousy is also the light of growth. Being envious of others is a light signal that you want to become a better self. Try turning that energy into light that develops yourself.",
+                            guilt: "Regret and guilt are also lights of reflection. A heart that knows how to look back on itself, the will to become better - these are making you into brighter light.",
+                            inadequacy: "Acknowledging inadequacy is also the light of humility. Because you're not perfect, you can continue learning and growing. That humble heart is the most beautiful light.",
+                            general: "All the emotions you wanted to hide were actually various lights within you. Just as light shines brighter with darkness, all those emotions came together to create the beautiful light that is you now."
+                        },
+                        pt: {
+                            shame: "Mesmo na vergonha, você estava brilhando. Esse coração que você tentou esconder pode ter sido a luz mais pura. Assim como uma estrela escondida na escuridão brilha mais belamente, assim é sua sinceridade.",
+                            fear: "Medo também é um tipo de luz. O coração com medo de perder algo precioso tem amor dentro dele. Assim como conhecemos a preciosidade da luz por causa da escuridão, a coragem pode brilhar mais por causa do medo.",
+                            love: "Amor escondido é a luz mais pura. Aqueles tempos que você amou secretamente, esses corações fizeram você brilhar ainda mais. Amor não expresso deve ser luz estelar em algum lugar do universo.",
+                            sadness: "Tristeza também é um tipo de luz. Apenas aqueles que experimentaram tristeza profunda podem conhecer a luz da verdadeira alegria. As lágrimas que você engoliu sozinho fizeram de você uma luz mais profunda e bonita.",
+                            anger: "Raiva também é a luz da justiça. Um coração que sabe ficar com raiva das coisas erradas é a direção da luz em direção ao que é certo. Você pode agora transformar raiva suprimida em luz construtiva.",
+                            loneliness: "Na solidão, você cultivou sua própria luz. Sua luz interior que não se apagou mesmo na escuridão sem ninguém por perto - isso é o que te trouxe até aqui.",
+                            vulnerability: "Fraqueza também é luz. Porque você não é perfeito, você pode emitir uma luz mais humana e calorosa. Levantar-se novamente mesmo depois de quebrar - essa é a luz mais forte.",
+                            jealousy: "Ciúme também é a luz do crescimento. Ter inveja dos outros é um sinal de luz de que você quer se tornar um eu melhor. Tente transformar essa energia em luz que desenvolve você mesmo.",
+                            guilt: "Arrependimento e culpa também são luzes de reflexão. Um coração que sabe olhar para trás para si mesmo, a vontade de se tornar melhor - estes estão fazendo de você uma luz mais brilhante.",
+                            inadequacy: "Reconhecer inadequação também é a luz da humildade. Porque você não é perfeito, você pode continuar aprendendo e crescendo. Esse coração humilde é a luz mais bonita.",
+                            general: "Todas as emoções que você queria esconder eram na verdade várias luzes dentro de você. Assim como a luz brilha mais com a escuridão, todas essas emoções se juntaram para criar a bela luz que é você agora."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 03 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 04가 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 04 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 04 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 03 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>
+                

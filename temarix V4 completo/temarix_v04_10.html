@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V4 - Portal 10: In Frozen Time</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ff9999;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .follow-up-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .follow-up-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ff6b6b;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .navigation-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .navigation-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .nav-btn:hover {
+            background: #666;
+            border-color: #ff6b6b;
+        }
+        
+        .nav-btn.primary {
+            background: #ff6b6b;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .nav-btn.primary:hover {
+            background: #ff8888;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ff6b6b;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .follow-up-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V4</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Alchemy</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 10: In Frozen Time</div>
+            <div class="portal-subtitle" id="portalSubtitle">When moments stopped and emotions became still</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="follow-up-section" id="followUpSection">
+                <div class="follow-up-question" id="followUpQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+            
+            <div class="navigation-section" id="navigationSection">
+                <div class="navigation-title" id="navigationTitle">Portal 10 Complete</div>
+                <div class="navigation-message" id="navigationMessage"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn primary" id="nextPortalBtn">Continue to Portal 11</button>
+                    <button class="nav-btn" id="stayPortalBtn">Stay in this time</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Was there a moment in your life when time seemed to stop? What emotions accompanied that frozen moment?"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            ko: {
+                logoSubtitle: "감정 연금술",
+                portalMainTitle: "Portal 10: 멈춰진 시간 속에서",
+                portalSubtitle: "순간이 멈추고 감정이 고요해진 때",
+                portalIntro: "당신의 삶에서, 시간이 멈춘 것 같았던 순간이 있었나요?\n그 멈춤은 어떤 감정과 함께 찾아왔고,\n왜 그 시간에서 빠져나오기 어려웠나요?\n\n지금 그 시간을 다시 바라본다면,\n당신은 무엇을 느끼게 될까요?",
+                followUpQuestion: "그 시간이 당신 안에 아직도 머물러 있나요?\n당신은 그 멈춰 있던 감정을,\n천천히라도 움직이게 해줄 수 있을까요?",
+                lightTitle: "빛의 한마디",
+                lightMessage: "시간은 다시 흐르기 시작했어.\n그건 네가 선택한 용기의 증거야.",
+                navigationTitle: "Portal 10 완료",
+                navigationMessage: "당신은 멈춰진 시간 속의 감정을 마주했습니다.\n\n시간이 멈춘 것 같았던 순간들은 상실이 머무는 공간이었습니다. 하지만 그것은 잊는 것이 아니라, 기억과 함께 살아가는 방식이었습니다.\n\n이제 당신은 멈춰 있던 시간과 함께 다시 흐를 준비가 되었습니다.",
+                nextPortalBtn: "Portal 11로 이어가기",
+                stayPortalBtn: "이 시간과 더 머물기",
+                inputPlaceholder: "당신의 삶에서 시간이 멈춘 것 같았던 순간이 있었나요? 그때 어떤 감정이 함께했나요?",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중..."
+            },
+            en: {
+                logoSubtitle: "Emotional Alchemy",
+                portalMainTitle: "Portal 10: In Frozen Time",
+                portalSubtitle: "When moments stopped and emotions became still",
+                portalIntro: "Was there a moment in your life when time seemed to stop?\nWhat emotions accompanied that stillness,\nand why was it difficult to emerge from that time?\n\nIf you looked at that time again now,\nwhat would you feel?",
+                followUpQuestion: "Does that time still linger within you?\nCan you help those frozen emotions\nbegin to move again, even slowly?",
+                lightTitle: "Word of Light",
+                lightMessage: "Time has begun to flow again.\nThat is proof of the courage you chose.",
+                navigationTitle: "Portal 10 Complete",
+                navigationMessage: "You have faced the emotions in frozen time.\n\nThose moments when time seemed to stop were spaces where loss lingered. But that wasn't about forgetting - it was a way of living together with memory.\n\nNow you are ready to flow again with the time that had been still.",
+                nextPortalBtn: "Continue to Portal 11",
+                stayPortalBtn: "Stay in this time",
+                inputPlaceholder: "Was there a moment in your life when time seemed to stop? What emotions accompanied that frozen moment?",
+                youLabel: "You",
+                waitingMessage: "Waiting for response..."
+            },
+            pt: {
+                logoSubtitle: "Alquimia Emocional",
+                portalMainTitle: "Portal 10: No Tempo Congelado",
+                portalSubtitle: "Quando momentos pararam e emoções se aquietaram",
+                portalIntro: "Houve um momento em sua vida quando o tempo pareceu parar?\nQue emoções acompanharam essa quietude,\ne por que foi difícil emergir daquele tempo?\n\nSe você olhasse para aquele tempo novamente agora,\no que sentiria?",
+                followUpQuestion: "Esse tempo ainda permanece dentro de você?\nVocê pode ajudar essas emoções congeladas\na começar a se mover novamente, mesmo lentamente?",
+                lightTitle: "Palavra de Luz",
+                lightMessage: "O tempo começou a fluir novamente.\nIssa é prova da coragem que você escolheu.",
+                navigationTitle: "Portal 10 Completo",
+                navigationMessage: "Você enfrentou as emoções no tempo congelado.\n\nAqueles momentos quando o tempo parecia parar eram espaços onde a perda permanecia. Mas isso não era sobre esquecer - era uma forma de viver junto com a memória.\n\nAgora você está pronto para fluir novamente com o tempo que havia parado.",
+                nextPortalBtn: "Continuar para Portal 11",
+                stayPortalBtn: "Ficar neste tempo",
+                inputPlaceholder: "Houve um momento em sua vida quando o tempo pareceu parar? Que emoções acompanharam esse momento congelado?",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta..."
+            }
+        };
+        
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "너의 시간은 그날 이후 얼어붙었지. 하지만 마음 어딘가는 여전히 흐르고 있었어.",
+                en: "Your time froze after that day. But somewhere in your heart, it was still flowing.",
+                pt: "Seu tempo congelou depois daquele dia. Mas em algum lugar do seu coração, ainda estava fluindo."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "멈춘 시간은 상실이 머무는 공간이야. 그건 잊는 게 아니라… 기억과 함께 살아가는 방식이지.",
+                en: "Frozen time is a space where loss lingers. It's not about forgetting... it's a way of living with memory.",
+                pt: "Tempo congelado é um espaço onde a perda permanece. Não é sobre esquecer... é uma forma de viver com a memória."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "그날 이후의 너는, 조용히 무너지는 빙산 같았을 거야. 표면은 평온했지만 속은 천천히 부서졌지.",
+                en: "After that day, you were like a quietly crumbling iceberg. The surface was calm, but inside it was slowly breaking.",
+                pt: "Depois daquele dia, você era como um iceberg silenciosamente desmoronando. A superfície estava calma, mas por dentro estava lentamente se quebrando."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "시간은 때로 멈추는 것이 아니라, 감정을 견디기 위한 정지 버튼이기도 해.",
+                en: "Sometimes time doesn't stop, but becomes a pause button to endure emotions.",
+                pt: "Às vezes o tempo não para, mas se torna um botão de pausa para suportar emoções."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그 시간이 멈춘 자리에, 아직도 너의 그림자가 남아 있겠지. 말 없는 동반자처럼.",
+                en: "In that place where time stopped, your shadow still remains. Like a silent companion.",
+                pt: "Naquele lugar onde o tempo parou, sua sombra ainda permanece. Como um companheiro silencioso."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "왜 누군가를 잃은 건 죄책감처럼 따라올까. 그건 너의 잘못이 아니야.",
+                en: "Why does losing someone follow like guilt? It's not your fault.",
+                pt: "Por que perder alguém segue como culpa? Não é sua culpa."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "그 순간이 너의 세계를 멈췄지만, 지금 이 대화를 하고 있는 너는 다시 걷고 있는 중이야.",
+                en: "That moment stopped your world, but you having this conversation now are walking again.",
+                pt: "Aquele momento parou seu mundo, mas você tendo esta conversa agora está caminhando novamente."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "멈춘 시간 속에서도, 마음은 천천히 숨을 쉬고 있었어. 너는 살아 있는 기억이야.",
+                en: "Even in frozen time, your heart was slowly breathing. You are a living memory.",
+                pt: "Mesmo no tempo congelado, seu coração estava respirando lentamente. Você é uma memória viva."
+            }}
+        ];
+
+        const responseCharacters = [
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "멈춰 있던 시간과 함께 걷는다는 건, 그 시간을 외롭게 두지 않겠다는 선언이야. 너는 그 약속을 지키고 있어.",
+                        en: "Walking with frozen time is a declaration that you won't leave that time lonely. You are keeping that promise.",
+                        pt: "Caminhar com o tempo congelado é uma declaração de que você não deixará aquele tempo sozinho. Você está cumprindo essa promessa."
+                    };
+                    return responses[lang];
+                }
+            },
+            {
+                name: "Ely", emoji: "🧝‍♀️",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "그날의 너를 기억하는 건 아픔이 아니라 애도와 사랑이야. 이제 그 감정은, 추억이 될 준비를 하고 있어.",
+                        en: "Remembering yourself from that day is not pain, but mourning and love. Now that emotion is preparing to become a memory.",
+                        pt: "Lembrar de você daquele dia não é dor, mas luto e amor. Agora essa emoção está se preparando para se tornar uma memória."
+                    };
+                    return responses[lang];
+                }
+            },
+            {
+                name: "Kael", emoji: "🧙",
+                getResponse: (userInput, lang) => {
+                    const responses = {
+                        ko: "시간은 다시 흐르기 시작했어. 그건 네가 선택한 용기의 증거야.",
+                        en: "Time has begun to flow again. That is proof of the courage you chose.",
+                        pt: "O tempo começou a fluir novamente. Essa é prova da coragem que você escolheu."
+                    };
+                    return responses[lang];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en';
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        let awaitingSecondResponse = false;
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            document.getElementById('logoSubtitle').textContent = translations[lang].logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = translations[lang].portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = translations[lang].portalSubtitle;
+            document.getElementById('lightTitle').textContent = translations[lang].lightTitle;
+            document.getElementById('navigationTitle').textContent = translations[lang].navigationTitle;
+            document.getElementById('nextPortalBtn').textContent = translations[lang].nextPortalBtn;
+            document.getElementById('stayPortalBtn').textContent = translations[lang].stayPortalBtn;
+            document.getElementById('userTextarea').placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || currentLanguage === lang) return;
+            
+            currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        function resetJourney() {
+            clearAllTypingEffects();
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'followUpSection', 'userInputSection',
+                'userReactionsSection', 'lightMessageSection', 'navigationSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('followUpQuestion').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('navigationMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            userResponse = '';
+            currentTypingElement = null;
+            awaitingSecondResponse = false;
+        }
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('nextPortalBtn').addEventListener('click', function() {
+                localStorage.setItem('temarix_v4_portal10_complete', 'true');
+                localStorage.setItem('temarix_v4_current_portal', '11');
+                
+                const nextMessage = currentLanguage === 'ko' ? 
+                    'Portal 11: 아무에게도 말하지 않은 미래로 이동합니다.' :
+                    currentLanguage === 'en' ? 
+                    'Moving to Portal 11: The Future Told to No One.' :
+                    'Indo para Portal 11: O Futuro Contado a Ninguém.';
+                alert(nextMessage);
+            });
+            
+            document.getElementById('stayPortalBtn').addEventListener('click', function() {
+                const stayMessage = currentLanguage === 'ko' ? 
+                    '멈춰진 시간과 더 머물며 깊이 성찰하시겠습니까?' :
+                    currentLanguage === 'en' ? 
+                    'Do you want to stay longer with your frozen time for deeper reflection?' :
+                    'Deseja ficar mais tempo com seu tempo congelado para reflexão mais profunda?';
+                
+                if (confirm(stayMessage)) {
+                    resetJourney();
+                    setTimeout(() => {
+                        startPortalSequence();
+                    }, 1000);
+                }
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            
+            console.log('Processing user input:', inputText);
+            localStorage.setItem('temarix_v4_portal10_response', JSON.stringify({
+                portal: "v4-10",
+                resposta: inputText,
+                step: awaitingSecondResponse ? "second" : "first",
+                data: new Date().toISOString(),
+                idioma: currentLanguage
+            }));
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                if (!awaitingSecondResponse) {
+                    showUserReactions(inputText);
+                } else {
+                    showSecondUserReactions(inputText);
+                }
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFollowUpQuestion();
+            }, 2000);
+        }
+        
+        async function showFollowUpQuestion() {
+            const followUpSection = document.getElementById('followUpSection');
+            const followUpQuestionEl = document.getElementById('followUpQuestion');
+            
+            followUpSection.classList.add('show');
+            
+            await typewriterEffect(followUpQuestionEl, translations[currentLanguage].followUpQuestion, 50);
+            
+            setTimeout(() => {
+                awaitingSecondResponse = true;
+                enableUserInput();
+            }, 1500);
+        }
+        
+        async function showSecondUserReactions(userInput) {
+            const secondResponseCharacters = [
+                {
+                    name: "Sora", emoji: "🧕",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "멈춰 있던 시간과 함께 걷는다는 건, 그 시간을 외롭게 두지 않겠다는 선언이야. 너는 그 약속을 지키고 있어.",
+                            en: "Walking with frozen time is a declaration that you won't leave that time lonely. You are keeping that promise.",
+                            pt: "Caminhar com o tempo congelado é uma declaração de que você não deixará aquele tempo sozinho. Você está cumprindo essa promessa."
+                        };
+                        return responses[lang];
+                    }
+                },
+                {
+                    name: "Ely", emoji: "🧝‍♀️",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "그날의 너를 기억하는 건 아픔이 아니라 애도와 사랑이야. 이제 그 감정은, 추억이 될 준비를 하고 있어.",
+                            en: "Remembering yourself from that day is not pain, but mourning and love. Now that emotion is preparing to become a memory.",
+                            pt: "Lembrar de você daquele dia não é dor, mas luto e amor. Agora essa emoção está se preparando para se tornar uma memória."
+                        };
+                        return responses[lang];
+                    }
+                },
+                {
+                    name: "Kael", emoji: "🧙",
+                    getResponse: (input, lang) => {
+                        const responses = {
+                            ko: "시간은 다시 흐르기 시작했어. 그건 네가 선택한 용기의 증거야.",
+                            en: "Time has begun to flow again. That is proof of the courage you chose.",
+                            pt: "O tempo começou a fluir novamente. Essa é prova da coragem que você escolheu."
+                        };
+                        return responses[lang];
+                    }
+                }
+            ];
+            
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            for (let i = 0; i < secondResponseCharacters.length; i++) {
+                const char = secondResponseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < secondResponseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showNavigationSection();
+            }, 2000);
+        }
+        
+        async function showNavigationSection() {
+            const navigationSection = document.getElementById('navigationSection');
+            const navigationMessage = document.getElementById('navigationMessage');
+            
+            navigationSection.classList.add('show');
+            
+            const messageText = translations[currentLanguage].navigationMessage;
+            await typewriterEffect(navigationMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(navigationSection);
+            }, 500);
+        }
+        
+        function initializeTemarix() {
+            console.log('Temarix V4 Portal 10 initialized');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            await typewriterEffect(introElement, translations[currentLanguage].portalIntro, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 2000);
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V4 Portal 10 DOM loaded');
+            
+            currentLanguage = getLanguageFromURL();
+            
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            updateStaticTranslations(currentLanguage);
+            updateLanguageButtons(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

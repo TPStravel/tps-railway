@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Language" content="ko,en,pt">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V1 - Portal 14</title>
+</head>
+<body>
+<!-- Temarix V1 - Portal 14: 진정한 나의 빛 -->
+<section class="portal portal-14" id="portal-14">
+  <!-- Temarix Logo - Fixed Left Top -->
+  <div class="temarix-logo">
+    <h1 class="logo-text">🌌 TEMARIX</h1>
+    <p class="slogan" data-i18n="common.slogan">당신 안에 숨은 이야기를 말 해 주세요</p>
+  </div>
+
+  <!-- Language Selector - Fixed Right Top -->
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="kr">KR</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="pt">PT</button>
+  </div>
+
+  <!-- Portal Header - Center Top -->
+  <div class="portal-header">
+    <h1 data-i18n="portal14.title">감정의 문지방 14</h1>
+    <h2 data-i18n="portal14.subtitle">진정한 나의 빛</h2>
+  </div>
+
+  <!-- Message Stream -->
+  <div class="message-stream" id="messageStream14">
+    <!-- Messages will be added here via JavaScript -->
+  </div>
+
+  <!-- User Input Area -->
+  <div class="input-area" id="inputArea14" style="display: none;">
+    <div class="input-container">
+      <textarea 
+        id="userInput14" 
+        rows="3" 
+        placeholder="이제 발견한 진정한 나의 모습과 빛에 대해 조용히 적어보세요..."
+        data-i18n-placeholder="portal14.input.placeholder"
+      ></textarea>
+      <button class="submit-btn" onclick="submitResponse(14)">
+        <span data-i18n="portal14.submit">✨ 나의 빛 인정하기</span>
+      </button>
+      <p class="input-hint" data-i18n="portal14.input.hint">Enter 키를 눌러도 전달할 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- Next Portal Navigation -->
+  <div class="next-portal-nav" id="nextPortalNav14" style="display: none;">
+    <div class="nav-buttons">
+      <button class="nav-btn yes-btn" onclick="goToNextPortal(15)" data-i18n="common.yes">예</button>
+      <button class="nav-btn no-btn" onclick="stayInPortal()" data-i18n="common.no">아니요</button>
+    </div>
+  </div>
+
+  <!-- Back to Main -->
+  <div class="back-to-main">
+    <button onclick="window.location.href='portal4.html'" data-i18n="common.back_to_main">
+      🏠 메인 포탈로 돌아가기
+    </button>
+  </div>
+</section>
+
+<style>
+/* Portal Base Styles */
+.portal {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1b4b 0%, #2d1b69 100%);
+  color: white;
+  padding: 80px 20px 20px 20px;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Logo Glow Animation */
+@keyframes glowCycle {
+  0%, 100% { text-shadow: 0 0 8px rgba(255,255,255,0.2); }
+  50% { text-shadow: 0 0 25px rgba(255,255,255,0.7); }
+}
+
+/* Temarix Logo - Fixed Left Top */
+.temarix-logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.slogan {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Language Selector - Fixed Right Top */
+.lang-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 120px;
+  z-index: 1000;
+}
+
+.lang-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.lang-btn.active {
+  background: #9c27b0;
+  border-color: #9c27b0;
+}
+
+/* Portal Header - Center Top */
+.portal-header {
+  text-align: center;
+  margin: 40px 0 30px 0;
+  padding-top: 40px;
+}
+
+.portal-header h1 {
+  font-size: 2.2rem;
+  margin: 10px 0;
+  color: #ffd700;
+}
+
+.portal-header h2 {
+  font-size: 1.3rem;
+  color: #e1bee7;
+  font-weight: 300;
+}
+
+/* Message Stream */
+.message-stream {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.message-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.message-card.prologue {
+  border-left: 4px solid #e1bee7;
+}
+
+.message-card.ely {
+  border-left: 4px solid #ffd700;
+}
+
+.message-card.sora {
+  border-left: 4px solid #4dd0e1;
+}
+
+.message-card.noah {
+  border-left: 4px solid #9c27b0;
+}
+
+.message-card.enya {
+  border-left: 4px solid #ff9800;
+}
+
+.message-card.kaia {
+  border-left: 4px solid #607d8b;
+}
+
+.message-card.cris {
+  border-left: 4px solid #4caf50;
+}
+
+.message-card.kael {
+  border-left: 4px solid #f44336;
+}
+
+.message-card.mira {
+  border-left: 4px solid #9e9e9e;
+}
+
+.message-card.light {
+  border-left: 4px solid #ffffff;
+  background: rgba(255,255,255,0.15);
+}
+
+.message-card.question {
+  border-left: 4px solid #f48fb1;
+}
+
+.message-card.user-input {
+  border-left: 4px solid #81c784;
+  background: rgba(129, 199, 132, 0.1);
+}
+
+.character-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.ely .character-name { color: #ffd700; }
+.sora .character-name { color: #4dd0e1; }
+.noah .character-name { color: #9c27b0; }
+.enya .character-name { color: #ff9800; }
+.kaia .character-name { color: #607d8b; }
+.cris .character-name { color: #4caf50; }
+.kael .character-name { color: #f44336; }
+.mira .character-name { color: #9e9e9e; }
+
+.message-text {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  white-space: nowrap;
+  animation: blink-caret 1s step-end infinite;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: rgba(255,255,255,0.7); }
+}
+
+/* Input Area */
+.input-area {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.input-container textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.input-container textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #9c27b0, #e1bee7);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+}
+
+.input-hint {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+
+/* Next Portal Navigation */
+.next-portal-nav {
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+  border-color: #4caf50;
+}
+
+.yes-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.no-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.no-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Back to Main */
+.back-to-main {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.back-to-main button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-to-main button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .portal {
+    padding: 100px 15px 20px 15px;
+  }
+  
+  .temarix-logo {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .slogan {
+    font-size: 0.7rem;
+  }
+  
+  .lang-selector {
+    top: 15px;
+    right: 15px;
+    max-width: 100px;
+  }
+  
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .portal-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .portal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .message-card {
+    padding: 15px;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-btn {
+    width: 200px;
+  }
+}
+</style>
+
+<script>
+// Portal 14 Complete Data with Character Responses
+const portal14Data = {
+  kr: {
+    title: "감정의 문지방 14",
+    subtitle: "진정한 나의 빛",
+    prologue: "모든 상처와 어둠을 지나온 후, 이제 진정한 나 자신을 마주할 시간입니다. 그동안 숨겨왔던 것, 부끄러워했던 것, 미워했던 나의 모든 면들이 사실은 하나의 완전한 존재를 이루고 있었어요. 상처도, 실수도, 약함도 모두 당신이라는 빛의 일부입니다. 이제 그 빛을 인정하고 받아들일 준비가 되었나요? 완벽하지 않은 나여도, 그 자체로 충분히 빛나는 존재임을 깨달을 때입니다.",
+    ely: "당신의 빛은 완벽함에서 나오는 게 아니라, 있는 그대로의 진실함에서 나와요.",
+    sora: "모든 감정을 느끼고 받아들인 당신이야말로 진정으로 아름다운 존재예요.",
+    noah: "과거의 모든 경험이 지금의 당신이라는 빛을 만들어냈어요. 그 빛을 믿으세요.",
+    enya: "당신 안의 따뜻함, 그 온기가 바로 세상을 밝히는 빛이에요.",
+    kaia: "말하지 않아도 알 수 있어요. 당신은 이미 충분히 빛나고 있어요.",
+    cris: "빛이라고? 나는 형광등처럼 깜빡거리는 빛이야! 불안정하지만 그래도 밝거든~ ✨😄",
+    kael: "드디어 알아차렸구나. 넌 생각보다 강하고, 생각보다 괜찮은 놈이야.",
+    mira: "혹시... 이게 정말 진짜 나일까요? 아니면 그냥 착각하는 건 아닐까요?",
+    light: "당신의 빛은 어둠을 경험했기에 더욱 깊고 따뜻합니다. 그 빛으로 당신 자신을 비춰주세요.",
+    question: "이제 발견한 진정한 나의 모습은 어떤가요?",
+    input: { 
+      placeholder: "이제 발견한 진정한 나의 모습과 빛에 대해 조용히 적어보세요...",
+      hint: "Enter 키를 눌러도 전달할 수 있습니다"
+    },
+    submit: "✨ 나의 빛 인정하기",
+    slogan: "당신 안에 숨은 이야기를 말 해 주세요",
+    response_ely: "그래요, 그것이 바로 당신의 진정한 빛이에요. 이제 그 빛을 당당히 받아들이세요.",
+    response_sora: "당신이 발견한 그 아름다운 모습, 그것이 바로 진짜 당신이에요.",
+    response_noah: "완벽하지 않아도 충분히 빛나는 당신을 만났군요. 이제 새로운 여정이 시작됩니다.\n\n👉 다음 문지방으로 함께 가도 괜찮을까요?",
+    user_input_prefix: "당신이 발견한 진정한 나의 빛:",
+    yes: "예",
+    no: "아니요"
+  },
+  en: {
+    title: "Emotional Threshold 14",
+    subtitle: "The Light of My True Self",
+    prologue: "After passing through all wounds and darkness, it's now time to face your true self. Everything you've hidden, been ashamed of, hated about yourself has actually formed one complete being. Wounds, mistakes, weaknesses—all are part of the light that is you. Are you ready to acknowledge and accept that light? It's time to realize that even an imperfect me is a being that shines bright enough just as I am.",
+    ely: "Your light doesn't come from perfection, but from the authenticity of being exactly as you are.",
+    sora: "You, who have felt and accepted all emotions, are truly a beautiful being.",
+    noah: "All past experiences have created the light that is you now. Believe in that light.",
+    enya: "The warmth within you, that tenderness is the very light that brightens the world.",
+    kaia: "I can tell without you saying it. You're already shining bright enough.",
+    cris: "Light? I'm like a fluorescent bulb that flickers! Unstable but still bright~ ✨😄",
+    kael: "Finally realized it. You're stronger than you think, better than you think.",
+    mira: "Perhaps... is this really the real me? Or am I just deluding myself?",
+    light: "Your light is deeper and warmer because you've experienced darkness. Shine that light on yourself.",
+    question: "What is the true self you've now discovered like?",
+    input: { 
+      placeholder: "Quietly write about the true self and light you've now discovered...",
+      hint: "You can also press Enter to submit"
+    },
+    submit: "✨ Acknowledge My Light",
+    slogan: "Please tell me the story hidden within you",
+    response_ely: "Yes, that is exactly your true light. Now proudly accept that light.",
+    response_sora: "That beautiful aspect you discovered, that is the real you.",
+    response_noah: "You've met yourself who shines bright enough even without perfection. Now a new journey begins.\n\n👉 Shall we go to the next threshold together?",
+    user_input_prefix: "The light of your true self that you discovered:",
+    yes: "Yes",
+    no: "No"
+  },
+  pt: {
+    title: "Limiar Emocional 14",
+    subtitle: "A Luz do Meu Verdadeiro Eu",
+    prologue: "Depois de passar por todas as feridas e escuridão, agora é hora de enfrentar seu verdadeiro eu. Tudo que você escondeu, se envergonhou, odiou sobre si mesmo na verdade formou um ser completo. Feridas, erros, fraquezas—tudo são parte da luz que é você. Está pronto para reconhecer e aceitar essa luz? É hora de perceber que mesmo um eu imperfeito é um ser que brilha o suficiente exatamente como sou.",
+    ely: "Sua luz não vem da perfeição, mas da autenticidade de ser exatamente como você é.",
+    sora: "Você, que sentiu e aceitou todas as emoções, é verdadeiramente um ser lindo.",
+    noah: "Todas as experiências passadas criaram a luz que é você agora. Acredite nessa luz.",
+    enya: "A calor dentro de você, essa ternura é a própria luz que ilumina o mundo.",
+    kaia: "Posso dizer sem você falar. Você já está brilhando o suficiente.",
+    cris: "Luz? Eu sou como uma lâmpada fluorescente que pisca! Instável mas ainda brilhante~ ✨😄",
+    kael: "Finalmente percebeu. Você é mais forte do que pensa, melhor do que pensa.",
+    mira: "Talvez... este é realmente o verdadeiro eu? Ou estou apenas me iludindo?",
+    light: "Sua luz é mais profunda e mais quente porque você experimentou a escuridão. Ilumine-se com essa luz.",
+    question: "Como é o verdadeiro eu que você descobriu agora?",
+    input: { 
+      placeholder: "Escreva silenciosamente sobre o verdadeiro eu e a luz que você descobriu agora...",
+      hint: "Você também pode pressionar Enter para enviar"
+    },
+    submit: "✨ Reconhecer Minha Luz",
+    slogan: "Por favor, me conte a história escondida dentro de você",
+    response_ely: "Sim, essa é exatamente sua verdadeira luz. Agora aceite essa luz com orgulho.",
+    response_sora: "Esse aspecto lindo que você descobriu, esse é o verdadeiro você.",
+    response_noah: "Você encontrou-se a si mesmo que brilha o suficiente mesmo sem perfeição. Agora uma nova jornada começa.\n\n👉 Vamos para o próximo limiar juntos?",
+    user_input_prefix: "A luz do seu verdadeiro eu que você descobriu:",
+    yes: "Sim",
+    no: "Não"
+  },
+ 
+};
+
+// Current language and state for Portal 14
+let currentLang14 = 'kr';
+let userInputText14 = '';
+
+// Initialize Portal 14
+function initPortal14() {
+  displayInitialMessages14();
+  setupLanguageSwitching14();
+  setupEnterKeySubmission14();
+}
+
+// Display initial messages with typing effect
+async function displayInitialMessages14() {
+  const stream = document.getElementById('messageStream14');
+  const messages = [
+    { type: 'prologue', content: portal14Data[currentLang14].prologue },
+    { type: 'ely', name: '👑 Ely', content: portal14Data[currentLang14].ely },
+    { type: 'sora', name: '💧 Sora', content: portal14Data[currentLang14].sora },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: portal14Data[currentLang14].noah },
+    { type: 'enya', name: '🕯️ Enya', content: portal14Data[currentLang14].enya },
+    { type: 'kaia', name: '😶 Kaia', content: portal14Data[currentLang14].kaia },
+    { type: 'cris', name: '🃏 Cris', content: portal14Data[currentLang14].cris },
+    { type: 'kael', name: '💥 Kael', content: portal14Data[currentLang14].kael },
+    { type: 'mira', name: '🌫️ Mira', content: portal14Data[currentLang14].mira },
+    { type: 'light', content: portal14Data[currentLang14].light },
+    { type: 'question', content: portal14Data[currentLang14].question }
+  ];
+
+  for (let i = 0; i < messages.length; i++) {
+    const messageCard = createMessageCard14(messages[i]);
+    stream.appendChild(messageCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText14(messageCard.querySelector('.message-text'), messages[i].content);
+    await sleep14(1200);
+  }
+  
+  // Show input area after all messages
+  document.getElementById('inputArea14').style.display = 'block';
+}
+
+// Setup Enter key submission
+function setupEnterKeySubmission14() {
+  document.getElementById('userInput14').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitResponse(14);
+    }
+  });
+}
+
+// Display character responses after user input
+async function displayCharacterResponses14(userInput) {
+  const stream = document.getElementById('messageStream14');
+  
+  // Show user input first
+  const userCard = createMessageCard14({
+    type: 'user-input',
+    content: `${portal14Data[currentLang14].user_input_prefix}\n"${userInput}"`
+  });
+  stream.appendChild(userCard);
+  stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+  await typeText14(userCard.querySelector('.message-text'), userCard.querySelector('.message-text').textContent);
+  await sleep14(1500);
+  
+  // Character responses
+  const responses = [
+    { type: 'ely', name: '👑 Ely', content: `"${userInput}"... ${portal14Data[currentLang14].response_ely}` },
+    { type: 'sora', name: '💧 Sora', content: `${portal14Data[currentLang14].response_sora}` },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: `"${userInput}" ${portal14Data[currentLang14].response_noah}` }
+  ];
+
+  for (let i = 0; i < responses.length; i++) {
+    const responseCard = createMessageCard14(responses[i]);
+    stream.appendChild(responseCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText14(responseCard.querySelector('.message-text'), responses[i].content);
+    await sleep14(1500);
+  }
+  
+  // Show navigation buttons
+  document.getElementById('nextPortalNav14').style.display = 'block';
+}
+
+function createMessageCard14(message) {
+  const card = document.createElement('div');
+  card.className = `message-card ${message.type}`;
+  
+  let cardHTML = '';
+  if (message.name) {
+    cardHTML += `<div class="character-name">${message.name}</div>`;
+  }
+  cardHTML += `<div class="message-text">${message.content || ''}</div>`;
+  
+  card.innerHTML = cardHTML;
+  return card;
+}
+
+async function typeText14(element, text, speed = 80) {
+  return new Promise((resolve) => {
+    let i = 0;
+    element.textContent = '';
+    element.classList.add('typewriter');
+    
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+        element.classList.remove('typewriter');
+        resolve();
+      }
+    }, speed);
+  });
+}
+
+function sleep14(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setupLanguageSwitching14() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newLang = btn.dataset.lang;
+      if (portal14Data[newLang] && newLang !== currentLang14) {
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentLang14 = newLang;
+        document.getElementById('messageStream14').innerHTML = '';
+        document.getElementById('inputArea14').style.display = 'none';
+        document.getElementById('nextPortalNav14').style.display = 'none';
+        displayInitialMessages14();
+        updatePortalTexts14();
+      }
+    });
+  });
+}
+
+function updatePortalTexts14() {
+  // Update title and subtitle
+  document.querySelector('[data-i18n="portal14.title"]').textContent = portal14Data[currentLang14].title;
+  document.querySelector('[data-i18n="portal14.subtitle"]').textContent = portal14Data[currentLang14].subtitle;
+  
+  // Update slogan
+  document.querySelector('[data-i18n="common.slogan"]').textContent = portal14Data[currentLang14].slogan;
+  
+  // Update placeholder and hint
+  document.getElementById('userInput14').placeholder = portal14Data[currentLang14].input.placeholder;
+  document.querySelector('[data-i18n="portal14.input.hint"]').textContent = portal14Data[currentLang14].input.hint;
+  
+  // Update submit button
+  document.querySelector('[data-i18n="portal14.submit"]').textContent = portal14Data[currentLang14].submit;
+  
+  // Update navigation buttons
+  const yesBtn = document.querySelector('[data-i18n="common.yes"]');
+  const noBtn = document.querySelector('[data-i18n="common.no"]');
+  if (yesBtn) yesBtn.textContent = portal14Data[currentLang14].yes;
+  if (noBtn) noBtn.textContent = portal14Data[currentLang14].no;
+  
+  // Update back to main button
+  document.querySelector('[data-i18n="common.back_to_main"]').textContent = 
+    currentLang14 === 'kr' ? '🏠 메인 포탈로 돌아가기' :
+    currentLang14 === 'en' ? '🏠 Back to Main Portal' :
+    currentLang14 === 'pt' ? '🏠 Voltar ao Portal Principal' :
+    '🏠 메인 포탈로 돌아가기';
+}
+
+function submitResponse(portalNum) {
+  if (portalNum !== 14) return;
+  
+  const input = document.getElementById(`userInput${portalNum}`);
+  const response = input.value.trim();
+  
+  if (response) {
+    userInputText14 = response;
+    
+    // Hide input area
+    document.getElementById(`inputArea${portalNum}`).style.display = 'none';
+    
+    // Display character responses
+    displayCharacterResponses14(response);
+    
+    // Clear input
+    input.value = '';
+  } else {
+    // No alert, just focus on input
+    input.focus();
+    input.style.borderColor = '#f48fb1';
+    setTimeout(() => {
+      input.style.borderColor = 'rgba(255,255,255,0.3)';
+    }, 2000);
+  }
+}
+
+function stayInPortal() {
+  document.getElementById('nextPortalNav14').style.display = 'none';
+  document.getElementById('inputArea14').style.display = 'block';
+  document.getElementById('userInput14').focus();
+}
+
+function goToNextPortal(nextNumber) {
+  const nextUrl = `temarix_v1_${String(nextNumber).padStart(2, '0')}.html`;
+  window.location.href = nextUrl;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('portal-14')) {
+    initPortal14();
+  }
+});
+</script>
+</body>
+</html>

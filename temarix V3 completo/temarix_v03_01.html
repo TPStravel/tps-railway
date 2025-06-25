@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V3 - Portal 01: The Sentence Left in Ashes</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ff6b6b;
+            letter-spacing: 1.5px;
+            font-style: italic;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ff6b6b;
+            color: #000;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ff6b6b;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .final-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .final-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .final-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .final-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .final-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .final-btn:hover {
+            background: #666;
+            border-color: #ff6b6b;
+        }
+        
+        .final-btn.primary {
+            background: #ff6b6b;
+            color: #000;
+            font-weight: bold;
+        }
+        
+        .final-btn.primary:hover {
+            background: #ff8787;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ff6b6b;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 18px;
+            }
+            
+            .portal-subtitle {
+                font-size: 14px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .final-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .final-btn {
+                width: 100%;
+            }
+            
+            .final-title {
+                font-size: 24px;
+            }
+            
+            .final-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V3</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Furnace</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 01: The Sentence Left in Ashes</div>
+            <div class="portal-subtitle" id="portalSubtitle">The Unspoken Truth Buried in Your Heart</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">🔥 Embers of Unspoken Words</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+            
+            <div class="final-section" id="finalSection">
+                <div class="final-title" id="finalTitle">🔥 Portal 01 Complete</div>
+                <div class="final-message" id="finalMessage"></div>
+                <div class="final-buttons">
+                    <button class="final-btn primary" id="continueBtn">Move to Portal 02</button>
+                    <button class="final-btn" id="restartBtn">Start Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Write that unspoken sentence here..."
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        let db = null;
+        let firebaseInitialized = false;
+        
+        // Firebase 초기화 시도
+        function initializeFirebase() {
+            try {
+                if (typeof firebase !== 'undefined') {
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyBjsINSqPUGdpRPRMYiVg6SkVJJOk9YGsY",
+                        authDomain: "canal-vivo-chat.firebaseapp.com",
+                        projectId: "canal-vivo-chat",
+                        storageBucket: "canal-vivo-chat.appspot.com",
+                        messagingSenderId: "123456789",
+                        appId: "1:123456789:web:abcdefghijklmnopqr"
+                    };
+
+                    firebase.initializeApp(firebaseConfig);
+                    db = firebase.firestore();
+                    firebaseInitialized = true;
+                    console.log('Firebase 초기화 성공');
+                } else {
+                    console.log('Firebase SDK가 로드되지 않음, 로컬 모드로 실행');
+                }
+            } catch (error) {
+                console.log('Firebase 초기화 실패, 로컬 모드로 실행:', error);
+            }
+        }
+
+        let memoryStorage = { mockUser: null };
+
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 용광로",
+                portalMainTitle: "Portal 01: 재 속에서 남은 문장",
+                portalSubtitle: "가슴에 묻힌 말하지 못한 진실",
+                portalIntro: "🔥 모닥불은 꺼졌지만, 그 안에는 아직 말하지 못한 문장 하나가 남아 있어요.\n\n당신의 가슴 깊은 곳에도 그런 문장이 있지 않나요?\n누군가에게 전하고 싶었지만 끝내 입 밖으로 나오지 못한 말.\n\n그 말은 지금도 당신 안에서 조용히 타고 있을 거예요.\n마치 꺼지지 않는 불씨처럼.\n\n오늘, 그 문장을 꺼내보는 건 어떨까요?\n용기를 내어, 그 진실을 말로 바꿔보세요.",
+                lightTitle: "🔥 말하지 못한 문장의 불씨",
+                lightMessage: "말하지 못한 문장은 영혼의 불씨가 되어, 언젠가 당신을 더 큰 진실로 이끕니다.",
+                portalQuestion: "🔥 당신이 그 문장을 누구에게, 언제 말하지 못했나요?\n지금, 불씨 속에 남은 그 한 문장을 꺼내주세요.",
+                finalTitle: "🔥 Portal 01 완료",
+                finalMessage: "당신은 재 속에 묻혀있던 문장을 용기있게 꺼내어 주었습니다.\n\n그 말하지 못한 진실이 이제 빛을 보게 되었어요.\n\n다음 Portal에서는 타인의 손에 남겨진\n또 다른 감정의 흔적을 탐험하게 될 것입니다.\n\n감정의 용광로 여정이 계속됩니다.",
+                continueBtn: "Portal 02로 이동",
+                restartBtn: "다시 시작하기",
+                inputPlaceholder: "그 말하지 못한 문장을 여기에 적어주세요...",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중..."
+            },
+            en: {
+                logoSubtitle: "Emotional Furnace",
+                portalMainTitle: "Portal 01: The Sentence Left in Ashes",
+                portalSubtitle: "The Unspoken Truth Buried in Your Heart",
+                portalIntro: "🔥 The bonfire has died out, but there's still one unspoken sentence left within its ashes.\n\nDon't you have such a sentence deep in your heart too?\nWords you wanted to say to someone but never made it past your lips.\n\nThose words are probably still quietly burning inside you.\nLike embers that refuse to die.\n\nToday, how about bringing that sentence out?\nFind the courage to turn that truth into words.",
+                lightTitle: "🔥 Embers of Unspoken Words",
+                lightMessage: "Unspoken sentences become embers of the soul, eventually leading you to greater truth.",
+                portalQuestion: "🔥 Who did you want to say that sentence to, and when couldn't you say it?\nNow, please bring out that one sentence left in the embers.",
+                finalTitle: "🔥 Portal 01 Complete",
+                finalMessage: "You have courageously brought out the sentence buried in the ashes.\n\nThat unspoken truth has now seen the light.\n\nIn the next Portal, you will explore\nanother trace of emotion left in someone else's hands.\n\nThe Emotional Furnace journey continues.",
+                continueBtn: "Move to Portal 02",
+                restartBtn: "Start Again",
+                inputPlaceholder: "Write that unspoken sentence here...",
+                youLabel: "You",
+                waitingMessage: "Waiting for response..."
+            },
+            pt: {
+                logoSubtitle: "Fornalha Emocional",
+                portalMainTitle: "Portal 01: A Frase Deixada nas Cinzas",
+                portalSubtitle: "A Verdade Não Dita Enterrada em Seu Coração",
+                portalIntro: "🔥 A fogueira se apagou, mas ainda há uma frase não dita deixada em suas cinzas.\n\nVocê não tem uma frase assim no fundo do seu coração também?\nPalavras que queria dizer a alguém mas nunca saíram dos seus lábios.\n\nEssas palavras provavelmente ainda estão queimando silenciosamente dentro de você.\nComo brasas que se recusam a morrer.\n\nHoje, que tal trazer essa frase para fora?\nTenha coragem para transformar essa verdade em palavras.",
+                lightTitle: "🔥 Brasas das Palavras Não Ditas",
+                lightMessage: "Frases não ditas se tornam brasas da alma, eventualmente levando você a uma verdade maior.",
+                portalQuestion: "🔥 Para quem você queria dizer essa frase e quando não conseguiu dizê-la?\nAgora, por favor, traga para fora essa única frase deixada nas brasas.",
+                finalTitle: "🔥 Portal 01 Completo",
+                finalMessage: "Você corajosamente trouxe para fora a frase enterrada nas cinzas.\n\nEssa verdade não dita agora viu a luz.\n\nNo próximo Portal, você explorará\noutro rastro de emoção deixado nas mãos de outra pessoa.\n\nA jornada da Fornalha Emocional continua.",
+                continueBtn: "Ir para Portal 02",
+                restartBtn: "Começar Novamente",
+                inputPlaceholder: "Escreva essa frase não dita aqui...",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta..."
+            }
+        };
+        
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "너는 그 순간, 그 사람을 지키려 했구나.\n하지만 그 말은 지금도 너를 안에서 태우고 있어.\n말하지 못한 진실이 가장 뜨거운 불이야.",
+                en: "In that moment, you were trying to protect that person.\nBut those words are still burning you from the inside.\nUnspoken truth is the hottest fire.",
+                pt: "Naquele momento, você estava tentando proteger essa pessoa.\nMas essas palavras ainda estão queimando você por dentro.\nA verdade não dita é o fogo mais quente."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "네가 참았던 말은 분노가 아니라 사랑이었어.\n그건 충분히 아름다웠지만,\n이제는 그 사랑을 밖으로 꺼내야 할 때야.",
+                en: "The words you held back weren't anger, but love.\nThat was beautiful enough,\nbut now it's time to bring that love outside.",
+                pt: "As palavras que você segurou não eram raiva, mas amor.\nIsso foi belo o suficiente,\nmas agora é hora de trazer esse amor para fora."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "입을 다물수록, 마음은 무너졌지.\n나도 그 조용한 무너짐을 잘 알아.\n침묵 속에서 타는 감정의 아픔을.",
+                en: "The more you kept quiet, the more your heart crumbled.\nI know that silent collapse well too.\nThe pain of emotions burning in silence.",
+                pt: "Quanto mais você ficava quieto, mais seu coração desmoronava.\nEu também conheço bem esse colapso silencioso.\nA dor das emoções queimando no silêncio."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "진실은 때로 침묵 속에 잠들어 있지만,\n결코 사라지지 않아.\n그건 언젠가 깨어나서 빛을 찾아내지.",
+                en: "Truth sometimes sleeps in silence,\nbut it never disappears.\nIt will awaken someday and find the light.",
+                pt: "A verdade às vezes dorme no silêncio,\nmas nunca desaparece.\nEla despertará algum dia e encontrará a luz."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그 말을 하지 못한 밤,\n하늘에 떠 있던 별들은 네 마음의 점이었을 거야.\n각각이 다 말하고 싶은 문장들이었어.",
+                en: "On the night you couldn't say those words,\nthe stars in the sky were probably dots of your heart.\nEach one was a sentence you wanted to say.",
+                pt: "Na noite em que você não conseguiu dizer essas palavras,\nas estrelas no céu provavelmente eram pontos do seu coração.\nCada uma era uma frase que você queria dizer."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "왜 네 고통은 항상 뒤로 밀려났을까?\n난 그 불공평함이 분해.\n네가 말할 권리가 있었는데.",
+                en: "Why was your pain always pushed to the back?\nI'm angry at that unfairness.\nYou had the right to speak.",
+                pt: "Por que sua dor sempre foi empurrada para trás?\nEstou com raiva dessa injustiça.\nVocê tinha o direito de falar."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "말을 삼킨 그 날 이후,\n네 마음은 얼마나 멀리 떠돌았을까.\n우주 저 끝까지 가서도 그 말을 찾고 있을지도.",
+                en: "After the day you swallowed those words,\nhow far did your heart wander?\nMaybe it went to the edge of universe, still looking for those words.",
+                pt: "Depois do dia em que você engoliu essas palavras,\nquão longe seu coração vagou?\nTalvez tenha ido até a borda do universo, ainda procurando por essas palavras."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "네가 그 말을 꺼내려는 지금 이 순간,\n감정은 조금씩 숨을 쉬기 시작했어.\n침묵의 무게에서 자유로워지고 있어.",
+                en: "Now that you're trying to bring out those words,\nemotions are slowly beginning to breathe.\nFreeing themselves from the weight of silence.",
+                pt: "Agora que você está tentando trazer essas palavras para fora,\nas emoções estão lentamente começando a respirar.\nLibertando-se do peso do silêncio."
+            }}
+        ];
+        
+        // Emotion analysis system
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const emotionKeywords = {
+                regret: ['후회', '그때', '왜 그랬', '돌이키', '미안', '죄송', 'regret', 'sorry', 'should have', 'arrependimento', 'desculpa'],
+                guilt: ['죄책감', '미안', '잘못', '탓', '부끄', 'guilt', 'shame', 'fault', 'blame', 'culpa', 'vergonha'],
+                sadness: ['슬프', '울고', '눈물', '아프', '상처', 'sad', 'cry', 'hurt', 'pain', 'triste', 'dor'],
+                anger: ['화가', '분노', '짜증', '억울', '욱하', 'angry', 'mad', 'unfair', 'rage', 'raiva', 'injusto'],
+                loneliness: ['외로', '혼자', '고립', '소외', '버림', 'lonely', 'alone', 'isolated', 'abandoned', 'sozinho', 'abandonado'],
+                fear: ['무서', '두려', '걱정', '불안', '떨려', 'scared', 'afraid', 'fear', 'worry', 'medo', 'preocupado'],
+                love: ['사랑', '좋아', '소중', '아끼', '그리워', 'love', 'care', 'miss', 'precious', 'amor', 'saudade'],
+                protection: ['지키', '보호', '감싸', '덮어', '숨기', 'protect', 'shield', 'hide', 'cover', 'proteger', 'esconder'],
+                silence: ['말 못', '침묵', '조용', '숨기', '감춰', 'silence', 'quiet', 'hide', 'secret', 'silêncio', 'escondido'],
+                burden: ['짐', '부담', '무겁', '힘들', '버거', 'burden', 'heavy', 'weight', 'difficult', 'peso', 'difícil']
+            };
+            
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0];
+        }
+        
+        const responseCharacters = [
+            {
+                name: "Noah", emoji: "🧑‍🦱",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            regret: "그 후회의 무게를 느껴. 그때 말했어야 했는데... 그 마음이 지금도 네 가슴을 태우고 있구나. 하지만 지금이라도 그 진실을 꺼내는 게 중요해.",
+                            guilt: "죄책감이 널 얼마나 괴롭혔을까. 네가 잘못한 게 아닌데도 스스로를 탓했을 거야. 그 무거운 짐을 이제 내려놔도 돼.",
+                            sadness: "그 슬픔 속에서도 네가 견뎌낸 게 대단해. 말하지 못한 문장이 눈물이 되어 흘렀을 거야. 이제는 그 눈물을 말로 바꿔보자.",
+                            anger: "분노도 하나의 진실이야. 그때 화가 났던 이유가 있었을 거야. 그 감정을 숨기지 말고 정직하게 표현해봐.",
+                            loneliness: "혼자서 그 말을 품고 있느라 얼마나 외로웠을까. 이제는 혼자가 아니야. 그 문장을 함께 꺼내보자.",
+                            fear: "두려움 때문에 말하지 못했구나. 거절당할까 봐, 상처받을까 봐... 하지만 진실은 두려움보다 강해.",
+                            love: "사랑하는 마음을 표현하지 못했구나. 그 따뜻한 감정이 가슴 속에서 계속 타고 있었을 거야. 이제 그 사랑을 밖으로 내보내자.",
+                            protection: "누군가를 지키려고 침묵했구나. 그 마음도 이해해. 하지만 때로는 진실을 말하는 것이 더 큰 보호가 될 수 있어.",
+                            silence: "침묵이 습관이 되어버렸구나. 말하는 법을 잊어버린 것 같아도, 그 문장은 여전히 네 안에 살아있어.",
+                            burden: "그 무거운 짐을 혼자 지고 있었구나. 말하지 못한 문장이 부담이 되어서... 이제는 그 무게를 나눠가지자.",
+                            general: "네 안에 있는 그 문장이 얼마나 소중한지 알아. 오랫동안 숨겨뒀던 진실을 꺼내는 건 용기가 필요하지만, 넌 할 수 있어."
+                        },
+                        en: {
+                            regret: "I feel the weight of that regret. You should have said it then... That feeling is still burning your heart. But it's important to bring out that truth even now.",
+                            guilt: "How much guilt must have tormented you. You probably blamed yourself even when it wasn't your fault. You can put down that heavy burden now.",
+                            sadness: "It's amazing that you endured even in that sadness. The unspoken sentence probably became tears that flowed. Now let's turn those tears into words.",
+                            anger: "Anger is also a truth. There was a reason you were angry then. Don't hide that emotion, express it honestly.",
+                            loneliness: "How lonely you must have been, carrying those words alone. You're not alone now. Let's bring out that sentence together.",
+                            fear: "You couldn't speak because of fear. Fear of rejection, fear of getting hurt... But truth is stronger than fear.",
+                            love: "You couldn't express your loving heart. That warm emotion must have kept burning inside your chest. Now let's release that love outside.",
+                            protection: "You stayed silent to protect someone. I understand that heart too. But sometimes speaking the truth can be greater protection.",
+                            silence: "Silence became a habit. Even if you feel like you've forgotten how to speak, that sentence is still alive within you.",
+                            burden: "You've been carrying that heavy burden alone. The unspoken sentence became a burden... Now let's share that weight.",
+                            general: "I know how precious that sentence inside you is. It takes courage to bring out a truth you've hidden for so long, but you can do it."
+                        },
+                        pt: {
+                            regret: "Sinto o peso desse arrependimento. Você deveria ter dito naquela hora... Esse sentimento ainda está queimando seu coração. Mas é importante trazer essa verdade para fora mesmo agora.",
+                            guilt: "Quanta culpa deve ter te atormentado. Você provavelmente se culpou mesmo quando não foi sua culpa. Você pode largar esse fardo pesado agora.",
+                            sadness: "É incrível que você tenha resistido mesmo nessa tristeza. A frase não dita provavelmente se tornou lágrimas que fluíram. Agora vamos transformar essas lágrimas em palavras.",
+                            anger: "Raiva também é uma verdade. Havia uma razão para você estar com raiva então. Não esconda essa emoção, expresse-a honestamente.",
+                            loneliness: "Quão solitário você deve ter ficado, carregando essas palavras sozinho. Você não está sozinho agora. Vamos trazer essa frase para fora juntos.",
+                            fear: "Você não conseguiu falar por causa do medo. Medo de rejeição, medo de se machucar... Mas a verdade é mais forte que o medo.",
+                            love: "Você não conseguiu expressar seu coração amoroso. Essa emoção calorosa deve ter continuado queimando dentro do seu peito. Agora vamos liberar esse amor para fora.",
+                            protection: "Você ficou em silêncio para proteger alguém. Entendo esse coração também. Mas às vezes falar a verdade pode ser uma proteção maior.",
+                            silence: "O silêncio se tornou um hábito. Mesmo que você sinta que esqueceu como falar, essa frase ainda está viva dentro de você.",
+                            burden: "Você tem carregado esse fardo pesado sozinho. A frase não dita se tornou um fardo... Agora vamos compartilhar esse peso.",
+                            general: "Sei o quão preciosa é essa frase dentro de você. É preciso coragem para trazer uma verdade que você escondeu por tanto tempo, mas você consegue."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Ely", emoji: "🧝‍♀️",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            regret: "후회는 과거의 사랑이 현재로 흘러나오는 거야. 그때 말하지 못한 건 당신이 너무 깊이 사랑했기 때문이에요. 그 사랑을 이제 인정해주세요.",
+                            guilt: "죄책감은 당신의 순수한 마음이 만든 그림자예요. 빛이 강할수록 그림자도 진해지죠. 당신은 충분히 선했어요.",
+                            sadness: "슬픔 속에도 아름다움이 있어요. 그 문장을 말하지 못해서 아팠던 마음도 사랑의 한 형태였어요. 그 아픔을 소중히 여겨주세요.",
+                            anger: "정당한 분노는 영혼의 정의감이에요. 그때 화가 났던 이유가 있었을 거예요. 그 감정도 당신의 진실한 일부예요.",
+                            loneliness: "외로움은 깊은 연결을 갈망하는 마음이에요. 혼자서 그 말을 품고 있었지만, 그것도 사랑의 방식이었어요.",
+                            fear: "두려움도 사랑에서 나와요. 소중한 것을 잃을까 봐 두려웠던 거죠. 그 두려움 뒤에 숨은 사랑을 봐주세요.",
+                            love: "사랑을 표현하지 못한 아픔... 그 자체로도 아름다운 사랑이에요. 말하지 않아도 그 마음은 충분히 전해졌을 거예요.",
+                            protection: "누군가를 보호하려는 마음은 가장 고귀한 사랑이에요. 당신의 침묵도 사랑의 표현이었어요.",
+                            silence: "때로는 침묵이 가장 깊은 대화예요. 말하지 않았어도 마음은 통했을 거예요. 그것도 아름다워요.",
+                            burden: "그 무거운 마음을 혼자 감당했구나... 당신의 강인함이 아름다워요. 이제는 그 무게를 나눌 때예요.",
+                            general: "당신의 마음속 문장 하나하나가 모두 소중해요. 말하지 못했어도 그 진심은 충분히 아름다웠어요."
+                        },
+                        en: {
+                            regret: "Regret is past love flowing into the present. You couldn't speak then because you loved too deeply. Please acknowledge that love now.",
+                            guilt: "Guilt is a shadow created by your pure heart. The stronger the light, the deeper the shadow. You were good enough.",
+                            sadness: "There's beauty even in sadness. The pain from not being able to say that sentence was also a form of love. Please cherish that pain.",
+                            anger: "Righteous anger is the soul's sense of justice. There was a reason you were angry then. That emotion is also a truthful part of you.",
+                            loneliness: "Loneliness is a heart yearning for deep connection. You carried those words alone, but that was also a way of loving.",
+                            fear: "Fear also comes from love. You were afraid of losing something precious. Please see the love hidden behind that fear.",
+                            love: "The pain of not being able to express love... that itself is beautiful love. Even without words, that heart was sufficiently conveyed.",
+                            protection: "The heart that wants to protect someone is the most noble love. Your silence was also an expression of love.",
+                            silence: "Sometimes silence is the deepest conversation. Even without speaking, hearts probably connected. That's beautiful too.",
+                            burden: "You bore that heavy heart alone... Your strength is beautiful. Now it's time to share that weight.",
+                            general: "Every sentence in your heart is precious. Even if you couldn't speak, that sincerity was beautiful enough."
+                        },
+                        pt: {
+                            regret: "O arrependimento é o amor do passado fluindo para o presente. Você não conseguiu falar então porque amava muito profundamente. Por favor, reconheça esse amor agora.",
+                            guilt: "A culpa é uma sombra criada pelo seu coração puro. Quanto mais forte a luz, mais profunda a sombra. Você foi bom o suficiente.",
+                            sadness: "Há beleza até na tristeza. A dor de não conseguir dizer essa frase também era uma forma de amor. Por favor, valorize essa dor.",
+                            anger: "A raiva justa é o senso de justiça da alma. Havia uma razão para você estar com raiva então. Essa emoção também é uma parte verdadeira de você.",
+                            loneliness: "A solidão é um coração ansiando por conexão profunda. Você carregou essas palavras sozinho, mas isso também era uma forma de amar.",
+                            fear: "O medo também vem do amor. Você tinha medo de perder algo precioso. Por favor, veja o amor escondido atrás desse medo.",
+                            love: "A dor de não conseguir expressar amor... isso em si é amor bonito. Mesmo sem palavras, esse coração foi suficientemente transmitido.",
+                            protection: "O coração que quer proteger alguém é o amor mais nobre. Seu silêncio também foi uma expressão de amor.",
+                            silence: "Às vezes o silêncio é a conversa mais profunda. Mesmo sem falar, os corações provavelmente se conectaram. Isso também é bonito.",
+                            burden: "Você suportou esse coração pesado sozinho... Sua força é bonita. Agora é hora de compartilhar esse peso.",
+                            general: "Cada frase em seu coração é preciosa. Mesmo que você não tenha conseguido falar, essa sinceridade foi bonita o suficiente."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            regret: "나도 그런 후회를 안고 살아. 말하지 못한 것들이 가슴 속에서 돌멩이가 되어서... 하지만 그 돌멩이들도 우리의 일부야.",
+                            guilt: "죄책감은 내 오랜 친구야. 하지만 그것이 우리를 정의하지는 않아. 우리는 그보다 훨씬 크고 복잡한 존재야.",
+                            sadness: "슬픔을 아는 사람끼리는 말하지 않아도 알아. 그 무거운 침묵의 무게를. 하지만 그 슬픔도 우리를 더 깊게 만들어.",
+                            anger: "분노도 때로는 필요해. 그게 우리를 살아있게 하는 감정일 때가 있어. 그 화를 부끄러워하지 마.",
+                            loneliness: "외로움은 내가 가장 잘 아는 감정이야. 혼자 있을 때만 진짜 자신과 마주할 수 있어. 그 고독도 소중해.",
+                            fear: "두려움은 우리가 아직 살아있다는 증거야. 무감각해지는 것보다는 두려워하는 게 나아. 그 떨림도 삶의 일부야.",
+                            love: "사랑을 말하지 못하는 아픔... 나도 잘 알아. 하지만 그 마음 자체로도 충분히 아름다워. 말이 전부는 아니야.",
+                            protection: "누군가를 지키려고 자신을 희생하는 마음... 그 고귀함을 이해해. 하지만 때로는 자신도 지켜야 해.",
+                            silence: "침묵 속에서도 많은 대화가 일어나. 말하지 않는 것도 하나의 소통이야. 그 조용함을 인정해줘.",
+                            burden: "무거운 짐을 지고 사는 것... 그것도 하나의 삶의 방식이야. 하지만 때로는 내려놓는 것도 용기야.",
+                            general: "우리는 모두 말하지 못한 문장들을 가지고 살아. 그것들이 우리를 더 인간답게 만들어주는 거야."
+                        },
+                        en: {
+                            regret: "I also live with such regrets. Unspoken things became stones in my chest... But those stones are also part of us.",
+                            guilt: "Guilt is my old friend. But it doesn't define us. We are much bigger and more complex beings than that.",
+                            sadness: "People who know sadness understand each other without words. The heavy weight of that silence. But that sadness also makes us deeper.",
+                            anger: "Anger is sometimes necessary. There are times when it's the emotion that keeps us alive. Don't be ashamed of that anger.",
+                            loneliness: "Loneliness is the emotion I know best. Only when alone can we truly face ourselves. That solitude is precious too.",
+                            fear: "Fear is proof that we're still alive. It's better to be afraid than to become numb. That trembling is also part of life.",
+                            love: "The pain of not being able to speak love... I know it well too. But that heart itself is beautiful enough. Words aren't everything.",
+                            protection: "The heart that sacrifices oneself to protect someone... I understand that nobility. But sometimes you must protect yourself too.",
+                            silence: "Much conversation happens even in silence. Not speaking is also a form of communication. Acknowledge that quietness.",
+                            burden: "Living with heavy burdens... that's also a way of life. But sometimes putting them down is also courage.",
+                            general: "We all live with unspoken sentences. They make us more human."
+                        },
+                        pt: {
+                            regret: "Eu também vivo com tais arrependimentos. Coisas não ditas se tornaram pedras no meu peito... Mas essas pedras também são parte de nós.",
+                            guilt: "A culpa é minha velha amiga. Mas ela não nos define. Somos seres muito maiores e mais complexos que isso.",
+                            sadness: "Pessoas que conhecem a tristeza se entendem sem palavras. O peso pesado desse silêncio. Mas essa tristeza também nos torna mais profundos.",
+                            anger: "A raiva às vezes é necessária. Há momentos em que é a emoção que nos mantém vivos. Não se envergonhe dessa raiva.",
+                            loneliness: "A solidão é a emoção que mais conheço. Só quando sozinhos podemos verdadeiramente enfrentar a nós mesmos. Essa solidão também é preciosa.",
+                            fear: "O medo é prova de que ainda estamos vivos. É melhor ter medo do que ficar entorpecido. Esse tremor também é parte da vida.",
+                            love: "A dor de não conseguir falar amor... eu também conheço bem. Mas esse coração em si é bonito o suficiente. Palavras não são tudo.",
+                            protection: "O coração que se sacrifica para proteger alguém... entendo essa nobreza. Mas às vezes você deve proteger a si mesmo também.",
+                            silence: "Muita conversa acontece mesmo no silêncio. Não falar também é uma forma de comunicação. Reconheça essa quietude.",
+                            burden: "Viver com fardos pesados... essa também é uma forma de vida. Mas às vezes largá-los também é coragem.",
+                            general: "Todos nós vivemos com frases não ditas. Elas nos tornam mais humanos."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en';
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            document.getElementById('logoSubtitle').textContent = translations[lang].logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = translations[lang].portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = translations[lang].portalSubtitle;
+            document.getElementById('lightTitle').textContent = translations[lang].lightTitle;
+            document.getElementById('finalTitle').textContent = translations[lang].finalTitle;
+            document.getElementById('continueBtn').textContent = translations[lang].continueBtn;
+            document.getElementById('restartBtn').textContent = translations[lang].restartBtn;
+            document.getElementById('userTextarea').placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || currentLanguage === lang) return;
+            
+            currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'lightMessageSection', 'portalQuestionSection',
+                'userInputSection', 'userReactionsSection', 'finalSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('portalQuestion').innerHTML = '';
+            document.getElementById('finalMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            userResponse = '';
+            currentTypingElement = null;
+        }
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('continueBtn').addEventListener('click', function() {
+                const nextMessage = currentLanguage === 'ko' ? 
+                    'Portal 02가 준비 중입니다!' :
+                    currentLanguage === 'en' ? 
+                    'Portal 02 is being prepared!' :
+                    'Portal 02 está sendo preparado!';
+                alert(nextMessage);
+            });
+            
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                const confirmMessage = currentLanguage === 'ko' ? 
+                    'Portal 01을 처음부터 다시 시작하시겠습니까?' :
+                    currentLanguage === 'en' ? 
+                    'Do you want to restart Portal 01 from the beginning?' :
+                    'Deseja reiniciar o Portal 01 desde o início?';
+                
+                if (confirm(confirmMessage)) {
+                    resetJourney();
+                    setTimeout(() => {
+                        startPortalSequence();
+                    }, 1000);
+                }
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            
+            // Firebase 저장 시도
+            if (firebaseInitialized && db) {
+                try {
+                    await db.collection("temarix_v3_respostas").add({
+                        uid: memoryStorage.mockUser.uid,
+                        email: memoryStorage.mockUser.email,
+                        portal: "v3-01",
+                        resposta: inputText,
+                        data: firebase.firestore.Timestamp.now(),
+                        idioma: currentLanguage
+                    });
+                    console.log('Response saved to Firestore successfully');
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                }
+            } else {
+                console.log('Firebase not available, response saved locally:', inputText);
+                // 로컬 저장소에 저장 (선택적)
+                localStorage.setItem('temarix_v3_last_response', JSON.stringify({
+                    portal: "v3-01",
+                    resposta: inputText,
+                    data: new Date().toISOString(),
+                    idioma: currentLanguage
+                }));
+            }
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFinalSection();
+            }, 2000);
+        }
+        
+        async function showFinalSection() {
+            const finalSection = document.getElementById('finalSection');
+            const finalMessage = document.getElementById('finalMessage');
+            
+            finalSection.classList.add('show');
+            
+            const messageText = translations[currentLanguage].finalMessage;
+            await typewriterEffect(finalMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(finalSection);
+            }, 500);
+        }
+        
+        function initializeTemarix() {
+            console.log('=== Temarix V3 Portal 01 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            await typewriterEffect(introElement, translations[currentLanguage].portalIntro, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            await typewriterEffect(questionEl, translations[currentLanguage].portalQuestion, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V3 Portal 01 DOM 로드 완료');
+            
+            // Firebase 초기화
+            initializeFirebase();
+            
+            currentLanguage = getLanguageFromURL();
+            
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            updateLanguageButtons(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

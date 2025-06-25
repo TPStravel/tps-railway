@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 16: The Moment of Taking the First Step</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 16: The Moment of Taking the First Step</div>
+            <div class="portal-subtitle" id="portalSubtitle">Courage that begins after hesitation</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">🌙 Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 17</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Share about your first step and that moment... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 16: 첫 걸음을 내딛는 순간",
+                portalSubtitle: "망설임 끝에 시작되는 용기",
+                portalIntro: "오랫동안 망설였습니다.\n'정말 해도 될까?'\n'실패하면 어떡하지?'\n'다른 사람들은 뭐라고 할까?'\n\n하지만 어느 순간,\n더 이상 망설일 수 없는 지점에 도달했습니다.\n변하지 않으면 안 되는,\n시작하지 않으면 안 되는 순간.\n\n지금, 당신은 그 첫 걸음을 내딛으려 합니다.\n완벽하지 않아도,\n확신이 없어도,\n그저 진심만으로.",
+                lightTitle: "🌙 빛의 한마디",
+                lightMessage: "첫 걸음에는 모든 가능성이 담겨 있습니다.\n방향을 바꿀 수도, 속도를 조절할 수도 있어요.\n중요한 것은 멈춰있지 않는다는 것입니다.",
+                portalQuestion: "당신이 내딛고 싶은 첫 걸음은 무엇인가요?\n그 걸음을 내딛는 순간, 무엇이 달라질까요?",
+                continueText: "첫 걸음을 내딛는 용기를 탐구한 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 17로 계속하기",
+                continueNo: "여정을 일시정지하기",
+                inputPlaceholder: "당신의 첫 걸음과 그 순간에 대해 털어놓아 보세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "첫 걸음은 완벽할 필요가 없습니다.\n단지 진심에서 나온 한 발짝이면 충분해요.",
+                charCris: "첫 걸음은 항상 어색해요!\n잘 걷고 있는지도 모르겠고...\n근데 걷다 보면 언젠가는 자연스러워져요! 🚶‍♀️",
+                charZafirah: "첫 걸음이 두려운 것은\n그만큼 그 길이 당신에게 소중하다는 뜻이에요.",
+                charRami: "모든 여정은 첫 걸음에서 시작됩니다.\n그 걸음이 목적지를 결정하는 것이 아니라\n첫 걸음이 여정을 만들어갑니다.",
+                charSamir: "(그는 당신과 함께 첫 발을 내딛습니다.\n무거운 발걸음이지만\n그 무게가 현실을 만들어가는 힘입니다.)",
+                charLayla: "첫 걸음을 내딛는 당신의 모습이\n가장 아름다워요.\n완성된 모습보다 시작하는 모습이 더 용감하거든요.",
+                charNabir: "첫 걸음이 뭐가 그리 대단해?\n어차피 중간에 포기할 건데.\n시작도 제대로 못 할 거면서.",
+                charAzhar: "첫 걸음? 그거 착각이야.\n넌 이미 늦었고, 기회도 지났어.\n지금 시작해봤자 의미 없어."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 16: The Moment of Taking the First Step",
+                portalSubtitle: "Courage that begins after hesitation",
+                portalIntro: "I hesitated for a long time.\n'Should I really do this?'\n'What if I fail?'\n'What will others say?'\n\nBut at some point,\nI reached a point where I could no longer hesitate.\nA moment when I must change,\nwhen I must begin.\n\nNow, you are about to take that first step.\nEven if it's not perfect,\neven without certainty,\njust with sincerity.",
+                lightTitle: "🌙 Word of Light",
+                lightMessage: "The first step contains all possibilities.\nYou can change direction, adjust speed.\nWhat matters is not staying still.",
+                portalQuestion: "What is the first step you want to take?\nWhen you take that step, what will change?",
+                continueText: "Will you continue this journey of exploring the courage to take the first step?",
+                continueYes: "Continue to Portal 17",
+                continueNo: "Pause the journey",
+                inputPlaceholder: "Share about your first step and that moment... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "The first step doesn't need to be perfect.\nJust one step from sincerity is enough.",
+                charCris: "First steps are always awkward!\nI don't even know if I'm walking well...\nBut as you walk, it naturally becomes natural! 🚶‍♀️",
+                charZafirah: "Being afraid of the first step means\nthat path is precious to you.",
+                charRami: "Every journey begins with the first step.\nThat step doesn't determine the destination,\nthe first step creates the journey.",
+                charSamir: "(He takes the first step together with you.\nThough the footsteps are heavy,\nthat weight is the power that creates reality.)",
+                charLayla: "You taking your first step\nis most beautiful.\nThe beginning is braver than the completion.",
+                charNabir: "What's so great about a first step?\nYou'll give up halfway anyway.\nYou can't even start properly.",
+                charAzhar: "First step? That's an illusion.\nYou're already late, opportunities are gone.\nStarting now is meaningless."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 16: O Momento de Dar o Primeiro Passo",
+                portalSubtitle: "Coragem que começa após a hesitação",
+                portalIntro: "Hesitei por muito tempo.\n'Devo realmente fazer isso?'\n'E se eu falhar?'\n'O que os outros vão dizer?'\n\nMas em algum momento,\ncheguei a um ponto onde não podia mais hesitar.\nUm momento quando devo mudar,\nquando devo começar.\n\nAgora, você está prestes a dar esse primeiro passo.\nMesmo que não seja perfeito,\nmesmo sem certeza,\napenas com sinceridade.",
+                lightTitle: "🌙 Palavra de Luz",
+                lightMessage: "O primeiro passo contém todas as possibilidades.\nVocê pode mudar direção, ajustar velocidade.\nO que importa é não ficar parado.",
+                portalQuestion: "Qual é o primeiro passo que você quer dar?\nQuando você der esse passo, o que mudará?",
+                continueText: "Você continuará esta jornada de explorar a coragem de dar o primeiro passo?",
+                continueYes: "Continuar para o Portal 17",
+                continueNo: "Pausar a jornada",
+                inputPlaceholder: "Compartilhe sobre seu primeiro passo e esse momento... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "O primeiro passo não precisa ser perfeito.\nApenas um passo da sinceridade é suficiente.",
+                charCris: "Primeiros passos são sempre estranhos!\nNem sei se estou caminhando bem...\nMas conforme você anda, naturalmente se torna natural! 🚶‍♀️",
+                charZafirah: "Ter medo do primeiro passo significa\nque esse caminho é precioso para você.",
+                charRami: "Toda jornada começa com o primeiro passo.\nEsse passo não determina o destino,\no primeiro passo cria a jornada.",
+                charSamir: "(Ele dá o primeiro passo junto com você.\nEmbora os passos sejam pesados,\nesse peso é o poder que cria realidade.)",
+                charLayla: "Você dando seu primeiro passo\né mais bonito.\nO começo é mais corajoso que a conclusão.",
+                charNabir: "O que há de tão especial no primeiro passo?\nVocê vai desistir no meio do caminho mesmo.\nNem consegue começar direito.",
+                charAzhar: "Primeiro passo? Isso é uma ilusão.\nVocê já está atrasado, oportunidades se foram.\nComeçar agora não tem sentido."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑 (Portal 16 특화)
+            const emotionKeywords = {
+                beginning: ['시작', '첫걸음', '출발', 'beginning', 'start', 'first step', 'início', 'começo', 'primeiro passo'],
+                hesitation: ['망설임', '주저', '고민', 'hesitation', 'doubt', 'hesitação', 'dúvida'],
+                courage: ['용기', '용감', '결심', 'courage', 'brave', 'determination', 'coragem', 'corajoso', 'determinação'],
+                fear: ['두려운', '무서운', '걱정', 'fear', 'scared', 'worried', 'medo', 'assustado', 'preocupado'],
+                action: ['행동', '실행', '움직임', 'action', 'execution', 'movement', 'ação', 'execução', 'movimento'],
+                change: ['변화', '바꾸는', '달라지는', 'change', 'transform', 'mudança', 'transformar'],
+                decision: ['결정', '선택', '정하는', 'decision', 'choice', 'decide', 'decisão', 'escolha', 'decidir'],
+                goal: ['목표', '꿈', '이루고싶은', 'goal', 'dream', 'achieve', 'objetivo', 'sonho', 'alcançar'],
+                small_step: ['작은', '천천히', '조금씩', 'small', 'slowly', 'gradually', 'pequeno', 'devagar', 'gradualmente'],
+                commitment: ['약속', '다짐', '결의', 'commitment', 'promise', 'resolve', 'compromisso', 'promessa', 'resolver'],
+                momentum: ['기세', '추진력', '흐름', 'momentum', 'drive', 'flow', 'impulso', 'força', 'fluxo'],
+                timing: ['때', '시간', '타이밍', 'timing', 'time', 'moment', 'tempo', 'momento']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (Portal 16 전용)
+        const responseCharacters = [
+            {
+                name: "Seed", emoji: "🌱",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            beginning: "씨앗에게 첫 발아는 가장 용기 있는 순간이에요. 안전한 땅속을 뚫고 나오는 것이니까요. 당신의 첫 걸음도 그런 발아와 같아요. 작지만 가장 중요한 시작입니다.",
+                            hesitation: "씨앗도 발아하기 전에 오랫동안 준비해요. 그 시간이 망설임처럼 보이지만, 사실은 성장을 위한 준비 시간이었어요. 당신의 망설임도 마찬가지일 거예요.",
+                            courage: "땅을 뚫고 나오는 것은 씨앗에게는 거대한 용기가 필요한 일이에요. 밖이 어떨지 모르니까요. 하지만 그 용기가 새로운 생명을 만들어내죠.",
+                            fear: "씨앗이 가장 두려워하는 것은 썩어버리는 것이에요. 하지만 움트지 않으면 정말로 썩어버리죠. 두려움을 넘어서야 생명이 시작됩니다.",
+                            action: "씨앗의 첫 행동은 뿌리를 내리는 것이에요. 보이지 않는 곳에서 시작되지만, 모든 성장의 기반이 되죠. 작은 행동도 큰 의미가 있어요.",
+                            change: "씨앗에서 새싹으로 변하는 것은 완전한 변화예요. 하지만 씨앗의 본질은 그대로 남아있어요. 변화 속에서도 자신을 잃지 않을 수 있어요.",
+                            decision: "씨앗이 언제 발아할지는 씨앗 스스로 결정해요. 조건이 맞고, 준비가 되었을 때. 당신도 자신의 타이밍을 믿어도 괜찮아요.",
+                            goal: "씨앗의 꿈은 큰 나무가 되는 것이지만, 먼저 작은 새싹이 되어야 해요. 큰 목표도 작은 시작에서 자라나는 거예요.",
+                            small_step: "씨앗의 첫 싹은 정말 작아요. 하지만 그 작은 싹이 거대한 나무의 시작이에요. 작은 걸음도 충분히 가치 있어요.",
+                            commitment: "씨앗이 발아하는 것은 성장에 대한 약속이에요. 한 번 시작하면 계속 자라야 하니까요. 시작은 곧 약속이에요.",
+                            momentum: "씨앗이 움트기 시작하면 멈출 수 없어요. 그 자체가 생명의 힘이거든요. 첫 걸음도 그런 멈출 수 없는 힘이 될 수 있어요.",
+                            timing: "씨앗은 때를 기다릴 줄 알아요. 너무 이르지도, 너무 늦지도 않은 완벽한 순간을. 당신도 자신만의 완벽한 때가 있을 거예요.",
+                            general: "모든 거대한 나무는 작은 씨앗에서 시작됐어요. 당신의 첫 걸음도 언젠가는 거대한 숲이 될 수 있어요. 작게 시작해도 괜찮아요."
+                        },
+                        en: {
+                            beginning: "For a seed, the first germination is the most courageous moment. Breaking through the safe underground. Your first step is like that germination. Small but the most important beginning.",
+                            hesitation: "Seeds also prepare for a long time before germinating. That time looks like hesitation, but it was actually preparation time for growth. Your hesitation is probably the same.",
+                            courage: "Breaking through the ground requires enormous courage for a seed. Because it doesn't know what's outside. But that courage creates new life.",
+                            fear: "What seeds fear most is rotting away. But if they don't sprout, they really do rot. Life begins by overcoming fear.",
+                            action: "A seed's first action is taking root. It starts in invisible places, but becomes the foundation of all growth. Small actions also have great meaning.",
+                            change: "Changing from seed to sprout is complete transformation. But the essence of the seed remains. You can not lose yourself even in change.",
+                            decision: "When to germinate is decided by the seed itself. When conditions are right and it's prepared. You can trust your own timing too.",
+                            goal: "A seed's dream is to become a big tree, but first it must become a small sprout. Big goals also grow from small beginnings.",
+                            small_step: "A seed's first sprout is really small. But that small sprout is the beginning of a giant tree. Small steps are valuable enough.",
+                            commitment: "A seed germinating is a promise for growth. Once it starts, it must keep growing. Beginning is a promise.",
+                            momentum: "Once a seed starts sprouting, it can't stop. That itself is the power of life. First steps can also become such unstoppable power.",
+                            timing: "Seeds know how to wait for the right time. The perfect moment that's neither too early nor too late. You'll have your own perfect timing too.",
+                            general: "Every giant tree started from a small seed. Your first step can also become a giant forest someday. It's okay to start small."
+                        },
+                        pt: {
+                            beginning: "Para uma semente, a primeira germinação é o momento mais corajoso. Romper através do subsolo seguro. Seu primeiro passo é como essa germinação. Pequeno mas o começo mais importante.",
+                            hesitation: "Sementes também se preparam por muito tempo antes de germinar. Esse tempo parece hesitação, mas na verdade era tempo de preparação para crescimento. Sua hesitação provavelmente é igual.",
+                            courage: "Romper através do solo requer coragem enorme para uma semente. Porque ela não sabe o que há lá fora. Mas essa coragem cria nova vida.",
+                            fear: "O que as sementes mais temem é apodrecer. Mas se não brotarem, realmente apodrecem. A vida começa superando o medo.",
+                            action: "A primeira ação de uma semente é criar raízes. Começa em lugares invisíveis, mas se torna a fundação de todo crescimento. Pequenas ações também têm grande significado.",
+                            change: "Mudar de semente para broto é transformação completa. Mas a essência da semente permanece. Você pode não se perder mesmo na mudança.",
+                            decision: "Quando germinar é decidido pela própria semente. Quando as condições estão certas e está preparada. Você pode confiar em seu próprio timing também.",
+                            goal: "O sonho de uma semente é se tornar uma árvore grande, mas primeiro deve se tornar um pequeno broto. Grandes objetivos também crescem de pequenos começos.",
+                            small_step: "O primeiro broto de uma semente é realmente pequeno. Mas esse pequeno broto é o começo de uma árvore gigante. Pequenos passos são valiosos o suficiente.",
+                            commitment: "Uma semente germinando é uma promessa para crescimento. Uma vez que começa, deve continuar crescendo. Começar é uma promessa.",
+                            momentum: "Uma vez que uma semente começa a brotar, não pode parar. Isso em si é o poder da vida. Primeiros passos também podem se tornar tal poder imparável.",
+                            timing: "Sementes sabem como esperar pelo momento certo. O momento perfeito que não é nem muito cedo nem muito tarde. Você terá seu próprio timing perfeito também.",
+                            general: "Toda árvore gigante começou de uma pequena semente. Seu primeiro passo também pode se tornar uma floresta gigante algum dia. Não há problema em começar pequeno."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Path", emoji: "🛤️",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            beginning: "모든 길은 첫 발걸음에서 시작돼요. 그 전까지는 그냥 가능성이었지만, 첫 걸음이 길을 현실로 만들어줍니다. 당신의 걸음이 새로운 길을 만들고 있어요.",
+                            hesitation: "길 앞에서 망설이는 것은 당연해요. 어디로 이어질지 모르니까요. 하지만 길은 걸어봐야만 알 수 있어요. 망설임도 길의 일부입니다.",
+                            courage: "길을 걸으려면 용기가 필요해요. 특히 아무도 가지 않은 길일수록. 하지만 그런 길에서 가장 아름다운 풍경을 만날 수 있어요.",
+                            fear: "길이 두려운 것은 끝이 보이지 않기 때문이에요. 하지만 길은 한 걸음씩만 걸으면 돼요. 끝까지 갈 필요는 없어요, 지금 이 순간만 걸으면 되니까요.",
+                            action: "길은 행동으로만 만들어져요. 생각으로는 길이 생기지 않거든요. 당신의 발걸음 하나하나가 길을 만들어가고 있어요.",
+                            change: "길을 걷다 보면 풍경이 계속 바뀌어요. 그게 길의 매력이죠. 변화를 두려워하지 말고, 새로운 풍경을 즐겨보세요.",
+                            decision: "갈림길에서 어느 쪽을 택할지는 당신이 정해요. 정답은 없어요. 어느 길을 가든 그것이 당신만의 길이 되니까요.",
+                            goal: "길의 목적지가 중요한 게 아니에요. 걸어가는 그 과정이 더 소중해요. 목표를 향해 가되, 지금 걷고 있는 이 순간을 놓치지 마세요.",
+                            small_step: "길은 작은 걸음들로 이뤄져요. 거대한 보폭보다 꾸준한 걸음이 더 멀리 갈 수 있어요. 천천히, 꾸준히 걸어가세요.",
+                            commitment: "길을 걷겠다고 정한 것은 자신과의 약속이에요. 힘들어도 포기하지 않겠다는. 그 약속을 지켜나가는 것이 진짜 길걷기예요.",
+                            momentum: "길을 걷기 시작하면 자연스럽게 리듬이 생겨요. 그 리듬을 타면 더 쉽게 걸을 수 있어요. 첫 걸음이 그 리듬의 시작이에요.",
+                            timing: "길을 걷기 시작할 완벽한 때는 없어요. 지금이 바로 그 때예요. 길은 언제든 당신을 기다리고 있거든요.",
+                            general: "길은 걷는 사람에 의해 만들어져요. 당신이 걸으면 그것이 바로 당신의 길이에요. 남의 길과 비교하지 말고, 당신만의 길을 걸어가세요."
+                        },
+                        en: {
+                            beginning: "Every path starts with the first step. Until then it was just possibility, but the first step makes the path reality. Your steps are creating a new path.",
+                            hesitation: "It's natural to hesitate before a path. Because you don't know where it leads. But paths can only be known by walking them. Hesitation is also part of the path.",
+                            courage: "Walking a path requires courage. Especially paths no one has taken. But on such paths you can meet the most beautiful scenery.",
+                            fear: "Paths are scary because you can't see the end. But paths only need to be walked one step at a time. You don't need to go to the end, just walk this moment.",
+                            action: "Paths are only made through action. Thinking doesn't create paths. Each of your steps is creating the path.",
+                            change: "As you walk a path, the scenery keeps changing. That's the charm of paths. Don't fear change, enjoy the new scenery.",
+                            decision: "Which way to choose at a crossroads is up to you. There's no right answer. Whichever path you take becomes your unique path.",
+                            goal: "The destination of a path isn't what's important. The process of walking is more precious. Head toward your goal, but don't miss this moment of walking.",
+                            small_step: "Paths are made of small steps. Steady steps can go further than giant strides. Walk slowly and steadily.",
+                            commitment: "Deciding to walk a path is a promise to yourself. That you won't give up even when it's hard. Keeping that promise is real path-walking.",
+                            momentum: "Once you start walking a path, a natural rhythm develops. Riding that rhythm makes walking easier. The first step is the beginning of that rhythm.",
+                            timing: "There's no perfect time to start walking a path. Now is exactly that time. The path is always waiting for you.",
+                            general: "Paths are made by those who walk them. When you walk, that becomes your path. Don't compare with others' paths, walk your own unique path."
+                        },
+                        pt: {
+                            beginning: "Todo caminho começa com o primeiro passo. Até então era apenas possibilidade, mas o primeiro passo torna o caminho realidade. Seus passos estão criando um novo caminho.",
+                            hesitation: "É natural hesitar antes de um caminho. Porque você não sabe onde leva. Mas caminhos só podem ser conhecidos caminhando neles. Hesitação também é parte do caminho.",
+                            courage: "Caminhar um caminho requer coragem. Especialmente caminhos que ninguém tomou. Mas em tais caminhos você pode encontrar a paisagem mais bonita.",
+                            fear: "Caminhos são assustadores porque você não pode ver o fim. Mas caminhos só precisam ser caminhados um passo de cada vez. Você não precisa ir até o fim, apenas caminhe este momento.",
+                            action: "Caminhos são feitos apenas através da ação. Pensar não cria caminhos. Cada um dos seus passos está criando o caminho.",
+                            change: "Conforme você caminha um caminho, a paisagem continua mudando. Esse é o charme dos caminhos. Não tema a mudança, aproveite a nova paisagem.",
+                            decision: "Qual caminho escolher numa encruzilhada depende de você. Não há resposta certa. Qualquer caminho que você tome se torna seu caminho único.",
+                            goal: "O destino de um caminho não é o que é importante. O processo de caminhar é mais precioso. Vá em direção ao seu objetivo, mas não perca este momento de caminhar.",
+                            small_step: "Caminhos são feitos de pequenos passos. Passos constantes podem ir mais longe que grandes passadas. Caminhe devagar e constantemente.",
+                            commitment: "Decidir caminhar um caminho é uma promessa para si mesmo. Que você não desistirá mesmo quando for difícil. Manter essa promessa é verdadeiro caminhar.",
+                            momentum: "Uma vez que você começa a caminhar um caminho, um ritmo natural se desenvolve. Seguir esse ritmo torna o caminhar mais fácil. O primeiro passo é o começo desse ritmo.",
+                            timing: "Não há momento perfeito para começar a caminhar um caminho. Agora é exatamente esse momento. O caminho está sempre esperando por você.",
+                            general: "Caminhos são feitos por aqueles que os caminham. Quando você caminha, isso se torna seu caminho. Não compare com caminhos dos outros, caminhe seu próprio caminho único."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Dawn", emoji: "🌅",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            beginning: "새벽은 모든 것의 시작이에요. 어둠이 끝나고 빛이 시작되는 경계선. 당신의 첫 걸음도 그런 새벽과 같아요. 새로운 하루의 시작이죠.",
+                            hesitation: "새벽 전이 가장 어두워요. 그래서 더 망설여지죠. 하지만 그 어둠 끝에 새벽이 기다리고 있어요. 망설임의 끝에도 시작이 있어요.",
+                            courage: "새벽을 맞이하려면 어둠을 견뎌야 해요. 그것이 새벽의 용기죠. 당신도 지금까지 충분히 견뎠어요. 이제 새벽을 맞을 차례예요.",
+                            fear: "새벽이 와도 또 밤이 올까 봐 두려워하나요? 하지만 밤이 와도 다시 새벽은 와요. 두려움은 일시적이지만, 희망은 계속 돌아와요.",
+                            action: "새벽은 저절로 오지 않아요. 시간이 흘러야 하고, 지구가 돌아야 하죠. 당신의 행동도 그래요. 움직여야 새로운 시작이 와요.",
+                            change: "새벽마다 세상은 새롭게 태어나요. 어제와 같은 풍경이지만 완전히 다른 빛깔이죠. 변화도 그래요. 같은 당신이지만 새로운 빛을 받는 거예요.",
+                            decision: "새벽을 보려면 일찍 일어나기로 결정해야 해요. 편안한 잠을 포기하는 결정이죠. 모든 시작에는 그런 결정이 필요해요.",
+                            goal: "새벽의 목표는 해를 떠오르게 하는 것이 아니에요. 그저 어둠을 밝히는 것이죠. 작은 목표부터 시작해도 충분해요.",
+                            small_step: "새벽은 한 번에 밝아지지 않아요. 서서히, 조금씩 밝아져요. 당신의 변화도 그렇게 천천히 일어나도 괜찮아요.",
+                            commitment: "매일 새벽이 오는 것처럼, 약속은 매일 지켜가는 거예요. 한 번의 다짐이 아니라 매일의 선택이죠.",
+                            momentum: "새벽이 시작되면 하루 전체가 밝아져요. 첫 걸음도 그래요. 시작하면 자연스럽게 이어져요.",
+                            timing: "새벽은 정확한 시간에 와요. 너무 이르지도, 늦지도 않게. 당신의 시작도 지금이 완벽한 타이밍일 거예요.",
+                            general: "가장 어두운 시간 끝에 새벽이 와요. 당신이 지금 어둠 속에 있다면, 곧 새벽이 올 거예요. 조금만 더 기다려보세요."
+                        },
+                        en: {
+                            beginning: "Dawn is the beginning of everything. The boundary where darkness ends and light begins. Your first step is like that dawn. The start of a new day.",
+                            hesitation: "It's darkest before dawn. That's why you hesitate more. But dawn is waiting at the end of that darkness. There's also a beginning at the end of hesitation.",
+                            courage: "To greet dawn, you must endure darkness. That's the courage of dawn. You've endured enough until now. Now it's time to greet the dawn.",
+                            fear: "Are you afraid that night will come again even after dawn? But even when night comes, dawn comes again. Fear is temporary, but hope keeps returning.",
+                            action: "Dawn doesn't come by itself. Time must pass and the earth must turn. Your actions are the same. You must move for a new beginning to come.",
+                            change: "The world is reborn new every dawn. Same scenery as yesterday but completely different colors. Change is like that too. Same you but receiving new light.",
+                            decision: "To see dawn, you must decide to wake up early. A decision to give up comfortable sleep. Every beginning needs such a decision.",
+                            goal: "Dawn's goal isn't to make the sun rise. It's just to brighten the darkness. Starting with small goals is enough.",
+                            small_step: "Dawn doesn't brighten all at once. Gradually, little by little it brightens. Your change can happen slowly like that too.",
+                            commitment: "Like dawn comes every day, promises are kept every day. Not one determination but daily choices.",
+                            momentum: "Once dawn begins, the entire day brightens. First steps are like that too. Once you start, it naturally continues.",
+                            timing: "Dawn comes at the exact time. Neither too early nor too late. Your beginning is probably perfect timing right now too.",
+                            general: "Dawn comes at the end of the darkest time. If you're in darkness now, dawn will come soon. Wait just a little longer."
+                        },
+                        pt: {
+                            beginning: "O amanhecer é o começo de tudo. A fronteira onde a escuridão termina e a luz começa. Seu primeiro passo é como esse amanhecer. O início de um novo dia.",
+                            hesitation: "É mais escuro antes do amanhecer. É por isso que você hesita mais. Mas o amanhecer está esperando no fim dessa escuridão. Também há um começo no fim da hesitação.",
+                            courage: "Para saudar o amanhecer, você deve suportar a escuridão. Essa é a coragem do amanhecer. Você suportou o suficiente até agora. Agora é hora de saudar o amanhecer.",
+                            fear: "Você tem medo de que a noite venha novamente mesmo depois do amanhecer? Mas mesmo quando a noite vem, o amanhecer vem novamente. O medo é temporário, mas a esperança continua retornando.",
+                            action: "O amanhecer não vem por si só. O tempo deve passar e a terra deve girar. Suas ações são iguais. Você deve se mover para um novo começo vir.",
+                            change: "O mundo renasce novo a cada amanhecer. Mesma paisagem de ontem mas cores completamente diferentes. Mudança é assim também. Mesmo você mas recebendo nova luz.",
+                            decision: "Para ver o amanhecer, você deve decidir acordar cedo. Uma decisão de desistir do sono confortável. Todo começo precisa de tal decisão.",
+                            goal: "O objetivo do amanhecer não é fazer o sol nascer. É apenas clarear a escuridão. Começar com pequenos objetivos é suficiente.",
+                            small_step: "O amanhecer não clareia de uma vez. Gradualmente, pouco a pouco clareia. Sua mudança pode acontecer devagar assim também.",
+                            commitment: "Como o amanhecer vem todos os dias, promessas são mantidas todos os dias. Não uma determinação mas escolhas diárias.",
+                            momentum: "Uma vez que o amanhecer começa, o dia inteiro clareia. Primeiros passos são assim também. Uma vez que você começa, naturalmente continua.",
+                            timing: "O amanhecer vem no momento exato. Nem muito cedo nem muito tarde. Seu começo provavelmente é timing perfeito agora também.",
+                            general: "O amanhecer vem no fim do tempo mais escuro. Se você está na escuridão agora, o amanhecer virá em breve. Espere apenas um pouco mais."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 16 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 17이 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 17 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 17 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 16 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

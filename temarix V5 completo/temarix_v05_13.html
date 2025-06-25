@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V5 - Portal 13: The Day I Decided to Stop Hating Myself</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ff9999;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .follow-up-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .follow-up-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ff6b6b;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .navigation-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .navigation-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .nav-btn:hover {
+            background: #666;
+            border-color: #ff6b6b;
+        }
+        
+        .nav-btn.primary {
+            background: #ff6b6b;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .nav-btn.primary:hover {
+            background: #ff8888;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ff6b6b;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .follow-up-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+            
+            .navigation-title {
+                font-size: 24px;
+            }
+            
+            .navigation-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V5</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Alchemy</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 13: The Day I Decided to Stop Hating Myself</div>
+            <div class="portal-subtitle" id="portalSubtitle">When did I finally stop being cold to myself?</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="follow-up-section" id="followUpSection">
+                <div class="follow-up-question" id="followUpQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+            
+            <div class="navigation-section" id="navigationSection">
+                <div class="navigation-title" id="navigationTitle">🪞 Portal 13 Complete</div>
+                <div class="navigation-message" id="navigationMessage"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn primary" id="nextPortalBtn">Continue to Portal 14</button>
+                    <button class="nav-btn" id="stayPortalBtn">Stay with this peace</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Tell me about when you hated yourself the most... (Press Enter to send)"
+                      rows="1"
+                      maxlength="800"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Global state management
+        let state = {
+            db: null,
+            auth: null,
+            firebaseInitialized: false,
+            currentUser: null,
+            currentLanguage: 'en',
+            userResponse: '',
+            journeyStarted: false,
+            currentTypingElement: null,
+            typingIntervals: [],
+            awaitingSecondResponse: false,
+            userResponses: []
+        };
+        
+        // Portal navigation configuration
+        const portalConfig = {
+            currentPortal: "v5-13",
+            nextPortal: "v5-14",
+            nextPortalFile: "temarix_v05_14.html"
+        };
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjsINSqPUGdpRPRMYiVg6SkVJJOk9YGsY",
+            authDomain: "canal-vivo-chat.firebaseapp.com",
+            projectId: "canal-vivo-chat",
+            storageBucket: "canal-vivo-chat.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdefghijklmnopqr"
+        };
+        
+        // Initialize Firebase with error handling
+        function initializeFirebase() {
+            return new Promise((resolve) => {
+                try {
+                    if (typeof firebase !== 'undefined') {
+                        firebase.initializeApp(firebaseConfig);
+                        state.db = firebase.firestore();
+                        state.auth = firebase.auth();
+                        state.firebaseInitialized = true;
+                        
+                        state.auth.onAuthStateChanged((user) => {
+                            if (user) {
+                                state.currentUser = user;
+                            } else {
+                                state.currentUser = {
+                                    uid: 'anonymous-' + Date.now(),
+                                    email: 'anonymous@temarix.com',
+                                    isAnonymous: true
+                                };
+                            }
+                            showConnectionStatus(true);
+                        });
+                        
+                        console.log('Firebase initialized successfully');
+                    } else {
+                        console.log('Firebase SDK not loaded');
+                        state.currentUser = {
+                            uid: 'anonymous-' + Date.now(),
+                            email: 'anonymous@temarix.com',
+                            isAnonymous: true
+                        };
+                        showConnectionStatus(false);
+                    }
+                } catch (error) {
+                    console.error('Firebase initialization failed:', error);
+                    state.currentUser = {
+                        uid: 'anonymous-' + Date.now(),
+                        email: 'anonymous@temarix.com',
+                        isAnonymous: true
+                    };
+                    showConnectionStatus(false);
+                }
+                resolve();
+            });
+        }
+        
+        // Show connection status to user
+        function showConnectionStatus(isOnline) {
+            const existingStatus = document.querySelector('.connection-status');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            if (!isOnline) {
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'connection-status';
+                statusDiv.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    background: rgba(255, 107, 107, 0.9);
+                    color: white;
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-family: 'Courier New', monospace;
+                    z-index: 1000;
+                    opacity: 0.8;
+                `;
+                statusDiv.textContent = state.currentLanguage === 'ko' ? '오프라인 모드' : 
+                                       state.currentLanguage === 'pt' ? 'Modo offline' : 'Offline mode';
+                document.body.appendChild(statusDiv);
+                
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        // Translations object
+        const translations = {
+            ko: {
+                title: "Temarix V5 - Portal 13: 더는 나를 미워하지 않기로 한 날",
+                logoSubtitle: "감정 연금술",
+                portalMainTitle: "Portal 13: 더는 나를 미워하지 않기로 한 날",
+                portalSubtitle: "언제 나는 드디어 나에게 차갑게 대하지 않기로 했을까?",
+                portalIntro: "🪞 \"당신은 언제, 스스로를 가장 미워했던 적이 있었나요?\"\n\n\"그 순간, 왜 그렇게 자신에게 차갑게 대했을까요?\"\n\n\"그리고… 지금은 그 감정을 어떻게 바라보시나요?\"",
+                emotionalBridge: "자기 혐오는 때로는 변화하지 못한 나를 향한 절망이었을지도 모릅니다.\n\n하지만 자신을 미워하는 사람은 누구보다도 '나'에게 간절한 기대가 있었던 사람입니다.\n용서는 타인을 향하기 전에, 그렇게 나를 미워하던 나를 받아들이는 일부터 시작됩니다.",
+                followUpQuestion: "지금 그때의 '나'에게 이렇게 말할 수 있나요?\n'나는 이제 너를 미워하지 않을 거야.'\n그 말을, 어떤 마음으로 전하겠습니까?",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "그 선언 하나로,\n당신은 자신 안의 전쟁을 멈춘 사람이 되었어요.\n그렇게 당신이 자신에게 다정해질 수 있을 때,\n세상도 당신을 다르게 대하기 시작할 거예요.",
+                navigationTitle: "🪞 Portal 13 완료",
+                navigationMessage: "당신은 더 이상 스스로를 미워하지 않기로 했습니다.\n\n그 선언은 용서의 끝이 아니라, 자기 존중의 시작입니다. 자신과의 전쟁을 멈춘 당신은 이제 평화로운 마음으로 살아갈 수 있습니다.\n\n그 다정함이 당신의 일상을 바꾸고, 다른 사람들과의 관계도 새롭게 만들어갈 것입니다.\n\n당신은 자신에게 자비로운 사람이 되었습니다.",
+                nextPortalBtn: "Portal 14로 이어가기",
+                stayPortalBtn: "이 평화와 머물기",
+                inputPlaceholder: "당신이 자신을 가장 미워했던 때에 대해 말해주세요... (Enter로 전송)",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중...",
+                confirmNextPortal: "Portal 14: 자비는 연약함이 아니었다로 이동하시겠습니까?",
+                confirmStay: "이 내적 평화와 더 머물며 자기 수용의 감정을 더 깊이 느끼시겠습니까?",
+                transitionMessage: "새로운 여정이 시작됩니다..."
+            },
+            en: {
+                title: "Temarix V5 - Portal 13: The Day I Decided to Stop Hating Myself",
+                logoSubtitle: "Emotional Alchemy",
+                portalMainTitle: "Portal 13: The Day I Decided to Stop Hating Myself",
+                portalSubtitle: "When did I finally stop being cold to myself?",
+                portalIntro: "🪞 \"When was the time you hated yourself the most?\"\n\n\"In that moment, why were you so cold to yourself?\"\n\n\"And… how do you view that feeling now?\"",
+                emotionalBridge: "Self-hatred might have been despair toward a self that couldn't change.\n\nBut someone who hates themselves is someone who had the most earnest expectations for 'me.'\nForgiveness starts not with others, but with accepting the me who used to hate myself.",
+                followUpQuestion: "Can you say this to that past 'me' now?\n'I will no longer hate you.'\nWith what heart would you convey those words?",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "With that one declaration,\nyou became someone who stopped the war within yourself.\nWhen you can be gentle with yourself like this,\nthe world will also begin to treat you differently.",
+                navigationTitle: "🪞 Portal 13 Complete",
+                navigationMessage: "You have decided to no longer hate yourself.\n\nThat declaration is not the end of forgiveness, but the beginning of self-respect. Having stopped the war with yourself, you can now live with a peaceful heart.\n\nThat gentleness will transform your daily life and create new relationships with others.\n\nYou have become someone who is compassionate to yourself.",
+                nextPortalBtn: "Continue to Portal 14",
+                stayPortalBtn: "Stay with this peace",
+                inputPlaceholder: "Tell me about when you hated yourself the most... (Press Enter to send)",
+                youLabel: "You",
+                waitingMessage: "Waiting for response...",
+                confirmNextPortal: "Do you want to continue to Portal 14: Compassion Was Not Weakness?",
+                confirmStay: "Do you want to stay longer with this inner peace and feel self-acceptance more deeply?",
+                transitionMessage: "A new journey begins..."
+            },
+            pt: {
+                title: "Temarix V5 - Portal 13: O Dia em que Decidi Parar de Me Odiar",
+                logoSubtitle: "Alquimia Emocional",
+                portalMainTitle: "Portal 13: O Dia em que Decidi Parar de Me Odiar",
+                portalSubtitle: "Quando finalmente parei de ser frio comigo mesmo?",
+                portalIntro: "🪞 \"Quando foi a epoca em que mais se odiou?\"\n\n\"Naquele momento, por que foi tao frio consigo mesmo?\"\n\n\"E… como ve esse sentimento agora?\"",
+                emotionalBridge: "O auto-odio pode ter sido desespero em relacao a um eu que nao conseguia mudar.\n\nMas alguem que se odeia e alguem que tinha as expectativas mais sinceras para 'mim.'\nO perdao comeca nao com outros, mas aceitando o eu que costumava me odiar.",
+                followUpQuestion: "Pode dizer isto ao 'eu' do passado agora?\n'Nao vou mais te odiar.'\nCom que coracao transmitiria essas palavras?",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Com essa unica declaracao,\nvoce se tornou alguem que parou a guerra dentro de si mesmo.\nQuando conseguir ser gentil consigo mesmo assim,\no mundo tambem comecara a trata-lo de forma diferente.",
+                navigationTitle: "🪞 Portal 13 Completo",
+                navigationMessage: "Voce decidiu nao mais se odiar.\n\nEssa declaracao nao e o fim do perdao, mas o inicio do auto-respeito. Tendo parado a guerra consigo mesmo, agora pode viver com um coracao pacifico.\n\nEssa gentileza transformara sua vida diaria e criara novos relacionamentos com outros.\n\nVoce se tornou alguem que e compassivo consigo mesmo.",
+                nextPortalBtn: "Continuar para Portal 14",
+                stayPortalBtn: "Ficar com esta paz",
+                inputPlaceholder: "Conte-me sobre quando mais se odiou... (Enter para enviar)",
+                youLabel: "Voce",
+                waitingMessage: "Aguardando resposta...",
+                confirmNextPortal: "Deseja continuar para Portal 14: Compaixao Nao Era Fraqueza?",
+                confirmStay: "Deseja ficar mais tempo com esta paz interior e sentir a auto-aceitacao mais profundamente?",
+                transitionMessage: "Uma nova jornada comeca..."
+            }
+        };
+        
+        // Character definitions
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "그 말, 나도 해봤어.\n근데 진짜로 그 말이 필요했을까?\n아니야. 넌 그저 지쳐 있었던 거야.",
+                en: "I've said those words too.\nBut did you really need to say them?\nNo. You were just exhausted.",
+                pt: "Eu disse essas palavras tambem.\nMas voce realmente precisava dize-las?\nNao. Voce estava apenas exausto."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "자기 혐오는,\n사실 변화하지 못한 나를 향한 절망이었을지도 몰라요.",
+                en: "Self-hatred\nmight have been despair toward a self that couldn't change.",
+                pt: "Auto-odio\npode ter sido desespero em relacao a um eu que nao conseguia mudar."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "그날의 당신은… 미워한 게 아니라 다 포기하고 싶었던 거였어요.",
+                en: "That day you... didn't hate, but wanted to give up on everything.",
+                pt: "Naquele dia voce... nao odiava, mas queria desistir de tudo."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "자신을 미워하는 사람은\n누구보다도 '나'에게 간절한 기대가 있었던 사람이죠.",
+                en: "Someone who hates themselves\nis someone who had the most earnest expectations for 'me.'",
+                pt: "Alguem que se odeia\ne alguem que tinha as expectativas mais sinceras para 'mim'."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그 미움조차도 사실은 사랑의 반대말이 아니라,\n사랑을 잃은 채 방황하는 감정이었어요.",
+                en: "Even that hatred wasn't really the opposite of love,\nbut an emotion wandering after losing love.",
+                pt: "Mesmo aquele odio nao era realmente o oposto do amor,\nmas uma emocao vagando depois de perder o amor."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "때때로 우린 스스로를 가장 가혹하게 대해.\n그건, 남들이 그러기 전에 내가 나를 다그치려는 방어야.",
+                en: "Sometimes we treat ourselves most harshly.\nIt's a defense - scolding myself before others do.",
+                pt: "As vezes nos tratamos mais duramente.\nE uma defesa - me repreendendo antes que outros o facam."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "너는 그날 너를 미워했지만,\n오늘 너는 그때의 너를 기억하고 있어.\n그건 이미 자비의 시작이야.",
+                en: "You hated yourself that day,\nbut today you remember that you.\nThat's already the beginning of compassion.",
+                pt: "Voce se odiou naquele dia,\nmas hoje voce se lembra daquele voce.\nIsso ja e o inicio da compaixao."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "용서는 타인을 향한 게 아니라,\n그렇게 나를 미워하던 나를 받아들이는 일부터 시작돼요.",
+                en: "Forgiveness doesn't start with others,\nbut with accepting the me who used to hate myself.",
+                pt: "O perdao nao comeca com outros,\nmas aceitando o eu que costumava me odiar."
+            }}
+        ];
+
+        // Support type analysis function
+        function analyzeSelfHatredType(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const hatredKeywords = {
+                perfectionism: ['perfect', 'failed', 'mistake', 'not good enough', '완벽', '실패', '실수', '부족', 'perfeito', 'falhou', 'erro', 'nao bom o suficiente'],
+                comparison: ['others', 'everyone else', 'better than', 'comparing', '다른 사람', '남들', '비교', 'outros', 'todos os outros', 'melhor que', 'comparando'],
+                appearance: ['ugly', 'fat', 'look', 'body', '못생겼', '뚱뚱', '외모', '몸', 'feio', 'gordo', 'aparencia', 'corpo'],
+                achievement: ['stupid', 'dumb', 'smart enough', 'grades', '바보', '멍청', '성적', 'estupido', 'burro', 'inteligente o suficiente', 'notas'],
+                social: ['alone', 'friends', 'rejected', 'nobody likes', '혼자', '친구', '거절', '아무도 좋아하지', 'sozinho', 'amigos', 'rejeitado', 'ninguem gosta'],
+                emotional: ['weak', 'sensitive', 'cry', 'emotional', '약해', '예민', '울어', '감정적', 'fraco', 'sensivel', 'chorar', 'emocional'],
+                family: ['disappoint', 'parents', 'family', 'expectations', '실망', '부모', '가족', '기대', 'decepcionar', 'pais', 'familia', 'expectativas'],
+                self_worth: ['worthless', 'useless', 'burden', 'waste', '쓸모없', '짐', '낭비', 'inutil', 'fardo', 'desperdicio'],
+                guilt: ['guilty', 'wrong', 'bad person', 'hurt others', '죄책감', '잘못', '나쁜 사람', '상처줬', 'culpado', 'errado', 'pessoa ma', 'machucar outros'],
+                past: ['regret', 'should have', 'if only', 'past mistakes', '후회', '그랬어야', '만약에', '과거 실수', 'arrependimento', 'deveria ter', 'se apenas', 'erros passados'],
+                control: ['helpless', 'powerless', 'can\'t control', 'overwhelmed', '무력', '통제할 수 없', '압도', 'desamparado', 'impotente', 'nao posso controlar', 'sobrecarregado'],
+                general: ['hate myself', 'disgusted', 'ashamed', 'pathetic', '자신이 싫어', '혐오', '부끄러워', '한심', 'me odeio', 'nojento', 'envergonhado', 'patetico']
+            };
+            
+            let detectedTypes = [];
+            for (const [type, keywords] of Object.entries(hatredKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedTypes.push(type);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedTypes.length === 0) {
+                detectedTypes = ['general'];
+            }
+            
+            return detectedTypes[0];
+        }
+        
+        // Response characters with hatred-based responses
+        const responseCharacters = [
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const hatredType = analyzeSelfHatredType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            perfectionism: "완벽하지 않다고 자신을 미워했군요.\n하지만 완벽함이란 존재하지 않는 기준이에요.\n당신은 완벽하지 않아도 충분히 소중한 사람입니다.",
+                            comparison: "다른 사람과 비교하며 자신을 깎아내렸군요.\n하지만 모든 사람은 다른 속도로, 다른 방향으로 성장해요.\n당신만의 길이 있어요.",
+                            appearance: "외모 때문에 자신을 미워했나요?\n하지만 당신의 가치는 겉모습에 있지 않아요.\n당신의 마음과 존재 자체가 아름다워요.",
+                            achievement: "성과나 성적 때문에 스스로를 탓했군요.\n하지만 당신의 가치는 성취로 증명되는 게 아니에요.\n당신은 존재하는 것만으로도 의미 있는 사람이에요.",
+                            social: "혼자라고 느끼며 자신을 미워했나요?\n하지만 외로움은 당신의 잘못이 아니에요.\n진정한 연결을 찾아가는 과정일 뿐이에요.",
+                            emotional: "감정적이라고 자신을 탓했군요.\n하지만 감정은 당신의 약점이 아니라 강점이에요.\n세상을 깊이 느낄 수 있는 능력이죠.",
+                            family: "가족을 실망시켰다고 자신을 미워했나요?\n하지만 당신은 다른 사람의 기대가 아닌,\n자신의 삶을 살아갈 권리가 있어요.",
+                            self_worth: "자신이 쓸모없다고 느꼈군요.\n하지만 당신의 존재 자체가 이 세상에 의미를 줘요.\n당신이 없었다면 지금의 이 순간도 없었을 거예요.",
+                            guilt: "죄책감에 시달리며 자신을 미워했군요.\n하지만 실수는 인간이기에 하는 자연스러운 일이에요.\n그 실수들이 당신을 더 지혜롭게 만들었어요.",
+                            past: "과거를 후회하며 자신을 탓했나요?\n하지만 과거는 바꿀 수 없고, 미래는 아직 와있지 않았어요.\n지금 이 순간, 당신은 새롭게 시작할 수 있어요.",
+                            control: "통제할 수 없는 상황에 좌절했군요.\n하지만 모든 것을 통제할 필요는 없어요.\n당신은 주어진 상황에서 최선을 다했어요.",
+                            general: "그 선언은 용서의 끝이 아니라,\n자기 존중의 시작이에요."
+                        },
+                        en: {
+                            perfectionism: "You hated yourself for not being perfect.\nBut perfection is a standard that doesn't exist.\nYou are precious enough even without being perfect.",
+                            comparison: "You put yourself down by comparing with others.\nBut everyone grows at different speeds, in different directions.\nYou have your own path.",
+                            appearance: "Did you hate yourself because of your appearance?\nBut your value isn't in your looks.\nYour heart and very existence are beautiful.",
+                            achievement: "You blamed yourself for performance or grades.\nBut your value isn't proven by achievements.\nYou are meaningful just by existing.",
+                            social: "Did you hate yourself feeling alone?\nBut loneliness isn't your fault.\nIt's just part of the process of finding true connection.",
+                            emotional: "You blamed yourself for being emotional.\nBut emotions aren't your weakness but your strength.\nIt's the ability to feel the world deeply.",
+                            family: "Did you hate yourself for disappointing family?\nBut you have the right to live your own life,\nnot according to others' expectations.",
+                            self_worth: "You felt you were worthless.\nBut your very existence gives meaning to this world.\nWithout you, this moment wouldn't exist either.",
+                            guilt: "You hated yourself tormented by guilt.\nBut mistakes are natural things humans make.\nThose mistakes made you wiser.",
+                            past: "Did you blame yourself regretting the past?\nBut the past can't be changed, and the future hasn't come yet.\nRight now, in this moment, you can start anew.",
+                            control: "You were frustrated by uncontrollable situations.\nBut you don't need to control everything.\nYou did your best in the given circumstances.",
+                            general: "That declaration is not the end of forgiveness,\nbut the beginning of self-respect."
+                        },
+                        pt: {
+                            perfectionism: "Voce se odiou por nao ser perfeito.\nMas perfeicao e um padrao que nao existe.\nVoce e precioso o suficiente mesmo sem ser perfeito.",
+                            comparison: "Voce se diminuiu comparando com outros.\nMas todos crescem em velocidades diferentes, em direcoes diferentes.\nVoce tem seu proprio caminho.",
+                            appearance: "Voce se odiou por causa da aparencia?\nMas seu valor nao esta na sua aparencia.\nSeu coracao e propria existencia sao belos.",
+                            achievement: "Voce se culpou por desempenho ou notas.\nMas seu valor nao e provado por conquistas.\nVoce e significativo apenas por existir.",
+                            social: "Voce se odiou se sentindo sozinho?\nMas solidao nao e sua culpa.\nE apenas parte do processo de encontrar conexao verdadeira.",
+                            emotional: "Voce se culpou por ser emocional.\nMas emocoes nao sao sua fraqueza, mas sua forca.\nE a habilidade de sentir o mundo profundamente.",
+                            family: "Voce se odiou por decepcionar a familia?\nMas voce tem o direito de viver sua propria vida,\nnao de acordo com expectativas dos outros.",
+                            self_worth: "Voce se sentiu inutil.\nMas sua propria existencia da significado a este mundo.\nSem voce, este momento tambem nao existiria.",
+                            guilt: "Voce se odiou atormentado pela culpa.\nMas erros sao coisas naturais que humanos cometem.\nEsses erros te fizeram mais sabio.",
+                            past: "Voce se culpou lamentando o passado?\nMas o passado nao pode ser mudado, e o futuro ainda nao chegou.\nAgora mesmo, neste momento, voce pode comecar de novo.",
+                            control: "Voce ficou frustrado com situacoes incontrolaveis.\nMas voce nao precisa controlar tudo.\nVoce fez o seu melhor nas circunstancias dadas.",
+                            general: "Essa declaracao nao e o fim do perdao,\nmas o inicio do auto-respeito."
+                        }
+                    };
+                    
+                    return responses[lang][hatredType] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Lian", emoji: "🧘",
+                getResponse: (userInput, lang) => {
+                    const hatredType = analyzeSelfHatredType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            perfectionism: "완벽주의는 자신을 사랑하는 다른 방식이었을지도 몰라요.\n하지만 이제는 불완전한 자신도 사랑할 수 있어요.\n완벽하지 않은 것이 인간다운 거예요.",
+                            comparison: "비교는 자신을 성장시키려는 의도였을 거예요.\n하지만 진정한 성장은 남과 비교가 아닌,\n어제의 자신보다 나아지는 것에서 시작돼요.",
+                            appearance: "외모에 대한 불만은 사실 자신을 더 아름답게 만들고 싶은 욕구였어요.\n하지만 진정한 아름다움은 자신을 받아들이는 마음에서 나와요.",
+                            achievement: "성취에 대한 압박은 더 나은 사람이 되고 싶은 열망이었어요.\n하지만 당신은 이미 충분히 괜찮은 사람이에요.\n더 증명할 필요가 없어요.",
+                            social: "외로움은 깊은 연결을 갈망하는 마음의 신호였어요.\n하지만 진정한 연결은 먼저 자신과 연결될 때 시작돼요.",
+                            emotional: "감정을 억누르려 했던 건 상처받기 싫어서였겠죠.\n하지만 감정은 당신의 진실한 목소리예요.\n그 목소리를 들어주세요.",
+                            family: "가족의 기대는 사랑의 다른 표현이었을 거예요.\n하지만 진정한 사랑은 있는 그대로의 당신을 받아들이는 것이에요.",
+                            self_worth: "자신의 가치를 의심했던 건 더 의미 있는 삶을 원했기 때문이에요.\n하지만 당신의 존재 자체가 이미 충분한 의미예요.",
+                            guilt: "죄책감은 양심이 있다는 증거였어요.\n하지만 완벽한 사람은 없고, 실수로부터 배우는 것이 성장이에요.",
+                            past: "과거를 후회하는 건 더 나은 선택을 할 수 있었다고 믿기 때문이에요.\n그 후회가 지금의 지혜로운 당신을 만들었어요.",
+                            control: "통제하려 했던 건 안전하고 싶었기 때문이에요.\n하지만 진정한 안전은 변화를 받아들일 때 찾을 수 있어요.",
+                            general: "그렇게 당신이 자신에게 다정해질 수 있을 때,\n세상도 당신을 다르게 대하기 시작할 거예요."
+                        },
+                        en: {
+                            perfectionism: "Perfectionism might have been another way of loving yourself.\nBut now you can love your imperfect self too.\nBeing imperfect is what makes us human.",
+                            comparison: "Comparison was probably intended to help you grow.\nBut true growth doesn't start from comparing with others,\nbut from becoming better than yesterday's you.",
+                            appearance: "Dissatisfaction with appearance was actually a desire to make yourself more beautiful.\nBut true beauty comes from a heart that accepts itself.",
+                            achievement: "Pressure about achievement was a yearning to become a better person.\nBut you're already a good enough person.\nYou don't need to prove anything more.",
+                            social: "Loneliness was your heart's signal craving deep connection.\nBut true connection starts when you first connect with yourself.",
+                            emotional: "You tried to suppress emotions because you didn't want to get hurt.\nBut emotions are your truthful voice.\nPlease listen to that voice.",
+                            family: "Family expectations were probably another expression of love.\nBut true love is accepting you just as you are.",
+                            self_worth: "You doubted your value because you wanted a more meaningful life.\nBut your very existence is already sufficient meaning.",
+                            guilt: "Guilt was proof that you have a conscience.\nBut no one is perfect, and learning from mistakes is growth.",
+                            past: "You regret the past because you believe you could have made better choices.\nThat regret created the wise you of today.",
+                            control: "You tried to control because you wanted to feel safe.\nBut true safety can be found when you accept change.",
+                            general: "When you can be gentle with yourself like this,\nthe world will also begin to treat you differently."
+                        },
+                        pt: {
+                            perfectionism: "Perfeccionismo pode ter sido outra forma de se amar.\nMas agora voce pode amar seu eu imperfeito tambem.\nSer imperfeito e o que nos torna humanos.",
+                            comparison: "Comparacao provavelmente pretendia ajudar voce a crescer.\nMas crescimento verdadeiro nao comeca comparando com outros,\nmas sendo melhor que o voce de ontem.",
+                            appearance: "Insatisfacao com aparencia era na verdade desejo de se fazer mais belo.\nMas verdadeira beleza vem de um coracao que se aceita.",
+                            achievement: "Pressao sobre conquistas era anseio de se tornar pessoa melhor.\nMas voce ja e pessoa boa o suficiente.\nNao precisa provar nada mais.",
+                            social: "Solidao era sinal do seu coracao desejando conexao profunda.\nMas conexao verdadeira comeca quando primeiro se conecta consigo mesmo.",
+                            emotional: "Voce tentou suprimir emocoes porque nao queria se machucar.\nMas emocoes sao sua voz verdadeira.\nPor favor escute essa voz.",
+                            family: "Expectativas familiares eram provavelmente outra expressao de amor.\nMas amor verdadeiro e aceitar voce como voce e.",
+                            self_worth: "Voce duvidou do seu valor porque queria vida mais significativa.\nMas sua propria existencia ja e significado suficiente.",
+                            guilt: "Culpa era prova de que voce tem consciencia.\nMas ninguem e perfeito, e aprender com erros e crescimento.",
+                            past: "Voce lamenta o passado porque acredita que poderia ter feito escolhas melhores.\nEsse arrependimento criou o voce sabio de hoje.",
+                            control: "Voce tentou controlar porque queria se sentir seguro.\nMas seguranca verdadeira pode ser encontrada quando aceita mudanca.",
+                            general: "Quando conseguir ser gentil consigo mesmo assim,\no mundo tambem comecara a trata-lo de forma diferente."
+                        }
+                    };
+                    
+                    return responses[lang][hatredType] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Ely", emoji: "🧝‍♀️",
+                getResponse: (userInput, lang) => {
+                    const hatredType = analyzeSelfHatredType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            perfectionism: "완벽을 추구했던 건 더 나은 사람이 되고 싶었기 때문이에요.\n그 마음 자체가 이미 아름다워요.\n이제는 그 마음으로 불완전한 자신을 사랑해보세요.",
+                            comparison: "다른 사람을 보며 배우려 했던 거예요.\n하지만 당신만의 독특한 빛이 있어요.\n그 빛을 믿고 키워나가세요.",
+                            appearance: "아름다워지고 싶었던 마음은 자연스러워요.\n하지만 당신의 진정한 아름다움은 이미 거기 있어요.\n자신을 사랑하는 눈으로 바라보세요.",
+                            achievement: "성취하고 싶었던 건 의미 있는 삶을 원했기 때문이에요.\n하지만 당신의 노력 자체가 이미 성취예요.\n결과보다 과정을 인정해주세요.",
+                            social: "사람들과 연결되고 싶었던 마음은 사랑의 욕구예요.\n하지만 진정한 연결은 자신을 사랑할 때 시작돼요.\n먼저 자신의 친구가 되어주세요.",
+                            emotional: "감정을 느끼는 건 살아있다는 증거예요.\n그 감정들이 당신을 풍부하게 만들어요.\n감정을 숨기지 말고 존중해주세요.",
+                            family: "사랑받고 싶었던 마음은 당연해요.\n하지만 조건 없는 사랑은 자신에게서 시작돼요.\n당신이 당신의 첫 번째 응원자가 되어주세요.",
+                            self_worth: "자신의 가치를 찾고 싶었던 거예요.\n하지만 당신은 이미 소중한 존재예요.\n존재하는 것만으로 충분히 가치 있어요.",
+                            guilt: "올바르게 살고 싶었던 마음에서 온 거예요.\n하지만 실수는 인간의 자연스러운 부분이에요.\n자신에게 자비를 베풀어주세요.",
+                            past: "더 나은 선택을 할 수 있었다고 믿고 있어요.\n그 후회가 지금의 현명한 당신을 만들었어요.\n과거의 자신에게도 고마워해주세요.",
+                            control: "안정감을 원했던 거예요.\n하지만 진정한 안정은 자신을 신뢰할 때 와요.\n변화 속에서도 흔들리지 않는 자신을 믿어주세요.",
+                            general: "그 선언 하나로,\n당신은 자신 안의 전쟁을 멈춘 사람이 되었어요."
+                        },
+                        en: {
+                            perfectionism: "You pursued perfection because you wanted to be a better person.\nThat heart itself is already beautiful.\nNow try loving your imperfect self with that same heart.",
+                            comparison: "You tried to learn by looking at others.\nBut you have your own unique light.\nBelieve in that light and nurture it.",
+                            appearance: "Wanting to be beautiful is natural.\nBut your true beauty is already there.\nLook at yourself with loving eyes.",
+                            achievement: "You wanted to achieve because you wanted a meaningful life.\nBut your effort itself is already achievement.\nAcknowledge the process more than results.",
+                            social: "Wanting to connect with people is a desire for love.\nBut true connection starts when you love yourself.\nFirst become your own friend.",
+                            emotional: "Feeling emotions is proof you're alive.\nThose emotions make you rich.\nDon't hide emotions, respect them.",
+                            family: "Wanting to be loved is natural.\nBut unconditional love starts with yourself.\nBe your own first cheerleader.",
+                            self_worth: "You wanted to find your value.\nBut you're already a precious being.\nJust existing is valuable enough.",
+                            guilt: "It came from wanting to live righteously.\nBut mistakes are a natural part of being human.\nShow compassion to yourself.",
+                            past: "You believe you could have made better choices.\nThat regret created the wise you of today.\nBe grateful to your past self too.",
+                            control: "You wanted stability.\nBut true stability comes when you trust yourself.\nBelieve in yourself who doesn't waver even in change.",
+                            general: "With that one declaration,\nyou became someone who stopped the war within yourself."
+                        },
+                        pt: {
+                            perfectionism: "Voce buscou perfeicao porque queria ser pessoa melhor.\nEsse coracao em si ja e belo.\nAgora tente amar seu eu imperfeito com esse mesmo coracao.",
+                            comparison: "Voce tentou aprender olhando outros.\nMas voce tem sua propria luz unica.\nAcredite nessa luz e a cultive.",
+                            appearance: "Querer ser belo e natural.\nMas sua verdadeira beleza ja esta la.\nOlhe para si mesmo com olhos amorosos.",
+                            achievement: "Voce quis conquistar porque queria vida significativa.\nMas seu esforco em si ja e conquista.\nReconheca o processo mais que resultados.",
+                            social: "Querer se conectar com pessoas e desejo por amor.\nMas conexao verdadeira comeca quando voce se ama.\nPrimeiro torne-se seu proprio amigo.",
+                            emotional: "Sentir emocoes e prova de que voce esta vivo.\nEssas emocoes te fazem rico.\nNao esconda emocoes, as respeite.",
+                            family: "Querer ser amado e natural.\nMas amor incondicional comeca com voce mesmo.\nSeja seu proprio primeiro torcedor.",
+                            self_worth: "Voce quis encontrar seu valor.\nMas voce ja e ser precioso.\nApenas existir ja e valioso o suficiente.",
+                            guilt: "Veio de querer viver corretamente.\nMas erros sao parte natural de ser humano.\nMostre compaixao a si mesmo.",
+                            past: "Voce acredita que poderia ter feito escolhas melhores.\nEsse arrependimento criou o voce sabio de hoje.\nSeja grato ao seu eu passado tambem.",
+                            control: "Voce quis estabilidade.\nMas estabilidade verdadeira vem quando confia em si mesmo.\nAcredite em si mesmo que nao vacila mesmo na mudanca.",
+                            general: "Com essa unica declaracao,\nvoce se tornou alguem que parou a guerra dentro de si mesmo."
+                        }
+                    };
+                    
+                    return responses[lang][hatredType] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        // Rest of the JavaScript functions remain the same as Portal 12
+        // Typewriter effect
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (state.currentTypingElement) {
+                    state.currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                state.currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        state.currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        state.currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                state.typingIntervals.push(typingInterval);
+            });
+        }
+        
+        // Clear all typing effects
+        function clearAllTypingEffects() {
+            state.typingIntervals.forEach(interval => clearInterval(interval));
+            state.typingIntervals = [];
+            
+            if (state.currentTypingElement) {
+                state.currentTypingElement.classList.remove('typing-cursor');
+                state.currentTypingElement = null;
+            }
+        }
+        
+        // Scroll functions
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // Language management
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            const t = translations[lang];
+            document.title = t.title;
+            document.getElementById('logoSubtitle').textContent = t.logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = t.portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = t.portalSubtitle;
+            document.getElementById('lightTitle').textContent = t.lightTitle;
+            document.getElementById('navigationTitle').textContent = t.navigationTitle;
+            document.getElementById('nextPortalBtn').textContent = t.nextPortalBtn;
+            document.getElementById('stayPortalBtn').textContent = t.stayPortalBtn;
+            document.getElementById('userTextarea').placeholder = t.inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (state.currentLanguage === lang) return;
+            
+            state.currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            resetJourney();
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        // Journey management
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'followUpSection', 'userInputSection',
+                'userReactionsSection', 'lightMessageSection', 'navigationSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('followUpQuestion').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('navigationMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[state.currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            state.userResponse = '';
+            state.currentTypingElement = null;
+            state.awaitingSecondResponse = false;
+        }
+        
+        // Save response to database or memory
+        async function saveResponse(inputText, step) {
+            const responseData = {
+                portal: portalConfig.currentPortal,
+                resposta: inputText,
+                step: step,
+                data: new Date().toISOString(),
+                idioma: state.currentLanguage,
+                userId: state.currentUser ? state.currentUser.uid : 'anonymous',
+                userEmail: state.currentUser ? state.currentUser.email : 'anonymous@temarix.com'
+            };
+            
+            if (state.firebaseInitialized && state.db) {
+                try {
+                    await state.db.collection("temarix_v5_respostas").add({
+                        ...responseData,
+                        timestamp: firebase.firestore.Timestamp.now()
+                    });
+                    console.log('Response saved to Firestore');
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                    state.userResponses.push(responseData);
+                    showConnectionStatus(false);
+                }
+            } else {
+                state.userResponses.push(responseData);
+                console.log('Response stored in memory:', responseData);
+            }
+        }
+        
+        // User input processing
+        async function processUserInput(inputText) {
+            state.userResponse = inputText;
+            
+            await saveResponse(inputText, state.awaitingSecondResponse ? "second" : "first");
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                if (!state.awaitingSecondResponse) {
+                    showUserReactions(inputText);
+                } else {
+                    showSecondUserReactions(inputText);
+                }
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[state.currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[state.currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[state.currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        // Show character reactions
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[state.currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFollowUpQuestion();
+            }, 2000);
+        }
+        
+        async function showFollowUpQuestion() {
+            const followUpSection = document.getElementById('followUpSection');
+            const followUpQuestionEl = document.getElementById('followUpQuestion');
+            
+            followUpSection.classList.add('show');
+            
+            await typewriterEffect(followUpQuestionEl, translations[state.currentLanguage].followUpQuestion, 50);
+            
+            setTimeout(() => {
+                state.awaitingSecondResponse = true;
+                enableUserInput();
+            }, 1500);
+        }
+        
+        async function showSecondUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, state.currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[state.currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showNavigationSection();
+            }, 2000);
+        }
+        
+        async function showNavigationSection() {
+            const navigationSection = document.getElementById('navigationSection');
+            const navigationMessage = document.getElementById('navigationMessage');
+            
+            navigationSection.classList.add('show');
+            
+            const messageText = translations[state.currentLanguage].navigationMessage;
+            await typewriterEffect(navigationMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(navigationSection);
+            }, 500);
+        }
+        
+        // Portal sequence
+        async function startPortalSequence() {
+            console.log('Starting portal sequence...');
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            console.log('Showing intro...');
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            if (!introSection || !introElement) {
+                console.error('Intro elements not found!');
+                return;
+            }
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[state.currentLanguage].portalIntro;
+            console.log('Intro text:', introText);
+            
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(async () => {
+                await showEmotionalBridge();
+            }, 2000);
+        }
+        
+        async function showEmotionalBridge() {
+            const introElement = document.getElementById('portalIntro');
+            const bridgeText = '\n\n' + translations[state.currentLanguage].emotionalBridge;
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const bridgeP = document.createElement('p');
+            bridgeP.style.cssText = `
+                margin-top: 30px;
+                font-style: italic;
+                color: #ff9999;
+                font-size: 18px;
+                line-height: 1.8;
+            `;
+            introElement.appendChild(bridgeP);
+            
+            await typewriterEffect(bridgeP, bridgeText.trim(), 50);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[state.currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 2000);
+        }
+        
+        // Custom confirm dialog
+        function showConfirmDialog(message, callback) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: #222;
+                border: 2px solid #ff6b6b;
+                padding: 30px;
+                max-width: 400px;
+                text-align: center;
+                color: white;
+            `;
+            
+            const messageP = document.createElement('p');
+            messageP.textContent = message;
+            messageP.style.cssText = `
+                margin-bottom: 20px;
+                line-height: 1.6;
+                font-size: 16px;
+            `;
+            
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.cssText = `
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+            `;
+            
+            const yesBtn = document.createElement('button');
+            const noBtn = document.createElement('button');
+            
+            const buttonStyle = `
+                background: #444;
+                color: white;
+                border: 1px solid #ff6b6b;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+            `;
+            
+            yesBtn.style.cssText = buttonStyle + 'background: #ff6b6b;';
+            noBtn.style.cssText = buttonStyle;
+            
+            yesBtn.textContent = state.currentLanguage === 'ko' ? '예' : 
+                                state.currentLanguage === 'pt' ? 'Sim' : 'Yes';
+            noBtn.textContent = state.currentLanguage === 'ko' ? '아니오' : 
+                               state.currentLanguage === 'pt' ? 'Nao' : 'No';
+            
+            yesBtn.onclick = () => {
+                document.body.removeChild(overlay);
+                callback(true);
+            };
+            
+            noBtn.onclick = () => {
+                document.body.removeChild(overlay);
+                callback(false);
+            };
+            
+            overlay.onclick = (e) => {
+                if (e.target === overlay) {
+                    document.body.removeChild(overlay);
+                    callback(false);
+                }
+            };
+            
+            buttonContainer.appendChild(yesBtn);
+            buttonContainer.appendChild(noBtn);
+            modal.appendChild(messageP);
+            modal.appendChild(buttonContainer);
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            yesBtn.focus();
+        }
+        
+        // Event setup
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function createPortalTransition(callback) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, #000 0%, #111 50%, #000 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 20000;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            const message = document.createElement('div');
+            message.style.cssText = `
+                color: #ff6b6b;
+                font-size: 24px;
+                text-align: center;
+                margin-bottom: 30px;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.8s ease-out;
+            `;
+            message.textContent = translations[state.currentLanguage].transitionMessage;
+            
+            const loader = document.createElement('div');
+            loader.style.cssText = `
+                width: 60px;
+                height: 60px;
+                border: 3px solid #333;
+                border-top: 3px solid #ff6b6b;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                opacity: 0;
+                transition: opacity 0.8s ease-out 0.3s;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            overlay.appendChild(message);
+            overlay.appendChild(loader);
+            document.body.appendChild(overlay);
+            
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                message.style.opacity = '1';
+                message.style.transform = 'translateY(0)';
+                loader.style.opacity = '1';
+            }, 300);
+            
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(overlay);
+                    document.head.removeChild(style);
+                    callback();
+                }, 1000);
+            }, 2500);
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('nextPortalBtn').addEventListener('click', function() {
+                const t = translations[state.currentLanguage];
+                showConfirmDialog(t.confirmNextPortal, (confirmed) => {
+                    if (confirmed) {
+                        if (state.firebaseInitialized && state.db) {
+                            state.db.collection("temarix_v5_progress").add({
+                                userId: state.currentUser.uid,
+                                portal: portalConfig.currentPortal,
+                                status: "complete",
+                                timestamp: firebase.firestore.Timestamp.now()
+                            }).catch(error => console.error('Error saving progress:', error));
+                        }
+                        
+                        createPortalTransition(() => {
+                            window.location.href = `${portalConfig.nextPortalFile}?lang=${state.currentLanguage}`;
+                        });
+                    }
+                });
+            });
+            
+            document.getElementById('stayPortalBtn').addEventListener('click', function() {
+                const t = translations[state.currentLanguage];
+                showConfirmDialog(t.confirmStay, (confirmed) => {
+                    if (confirmed) {
+                        resetJourney();
+                        setTimeout(() => {
+                            startPortalSequence();
+                        }, 1000);
+                    }
+                });
+            });
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        function initializeTemarix() {
+            console.log('Initializing Temarix V5 Portal 13...');
+            console.log('Current state:', state);
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            state.journeyStarted = true;
+            console.log('Journey started:', state.journeyStarted);
+            
+            console.log('Starting portal sequence in 1 second...');
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Temarix V5 Portal 13 DOM loaded');
+            
+            state.currentLanguage = getLanguageFromURL();
+            
+            updateStaticTranslations(state.currentLanguage);
+            updateLanguageButtons(state.currentLanguage);
+            
+            await initializeFirebase();
+            
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

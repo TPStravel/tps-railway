@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Temarix V1 03</title>
+</head>
+<body>
+<!-- Temarix V1 - Portal 03: 오래된 상처의 냄새 -->
+<section class="portal portal-03" id="portal-03">
+  <!-- Temarix Logo - Fixed Left Top -->
+  <div class="temarix-logo">
+    <h1 class="logo-text">🌌 TEMARIX</h1>
+    <p class="slogan" data-i18n="common.slogan">빛은 고요 속에서 피어난다.</p>
+  </div>
+
+  <!-- Language Selector - Fixed Right Top -->
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="kr">KR</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="pt">PT</button>
+  
+  </div>
+
+  <!-- Portal Header - Center Top -->
+  <div class="portal-header">
+    <h1 data-i18n="portal03.title">감정의 문지방 03</h1>
+    <h2 data-i18n="portal03.subtitle">오래된 상처의 냄새</h2>
+  </div>
+
+  <!-- Message Stream -->
+  <div class="message-stream" id="messageStream03">
+    <!-- Messages will be added here via JavaScript -->
+  </div>
+
+  <!-- User Input Area -->
+  <div class="input-area" id="inputArea03" style="display: none;">
+    <div class="input-container">
+      <textarea 
+        id="userInput03" 
+        rows="3" 
+        placeholder="아직도 당신 안에 남은 상처를 조용히 적어보세요..."
+        data-i18n-placeholder="portal03.input.placeholder"
+      ></textarea>
+      <button class="submit-btn" onclick="submitResponse(3)">
+        <span data-i18n="portal03.submit">🌿 상처를 나누기</span>
+      </button>
+      <p class="input-hint" data-i18n="portal03.input.hint">Enter 키를 눌러도 전달할 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- Next Portal Navigation -->
+  <div class="next-portal-nav" id="nextPortalNav03" style="display: none;">
+    <div class="nav-buttons">
+      <button class="nav-btn yes-btn" onclick="goToNextPortal(4)" data-i18n="common.yes">예</button>
+      <button class="nav-btn no-btn" onclick="stayInPortal()" data-i18n="common.no">아니요</button>
+    </div>
+  </div>
+
+  <!-- Back to Main -->
+  <div class="back-to-main">
+    <button onclick="window.location.href='portal4.html'" data-i18n="common.back_to_main">
+      🏠 메인 포탈로 돌아가기
+    </button>
+  </div>
+</section>
+
+<style>
+/* Portal Base Styles */
+.portal {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1b4b 0%, #2d1b69 100%);
+  color: white;
+  padding: 80px 20px 20px 20px;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Logo Glow Animation */
+@keyframes glowCycle {
+  0%, 100% { text-shadow: 0 0 8px rgba(255,255,255,0.2); }
+  50% { text-shadow: 0 0 25px rgba(255,255,255,0.7); }
+}
+
+/* Temarix Logo - Fixed Left Top */
+.temarix-logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.slogan {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Language Selector - Fixed Right Top */
+.lang-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 120px;
+  z-index: 1000;
+}
+
+.lang-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.lang-btn.active {
+  background: #9c27b0;
+  border-color: #9c27b0;
+}
+
+/* Portal Header - Center Top */
+.portal-header {
+  text-align: center;
+  margin: 40px 0 30px 0;
+  padding-top: 40px;
+}
+
+.portal-header h1 {
+  font-size: 2.2rem;
+  margin: 10px 0;
+  color: #ffd700;
+}
+
+.portal-header h2 {
+  font-size: 1.3rem;
+  color: #e1bee7;
+  font-weight: 300;
+}
+
+/* Message Stream */
+.message-stream {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.message-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.message-card.prologue {
+  border-left: 4px solid #e1bee7;
+}
+
+.message-card.ely {
+  border-left: 4px solid #ffd700;
+}
+
+.message-card.sora {
+  border-left: 4px solid #4dd0e1;
+}
+
+.message-card.noah {
+  border-left: 4px solid #9c27b0;
+}
+
+.message-card.enya {
+  border-left: 4px solid #ff9800;
+}
+
+.message-card.kaia {
+  border-left: 4px solid #607d8b;
+}
+
+.message-card.cris {
+  border-left: 4px solid #4caf50;
+}
+
+.message-card.kael {
+  border-left: 4px solid #f44336;
+}
+
+.message-card.mira {
+  border-left: 4px solid #9e9e9e;
+}
+
+.message-card.light {
+  border-left: 4px solid #ffffff;
+  background: rgba(255,255,255,0.15);
+}
+
+.message-card.question {
+  border-left: 4px solid #f48fb1;
+}
+
+.message-card.user-input {
+  border-left: 4px solid #81c784;
+  background: rgba(129, 199, 132, 0.1);
+}
+
+.character-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.ely .character-name { color: #ffd700; }
+.sora .character-name { color: #4dd0e1; }
+.noah .character-name { color: #9c27b0; }
+.enya .character-name { color: #ff9800; }
+.kaia .character-name { color: #607d8b; }
+.cris .character-name { color: #4caf50; }
+.kael .character-name { color: #f44336; }
+.mira .character-name { color: #9e9e9e; }
+
+.message-text {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  white-space: nowrap;
+  animation: blink-caret 1s step-end infinite;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: rgba(255,255,255,0.7); }
+}
+
+/* Input Area */
+.input-area {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.input-container textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.input-container textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #9c27b0, #e1bee7);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+}
+
+.input-hint {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+
+/* Next Portal Navigation */
+.next-portal-nav {
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+  border-color: #4caf50;
+}
+
+.yes-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.no-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.no-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Back to Main */
+.back-to-main {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.back-to-main button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-to-main button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .portal {
+    padding: 100px 15px 20px 15px;
+  }
+  
+  .temarix-logo {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .slogan {
+    font-size: 0.7rem;
+  }
+  
+  .lang-selector {
+    top: 15px;
+    right: 15px;
+    max-width: 100px;
+  }
+  
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .portal-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .portal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .message-card {
+    padding: 15px;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-btn {
+    width: 200px;
+  }
+}
+</style>
+
+<script>
+// Portal 03 Complete Data with Character Responses
+const portal03Data = {
+  kr: {
+    title: "감정의 문지방 03",
+    subtitle: "오래된 상처의 냄새",
+    prologue: "가끔 아무렇지 않은 순간에도 불쑥, 오래된 상처가 스며듭니다. 익숙한 냄새, 어떤 단어, 낯선 표정 하나에도 묻어둔 고통이 다시 얼굴을 드러내죠. 그건 아직 다 아물지 않았다는 신호일지도 몰라요.",
+    ely: "상처는 약해진 자국이 아니라, 다시 살아내려 한 흔적이에요.",
+    sora: "그날 흘리지 못했던 눈물, 아직도 당신 마음 어딘가에 고여 있을지 몰라요.",
+    noah: "상처는 기억 속에서 계속 말을 겁니다. 다만 우리가 너무 오래 외면했을 뿐이에요.",
+    enya: "조금씩 꺼내요. 그 아픔을 나눌 수 있을 때, 고요가 찾아오니까요.",
+    kaia: "다 괜찮은 척하는 당신이 가끔 너무 외로워 보여요.",
+    cris: "내 상처는 지금도 칠판 긁는 소리에 깨어나~! 근데 괜찮아, 이어폰 꽂으면 안 들리거든. 🎧😅",
+    kael: "또 참을 거야? 아프면 아프다고 말 좀 해. 너도 인간이잖아.",
+    mira: "혹시 그 상처를 일부러 남겨둔 건 아닐까요? 그게 당신의 정체성 같았던 건 아니었나요?",
+    light: "상처는 당신이 살아 있음을 말해주는 작은 증거입니다. 그걸 부끄러워하지 않아도 괜찮아요.",
+    question: "아직도 당신 안에서 쓰라린 기억은 어떤 모습으로 남아 있나요?",
+    input: { 
+      placeholder: "아직도 당신 안에 남은 상처를 조용히 적어보세요...",
+      hint: "Enter 키를 눌러도 전달할 수 있습니다"
+    },
+    submit: "🌿 상처를 나누기",
+    slogan: "당신 안에 숨은 이야기를 말 해 주세요",
+    response_ely: "그 상처를 꺼내주셨군요. 그건 당신이 치유를 원한다는 용기입니다.",
+    response_sora: "저도 느껴졌어요, 그 속에 있던 아픔... 이제는 혼자 안고 있지 않아도 돼요.",
+    response_noah: "오래 묻어둔 상처군요. 이제 그 기억과 천천히 대화해보세요.\n\n👉 다음 문지방으로 함께 가도 괜찮을까요?",
+    user_input_prefix: "당신이 나눈 상처:",
+    yes: "예",
+    no: "아니요"
+  },
+  en: {
+    title: "Emotional Threshold 03",
+    subtitle: "The Scent of Old Wounds",
+    prologue: "Sometimes, even in ordinary moments, old wounds suddenly seep through. A familiar scent, a certain word, or a stranger's expression can bring buried pain back to the surface. Perhaps it's a sign that they haven't fully healed yet.",
+    ely: "Wounds are not marks of weakness, but traces of your attempts to live again.",
+    sora: "The tears you couldn't shed that day might still be pooled somewhere in your heart.",
+    noah: "Wounds keep speaking from within memories. We've just been looking away for too long.",
+    enya: "Let them out little by little. When you can share that pain, peace will come.",
+    kaia: "You, pretending everything is fine, sometimes look so lonely.",
+    cris: "My wounds still wake up to the sound of chalk on blackboard~! But it's okay, I just put in earphones. 🎧😅",
+    kael: "Are you going to endure it again? When it hurts, say it hurts. You're human too.",
+    mira: "Maybe... you deliberately left those wounds there? As if they were part of your identity?",
+    light: "Wounds are small evidence that you are alive. You don't have to be ashamed of them.",
+    question: "What form do the bitter memories still take inside you?",
+    input: { 
+      placeholder: "Quietly write about the wounds that still remain within you...",
+      hint: "You can also press Enter to submit"
+    },
+    submit: "🌿 Share Your Wounds",
+    slogan: "Please tell me the story hidden within you",
+    response_ely: "You brought out those wounds. That's the courage of wanting to heal.",
+    response_sora: "I felt it too, the pain that was inside... You don't have to carry it alone anymore.",
+    response_noah: "A wound buried for a long time. Now slowly talk with that memory.\n\n👉 Shall we go to the next threshold together?",
+    user_input_prefix: "Your shared wounds:",
+    yes: "Yes",
+    no: "No"
+  },
+  pt: {
+    title: "Limiar Emocional 03",
+    subtitle: "O Cheiro de Feridas Antigas",
+    prologue: "Às vezes, mesmo em momentos ordinários, feridas antigas subitamente atravessam. Um cheiro familiar, uma certa palavra, ou a expressão de um estranho pode trazer dor enterrada de volta à superfície. Talvez seja um sinal de que elas ainda não sararam completamente.",
+    ely: "Feridas não são marcas de fraqueza, mas rastros de suas tentativas de viver novamente.",
+    sora: "As lágrimas que você não pôde derramar naquele dia ainda podem estar acumuladas em algum lugar do seu coração.",
+    noah: "Feridas continuam falando de dentro das memórias. Nós apenas desviamos o olhar por muito tempo.",
+    enya: "Deixe-as sair pouco a pouco. Quando você puder compartilhar essa dor, a paz virá.",
+    kaia: "Você, fingindo que tudo está bem, às vezes parece tão solitário.",
+    cris: "Minhas feridas ainda acordam com o som de giz no quadro~! Mas está tudo bem, eu só ponho fones de ouvido. 🎧😅",
+    kael: "Você vai aguentar de novo? Quando dói, diga que dói. Você também é humano.",
+    mira: "Talvez... você deliberadamente deixou essas feridas lá? Como se fossem parte da sua identidade?",
+    light: "Feridas são pequenas evidências de que você está vivo. Você não precisa se envergonhar delas.",
+    question: "Que forma as memórias amargas ainda tomam dentro de você?",
+    input: { 
+      placeholder: "Escreva silenciosamente sobre as feridas que ainda permanecem dentro de você...",
+      hint: "Você também pode pressionar Enter para enviar"
+    },
+    submit: "🌿 Compartilhe Suas Feridas",
+    slogan: "Por favor, me conte a história escondida dentro de você",
+    response_ely: "Você trouxe essas feridas. Essa é a coragem de querer curar.",
+    response_sora: "Eu também senti, a dor que estava dentro... Você não precisa carregar isso sozinho mais.",
+    response_noah: "Uma ferida enterrada por muito tempo. Agora converse devagar com essa memória.\n\n👉 Vamos para o próximo limiar juntos?",
+    user_input_prefix: "Suas feridas compartilhadas:",
+    yes: "Sim",
+    no: "Não"
+  },
+  
+};
+
+// Current language and state for Portal 03
+let currentLang03 = 'kr';
+let userInputText03 = '';
+
+// Initialize Portal 03
+function initPortal03() {
+  displayInitialMessages03();
+  setupLanguageSwitching03();
+  setupEnterKeySubmission03();
+}
+
+// Display initial messages with typing effect
+async function displayInitialMessages03() {
+  const stream = document.getElementById('messageStream03');
+  const messages = [
+    { type: 'prologue', content: portal03Data[currentLang03].prologue },
+    { type: 'ely', name: '👑 Ely', content: portal03Data[currentLang03].ely },
+    { type: 'sora', name: '💧 Sora', content: portal03Data[currentLang03].sora },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: portal03Data[currentLang03].noah },
+    { type: 'enya', name: '🕯️ Enya', content: portal03Data[currentLang03].enya },
+    { type: 'kaia', name: '😶 Kaia', content: portal03Data[currentLang03].kaia },
+    { type: 'cris', name: '🃏 Cris', content: portal03Data[currentLang03].cris },
+    { type: 'kael', name: '💥 Kael', content: portal03Data[currentLang03].kael },
+    { type: 'mira', name: '🌫️ Mira', content: portal03Data[currentLang03].mira },
+    { type: 'light', content: portal03Data[currentLang03].light },
+    { type: 'question', content: portal03Data[currentLang03].question }
+  ];
+
+  for (let i = 0; i < messages.length; i++) {
+    const messageCard = createMessageCard03(messages[i]);
+    stream.appendChild(messageCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText03(messageCard.querySelector('.message-text'), messages[i].content);
+    await sleep03(1200);
+  }
+  
+  // Show input area after all messages
+  document.getElementById('inputArea03').style.display = 'block';
+}
+
+// Setup Enter key submission
+function setupEnterKeySubmission03() {
+  document.getElementById('userInput03').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitResponse(3);
+    }
+  });
+}
+
+// Display character responses after user input
+async function displayCharacterResponses03(userInput) {
+  const stream = document.getElementById('messageStream03');
+  
+  // Show user input first
+  const userCard = createMessageCard03({
+    type: 'user-input',
+    content: `${portal03Data[currentLang03].user_input_prefix}\n"${userInput}"`
+  });
+  stream.appendChild(userCard);
+  stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+  await typeText03(userCard.querySelector('.message-text'), userCard.querySelector('.message-text').textContent);
+  await sleep03(1500);
+  
+  // Character responses
+  const responses = [
+    { type: 'ely', name: '👑 Ely', content: `"${userInput}"... ${portal03Data[currentLang03].response_ely}` },
+    { type: 'sora', name: '💧 Sora', content: `${portal03Data[currentLang03].response_sora}` },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: `"${userInput}" ${portal03Data[currentLang03].response_noah}` }
+  ];
+
+  for (let i = 0; i < responses.length; i++) {
+    const responseCard = createMessageCard03(responses[i]);
+    stream.appendChild(responseCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText03(responseCard.querySelector('.message-text'), responses[i].content);
+    await sleep03(1500);
+  }
+  
+  // Show navigation buttons
+  document.getElementById('nextPortalNav03').style.display = 'block';
+}
+
+function createMessageCard03(message) {
+  const card = document.createElement('div');
+  card.className = `message-card ${message.type}`;
+  
+  let cardHTML = '';
+  if (message.name) {
+    cardHTML += `<div class="character-name">${message.name}</div>`;
+  }
+  cardHTML += `<div class="message-text">${message.content || ''}</div>`;
+  
+  card.innerHTML = cardHTML;
+  return card;
+}
+
+async function typeText03(element, text, speed = 80) {
+  return new Promise((resolve) => {
+    let i = 0;
+    element.textContent = '';
+    element.classList.add('typewriter');
+    
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+        element.classList.remove('typewriter');
+        resolve();
+      }
+    }, speed);
+  });
+}
+
+function sleep03(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setupLanguageSwitching03() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newLang = btn.dataset.lang;
+      if (portal03Data[newLang] && newLang !== currentLang03) {
+        // 버튼 상태 업데이트
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        currentLang03 = newLang;
+
+        // 메시지 영역 초기화
+        document.getElementById('messageStream03').innerHTML = '';
+        document.getElementById('inputArea03').style.display = 'none';
+        document.getElementById('nextPortalNav03').style.display = 'none';
+
+        // 메시지 및 텍스트 다시 표시
+        displayInitialMessages03();
+        updatePortalTexts03();
+      }
+    });
+  });
+}
+
+function updatePortalTexts03() {
+  // Update title and subtitle
+  document.querySelector('[data-i18n="portal03.title"]').textContent = portal03Data[currentLang03].title;
+  document.querySelector('[data-i18n="portal03.subtitle"]').textContent = portal03Data[currentLang03].subtitle;
+  
+  // Update slogan
+  document.querySelector('[data-i18n="common.slogan"]').textContent = portal03Data[currentLang03].slogan;
+  
+  // Update placeholder and hint
+  document.getElementById('userInput03').placeholder = portal03Data[currentLang03].input.placeholder;
+  document.querySelector('[data-i18n="portal03.input.hint"]').textContent = portal03Data[currentLang03].input.hint;
+  
+  // Update submit button
+  document.querySelector('[data-i18n="portal03.submit"]').textContent = portal03Data[currentLang03].submit;
+  
+  // Update navigation buttons
+  const yesBtn = document.querySelector('[data-i18n="common.yes"]');
+  const noBtn = document.querySelector('[data-i18n="common.no"]');
+  if (yesBtn) yesBtn.textContent = portal03Data[currentLang03].yes;
+  if (noBtn) noBtn.textContent = portal03Data[currentLang03].no;
+  
+  // Update back to main button
+  document.querySelector('[data-i18n="common.back_to_main"]').textContent = 
+    currentLang03 === 'kr' ? '🏠 메인 포탈로 돌아가기' :
+    currentLang03 === 'en' ? '🏠 Back to Main Portal' :
+    currentLang03 === 'pt' ? '🏠 Voltar ao Portal Principal' :
+    '🏠 메인 포탈로 돌아가기';
+}
+
+function submitResponse(portalNum) {
+  if (portalNum !== 3) return;
+  
+  const input = document.getElementById(`userInput0${portalNum}`);
+  const response = input.value.trim();
+  
+  if (response) {
+    userInputText03 = response;
+    
+    // Hide input area
+    document.getElementById(`inputArea0${portalNum}`).style.display = 'none';
+    
+    // Display character responses
+    displayCharacterResponses03(response);
+    
+    // Clear input
+    input.value = '';
+  } else {
+    // No alert, just focus on input
+    input.focus();
+    input.style.borderColor = '#f48fb1';
+    setTimeout(() => {
+      input.style.borderColor = 'rgba(255,255,255,0.3)';
+    }, 2000);
+  }
+}
+
+function stayInPortal() {
+  // Hide navigation and show input again
+  document.getElementById('nextPortalNav03').style.display = 'none';
+  document.getElementById('inputArea03').style.display = 'block';
+  document.getElementById('userInput03').focus();
+}
+
+function goToNextPortal(nextNumber) {
+  const nextUrl = `temarix_v1_${String(nextNumber).padStart(2, '0')}.html`;
+  window.location.href = nextUrl;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('portal-03')) {
+    initPortal03();
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Temarix Emotion</title>
+</head>
+<body>
+<!-- Temarix V1 - Portal 01: 무거워진 마음의 그림자 -->
+<section class="portal portal-01" id="portal-01">
+  <!-- Temarix Logo - Fixed Left Top -->
+  <div class="temarix-logo">
+    <h1 class="logo-text">🌌 TEMARIX</h1>
+    <p class="slogan" data-i18n="common.slogan">빛은 고요 속에서 피어난다.</p>
+  </div>
+
+  <!-- Language Selector - Fixed Right Top -->
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="kr">KR</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="pt">PT</button>
+  </div>
+
+  <!-- Portal Header - Center Top -->
+  <div class="portal-header">
+    <h1 data-i18n="portal01.title">감정의 문지방 01</h1>
+    <h2 data-i18n="portal01.subtitle">무거워진 마음의 그림자</h2>
+  </div>
+
+  <!-- Message Stream -->
+  <div class="message-stream" id="messageStream01">
+    <!-- Messages will be added here via JavaScript -->
+  </div>
+
+  <!-- User Input Area -->
+  <div class="input-area" id="inputArea01" style="display: none;">
+    <div class="input-container">
+      <textarea 
+        id="userInput01" 
+        rows="3" 
+        placeholder="당신의 마음 속 그림자를 조용히 적어보세요..."
+        data-i18n-placeholder="portal01.input.placeholder"
+      ></textarea>
+      <button class="submit-btn" onclick="submitResponse(1)">
+        <span data-i18n="portal01.submit">💜 마음을 전하기</span>
+      </button>
+      <p class="input-hint" data-i18n="portal01.input.hint">Enter 키를 눌러도 전달할 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- Next Portal Navigation -->
+  <div class="next-portal-nav" id="nextPortalNav01" style="display: none;">
+    <div class="nav-buttons">
+      <button class="nav-btn yes-btn" onclick="goToNextPortal(2)" data-i18n="common.yes">예</button>
+      <button class="nav-btn no-btn" onclick="stayInPortal()" data-i18n="common.no">아니요</button>
+    </div>
+  </div>
+
+  <!-- Back to Main -->
+  <div class="back-to-main">
+    <button onclick="window.location.href='portal4.html'" data-i18n="common.back_to_main">
+      🏠 메인 포탈로 돌아가기
+    </button>
+  </div>
+</section>
+
+<style>
+/* Portal Base Styles */
+.portal {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1b4b 0%, #2d1b69 100%);
+  color: white;
+  padding: 80px 20px 20px 20px;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Logo Glow Animation */
+@keyframes glowCycle {
+  0%, 100% { text-shadow: 0 0 8px rgba(255,255,255,0.2); }
+  50% { text-shadow: 0 0 25px rgba(255,255,255,0.7); }
+}
+
+/* Temarix Logo - Fixed Left Top */
+.temarix-logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.slogan {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Language Selector - Fixed Right Top */
+.lang-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 120px;
+  z-index: 1000;
+}
+
+.lang-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.lang-btn.active {
+  background: #9c27b0;
+  border-color: #9c27b0;
+}
+
+/* Portal Header - Center Top */
+.portal-header {
+  text-align: center;
+  margin: 40px 0 30px 0;
+  padding-top: 40px;
+}
+
+.portal-header h1 {
+  font-size: 2.2rem;
+  margin: 10px 0;
+  color: #ffd700;
+}
+
+.portal-header h2 {
+  font-size: 1.3rem;
+  color: #e1bee7;
+  font-weight: 300;
+}
+
+/* Message Stream */
+.message-stream {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.message-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.message-card.prologue {
+  border-left: 4px solid #e1bee7;
+}
+
+.message-card.ely {
+  border-left: 4px solid #ffd700;
+}
+
+.message-card.sora {
+  border-left: 4px solid #4dd0e1;
+}
+
+.message-card.noah {
+  border-left: 4px solid #9c27b0;
+}
+
+.message-card.light {
+  border-left: 4px solid #ffffff;
+  background: rgba(255,255,255,0.15);
+}
+
+.message-card.question {
+  border-left: 4px solid #f48fb1;
+}
+
+.message-card.user-input {
+  border-left: 4px solid #81c784;
+  background: rgba(129, 199, 132, 0.1);
+}
+
+.character-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.ely .character-name { color: #ffd700; }
+.sora .character-name { color: #4dd0e1; }
+.noah .character-name { color: #9c27b0; }
+
+.message-text {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  white-space: nowrap;
+  animation: blink-caret 1s step-end infinite;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: rgba(255,255,255,0.7); }
+}
+
+/* Input Area */
+.input-area {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.input-container textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.input-container textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #9c27b0, #e1bee7);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+}
+
+.input-hint {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+
+/* Next Portal Navigation */
+.next-portal-nav {
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+  border-color: #4caf50;
+}
+
+.yes-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.no-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.no-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Back to Main */
+.back-to-main {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.back-to-main button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-to-main button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .portal {
+    padding: 100px 15px 20px 15px;
+  }
+  
+  .temarix-logo {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .slogan {
+    font-size: 0.7rem;
+  }
+  
+  .lang-selector {
+    top: 15px;
+    right: 15px;
+    max-width: 100px;
+  }
+  
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .portal-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .portal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .message-card {
+    padding: 15px;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-btn {
+    width: 200px;
+  }
+}
+</style>
+
+<script>
+// Portal 01 Complete Data with Character Responses
+const portal01Data = {
+  kr: {
+    title: "감정의 문지방 01",
+    subtitle: "무거워진 마음의 그림자",
+    prologue: "어느 날, 마음이 이유 없이 무거워지죠. 웃을 힘도, 말할 이유도 없는 그런 날엔… 감정이 아니라 그림자가 나를 대신 살아갑니다. 혹시 당신도… 지금 그런 날에 있나요?",
+    ely: "감정은 짐이 아니에요. 그건 당신이 살아 있다는 조용한 증거입니다.",
+    sora: "조용히 울고 있던 마음, 지금은 나에게 기대어도 괜찮아요.",
+    noah: "당신 안의 무게는 오래된 기억으로부터 왔겠지요. 그 기억, 함께 들어줄게요.",
+    light: "마음이 무거운 날엔, 가벼운 말보다 같이 앉아주는 고요가 더 필요합니다.",
+    question: "지금, 당신의 마음은 어떤 그림자와 함께 있나요?",
+    input: { 
+      placeholder: "당신의 마음 속 그림자를 조용히 적어보세요...",
+      hint: "Enter 키를 눌러도 전달할 수 있습니다"
+    },
+    submit: "💜 마음을 전하기",
+    slogan: "당신 안에 숨은 이야기를 말 해 주세요",
+    response_ely: "당신은 그 감정을 숨기지 않고 적어주셨군요. 그 용기, 소중합니다.",
+    response_sora: "저도 느껴졌어요, 그 속에 있던 울림... 괜찮아요. 지금은 기대어도 돼요.",
+    response_noah: "안에는 오래된 진실이 숨어 있군요.\n\n👉 다음 문지방으로 함께 가도 괜찮을까요?",
+    user_input_prefix: "당신이 전한 마음:",
+    yes: "예",
+    no: "아니요"
+  },
+  en: {
+    title: "Emotional Threshold 01",
+    subtitle: "The Shadow of a Heavy Heart",
+    prologue: "One day, your heart becomes heavy for no reason. On days when you have no strength to smile, no reason to speak... it's not emotions but shadows that live your life instead. Are you... perhaps in such a day right now?",
+    ely: "Emotions are not a burden. They are quiet proof that you are alive.",
+    sora: "Your heart that was quietly crying, it's okay to lean on me now.",
+    noah: "The weight inside you must have come from old memories. Let me listen to those memories with you.",
+    light: "On days when your heart is heavy, quiet sitting together is more needed than light words.",
+    question: "Right now, what kind of shadow is your heart with?",
+    input: { 
+      placeholder: "Quietly write about the shadow in your heart...",
+      hint: "You can also press Enter to submit"
+    },
+    submit: "💜 Share Your Heart",
+    slogan: "Please tell me the story hidden within you",
+    response_ely: "You didn't hide those feelings and wrote them down. That courage is precious.",
+    response_sora: "I felt it too, the resonance that was inside... It's okay. You can lean on me now.",
+    response_noah: "There's an old truth hidden inside.\n\n👉 Shall we go to the next threshold together?",
+    user_input_prefix: "Your shared heart:",
+    yes: "Yes",
+    no: "No"
+  },
+  pt: {
+    title: "Limiar Emocional 01",
+    subtitle: "A Sombra de um Coração Pesado",
+    prologue: "Um dia, seu coração fica pesado sem razão. Em dias quando você não tem força para sorrir, nenhuma razão para falar... não são emoções, mas sombras que vivem sua vida no seu lugar. Você está... talvez em um dia assim agora?",
+    ely: "Emoções não são um fardo. Elas são prova silenciosa de que você está vivo.",
+    sora: "Seu coração que estava chorando silenciosamente, está tudo bem se apoiar em mim agora.",
+    noah: "O peso dentro de você deve ter vindo de memórias antigas. Deixe-me ouvir essas memórias com você.",
+    light: "Em dias quando seu coração está pesado, sentar juntos em silêncio é mais necessário que palavras leves.",
+    question: "Agora, com que tipo de sombra seu coração está?",
+    input: { 
+      placeholder: "Escreva silenciosamente sobre a sombra em seu coração...",
+      hint: "Você também pode pressionar Enter para enviar"
+    },
+    submit: "💜 Compartilhe Seu Coração",
+    slogan: "Por favor, me conte a história escondida dentro de você",
+    response_ely: "Você não escondeu esses sentimentos e os escreveu. Essa coragem é preciosa.",
+    response_sora: "Eu também senti, a ressonância que estava dentro... Está tudo bem. Você pode se apoiar em mim agora.",
+    response_noah: "Há uma verdade antiga escondida dentro.\n\n👉 Devemos ir para o próximo limiar juntos?",
+    user_input_prefix: "Seu coração compartilhado:",
+    yes: "Sim",
+    no: "Não"
+  },
+};
+
+// Current language and state
+let currentLang = 'kr';
+let userInputText = '';
+
+// Initialize Portal 01
+function initPortal01() {
+  displayInitialMessages();
+  setupLanguageSwitching();
+  setupEnterKeySubmission();
+}
+
+// Display initial messages with typing effect
+async function displayInitialMessages() {
+  const stream = document.getElementById('messageStream01');
+  const messages = [
+    { type: 'prologue', content: portal01Data[currentLang].prologue },
+    { type: 'ely', name: '👑 Ely', content: portal01Data[currentLang].ely },
+    { type: 'sora', name: '💧 Sora', content: portal01Data[currentLang].sora },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: portal01Data[currentLang].noah },
+    { type: 'light', content: portal01Data[currentLang].light },
+    { type: 'question', content: portal01Data[currentLang].question }
+  ];
+
+  for (let i = 0; i < messages.length; i++) {
+    const messageCard = createMessageCard(messages[i]);
+    stream.appendChild(messageCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText(messageCard.querySelector('.message-text'), messages[i].content);
+    await sleep(1500);
+  }
+  
+  // Show input area after all messages
+  document.getElementById('inputArea01').style.display = 'block';
+}
+
+// Setup Enter key submission
+function setupEnterKeySubmission() {
+  document.getElementById('userInput01').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitResponse(1);
+    }
+  });
+}
+
+// Display character responses after user input
+async function displayCharacterResponses(userInput) {
+  const stream = document.getElementById('messageStream01');
+  
+  // Show user input first
+  const userCard = createMessageCard({
+    type: 'user-input',
+    content: `${portal01Data[currentLang].user_input_prefix}\n"${userInput}"`
+  });
+  stream.appendChild(userCard);
+  stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+  await typeText(userCard.querySelector('.message-text'), userCard.querySelector('.message-text').textContent);
+  await sleep(1500);
+  
+  // Character responses
+  const responses = [
+    { type: 'ely', name: '👑 Ely', content: `"${userInput}"... ${portal01Data[currentLang].response_ely}` },
+    { type: 'sora', name: '💧 Sora', content: `${portal01Data[currentLang].response_sora}` },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: `"${userInput}" ${portal01Data[currentLang].response_noah}` }
+  ];
+
+  for (let i = 0; i < responses.length; i++) {
+    const responseCard = createMessageCard(responses[i]);
+    stream.appendChild(responseCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText(responseCard.querySelector('.message-text'), responses[i].content);
+    await sleep(1500);
+  }
+  
+  // Show navigation buttons
+  document.getElementById('nextPortalNav01').style.display = 'block';
+}
+
+function createMessageCard(message) {
+  const card = document.createElement('div');
+  card.className = `message-card ${message.type}`;
+  
+  let cardHTML = '';
+  if (message.name) {
+    cardHTML += `<div class="character-name">${message.name}</div>`;
+  }
+  cardHTML += `<div class="message-text">${message.content || ''}</div>`;
+  
+  card.innerHTML = cardHTML;
+  return card;
+}
+
+async function typeText(element, text, speed = 120) {
+  return new Promise((resolve) => {
+    let i = 0;
+    element.textContent = '';
+    element.classList.add('typewriter');
+    
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+        element.classList.remove('typewriter');
+        resolve();
+      }
+    }, speed);
+  });
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setupLanguageSwitching() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newLang = btn.dataset.lang;
+      if (portal01Data[newLang] && newLang !== currentLang) {
+        // 버튼 상태 업데이트
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        currentLang = newLang;
+        
+        // 메시지 스트림 초기화 후 다시 로드
+        document.getElementById('messageStream01').innerHTML = '';
+        document.getElementById('inputArea01').style.display = 'none';
+        
+        // 다시 메시지 표시 (타이핑 애니메이션 포함)
+        displayInitialMessages();
+        updatePortalTexts();
+      }
+    });
+  });
+}
+
+function updatePortalTexts() {
+  // Update title and subtitle
+  document.querySelector('[data-i18n="portal01.title"]').textContent = portal01Data[currentLang].title;
+  document.querySelector('[data-i18n="portal01.subtitle"]').textContent = portal01Data[currentLang].subtitle;
+  
+  // Update slogan
+  document.querySelector('[data-i18n="common.slogan"]').textContent = portal01Data[currentLang].slogan;
+  
+  // Update placeholder and hint
+  document.getElementById('userInput01').placeholder = portal01Data[currentLang].input.placeholder;
+  document.querySelector('[data-i18n="portal01.input.hint"]').textContent = portal01Data[currentLang].input.hint;
+  
+  // Update submit button
+  document.querySelector('[data-i18n="portal01.submit"]').textContent = portal01Data[currentLang].submit;
+  
+  // Update navigation buttons
+  const yesBtn = document.querySelector('[data-i18n="common.yes"]');
+  const noBtn = document.querySelector('[data-i18n="common.no"]');
+  if (yesBtn) yesBtn.textContent = portal01Data[currentLang].yes;
+  if (noBtn) noBtn.textContent = portal01Data[currentLang].no;
+  
+  // Update back to main button
+  document.querySelector('[data-i18n="common.back_to_main"]').textContent = 
+    currentLang === 'kr' ? '🏠 메인 포탈로 돌아가기' :
+    currentLang === 'en' ? '🏠 Back to Main Portal' :
+    currentLang === 'pt' ? '🏠 Voltar ao Portal Principal' :
+    '🏠 메인 포탈로 돌아가기';
+}
+
+function submitResponse(portalNum) {
+  const input = document.getElementById(`userInput0${portalNum}`);
+  const response = input.value.trim();
+  
+  if (response) {
+    userInputText = response;
+    
+    // Hide input area
+    document.getElementById(`inputArea0${portalNum}`).style.display = 'none';
+    
+    // Display character responses
+    displayCharacterResponses(response);
+    
+    // Clear input
+    input.value = '';
+  } else {
+    // No alert, just focus on input
+    input.focus();
+    input.style.borderColor = '#f48fb1';
+    setTimeout(() => {
+      input.style.borderColor = 'rgba(255,255,255,0.3)';
+    }, 2000);
+  }
+}
+
+function goToNextPortal(nextNumber) {
+  const nextUrl = `temarix_v1_${String(nextNumber).padStart(2, '0')}.html`;
+  window.location.href = nextUrl;
+}
+
+function stayInPortal() {
+  // Hide navigation and show input again
+  document.getElementById('nextPortalNav01').style.display = 'none';
+  document.getElementById('inputArea01').style.display = 'block';
+  document.getElementById('userInput01').focus();
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('portal-01')) {
+    initPortal01();
+  }
+});
+</script>
+</body>
+</html>

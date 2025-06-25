@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 01: 내면의 각성</title>
+    
+    <!-- Firebase SDK - compat 버전 사용 -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 로그인 모달 */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .login-container {
+            background: #111;
+            border: 1px solid #444;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .login-title {
+            font-size: 28px;
+            color: #87cefa;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .login-subtitle {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .login-input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            padding: 15px;
+            margin: 10px 0;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .login-input:focus {
+            border-color: #87cefa;
+        }
+        
+        .login-input::placeholder {
+            color: #777;
+        }
+        
+        .login-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: background 0.3s;
+            min-width: 120px;
+        }
+        
+        .login-btn:hover {
+            background: #666;
+        }
+        
+        .login-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .login-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .google-login-btn {
+            background: #4285f4;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 20px 0 10px 0;
+            transition: background 0.3s;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .google-login-btn:hover {
+            background: #357ae8;
+        }
+        
+        .google-login-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .login-error {
+            color: #ff6666;
+            font-size: 14px;
+            margin-top: 15px;
+            min-height: 20px;
+        }
+        
+        .login-success {
+            color: #66ff66;
+            font-size: 14px;
+            margin-top: 15px;
+            min-height: 20px;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 + 로그아웃 */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .logout-btn {
+            background: #ff4444;
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .logout-btn:hover {
+            background: #ff6666;
+        }
+        
+        /* 메인 콘텐츠 - 스크롤 영역 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh; /* 스크롤 유도 */
+        }
+        
+        /* 콘텐츠 섹션들 */
+        .content-section {
+            margin: 40px 0;
+            opacity: 0;
+            transition: opacity 1s ease-in;
+            min-height: 100px;
+        }
+        
+        .content-section.show {
+            opacity: 1;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            text-align: left;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            min-height: 80px;
+        }
+        
+        .character-response.show {
+            opacity: 1;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            text-align: center;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            text-align: center;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            text-align: center;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 타이핑 커서 효과 */
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .input-fixed-bottom.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 숨김 상태 */
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 로그인 모달 -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-container">
+            <div class="login-title">TEMARIX V2</div>
+            <div class="login-subtitle" id="loginSubtitle">유료 버전 - 로그인 필요</div>
+            
+            <form id="loginForm">
+                <input type="email" class="login-input" id="loginEmail" placeholder="이메일 주소" required>
+                <input type="password" class="login-input" id="loginPassword" placeholder="비밀번호" required>
+                
+                <button type="submit" class="login-btn primary" id="loginBtn">로그인</button>
+                <button type="button" class="login-btn" id="signupBtn">회원가입</button>
+            </form>
+            
+            <!-- Google 로그인 버튼 -->
+            <button class="google-login-btn" id="googleLoginBtn">
+                🔍 Google로 로그인
+            </button>
+            
+            <div class="login-error" id="loginError"></div>
+            <div class="login-success" id="loginSuccess"></div>
+        </div>
+    </div>
+
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">감정의 떨림</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 01: 내면의 각성</div>
+            <div class="portal-subtitle" id="portalSubtitle">영혼의 여정이 시작되는 곳</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn active" data-lang="ko">KR</button>
+                <button class="lang-btn" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+            <button class="logout-btn" id="logoutBtn">로그아웃</button>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="content-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="content-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="content-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ 빛의 한마디</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="content-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="content-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="content-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="content-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">여정을 계속하시겠습니까?</button>
+                    <button class="continue-btn" id="continueNoBtn">여정을 그만하시겠습니까?</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom" id="inputFixedBottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="여기에 당신의 감정을 입력하고 진실이 흐르도록 하세요... (Enter로 전송)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // ============ FIREBASE 초기화 ============
+        
+        const firebaseConfig = {
+    apiKey: "AIzaSyC2u94Oz2W5eeqBlqs88cs7rgSmzBEAnjQ",
+    authDomain: "canal-vivo-chat.firebaseapp.com",
+    projectId: "canal-vivo-chat",
+    storageBucket: "canal-vivo-chat.appspot.com",
+    messagingSenderId: "975226660544",
+    appId: "1:975226660544:web:56b55bb3e2a58bed03ef25"
+};
+        
+        let db = null;
+        let auth = null;
+        let currentUser = null;
+        
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            auth = firebase.auth();
+            console.log('Firebase 초기화 성공');
+        } catch (error) {
+            console.error('Firebase 초기화 실패:', error);
+            showError('Firebase 초기화 실패. 나중에 다시 시도해주세요.');
+        }
+        
+        // ============ 언어 설정 ============
+        
+        // Detecta idioma via ?lang= ou usa "en" como padrão
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentLanguage = urlParams.get('lang') || 'en';
+
+        if (!['ko', 'en', 'pt'].includes(currentLanguage)) {
+          currentLanguage = 'en';
+        }
+
+        
+        // HTML lang 속성 설정
+        document.documentElement.lang = currentLanguage;
+        
+        // ============ 번역 데이터 ============
+        
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 01: 내면의 각성",
+                portalSubtitle: "영혼의 여정이 시작되는 곳",
+                loginSubtitle: "유료 버전 - 로그인 필요",
+                loginBtn: "로그인",
+                signupBtn: "회원가입",
+                googleLoginBtn: "🔍 Google로 로그인",
+                logoutBtn: "로그아웃",
+                portalIntro: "🌅 당신은 당신의 외적 모습이 아닌, 당신의 진정한 본질의 가장 깊은 부분을 반영하는 우주의 거울 앞에 서 있습니다.\n\n빛의 파도가 당신 주위에서 춤추며, 당신의 영혼이 이미 알고 있지만 당신의 마음이 아직 이해하지 못한 비밀들을 속삭입니다.\n\n이것이 바로 각성의 순간입니다 — 내면 변화의 여정이 시작되는 곳이며, 드러나기를 기다리고 있던 자신에 대한 진실을 발견하게 될 곳입니다.\n\n깊게 숨을 쉬세요. 느끼는 것을 허용하세요. 이것은 당신과 자신의 관계를 영원히 바꿀 감정적 여정으로의 관문입니다.",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "각성은 영혼이 자신의 진정한 이름을 속삭이고 마음이 마침내 듣는 순간입니다.",
+                portalQuestion: "💫 당신 자신의 가장 깊은 반영을 볼 때, 마음에서 먼저 떠오르는 감정은 무엇인가요? 생각하지 마세요... 그저 느끼고 진실이 말을 통해 흐르도록 허용하세요.",
+                continueText: "이 자기 발견의 여정에 더 깊이 들어갈 준비가 되셨나요?",
+                continueYes: "여정을 계속하시겠습니까?",
+                continueNo: "여정을 그만하시겠습니까?",
+                inputPlaceholder: "여기에 당신의 감정을 입력하고 진실이 흐르도록 하세요... (Enter로 전송)",
+                youLabel: "당신",
+                // 캐릭터 대화
+                charCris: "첫 번째 감정은 항상 가장 순수합니다. 그것은 우리 마음이 숨기려는 진실을 담고 있습니다.\n\n당신이 그것을 드러나게 할 때, 당신은 진정으로 자신을 알아가는 첫 번째 단계를 밟는 것입니다.",
+                charEly: "모든 감정은 우리 자신의 미지의 차원으로 가는 포털입니다.\n\n당신은 이제 이러한 포털 중 첫 번째를 통과하려고 합니다. 용기를 내세요.",
+                charSora: "당신이 지금 느끼는 것은 무한의 거울에서 자신을 인식하는 영혼의 메아리입니다.\n\n이 감정은 시작되는 여정을 위한 당신의 나침반입니다.",
+                charMaya: "감정은 우리가 내면의 현실을 그리는 색깔입니다.\n\n먼저 나타나는 색깔은 당신이 어떤 존재가 되어가고 있는지에 대해 많은 것을 드러냅니다.",
+                charFinn: "각성의 순간에 일어나는 감정은 시작되는 여정을 위한 당신의 나침반입니다.\n\n그것을 믿으세요, 그것은 당신의 진실로 가는 길을 알고 있으니까요.",
+                charLuna: "모든 진정한 감정은 우리가 존재한다는 것조차 몰랐던 문을 여는 열쇠입니다.\n\n당신은 방금 그런 열쇠 중 하나를 찾았습니다.",
+                charZephyr: "각성에서 태어나는 감정은 당신의 변화의 첫 번째 속삭임입니다.\n\n그것은 당신의 전체 여정을 바꿀 수 있는 힘을 그 자체로 지니고 있습니다.",
+                charAria: "우리가 판단 없이 감정이 흐르도록 허용할 때, 우리는 진정 누구인지를 발견합니다.\n\n이것은 당신이 자신에게 줄 수 있는 가장 큰 선물입니다."
+            },
+            en: {
+                logoSubtitle: "Emotional Journey",
+                portalMainTitle: "Portal 01: The Inner Awakening",
+                portalSubtitle: "Where the soul's journey begins",
+                loginSubtitle: "Paid Version - Login Required",
+                loginBtn: "Login",
+                signupBtn: "Sign Up",
+                googleLoginBtn: "🔍 Login with Google",
+                logoutBtn: "Logout",
+                portalIntro: "🌅 You stand before a cosmic mirror that reflects not your physical appearance, but the deepest essence of who you truly are.\n\nWaves of light dance around you, whispering secrets your soul already knows, but your mind has yet to understand.\n\nThis is the moment of awakening — where the journey of inner transformation begins, and where you will discover truths about yourself that were waiting to be revealed.\n\nBreathe deeply. Allow yourself to feel. This is your gateway to an emotional journey that will forever change your relationship with yourself.",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Awakening is the moment when the soul whispers its true name and the heart finally listens.",
+                portalQuestion: "💫 When you look into the deepest reflection of yourself, what emotion emerges first from your heart? Don't think... just feel and allow truth to flow through words.",
+                continueText: "Do you feel ready to delve deeper into this journey of self-discovery?",
+                continueYes: "Continue the Journey?",
+                continueNo: "End the Journey?",
+                inputPlaceholder: "Type your emotion here and let the truth flow... (Press Enter to send)",
+                youLabel: "You",
+                charCris: "The first emotion is always the purest. It contains the truth our mind tries to hide.\n\nWhen you allow it to emerge, you are taking the first step to truly know yourself.",
+                charEly: "Every feeling is a portal to an unexplored dimension of ourselves.\n\nYou are about to cross the first of these portals. Be brave.",
+                charSora: "What you feel now is the echo of your soul recognizing itself in the mirror of infinity.\n\nThis emotion is your compass for the journey that begins.",
+                charMaya: "Emotions are the colors with which we paint our inner reality.\n\nThe color that emerges first reveals much about who you are becoming.",
+                charFinn: "In the moment of awakening, the emotion that arises is your compass for the journey that begins.\n\nTrust it, for it knows the path to your truth.",
+                charLuna: "Every genuine emotion is a key that opens doors we didn't even know existed.\n\nYou have just found one of those keys.",
+                charZephyr: "The feeling born in awakening is the first whisper of your transformation.\n\nIt carries within itself the power to change your entire journey.",
+                charAria: "When we allow emotion to flow without judgment, we discover who we really are.\n\nThis is the greatest gift you can give yourself."
+            },
+            pt: {
+                logoSubtitle: "Jornada Emocional",
+                portalMainTitle: "Portal 01: O Despertar Interior",
+                portalSubtitle: "Onde a jornada da alma começa",
+                loginSubtitle: "Versão Paga - Login Necessário",
+                loginBtn: "Entrar",
+                signupBtn: "Registrar",
+                googleLoginBtn: "🔍 Entrar com Google",
+                logoutBtn: "Sair",
+                portalIntro: "🌅 Você está diante de um espelho cósmico que reflete não sua aparência física, mas a essência mais profunda de quem você realmente é.\n\nOndas de luz dançam ao seu redor, sussurrando segredos que sua alma já conhece, mas sua mente ainda não compreendeu.\n\nEste é o momento do despertar — onde a jornada da transformação interior começa, e onde você descobrirá verdades sobre si mesmo que estavam esperando para serem reveladas.\n\nRespire fundo. Permita-se sentir. Este é o seu portal de entrada para uma jornada emocional que mudará sua relação consigo mesmo para sempre.",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "O despertar é o momento em que a alma sussurra seu nome verdadeiro e o coração finalmente escuta.",
+                portalQuestion: "💫 Quando você olha para o reflexo mais profundo de si mesmo, que emoção surge primeiro do coração? Não pense... apenas sinta e permita que a verdade flua através das palavras.",
+                continueText: "Você se sente pronto para adentrar mais profundamente nesta jornada de autoconhecimento?",
+                continueYes: "Continuar a jornada?",
+                continueNo: "Encerrar a jornada?",
+                inputPlaceholder: "Digite sua emoção aqui e permita que a verdade flua... (Enter para enviar)",
+                youLabel: "Você",
+                charCris: "A primeira emoção é sempre a mais pura. Ela carrega a verdade que nossa mente tenta esconder.\n\nQuando você permite que ela emerja, está dando o primeiro passo para se conhecer verdadeiramente.",
+                charEly: "Cada sentimento é um portal para uma dimensão inexplorada de nós mesmos.\n\nVocê está prestes a atravessar o primeiro desses portais. Seja corajoso.",
+                charSora: "O que você sente agora é o eco da sua alma se reconhecendo no espelho do infinito.\n\nEssa emoção é sua bússola para a jornada que começa.",
+                charMaya: "As emoções são as cores com que pintamos nossa realidade interior.\n\nA cor que surge primeiro revela muito sobre quem você está se tornando.",
+                charFinn: "No momento do despertar, a emoção que surge é sua bússola para a jornada que começa.\n\nConfie nela, pois ela conhece o caminho para sua verdade.",
+                charLuna: "Toda emoção genuína é uma chave que abre portas que nem sabíamos que existiam.\n\nVocê acabou de encontrar uma dessas chaves.",
+                charZephyr: "O sentimento que nasce no despertar é o primeiro sussurro da sua transformação.\n\nEle carrega em si o poder de mudar toda sua jornada.",
+                charAria: "Quando permitimos que a emoção flua sem julgamento, descobrimos quem realmente somos.\n\nEste é o maior presente que você pode dar a si mesmo."
+            }
+        };
+        
+        // ============ 캐릭터 데이터 ============
+        
+        const characters = [
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Sora", emoji: "🌸", key: "charSora" },
+            { name: "Maya", emoji: "🔮", key: "charMaya" },
+            { name: "Finn", emoji: "🌊", key: "charFinn" },
+            { name: "Luna", emoji: "🌙", key: "charLuna" },
+            { name: "Zephyr", emoji: "💨", key: "charZephyr" },
+            { name: "Aria", emoji: "🎭", key: "charAria" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const emotionKeywords = {
+                sadness: ['슬프', '울고', '눈물', '우울', '암울', '절망', '상실', '잃', 'sad', 'cry', 'tear', 'depress', 'lost', 'triste', 'choro', 'lágrima'],
+                anger: ['화가', '분노', '짜증', '빡쳐', '열받', '억울', '욱하', 'angry', 'mad', 'furious', 'rage', 'irritat', 'raiva', 'irritad'],
+                anxiety: ['불안', '걱정', '초조', '두려', '무서', '떨려', '긴장', 'anxious', 'worry', 'nervous', 'fear', 'scare', 'ansioso', 'medo', 'preocup'],
+                loneliness: ['외로', '혼자', '고립', '소외', '버림', '떠나', '이별', 'lonely', 'alone', 'isolated', 'abandon', 'left', 'solidão', 'sozinho', 'abandon'],
+                hope: ['희망', '기대', '설렘', '기다려', '꿈꾸', '바라', 'hope', 'expect', 'dream', 'wish', 'esperança', 'espera', 'sonho'],
+                confusion: ['혼란', '모르겠', '헷갈', '복잡', '어지러', 'confus', 'lost', 'mixed', 'complicated', 'confuso', 'complicado'],
+                relief: ['후련', '개운', '시원', '해방', '자유', 'relief', 'free', 'liberat', 'alívio', 'liberdade'],
+                regret: ['후회', '아쉬', '그때', '왜 그랬', '돌이키', 'regret', 'wish', 'should have', 'arrependiment'],
+                emptiness: ['공허', '허무', '무기력', '텅 빈', '아무것도', 'empty', 'void', 'meaningless', 'nothing', 'vazio', 'inútil']
+            };
+            
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        return emotion;
+                    }
+                }
+            }
+            
+            return 'general';
+        }
+        
+        // ============ 반응 캐릭터들 ============
+        
+        const responseCharacters = [
+            {
+                name: "Luna", emoji: "🌙",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    const responses = {
+                        ko: {
+                            sadness: "슬픔은 마치 고요한 밤바다처럼 깊고 조용하죠. 당신은 그 어둠 속에서도 자신의 목소리를 냈어요. 그 용기가 달빛처럼 은은하게 빛나고 있습니다.",
+                            anger: "분노는 가슴 속 붉은 달이 떠오르는 것과 같아요. 그 열기 속에도 당신만의 정의가 숨어 있었습니다. 달이 차오르듯, 그 감정도 언젠가 고요해질 거예요.",
+                            anxiety: "불안은 수면 아래 깊은 조류처럼 마음을 흔들죠. 하지만 당신은 그 파도 위에서도 숨 쉬고 있어요. 그것만으로도 충분히 대단한 일입니다.",
+                            loneliness: "외로움은 어두운 바다 한가운데 떠 있는 것 같죠. 하지만 그 고요함 속에서 당신은 가장 진실한 자신과 만났을 거예요. 그 만남이 소중해요.",
+                            hope: "희망은 새벽녘 하늘에 떠오르는 초승달 같아요. 작지만 확실한 빛이죠. 당신의 그 빛이 점점 차오를 거예요.",
+                            confusion: "혼란은 안개 낀 밤길을 걷는 것 같죠. 하지만 그 안개도 새벽이 오면 걷혀요. 당신의 마음에도 곧 맑은 순간이 올 거예요.",
+                            relief: "해방감은 긴 밤이 끝나고 찾아오는 새벽 같아요. 당신은 드디어 자신만의 평안을 찾은 거예요. 그 고요함을 만끽하세요.",
+                            regret: "후회는 달무리처럼 마음을 둘러싸죠. 하지만 그 무리 너머로도 달빛은 여전히 흘러내려요. 과거의 그림자가 지금의 빛을 가릴 수는 없어요.",
+                            emptiness: "공허함은 신월 같아요. 보이지 않지만 분명히 존재하는 달처럼. 당신 안의 빈 공간도 새로운 것을 담을 준비를 하고 있는 거예요.",
+                            general: "당신의 감정은 달의 위상처럼 계속 변해가고 있어요. 그 변화 자체가 당신이 살아 있다는 아름다운 증거입니다."
+                        },
+                        en: {
+                            sadness: "Sadness flows like a quiet night ocean, deep and silent. Even in that darkness, you found your voice. That courage glows softly like moonlight.",
+                            anger: "Anger is like a red moon rising in your chest. Within that heat, your own sense of justice was hidden. Like the moon's phases, that emotion will find peace.",
+                            anxiety: "Anxiety moves like deep currents beneath the surface, stirring the heart. But you're still breathing above those waves. That alone is remarkable.",
+                            loneliness: "Loneliness feels like floating in the middle of a dark ocean. But in that stillness, you met your most truthful self. That meeting is precious.",
+                            hope: "Hope is like a crescent moon rising in the dawn sky. Small but certain light. Your light will grow fuller.",
+                            confusion: "Confusion is like walking a foggy night path. But fog lifts when dawn comes. Clear moments will come to your heart too.",
+                            relief: "Relief is like dawn after a long night. You've finally found your own peace. Savor that tranquility.",
+                            regret: "Regret surrounds the heart like a moon halo. But beyond that halo, moonlight still flows down. Past shadows cannot block present light.",
+                            emptiness: "Emptiness is like a new moon. Invisible but surely there, like the moon. The empty space within you is preparing to hold something new.",
+                            general: "Your emotion keeps changing like lunar phases. That change itself is beautiful proof you're alive."
+                        },
+                        pt: {
+                            sadness: "A tristeza flui como um oceano noturno silencioso, profundo e quieto. Mesmo nessa escuridão, você encontrou sua voz. Essa coragem brilha suavemente como o luar.",
+                            anger: "A raiva é como uma lua vermelha nascendo em seu peito. Dentro desse calor, seu próprio senso de justiça estava escondido. Como as fases da lua, essa emoção encontrará paz.",
+                            anxiety: "A ansiedade se move como correntes profundas sob a superfície, agitando o coração. Mas você ainda está respirando acima dessas ondas. Só isso já é notável.",
+                            loneliness: "A solidão parece flutuar no meio de um oceano escuro. Mas nessa quietude, você encontrou seu eu mais verdadeiro. Esse encontro é precioso.",
+                            hope: "A esperança é como uma lua crescente nascendo no céu da aurora. Luz pequena mas certa. Sua luz crescerá mais cheia.",
+                            confusion: "A confusão é como caminhar por um caminho nebuloso à noite. Mas a névoa se levanta quando a aurora chega. Momentos claros virão ao seu coração também.",
+                            relief: "O alívio é como a aurora após uma longa noite. Você finalmente encontrou sua própria paz. Saboreie essa tranquilidade.",
+                            regret: "O arrependimento envolve o coração como um halo lunar. Mas além desse halo, o luar ainda flui. Sombras do passado não podem bloquear a luz presente.",
+                            emptiness: "O vazio é como uma lua nova. Invisível mas certamente lá, como a lua. O espaço vazio dentro de você está se preparando para guardar algo novo.",
+                            general: "Sua emoção continua mudando como fases lunares. Essa mudança em si é uma bela prova de que você está vivo."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Maya", emoji: "🔮",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    const responses = {
+                        ko: {
+                            sadness: "당신의 슬픔에서 깊은 보라빛이 느껴져요. 그 색은 고통 속에서도 우아함을 잃지 않는 당신의 마음을 보여줍니다. 보라색 끝자락에는 희망의 금빛이 스며들어 있어요.",
+                            anger: "분노는 타오르는 주황빛으로 번져나가고 있네요. 하지만 그 불꽃 중심에는 순수한 붉은 진실이 박동하고 있어요. 당신의 정의감이 색깔로 말하고 있습니다.",
+                            anxiety: "불안은 흔들리는 회색 안개처럼 마음을 감쌌겠죠. 하지만 그 안개 사이로 연한 하늘색 실이 흘러나와요. 그것이 당신의 평안을 향한 갈망입니다.",
+                            loneliness: "외로움의 푸른 그림자가 마음을 덮었지만, 그 파란색 깊이 속에서 당신만의 은빛 별이 반짝이고 있어요. 고독 속에서도 당신은 빛나고 있었습니다.",
+                            hope: "희망의 연한 핑크빛이 마음 끝자락에서 피어오르고 있어요. 그 색은 점점 따뜻한 복숭아빛으로 번져나갈 거예요. 당신의 꿈이 색깔을 입고 있어요.",
+                            confusion: "혼란은 여러 색깔이 뒤섞인 소용돌이 같아요. 하지만 그 중심에는 맑은 흰빛이 고요히 기다리고 있어요. 답은 그 고요함 속에 있습니다.",
+                            relief: "해방감은 맑은 하늘색 바람처럼 불어와요. 그 시원한 색감이 답답했던 마음의 모든 탁함을 씻어내고 있습니다. 당신은 다시 숨 쉴 수 있어요.",
+                            regret: "후회는 바랜 갈색 톤으로 마음을 물들였지만, 그 위에 새로운 초록빛 새싹이 돋아나고 있어요. 과거는 새로운 성장의 거름이 되고 있습니다.",
+                            emptiness: "공허함은 투명한 유리색 같아요. 아무것도 없어 보이지만, 그 투명함 속에는 모든 색깔의 가능성이 숨어 있어요. 새로운 색칠의 시작입니다.",
+                            general: "당신의 감정은 무지개처럼 다채로워요. 어떤 색이든 당신의 마음 팔레트에서는 아름다운 의미를 갖습니다."
+                        },
+                        en: {
+                            sadness: "I sense deep purple from your sadness. That color shows your heart's grace even in pain. At the purple edges, hope's golden light seeps through.",
+                            anger: "Anger spreads in burning orange. But at the flame's center, pure red truth pulses. Your sense of justice speaks in color.",
+                            anxiety: "Anxiety wrapped your heart like trembling gray mist. But through that mist, pale blue threads flow out. That's your longing for peace.",
+                            loneliness: "Loneliness cast blue shadows on your heart, but in those blue depths, your silver star sparkles. You were shining even in solitude.",
+                            hope: "Hope's pale pink is blooming at your heart's edge. That color will spread into warm peach tones. Your dreams are taking color.",
+                            confusion: "Confusion is like a whirlpool of mixed colors. But at its center, clear white light waits quietly. The answer lies in that stillness.",
+                            relief: "Relief blows in like clear sky-blue wind. That cool color washes away all the stuffiness in your heart. You can breathe again.",
+                            regret: "Regret tinted your heart in faded brown, but new green sprouts are growing over it. The past becomes fertilizer for new growth.",
+                            emptiness: "Emptiness is like transparent glass. Seems empty, but in that transparency, all color possibilities hide. It's the start of new coloring.",
+                            general: "Your emotion is rainbow-like in its variety. Any color holds beautiful meaning on your heart's palette."
+                        },
+                        pt: {
+                            sadness: "Sinto um roxo profundo da sua tristeza. Essa cor mostra a graça do seu coração mesmo na dor. Nas bordas roxas, a luz dourada da esperança se infiltra.",
+                            anger: "A raiva se espalha em laranja ardente. Mas no centro da chama, a verdade vermelha pura pulsa. Seu senso de justiça fala em cor.",
+                            anxiety: "A ansiedade envolveu seu coração como névoa cinza tremula. Mas através dessa névoa, fios azul pálido fluem. Essa é sua saudade da paz.",
+                            loneliness: "A solidão lançou sombras azuis no seu coração, mas nessas profundezas azuis, sua estrela prateada cintila. Você estava brilhando mesmo na solidão.",
+                            hope: "O rosa pálido da esperança está florescendo na borda do seu coração. Essa cor se espalhará em tons pêssego quentes. Seus sonhos estão ganhando cor.",
+                            confusion: "A confusão é como um redemoinho de cores misturadas. Mas em seu centro, luz branca clara espera silenciosamente. A resposta está nessa quietude.",
+                            relief: "O alívio sopra como vento azul-céu claro. Essa cor fresca lava toda a sufocação em seu coração. Você pode respirar novamente.",
+                            regret: "O arrependimento tingiu seu coração de marrom desbotado, mas novos brotos verdes estão crescendo sobre ele. O passado se torna fertilizante para novo crescimento.",
+                            emptiness: "O vazio é como vidro transparente. Parece vazio, mas nessa transparência, todas as possibilidades de cor se escondem. É o início de nova coloração.",
+                            general: "Sua emoção é como arco-íris em variedade. Qualquer cor tem significado bonito na paleta do seu coração."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Ely", emoji: "👑",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    const responses = {
+                        ko: {
+                            sadness: "슬픔을 느낀다는 것은 당신이 사랑할 줄 아는 존재라는 증거입니다. 상실의 아픔 속에서도 당신은 존엄을 잃지 않았어요. 그 눈물에는 용기가 담겨 있습니다.",
+                            anger: "분노는 불의에 맞서는 영혼의 외침이에요. 당신의 그 감정은 정의를 향한 숭고한 몸부림입니다. 분노를 느낄 줄 아는 것도 덕성의 하나예요.",
+                            anxiety: "불안 속에서도 당신은 앞으로 나아가려 했어요. 그 자체가 놀라운 용기입니다. 왕관은 두려움을 모르는 자가 아니라, 두려움과 함께 서는 자에게 어울려요.",
+                            loneliness: "고독은 때로 영혼이 자신과 만나는 성스러운 시간이에요. 혼자였지만 당신은 포기하지 않았어요. 그 의지야말로 진정한 왕족의 품격입니다.",
+                            hope: "희망을 품는다는 것은 어둠 속에서도 빛을 믿는 왕자다운 마음이에요. 그 희망이 당신을 진정한 승리로 이끌 것입니다.",
+                            confusion: "혼란 속에서도 길을 찾으려는 당신의 노력이 보여요. 모든 위대한 여정은 불확실함에서 시작됩니다. 당신은 이미 용감한 첫걸음을 내딛었어요.",
+                            relief: "해방감을 느꼈다는 것은 당신이 마침내 자신을 억압에서 구해냈다는 뜻이에요. 그것은 스스로에게 베푼 가장 큰 자비이자 승리입니다.",
+                            regret: "후회는 더 나은 사람이 되고 싶은 갈망의 다른 이름이에요. 과거를 돌아보는 지혜야말로 진정한 리더십의 시작입니다.",
+                            emptiness: "공허함마저도 새로운 것을 담을 수 있는 그릇이 되었어요. 비워진 마음은 더 큰 사명을 받아들일 준비가 된 상태입니다.",
+                            general: "당신의 감정은 모두 고귀한 영혼의 증거입니다. 어떤 감정이든 그것을 느끼는 당신은 이미 충분히 존엄한 존재예요."
+                        },
+                        en: {
+                            sadness: "Feeling sadness proves you're capable of love. Even in loss, you didn't lose your dignity. Those tears hold courage within them.",
+                            anger: "Anger is the soul's cry against injustice. Your emotion is a noble struggle for justice. Knowing how to feel anger is also a virtue.",
+                            anxiety: "Even in anxiety, you tried to move forward. That itself is remarkable courage. Crowns suit not those without fear, but those who stand with it.",
+                            loneliness: "Solitude is sometimes a sacred time for the soul to meet itself. Though alone, you didn't give up. That will is true royal dignity.",
+                            hope: "Having hope is a princely heart that believes in light even in darkness. That hope will lead you to true victory.",
+                            confusion: "I see your effort to find a path even in confusion. All great journeys begin in uncertainty. You've already taken a brave first step.",
+                            relief: "Feeling relief means you finally freed yourself from oppression. That's the greatest mercy and victory you gave yourself.",
+                            regret: "Regret is another name for the desire to become better. The wisdom to look back is the beginning of true leadership.",
+                            emptiness: "Even emptiness became a vessel to hold something new. An emptied heart is ready to accept a greater mission.",
+                            general: "All your emotions are proof of a noble soul. Whatever you feel, you are already a sufficiently dignified being."
+                        },
+                        pt: {
+                            sadness: "Sentir tristeza prova que você é capaz de amar. Mesmo na perda, você não perdeu sua dignidade. Essas lágrimas têm coragem dentro delas.",
+                            anger: "A raiva é o grito da alma contra a injustiça. Sua emoção é uma luta nobre pela justiça. Saber sentir raiva também é uma virtude.",
+                            anxiety: "Mesmo na ansiedade, você tentou seguir em frente. Isso em si é coragem notável. Coroas cabem não aos sem medo, mas aos que ficam de pé com ele.",
+                            loneliness: "A solidão às vezes é um tempo sagrado para a alma se encontrar. Embora sozinho, você não desistiu. Essa vontade é verdadeira dignidade real.",
+                            hope: "Ter esperança é um coração principesco que acredita na luz mesmo na escuridão. Essa esperança o levará à verdadeira vitória.",
+                            confusion: "Vejo seu esforço para encontrar um caminho mesmo na confusão. Todas as grandes jornadas começam na incerteza. Você já deu um primeiro passo corajoso.",
+                            relief: "Sentir alívio significa que você finalmente se libertou da opressão. Essa é a maior misericórdia e vitória que você deu a si mesmo.",
+                            regret: "O arrependimento é outro nome para o desejo de se tornar melhor. A sabedoria de olhar para trás é o início da verdadeira liderança.",
+                            emptiness: "Mesmo o vazio se tornou um recipiente para guardar algo novo. Um coração esvaziado está pronto para aceitar uma missão maior.",
+                            general: "Todas as suas emoções são prova de uma alma nobre. O que quer que você sinta, você já é um ser suficientemente digno."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        // ============ 상태 변수들 ============
+        
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ FIREBASE 인증 처리 ============
+        
+        // 오류 메시지 표시 함수
+        function showError(message) {
+            const errorElement = document.getElementById('loginError');
+            const successElement = document.getElementById('loginSuccess');
+            if (errorElement) {
+                errorElement.textContent = message;
+            }
+            if (successElement) {
+                successElement.textContent = '';
+            }
+        }
+        
+        // 성공 메시지 표시 함수
+        function showSuccess(message) {
+            const errorElement = document.getElementById('loginError');
+            const successElement = document.getElementById('loginSuccess');
+            if (successElement) {
+                successElement.textContent = message;
+            }
+            if (errorElement) {
+                errorElement.textContent = '';
+            }
+        }
+        
+        // 버튼 비활성화/활성화 함수
+        function setButtonsDisabled(disabled) {
+            const buttons = ['loginBtn', 'signupBtn', 'googleLoginBtn'];
+            buttons.forEach(id => {
+                const btn = document.getElementById(id);
+                if (btn) {
+                    btn.disabled = disabled;
+                }
+            });
+        }
+        
+        // Firebase 오류 메시지 번역
+        function getFirebaseErrorMessage(errorCode, lang = 'ko') {
+            const messages = {
+                ko: {
+                    'auth/user-not-found': '등록되지 않은 이메일입니다.',
+                    'auth/wrong-password': '비밀번호가 틀렸습니다.',
+                    'auth/email-already-in-use': '이미 사용 중인 이메일입니다.',
+                    'auth/weak-password': '비밀번호가 너무 약합니다. (최소 6자)',
+                    'auth/invalid-email': '유효하지 않은 이메일 형식입니다.',
+                    'auth/popup-closed-by-user': 'Google 로그인이 취소되었습니다.',
+                    'auth/popup-blocked': '팝업이 차단되었습니다. 팝업을 허용해주세요.',
+                    'auth/network-request-failed': '네트워크 오류가 발생했습니다.',
+                    'auth/too-many-requests': '너무 많은 요청이 발생했습니다. 잠시 후 다시 시도해주세요.',
+                    'default': '로그인 중 오류가 발생했습니다.'
+                },
+                en: {
+                    'auth/user-not-found': 'Email not registered.',
+                    'auth/wrong-password': 'Incorrect password.',
+                    'auth/email-already-in-use': 'Email already in use.',
+                    'auth/weak-password': 'Password too weak. (minimum 6 characters)',
+                    'auth/invalid-email': 'Invalid email format.',
+                    'auth/popup-closed-by-user': 'Google login cancelled.',
+                    'auth/popup-blocked': 'Popup blocked. Please allow popups.',
+                    'auth/network-request-failed': 'Network error occurred.',
+                    'auth/too-many-requests': 'Too many requests. Please try again later.',
+                    'default': 'Error occurred during login.'
+                },
+                pt: {
+                    'auth/user-not-found': 'Email não registrado.',
+                    'auth/wrong-password': 'Senha incorreta.',
+                    'auth/email-already-in-use': 'Email já em uso.',
+                    'auth/weak-password': 'Senha muito fraca. (mínimo 6 caracteres)',
+                    'auth/invalid-email': 'Formato de email inválido.',
+                    'auth/popup-closed-by-user': 'Login do Google cancelado.',
+                    'auth/popup-blocked': 'Popup bloqueado. Permita popups.',
+                    'auth/network-request-failed': 'Erro de rede ocorreu.',
+                    'auth/too-many-requests': 'Muitas solicitações. Tente novamente mais tarde.',
+                    'default': 'Erro durante o login.'
+                }
+            };
+            
+            return messages[lang][errorCode] || messages[lang]['default'];
+        }
+        
+        // 이메일 로그인 함수
+        async function loginWithEmail(email, password) {
+            try {
+                setButtonsDisabled(true);
+                showSuccess('로그인 중...');
+                
+                const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                currentUser = userCredential.user;
+                
+                showSuccess('로그인 성공!');
+                setTimeout(() => {
+                    hideLoginModal();
+                }, 1000);
+                
+                return true;
+            } catch (error) {
+                console.error('로그인 오류:', error);
+                showError(getFirebaseErrorMessage(error.code, currentLanguage));
+                return false;
+            } finally {
+                setButtonsDisabled(false);
+            }
+        }
+        
+        // 회원가입 함수
+        async function signUpWithEmail(email, password) {
+            try {
+                setButtonsDisabled(true);
+                showSuccess('계정 생성 중...');
+                
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                currentUser = userCredential.user;
+                
+                showSuccess('계정이 생성되었습니다!');
+                setTimeout(() => {
+                    hideLoginModal();
+                }, 1000);
+                
+                return true;
+            } catch (error) {
+                console.error('회원가입 오류:', error);
+                showError(getFirebaseErrorMessage(error.code, currentLanguage));
+                return false;
+            } finally {
+                setButtonsDisabled(false);
+            }
+        }
+        
+        // Google 로그인 함수
+        async function loginWithGoogle() {
+            try {
+                setButtonsDisabled(true);
+                showSuccess('Google 로그인 중...');
+                
+                const provider = new firebase.auth.GoogleAuthProvider();
+                provider.addScope('profile');
+                provider.addScope('email');
+                
+                const result = await auth.signInWithPopup(provider);
+                currentUser = result.user;
+                
+                showSuccess('Google 로그인 성공!');
+                setTimeout(() => {
+                    hideLoginModal();
+                }, 1000);
+                
+                return true;
+            } catch (error) {
+                console.error('Google 로그인 오류:', error);
+                showError(getFirebaseErrorMessage(error.code, currentLanguage));
+                return false;
+            } finally {
+                setButtonsDisabled(false);
+            }
+        }
+        
+        // 로그아웃 함수
+        async function logout() {
+            try {
+                await auth.signOut();
+                currentUser = null;
+                location.reload();
+            } catch (error) {
+                console.error('로그아웃 오류:', error);
+                alert('로그아웃 중 오류가 발생했습니다.');
+            }
+        }
+        
+        // 로그인 모달 숨기기
+        function hideLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // 로그인 모달 보이기
+        function showLoginModal() {
+            const modal = document.getElementById('loginModal');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+        
+        // 인증 상태 확인 및 처리
+        function checkAuthentication() {
+            if (!auth) {
+                console.log('Firebase 인증을 사용할 수 없습니다.');
+                showError('Firebase 서비스에 연결할 수 없습니다.');
+                return;
+            }
+            
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log('사용자 인증됨:', user.email);
+                    currentUser = user;
+                    hideLoginModal();
+                    initializePortal();
+                } else {
+                    console.log('사용자 인증되지 않음');
+                    currentUser = null;
+                    showLoginModal();
+                }
+            });
+        }
+        
+        // ============ 이벤트 리스너 설정 ============
+        
+        function setupAuthEventListeners() {
+            // 로그인 폼 제출
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('loginEmail').value.trim();
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    if (!email || !password) {
+                        showError('이메일과 비밀번호를 입력해주세요.');
+                        return;
+                    }
+                    
+                    await loginWithEmail(email, password);
+                });
+            }
+            
+            // 회원가입 버튼
+            const signupBtn = document.getElementById('signupBtn');
+            if (signupBtn) {
+                signupBtn.addEventListener('click', async () => {
+                    const email = document.getElementById('loginEmail').value.trim();
+                    const password = document.getElementById('loginPassword').value;
+                    
+                    if (!email || !password) {
+                        showError('이메일과 비밀번호를 입력해주세요.');
+                        return;
+                    }
+                    
+                    await signUpWithEmail(email, password);
+                });
+            }
+            
+            // Google 로그인 버튼
+            const googleLoginBtn = document.getElementById('googleLoginBtn');
+            if (googleLoginBtn) {
+                googleLoginBtn.addEventListener('click', async () => {
+                    await loginWithGoogle();
+                });
+            }
+            
+            // 로그아웃 버튼
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', async () => {
+                    if (confirm('로그아웃하시겠습니까?')) {
+                        await logout();
+                    }
+                });
+            }
+        }
+        
+        // ============ 타이핑 효과 함수들 ============
+        
+        function clearAllTypingIntervals() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+        }
+        
+        function typeWriter(element, text, speed = 50, callback = null) {
+            if (!element) return;
+            
+            clearAllTypingIntervals();
+            element.textContent = '';
+            element.classList.add('typing-cursor');
+            
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    element.classList.remove('typing-cursor');
+                    if (callback) callback();
+                }
+            }, speed);
+            
+            typingIntervals.push(interval);
+        }
+        
+        // ============ 언어 변경 함수 ============
+        
+        function updateLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang;
+            
+            // URL 업데이트
+            const url = new URL(window.location);
+            url.searchParams.set('lang', lang);
+            window.history.replaceState({}, '', url);
+            
+            // 언어 버튼 상태 업데이트
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // 번역 텍스트 적용
+            const t = translations[lang];
+            if (t) {
+                // 헤더 텍스트 업데이트
+                const elements = {
+                    'logoSubtitle': t.logoSubtitle,
+                    'portalMainTitle': t.portalMainTitle,
+                    'portalSubtitle': t.portalSubtitle,
+                    'loginSubtitle': t.loginSubtitle,
+                    'loginBtn': t.loginBtn,
+                    'signupBtn': t.signupBtn,
+                    'logoutBtn': t.logoutBtn,
+                    'lightTitle': t.lightTitle
+                };
+                
+                for (const [id, text] of Object.entries(elements)) {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = text;
+                    }
+                }
+                
+                // Google 로그인 버튼 텍스트 업데이트
+                const googleBtn = document.getElementById('googleLoginBtn');
+                if (googleBtn) {
+                    googleBtn.innerHTML = t.googleLoginBtn;
+                }
+                
+                // 계속하기 버튼 텍스트 업데이트
+                const continueYesBtn = document.getElementById('continueYesBtn');
+                const continueNoBtn = document.getElementById('continueNoBtn');
+                if (continueYesBtn) continueYesBtn.textContent = t.continueYes;
+                if (continueNoBtn) continueNoBtn.textContent = t.continueNo;
+                
+                // 입력창 placeholder 업데이트
+                const textarea = document.getElementById('userTextarea');
+                if (textarea) {
+                    textarea.placeholder = t.inputPlaceholder;
+                }
+                
+                // 콘텐츠가 이미 로드되었다면 다시 초기화
+                if (journeyStarted && currentUser) {
+                    initializePortal();
+                }
+            }
+        }
+        
+        // ============ 포털 초기화 함수 ============
+        
+        function initializePortal() {
+            if (!currentUser) return;
+            
+            journeyStarted = true;
+            clearAllTypingIntervals();
+            
+            const t = translations[currentLanguage];
+            
+            // 포털 인트로 타이핑
+            setTimeout(() => {
+                const introElement = document.getElementById('portalIntro');
+                const introSection = document.getElementById('portalIntroSection');
+                
+                if (introElement && introSection) {
+                    introSection.classList.add('show');
+                    typeWriter(introElement, t.portalIntro, 30, () => {
+                        showCharacterResponses();
+                    });
+                }
+            }, 500);
+        }
+        
+        function showCharacterResponses() {
+            const t = translations[currentLanguage];
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            if (!responseSection) return;
+            
+            responseSection.innerHTML = '';
+            responseSection.classList.add('show');
+            
+            characters.forEach((char, index) => {
+                setTimeout(() => {
+                    const charDiv = document.createElement('div');
+                    charDiv.className = 'character-response';
+                    charDiv.innerHTML = `
+                        <div class="character-name">${char.emoji} ${char.name}</div>
+                        <div class="character-dialogue"></div>
+                    `;
+                    
+                    responseSection.appendChild(charDiv);
+                    
+                    setTimeout(() => {
+                        charDiv.classList.add('show');
+                        const dialogueElement = charDiv.querySelector('.character-dialogue');
+                        if (dialogueElement) {
+                            typeWriter(dialogueElement, t[char.key], 25, () => {
+                                if (index === characters.length - 1) {
+                                    showLightMessage();
+                                }
+                            });
+                        }
+                    }, 100);
+                }, index * 2000);
+            });
+        }
+        
+        function showLightMessage() {
+            setTimeout(() => {
+                const lightSection = document.getElementById('lightMessageSection');
+                const lightMessage = document.getElementById('lightMessage');
+                const t = translations[currentLanguage];
+                
+                if (lightSection && lightMessage) {
+                    lightSection.classList.add('show');
+                    typeWriter(lightMessage, t.lightMessage, 40, () => {
+                        showPortalQuestion();
+                    });
+                }
+            }, 1500);
+        }
+        
+        function showPortalQuestion() {
+            setTimeout(() => {
+                const questionSection = document.getElementById('portalQuestionSection');
+                const questionElement = document.getElementById('portalQuestion');
+                const inputBottom = document.getElementById('inputFixedBottom');
+                const t = translations[currentLanguage];
+                
+                if (questionSection && questionElement && inputBottom) {
+                    questionSection.classList.add('show');
+                    typeWriter(questionElement, t.portalQuestion, 35, () => {
+                        inputBottom.classList.add('show');
+                        setupUserInput();
+                    });
+                }
+            }, 1000);
+        }
+        
+        function setupUserInput() {
+            const textarea = document.getElementById('userTextarea');
+            if (!textarea) return;
+            
+            textarea.disabled = false;
+            textarea.focus();
+            
+            // Enter 키로 제출
+            textarea.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const input = textarea.value.trim();
+                    
+                    if (input.length > 0) {
+                        submitUserResponse(input);
+                    }
+                }
+            });
+            
+            // 자동 높이 조절
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function submitUserResponse(input) {
+            userResponse = input;
+            const textarea = document.getElementById('userTextarea');
+            const inputBottom = document.getElementById('inputFixedBottom');
+            const userSection = document.getElementById('userInputSection');
+            const t = translations[currentLanguage];
+            
+            if (textarea && inputBottom && userSection) {
+                textarea.disabled = true;
+                inputBottom.classList.remove('show');
+                
+                // 사용자 응답 표시
+                userSection.innerHTML = `
+                    <div class="user-response">
+                        <strong>${t.youLabel}:</strong> ${userResponse}
+                    </div>
+                `;
+                userSection.classList.add('show');
+                
+                // 스크롤을 아래로
+                setTimeout(() => {
+                    userSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    showUserReactions();
+                }, 500);
+            }
+        }
+        
+        function showUserReactions() {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            if (!reactionsSection) return;
+            
+            reactionsSection.innerHTML = '';
+            reactionsSection.classList.add('show');
+            
+            // 3명의 반응 캐릭터 선택
+            const selectedChars = responseCharacters.slice(0, 3);
+            
+            selectedChars.forEach((char, index) => {
+                setTimeout(() => {
+                    const charDiv = document.createElement('div');
+                    charDiv.className = 'character-response';
+                    charDiv.innerHTML = `
+                        <div class="character-name">${char.emoji} ${char.name}</div>
+                        <div class="character-dialogue"></div>
+                    `;
+                    
+                    reactionsSection.appendChild(charDiv);
+                    
+                    setTimeout(() => {
+                        charDiv.classList.add('show');
+                        const dialogueElement = charDiv.querySelector('.character-dialogue');
+                        if (dialogueElement) {
+                            const response = char.getResponse(userResponse, currentLanguage);
+                            typeWriter(dialogueElement, response, 25, () => {
+                                if (index === selectedChars.length - 1) {
+                                    showContinueSection();
+                                }
+                            });
+                        }
+                    }, 100);
+                }, index * 2500);
+            });
+        }
+        
+        function showContinueSection() {
+            setTimeout(() => {
+                const continueSection = document.getElementById('continueSection');
+                const continueText = document.getElementById('continueText');
+                const t = translations[currentLanguage];
+                
+                if (continueSection && continueText) {
+                    continueSection.classList.add('show');
+                    typeWriter(continueText, t.continueText, 40, () => {
+                        setupContinueButtons();
+                    });
+                }
+            }, 1500);
+        }
+        
+        function setupContinueButtons() {
+            const continueYesBtn = document.getElementById('continueYesBtn');
+            const continueNoBtn = document.getElementById('continueNoBtn');
+            
+            if (continueYesBtn) {
+              continueYesBtn.addEventListener('click', () => {
+                const lang = new URLSearchParams(window.location.search).get("lang") || "en";
+                window.location.href = `temarix_v02_02.html?lang=${lang}`;
+              });
+            }
+
+            
+            if (continueNoBtn) {
+                continueNoBtn.addEventListener('click', () => {
+                    if (confirm('정말로 여정을 끝내시겠습니까?')) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+        
+        // ============ 언어 버튼 이벤트 리스너 ============
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const lang = btn.dataset.lang;
+                    if (lang && lang !== currentLanguage) {
+                        updateLanguage(lang);
+                    }
+                });
+            });
+        }
+        
+        // ============ 초기화 함수 ============
+        
+        function initialize() {
+            console.log('앱 초기화 시작');
+            
+            // 언어 설정 적용
+            updateLanguage(currentLanguage);
+            
+            // 이벤트 리스너 설정
+            setupAuthEventListeners();
+            setupLanguageButtons();
+            
+            // Firebase 인증 확인
+            checkAuthentication();
+            
+            console.log('앱 초기화 완료');
+        }
+        
+        // ============ 앱 시작 ============
+        
+        // DOM 로드 완료 후 초기화
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+        
+        // 페이지 언로드 시 정리
+        window.addEventListener('beforeunload', () => {
+            clearAllTypingIntervals();
+        });
+        
+    </script>
+<script>
+  document.getElementById("continueYesBtn").onclick = function () {
+    const lang = new URLSearchParams(window.location.search).get('lang') || 'ko';
+    window.location.href = `temarix_v02_02.html?lang=${lang}`;
+  };
+</script>
+
+</body>
+</html>

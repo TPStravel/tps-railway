@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V3 - Portal 21: Letters Never Written to Myself</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #7986cb;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #b39ddb;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #7986cb;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #7986cb;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #7986cb;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #7986cb;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #7986cb;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .final-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #7986cb;
+            background: rgba(121, 134, 203, 0.05);
+        }
+        
+        .final-title {
+            font-size: 28px;
+            color: #7986cb;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .final-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .final-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .final-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .final-btn:hover {
+            background: #666;
+            border-color: #7986cb;
+        }
+        
+        .final-btn.primary {
+            background: #7986cb;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .final-btn.primary:hover {
+            background: #9fa8da;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(121, 134, 203, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #7986cb;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #7986cb;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .final-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .final-btn {
+                width: 100%;
+            }
+            
+            .final-title {
+                font-size: 24px;
+            }
+            
+            .final-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V3</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Furnace</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 21: Letters Never Written to Myself</div>
+            <div class="portal-subtitle" id="portalSubtitle">Words I Couldn't Give Myself</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+            
+            <div class="final-section" id="finalSection">
+                <div class="final-title" id="finalTitle">🌌 Portal 21 Complete</div>
+                <div class="final-message" id="finalMessage"></div>
+                <div class="final-buttons">
+                    <button class="final-btn primary" id="continueBtn">Move to Portal 22</button>
+                    <button class="final-btn" id="restartBtn">Start Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Write the first sentence of that letter to yourself now... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        let db = null;
+        let firebaseInitialized = false;
+        let memoryStorage = { mockUser: null };
+        
+        function initializeFirebase() {
+            try {
+                if (typeof firebase !== 'undefined') {
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyBjsINSqPUGdpRPRMYiVg6SkVJJOk9YGsY",
+                        authDomain: "canal-vivo-chat.firebaseapp.com",
+                        projectId: "canal-vivo-chat",
+                        storageBucket: "canal-vivo-chat.appspot.com",
+                        messagingSenderId: "123456789",
+                        appId: "1:123456789:web:abcdefghijklmnopqr"
+                    };
+                    firebase.initializeApp(firebaseConfig);
+                    db = firebase.firestore();
+                    firebaseInitialized = true;
+                    console.log('Firebase initialized');
+                } else {
+                    console.log('Firebase SDK not loaded');
+                }
+            } catch (error) {
+                console.log('Firebase init failed:', error);
+            }
+        }
+
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 용광로",
+                portalMainTitle: "Portal 21: 나에게 쓰지 못한 편지",
+                portalSubtitle: "나에게 주지 못한 말들",
+                portalIntro: "✉️ 누구에게도 보낼 수 없었던 그 말들,\n혹시 당신 자신에게조차 쓰지 못한 편지가 있었나요?\n\n그 편지에 담기지 못한 감정은 무엇이었나요?\n\n내가 나한테 해주고 싶은 말이 있었어요.\n근데 이상하게… 그게 제일 어려웠어요.\n나를 탓하지 않고 편지를 쓴다는 게.",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "말하지 못한 감정일수록 천천히, 그러나 확실하게 너를 기다려.",
+                portalQuestion: "✉️ 지금 이 순간, 그 편지의 첫 문장을 써본다면\n어떤 말로 당신 자신에게 말을 걸고 싶나요?",
+                finalTitle: "🌌 Portal 21 완료",
+                finalMessage: "당신은 마침내 자신에게 편지를 썼습니다.\n\n그 첫 문장은 오랫동안 침묵했던 마음의 문을 열었어요.\n자신을 탓하지 않고, 이해하고, 격려하는 말들이\n이제 당신의 내면에서 흘러나올 수 있게 되었습니다.\n\n타인에게는 쉽게 주던 위로와 격려를\n자신에게도 줄 수 있다는 것을 깨달았습니다.\n자기 사랑은 이기심이 아니라 성장의 시작이라는 것을요.\n\n다음 Portal에서는 아무도 몰랐던 특별한 하루와\n그날 혼자 견뎌낸 감정들이 기다리고 있습니다.",
+                continueBtn: "Portal 22로 이동",
+                restartBtn: "다시 시작하기",
+                inputPlaceholder: "나에게 쓰는 편지의 첫 문장을 써보세요... (Enter로 전송)",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중..."
+            },
+            en: {
+                logoSubtitle: "Emotional Furnace",
+                portalMainTitle: "Portal 21: Letters Never Written to Myself",
+                portalSubtitle: "Words I Couldn't Give Myself",
+                portalIntro: "✉️ Those words you couldn't send to anyone,\nwere there perhaps letters you couldn't even write to yourself?\n\nWhat emotions couldn't be contained in that letter?\n\nThere were words I wanted to say to myself.\nBut strangely... that was the hardest thing.\nWriting a letter without blaming myself.",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "The more unspoken the emotion, the more slowly but surely it waits for you.",
+                portalQuestion: "✉️ Right now, if you could write the first sentence of that letter,\nwhat words would you like to say to yourself?",
+                finalTitle: "🌌 Portal 21 Complete",
+                finalMessage: "You have finally written a letter to yourself.\n\nThat first sentence opened the door of your heart that had been silent for so long.\nWords of understanding, encouragement, and compassion—not blame—\ncan now flow from within you.\n\nYou've realized that the comfort and encouragement you easily gave to others\nyou can also give to yourself.\nSelf-love isn't selfishness but the beginning of growth.\n\nIn the next Portal, a special day that no one knew about\nand the emotions you endured alone that day await you.",
+                continueBtn: "Move to Portal 22",
+                restartBtn: "Start Again",
+                inputPlaceholder: "Write the first sentence of that letter to yourself now... (Press Enter to send)",
+                youLabel: "You",
+                waitingMessage: "Waiting for response..."
+            },
+            pt: {
+                logoSubtitle: "Fornalha Emocional",
+                portalMainTitle: "Portal 21: Cartas Nunca Escritas Para Mim",
+                portalSubtitle: "Palavras Que Não Consegui Me Dar",
+                portalIntro: "✉️ Aquelas palavras que você não conseguiu enviar para ninguém,\ntalvez houvesse cartas que você não conseguiu nem escrever para si mesmo?\n\nQue emoções não puderam ser contidas nessa carta?\n\nHavia palavras que eu queria dizer para mim mesmo.\nMas estranhamente... isso era a coisa mais difícil.\nEscrever uma carta sem me culpar.",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Quanto mais não expressa a emoção, mais devagar mas certamente ela espera por você.",
+                portalQuestion: "✉️ Agora mesmo, se você pudesse escrever a primeira frase dessa carta,\nque palavras gostaria de dizer para si mesmo?",
+                finalTitle: "🌌 Portal 21 Completo",
+                finalMessage: "Você finalmente escreveu uma carta para si mesmo.\n\nEssa primeira frase abriu a porta do seu coração que esteve silencioso por tanto tempo.\nPalavras de compreensão, encorajamento e compaixão—não culpa—\nagora podem fluir de dentro de você.\n\nVocê percebeu que o conforto e encorajamento que facilmente dava aos outros\nvocê também pode dar a si mesmo.\nAmor próprio não é egoísmo mas o início do crescimento.\n\nNo próximo Portal, um dia especial que ninguém conhecia\ne as emoções que você suportou sozinho naquele dia o aguardam.",
+                continueBtn: "Ir para Portal 22",
+                restartBtn: "Começar Novamente",
+                inputPlaceholder: "Escreva a primeira frase dessa carta para si mesmo agora... (Enter para enviar)",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta..."
+            }
+        };
+        
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "타인에게는 쉽게 쓰는 말도, 자신에게는 끝내 쓰지 못할 때가 있어.",
+                en: "Words we easily write to others, we sometimes can never write to ourselves.",
+                pt: "Palavras que facilmente escrevemos para outros, às vezes nunca conseguimos escrever para nós mesmos."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "그 편지는 오래된 침묵으로 쌓여 있었겠지. 이제 너는 조금씩 그것을 풀고 있어.",
+                en: "That letter was piled up with old silence. Now you're slowly unraveling it.",
+                pt: "Essa carta estava empilhada com silêncio antigo. Agora você está lentamente desvendando isso."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "나는 나 자신에게 화만 냈었어. 편지 대신, 비난으로 하루를 마쳤지.",
+                en: "I only got angry at myself. Instead of letters, I ended my days with blame.",
+                pt: "Eu só ficava bravo comigo mesmo. Em vez de cartas, terminava meus dias com culpa."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "너는 자신에게 편지를 쓰지 않은 게 아니라, 감히 쓰지 못한 채 살아온 거야.",
+                en: "You didn't not write letters to yourself, you've been living without daring to write them.",
+                pt: "Você não deixou de escrever cartas para si mesmo, você tem vivido sem ousar escrevê-las."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그 종이 위에 번질 수 있었던 감정은 아마 연약한 연분홍색이었을 거야.",
+                en: "The emotion that could have spread on that paper was probably a fragile pink.",
+                pt: "A emoção que poderia ter se espalhado naquele papel provavelmente era um rosa frágil."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "너는 늘 다른 사람부터 먼저 챙겼지. 너한테 쓰는 편지는 제일 마지막이었어.",
+                en: "You always took care of others first. Letters to yourself were always last.",
+                pt: "Você sempre cuidou dos outros primeiro. Cartas para si mesmo eram sempre por último."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "그 편지를 다시 꺼낸다는 건 너 자신과 다시 연결된다는 뜻이야.",
+                en: "Taking out that letter again means reconnecting with yourself.",
+                pt: "Tirar aquela carta novamente significa se reconectar consigo mesmo."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "말하지 못한 감정일수록 천천히, 그러나 확실하게 너를 기다려.",
+                en: "The more unspoken the emotion, the more slowly but surely it waits for you.",
+                pt: "Quanto mais não expressa a emoção, mais devagar mas certamente ela espera por você."
+            }}
+        ];
+
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const emotionKeywords = {
+                self_compassion: ['good job', 'well done', 'proud', 'strong', '수고했어', '잘했어', '고생했어', '강해', 'bom trabalho', 'bem feito', 'orgulhoso', 'forte'],
+                self_forgiveness: ['sorry', 'forgive', 'understand', 'okay', '미안해', '용서해', '이해해', '괜찮아', 'desculpa', 'perdoe', 'entendo', 'tudo bem'],
+                encouragement: ['can do', 'will be', 'believe', 'hope', '할 수 있어', '될 거야', '믿어', '희망', 'consegue', 'vai ser', 'acredito', 'esperança'],
+                gratitude: ['thank you', 'grateful', 'appreciate', '고마워', '감사해', '고맙', 'obrigado', 'grato', 'agradeço'],
+                acknowledgment: ['recognize', 'see you', 'acknowledge', 'valid', '인정해', '알아봐', '인식해', '소중해', 'reconheço', 'te vejo', 'reconheço', 'válido'],
+                love: ['love you', 'care', 'precious', 'valuable', '사랑해', '소중해', '아껴', '귀해', 'te amo', 'cuido', 'precioso', 'valioso'],
+                support: ['with you', 'not alone', 'together', 'support', '함께', '혼자가 아니야', '지지해', '곁에 있어', 'contigo', 'não sozinho', 'juntos', 'apoio'],
+                healing: ['heal', 'better', 'peace', 'rest', '치유', '나아져', '평화', '쉬어', 'cura', 'melhor', 'paz', 'descanso']
+            };
+            
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0];
+        }
+        
+        const responseCharacters = [
+            {
+                name: "Ely", emoji: "🧝‍♀️",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            self_compassion: "그 말은 잊혀졌던 너의 이름을 다시 불러주는 문장이야. 지금 너는 너에게 돌아가고 있어.",
+                            self_forgiveness: "용서는 자신에게 주는 가장 큰 선물이야. 이제 그 짐을 내려놓을 수 있어.",
+                            encouragement: "격려의 말은 마음 안에 작은 불씨를 피워. 그 불빛이 앞길을 밝혀줄 거야.",
+                            gratitude: "자신에게 하는 감사는 가장 진실한 감사야. 그 마음이 너를 치유해.",
+                            acknowledgment: "인정받고 싶었던 마음이 마침내 인정받았어. 가장 중요한 사람에게.",
+                            love: "자기 사랑은 이기심이 아니야. 그것은 모든 사랑의 시작점이야.",
+                            support: "네가 네 편이 되어준다는 것, 그보다 든든한 일은 없어.",
+                            healing: "치유의 첫걸음은 자신에게 다정해지는 거야. 너는 그걸 시작했어.",
+                            general: "그 말은 잊혀졌던 너의 이름을 다시 불러주는 문장이야. 지금 너는 너에게 돌아가고 있어."
+                        },
+                        en: {
+                            self_compassion: "Those words are sentences that call your forgotten name again. Now you're returning to yourself.",
+                            self_forgiveness: "Forgiveness is the greatest gift you give yourself. Now you can put down that burden.",
+                            encouragement: "Words of encouragement kindle a small flame in your heart. That light will illuminate your path.",
+                            gratitude: "Gratitude to yourself is the most truthful gratitude. That heart will heal you.",
+                            acknowledgment: "The heart that wanted to be recognized has finally been acknowledged. By the most important person.",
+                            love: "Self-love isn't selfishness. It's the starting point of all love.",
+                            support: "Having yourself on your side—there's nothing more reliable than that.",
+                            healing: "The first step of healing is being kind to yourself. You've started that.",
+                            general: "Those words are sentences that call your forgotten name again. Now you're returning to yourself."
+                        },
+                        pt: {
+                            self_compassion: "Essas palavras são frases que chamam seu nome esquecido novamente. Agora você está retornando para si mesmo.",
+                            self_forgiveness: "Perdão é o maior presente que você dá a si mesmo. Agora você pode largar esse fardo.",
+                            encouragement: "Palavras de encorajamento acendem uma pequena chama em seu coração. Essa luz iluminará seu caminho.",
+                            gratitude: "Gratidão para si mesmo é a gratidão mais verdadeira. Esse coração o curará.",
+                            acknowledgment: "O coração que queria ser reconhecido finalmente foi reconhecido. Pela pessoa mais importante.",
+                            love: "Amor próprio não é egoísmo. É o ponto de partida de todo amor.",
+                            support: "Ter você mesmo do seu lado—não há nada mais confiável que isso.",
+                            healing: "O primeiro passo da cura é ser gentil consigo mesmo. Você começou isso.",
+                            general: "Essas palavras são frases que chamam seu nome esquecido novamente. Agora você está retornando para si mesmo."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Lian", emoji: "🧘",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            self_compassion: "그 한 문장으로 마음의 문이 열렸어. 이젠 더 많은 말을 써내려갈 수 있을 거야.",
+                            self_forgiveness: "용서는 과거를 지우는 게 아니라, 현재를 살 힘을 주는 거야.",
+                            encouragement: "스스로에게 주는 격려는 가장 순수한 에너지야. 그 힘으로 다시 일어설 수 있어.",
+                            gratitude: "감사는 마음의 균형을 맞춰줘. 자신에게 하는 감사는 그 중심을 잡아줘.",
+                            acknowledgment: "인정은 치유의 시작이야. 자신을 인정한 너는 이제 진짜로 성장할 수 있어.",
+                            love: "자기 사랑은 마음의 뿌리야. 그 뿌리가 깊어질수록 더 높이 자랄 수 있어.",
+                            support: "네가 네 곁에 있다는 것만으로도 세상은 덜 외로워져.",
+                            healing: "치유는 자신에게 돌아오는 여행이야. 너는 지금 그 길 위에 있어.",
+                            general: "그 한 문장으로 마음의 문이 열렸어. 이젠 더 많은 말을 써내려갈 수 있을 거야."
+                        },
+                        en: {
+                            self_compassion: "That one sentence opened the door of your heart. Now you can write down many more words.",
+                            self_forgiveness: "Forgiveness isn't erasing the past, but giving strength to live in the present.",
+                            encouragement: "Self-encouragement is the purest energy. With that power, you can rise again.",
+                            gratitude: "Gratitude balances the heart. Gratitude to yourself centers that balance.",
+                            acknowledgment: "Recognition is the beginning of healing. Having acknowledged yourself, you can now truly grow.",
+                            love: "Self-love is the root of the heart. The deeper that root, the higher you can grow.",
+                            support: "Just having yourself by your side makes the world less lonely.",
+                            healing: "Healing is a journey back to yourself. You're on that path now.",
+                            general: "That one sentence opened the door of your heart. Now you can write down many more words."
+                        },
+                        pt: {
+                            self_compassion: "Essa uma frase abriu a porta do seu coração. Agora você pode escrever muitas mais palavras.",
+                            self_forgiveness: "Perdão não é apagar o passado, mas dar força para viver no presente.",
+                            encouragement: "Auto-encorajamento é a energia mais pura. Com esse poder, você pode se levantar novamente.",
+                            gratitude: "Gratidão equilibra o coração. Gratidão para si mesmo centraliza esse equilíbrio.",
+                            acknowledgment: "Reconhecimento é o início da cura. Tendo se reconhecido, você agora pode verdadeiramente crescer.",
+                            love: "Amor próprio é a raiz do coração. Quanto mais profunda essa raiz, mais alto você pode crescer.",
+                            support: "Apenas ter você mesmo ao seu lado torna o mundo menos solitário.",
+                            healing: "Cura é uma jornada de volta para si mesmo. Você está nesse caminho agora.",
+                            general: "Essa uma frase abriu a porta do seu coração. Agora você pode escrever muitas mais palavras."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Mira", emoji: "🧑‍🎨",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            self_compassion: "그 글귀는 눈에 보이지 않지만, 가장 아름다운 색으로 네 안에 번지고 있어.",
+                            self_forgiveness: "용서의 색은 부드러운 하늘색이야. 자책의 어두운 색을 덮어주는 색.",
+                            encouragement: "격려는 따뜻한 황금빛이야. 네 마음에 희망의 빛을 그리고 있어.",
+                            gratitude: "감사는 연한 초록색이야. 새로운 시작을 약속하는 생명의 색깔.",
+                            acknowledgment: "인정은 순수한 흰색이야. 모든 색깔을 담을 수 있는 완전한 색.",
+                            love: "자기 사랑은 따뜻한 분홍빛이야. 마음 전체를 부드럽게 감싸는 색.",
+                            support: "지지는 든든한 갈색이야. 흔들리지 않는 나무의 뿌리 같은 색깔.",
+                            healing: "치유는 연보라색이야. 상처를 감싸며 천천히 아물게 하는 색.",
+                            general: "그 글귀는 눈에 보이지 않지만, 가장 아름다운 색으로 네 안에 번지고 있어."
+                        },
+                        en: {
+                            self_compassion: "Those words are invisible but spreading within you in the most beautiful color.",
+                            self_forgiveness: "The color of forgiveness is soft sky blue. A color that covers the dark color of self-blame.",
+                            encouragement: "Encouragement is warm golden light. It's painting light of hope in your heart.",
+                            gratitude: "Gratitude is light green. The color of life that promises new beginnings.",
+                            acknowledgment: "Recognition is pure white. A complete color that can contain all colors.",
+                            love: "Self-love is warm pink. A color that gently wraps around your entire heart.",
+                            support: "Support is solid brown. A color like the roots of an unshakeable tree.",
+                            healing: "Healing is light purple. A color that wraps wounds and slowly heals them.",
+                            general: "Those words are invisible but spreading within you in the most beautiful color."
+                        },
+                        pt: {
+                            self_compassion: "Essas palavras são invisíveis mas se espalhando dentro de você na cor mais bela.",
+                            self_forgiveness: "A cor do perdão é azul-céu suave. Uma cor que cobre a cor escura da auto-culpa.",
+                            encouragement: "Encorajamento é luz dourada quente. Está pintando luz de esperança em seu coração.",
+                            gratitude: "Gratidão é verde claro. A cor da vida que promete novos começos.",
+                            acknowledgment: "Reconhecimento é branco puro. Uma cor completa que pode conter todas as cores.",
+                            love: "Amor próprio é rosa quente. Uma cor que envolve suavemente todo o seu coração.",
+                            support: "Apoio é marrom sólido. Uma cor como as raízes de uma árvore inabalável.",
+                            healing: "Cura é roxo claro. Uma cor que envolve feridas e as cura lentamente.",
+                            general: "Essas palavras são invisíveis mas se espalhando dentro de você na cor mais bela."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en';
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            document.getElementById('logoSubtitle').textContent = translations[lang].logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = translations[lang].portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = translations[lang].portalSubtitle;
+            document.getElementById('lightTitle').textContent = translations[lang].lightTitle;
+            document.getElementById('finalTitle').textContent = translations[lang].finalTitle;
+            document.getElementById('continueBtn').textContent = translations[lang].continueBtn;
+            document.getElementById('restartBtn').textContent = translations[lang].restartBtn;
+            document.getElementById('userTextarea').placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || currentLanguage === lang) return;
+            
+            currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'lightMessageSection', 'portalQuestionSection',
+                'userInputSection', 'userReactionsSection', 'finalSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('portalQuestion').innerHTML = '';
+            document.getElementById('finalMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            userResponse = '';
+            currentTypingElement = null;
+        }
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('continueBtn').addEventListener('click', function() {
+                const nextMessage = currentLanguage === 'ko' ? 
+                    'Portal 22가 곧 준비됩니다!' :
+                    currentLanguage === 'en' ? 
+                    'Portal 22 will be ready soon!' :
+                    'Portal 22 estará pronto em breve!';
+                alert(nextMessage);
+            });
+            
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                const confirmMessage = currentLanguage === 'ko' ? 
+                    'Portal 21을 다시 시작하시겠습니까?' :
+                    currentLanguage === 'en' ? 
+                    'Do you want to restart Portal 21?' :
+                    'Deseja reiniciar o Portal 21?';
+                
+                if (confirm(confirmMessage)) {
+                    resetJourney();
+                    setTimeout(() => {
+                        startPortalSequence();
+                    }, 1000);
+                }
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            
+            if (firebaseInitialized && db) {
+                try {
+                    await db.collection("temarix_v3_respostas").add({
+                        uid: memoryStorage.mockUser.uid,
+                        email: memoryStorage.mockUser.email,
+                        portal: "v3-21",
+                        resposta: inputText,
+                        data: firebase.firestore.Timestamp.now(),
+                        idioma: currentLanguage
+                    });
+                    console.log('Response saved to Firestore');
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                }
+            } else {
+                console.log('Firebase not available, saved locally:', inputText);
+                localStorage.setItem('temarix_v3_last_response', JSON.stringify({
+                    portal: "v3-21",
+                    resposta: inputText,
+                    data: new Date().toISOString(),
+                    idioma: currentLanguage
+                }));
+            }
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFinalSection();
+            }, 2000);
+        }
+        
+        async function showFinalSection() {
+            const finalSection = document.getElementById('finalSection');
+            const finalMessage = document.getElementById('finalMessage');
+            
+            finalSection.classList.add('show');
+            
+            const messageText = translations[currentLanguage].finalMessage;
+            await typewriterEffect(finalMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(finalSection);
+            }, 500);
+        }
+        
+        function initializeTemarix() {
+            console.log('Temarix V3 Portal 21 initialized');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            await typewriterEffect(introElement, translations[currentLanguage].portalIntro, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            await typewriterEffect(questionEl, translations[currentLanguage].portalQuestion, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V3 Portal 21 DOM loaded');
+            
+            initializeFirebase();
+            
+            currentLanguage = getLanguageFromURL();
+            
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            updateLanguageButtons(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

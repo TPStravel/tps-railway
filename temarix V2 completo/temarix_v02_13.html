@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 13: The Sense of 'Being Me' That I Lost</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 13: The Sense of 'Being Me' That I Lost</div>
+            <div class="portal-subtitle" id="portalSubtitle">An inner journey to find your true self</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">🌙 Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 14</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Share about moments when you felt like the 'real you'... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 13: 내가 잃어버린 '나답다'는 감각",
+                portalSubtitle: "진정한 자아를 찾아 떠나는 내면 여행",
+                portalIntro: "한때는 분명 나다운 모습이 있었어요.\n마음 가는 대로 말하고,\n내 색깔로 웃고,\n내 방식으로 살아갔던 시간들…\n\n하지만 어느 순간\n타인의 시선, 기준, 평가에 맞춰\n나는 나를 점점 잃어갔습니다.\n\n지금, 당신 안에\n'나답다'고 말할 수 있는 무언가가 남아 있나요?",
+                lightTitle: "🌙 빛의 한마디",
+                lightMessage: "당신답다는 말은\n남이 인정해줄 때가 아니라,\n당신이 기억할 때부터 다시 살아납니다.",
+                portalQuestion: "당신이 '진짜 나'라고 느꼈던 순간은 언제였나요?\n그 감각은 지금도 안에 있나요?",
+                continueText: "잃어버린 자아에 대해 돌아본 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 14로 계속하시겠습니까?",
+                continueNo: "여정을 일시정지하시겠습니까?",
+                inputPlaceholder: "진짜 '나'였던 순간에 대해 털어놓아 보세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "당신이 '나답다'고 느꼈던 그 모든 순간은\n지금도 사라지지 않고 당신 안에 있습니다.",
+                charCris: "나도 그랬어요.\n어느 순간부터 그냥 **'무난한 인간'**이 되어 있더라고요.\n하지만 진짜 나, 아직 살아 있어요. 가끔 깜짝 나와요. 😎",
+                charZafirah: "당신 안의 진짜 색깔은\n누군가의 기준으로 바랠 수 없는 빛이에요.",
+                charRami: "정체성은 고정된 게 아닙니다.\n그건 지금 이 순간에도 감정으로 다시 태어나고 있습니다.",
+                charSamir: "(그는 당신의 손을 살짝 펼쳐보게 합니다.\n그 손바닥 위에 묻은 오래된 물감 자국…\n그것은 잃지 않은 자아의 흔적입니다.)",
+                charLayla: "나는 당신이 어떤 모습이든\n가장 당신답게 숨 쉬는 순간을 사랑해요.",
+                charNabir: "그래서 뭐가 너다운 건데?\n너 자신도 모르는 거 아냐?\n이미 늦었어. 그런 건 다시 못 찾아.",
+                charAzhar: "'나답다'?\n그거 착각이었어.\n지금 넌 그냥 타협된 버전이야. 그걸로 살아."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 13: The Sense of 'Being Me' That I Lost",
+                portalSubtitle: "An inner journey to find your true self",
+                portalIntro: "There was definitely a time when I had my authentic self.\nSpeaking as my heart desired,\nlaughing with my own colors,\nliving in my own way...\n\nBut at some point,\nto meet others' gazes, standards, and evaluations,\nI gradually lost myself.\n\nNow, is there something inside you\nthat you can call 'truly me'?",
+                lightTitle: "🌙 Word of Light",
+                lightMessage: "'Being you' comes alive again\nnot when others acknowledge it,\nbut when you remember it.",
+                portalQuestion: "When was the moment you felt like 'the real me'?\nIs that feeling still inside you?",
+                continueText: "Will you continue this journey of reflecting on your lost self?",
+                continueYes: "Continue to Portal 14?",
+                continueNo: "Pause the journey?",
+                inputPlaceholder: "Share about moments when you felt like the 'real you'... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "All those moments when you felt 'like me'\nare still inside you, not disappeared.",
+                charCris: "I was like that too.\nAt some point I just became a **'bland person'**.\nBut the real me is still alive. Sometimes it pops out unexpectedly. 😎",
+                charZafirah: "Your true colors inside\nare light that cannot fade by someone else's standards.",
+                charRami: "Identity is not fixed.\nIt's being reborn through emotions even at this moment.",
+                charSamir: "(He gently makes you open your hand.\nOld paint stains on your palm...\nThose are traces of the self you haven't lost.)",
+                charLayla: "I love the moments when you\nbreathe most authentically, whatever form you take.",
+                charNabir: "So what is truly 'you'?\nYou don't even know yourself, do you?\nIt's too late. You can't find that again.",
+                charAzhar: "'Being you'?\nThat was an illusion.\nNow you're just a compromised version. Live with that."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 13: A Sensação de 'Ser Eu' Que Perdi",
+                portalSubtitle: "Uma jornada interior para encontrar seu verdadeiro eu",
+                portalIntro: "Definitivamente havia um tempo em que eu tinha meu eu autêntico.\nFalando como meu coração desejava,\nrindo com minhas próprias cores,\nvivendo do meu próprio jeito...\n\nMas em algum momento,\npara atender aos olhares, padrões e avaliações dos outros,\ngradualmente me perdi.\n\nAgora, há algo dentro de você\nque você pode chamar de 'verdadeiramente eu'?",
+                lightTitle: "🌙 Palavra de Luz",
+                lightMessage: "'Ser você' ganha vida novamente\nnão quando outros reconhecem,\nmas quando você se lembra.",
+                portalQuestion: "Quando foi o momento que você se sentiu como 'o verdadeiro eu'?\nEsse sentimento ainda está dentro de você?",
+                continueText: "Você continuará esta jornada de refletir sobre seu eu perdido?",
+                continueYes: "Continuar para o Portal 14?",
+                continueNo: "Pausar a jornada?",
+                inputPlaceholder: "Compartilhe sobre momentos quando você se sentiu como o 'verdadeiro você'... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "Todos aqueles momentos quando você se sentiu 'como eu'\nainda estão dentro de você, não desapareceram.",
+                charCris: "Eu também era assim.\nEm algum momento me tornei apenas uma **'pessoa sem graça'**.\nMas o verdadeiro eu ainda está vivo. Às vezes aparece inesperadamente. 😎",
+                charZafirah: "Suas verdadeiras cores interiores\nsão luz que não pode desbotar pelos padrões de outra pessoa.",
+                charRami: "Identidade não é fixa.\nEstá renascendo através de emoções mesmo neste momento.",
+                charSamir: "(Ele gentilmente faz você abrir sua mão.\nVelhas manchas de tinta na sua palma...\nEssas são marcas do eu que você não perdeu.)",
+                charLayla: "Amo os momentos quando você\nrespira mais autenticamente, qualquer forma que tome.",
+                charNabir: "Então o que é verdadeiramente 'você'?\nVocê nem mesmo se conhece, não é?\nÉ tarde demais. Você não pode encontrar isso novamente.",
+                charAzhar: "'Ser você'?\nIsso foi uma ilusão.\nAgora você é apenas uma versão comprometida. Viva com isso."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑 (Portal 13 특화)
+            const emotionKeywords = {
+                identity: ['나다운', '정체성', '자아', '나답다', 'identity', 'authentic', 'self', 'identidade', 'autêntico'],
+                lost_self: ['잃어버린', '사라진', '없어진', '잃은', 'lost', 'disappeared', 'gone', 'perdido', 'desaparecido'],
+                conformity: ['맞춰', '순응', '타협', '적응', 'conform', 'adapt', 'compromise', 'conformar', 'adaptar'],
+                others_expectations: ['시선', '기준', '평가', '눈치', 'expectations', 'standards', 'judgment', 'expectativas', 'padrões'],
+                original_self: ['원래', '예전', '본래', '처음', 'original', 'former', 'initial', 'original', 'anterior'],
+                creativity: ['창조', '표현', '개성', '색깔', 'creativity', 'expression', 'individuality', 'criatividade', 'expressão'],
+                freedom: ['자유', '해방', '벗어나', '풀려', 'freedom', 'liberation', 'break free', 'liberdade', 'libertação'],
+                authentic: ['진짜', '진실', '솔직', '있는그대로', 'authentic', 'genuine', 'true', 'autêntico', 'genuíno'],
+                rediscovery: ['찾아', '되찾', '회복', '발견', 'rediscover', 'recover', 'find again', 'redescobrir', 'recuperar'],
+                mask: ['가면', '연기', '숨기', '꾸미', 'mask', 'pretend', 'fake', 'máscara', 'fingir']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (Portal 13 전용)
+        const responseCharacters = [
+            {
+                name: "Archaeologist", emoji: "🔍",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            identity: "당신의 정체성은 사라진 게 아니라 층층이 쌓인 다른 것들 아래 묻혀 있어요. 고고학자가 유물을 찾듯이, 조심스럽게 하나씩 걷어내면 진짜 당신이 나타날 거예요.",
+                            lost_self: "잃어버렸다고 생각하는 그 자아는 사실 당신 안 어딘가에 고스란히 보존되어 있어요. 시간의 먼지만 털어내면 다시 빛날 수 있는 보물 같은 존재죠.",
+                            conformity: "다른 사람에게 맞춰 살면서 진짜 자신을 덮어버렸군요. 하지만 그 밑바닥에는 여전히 원래의 당신이 숨 쉬고 있어요. 그 숨소리를 들어보세요.",
+                            others_expectations: "타인의 기준에 맞추려다 보니 자신만의 기준을 잃어버렸네요. 하지만 진짜 가치 있는 건 바로 그 자신만의 기준이었어요. 그걸 다시 발굴해보세요.",
+                            original_self: "예전의 당신을 그리워한다는 건, 그 모습이 여전히 당신 안에 살아있다는 증거예요. 기억 속 그 순간들을 단서로 진짜 자신을 찾아가세요.",
+                            creativity: "창조성과 개성은 억압당해도 완전히 사라지지 않아요. 작은 표현부터 시작해서 점점 큰 창조로 확장해 나가면, 잃어버린 색깔을 되찾을 수 있어요.",
+                            freedom: "자유롭고 싶다는 마음이 생겼다는 건 이미 변화가 시작됐다는 뜻이에요. 그 마음을 따라가면서 조금씩 진짜 자신을 해방시켜 주세요.",
+                            authentic: "진짜 모습을 찾고 싶어하는 그 갈망 자체가 이미 진정성의 시작이에요. 완벽하지 않아도 괜찮으니 있는 그대로의 모습을 조금씩 드러내보세요.",
+                            rediscovery: "자신을 되찾고 싶다는 의지가 있다면 이미 절반은 성공한 거예요. 과거의 기억들을 단서로 삼아서 현재의 자신 안에 숨어있는 보물을 찾아보세요.",
+                            mask: "가면을 쓰고 살았다는 걸 인정하는 것만으로도 벗을 준비가 된 거예요. 한 번에 다 벗지 말고, 하루에 조금씩 진짜 얼굴을 보여주세요.",
+                            general: "당신 안에는 분명 진짜 자신의 흔적들이 남아있어요. 그것들을 하나씩 찾아서 연결해보면, 잃어버렸다고 생각했던 자아가 다시 모습을 드러낼 거예요."
+                        },
+                        en: {
+                            identity: "Your identity hasn't disappeared - it's buried under layers of other things. Like an archaeologist finding artifacts, if you carefully remove them one by one, the real you will appear.",
+                            lost_self: "That self you think you lost is actually perfectly preserved somewhere inside you. It's like a treasure that can shine again if you just dust off the grime of time.",
+                            conformity: "You covered your real self while conforming to others. But underneath, the original you is still breathing. Listen to that breathing.",
+                            others_expectations: "Trying to meet others' standards made you lose your own standards. But what's truly valuable was precisely those personal standards. Try excavating them again.",
+                            original_self: "Missing your former self is proof that version still lives inside you. Use those moments in your memory as clues to find your real self.",
+                            creativity: "Creativity and individuality don't completely disappear even when suppressed. Starting with small expressions and gradually expanding to bigger creations, you can regain your lost colors.",
+                            freedom: "Having the desire for freedom means change has already begun. Follow that heart and gradually liberate your real self.",
+                            authentic: "That very longing to find your authentic self is already the beginning of genuineness. It's okay not to be perfect - gradually reveal yourself as you are.",
+                            rediscovery: "Having the will to rediscover yourself means you're already halfway successful. Use past memories as clues to find the treasure hidden in your current self.",
+                            mask: "Acknowledging that you lived wearing a mask means you're ready to take it off. Don't remove it all at once - show your real face a little each day.",
+                            general: "There are definitely traces of your real self inside you. If you find them one by one and connect them, the self you thought was lost will reveal itself again."
+                        },
+                        pt: {
+                            identity: "Sua identidade não desapareceu - está enterrada sob camadas de outras coisas. Como um arqueólogo encontrando artefatos, se você cuidadosamente removê-las uma por uma, o verdadeiro você aparecerá.",
+                            lost_self: "Esse eu que você pensa que perdeu está na verdade perfeitamente preservado em algum lugar dentro de você. É como um tesouro que pode brilhar novamente se você apenas tirar a poeira do tempo.",
+                            conformity: "Você cobriu seu verdadeiro eu enquanto se conformava aos outros. Mas por baixo, o você original ainda está respirando. Escute essa respiração.",
+                            others_expectations: "Tentar atender aos padrões dos outros fez você perder seus próprios padrões. Mas o que é verdadeiramente valioso eram precisamente esses padrões pessoais. Tente escavá-los novamente.",
+                            original_self: "Sentir falta do seu eu anterior é prova de que essa versão ainda vive dentro de você. Use esses momentos em sua memória como pistas para encontrar seu verdadeiro eu.",
+                            creativity: "Criatividade e individualidade não desaparecem completamente mesmo quando suprimidas. Começando com pequenas expressões e gradualmente expandindo para criações maiores, você pode recuperar suas cores perdidas.",
+                            freedom: "Ter o desejo de liberdade significa que a mudança já começou. Siga esse coração e gradualmente liberte seu verdadeiro eu.",
+                            authentic: "Esse próprio anseio de encontrar seu eu autêntico já é o começo da genuinidade. Não há problema em não ser perfeito - gradualmente revele-se como você é.",
+                            rediscovery: "Ter a vontade de se redescobrir significa que você já está meio bem-sucedido. Use memórias passadas como pistas para encontrar o tesouro escondido em seu eu atual.",
+                            mask: "Reconhecer que você viveu usando uma máscara significa que está pronto para tirá-la. Não a remova toda de uma vez - mostre seu rosto real um pouco a cada dia.",
+                            general: "Definitivamente há traços do seu verdadeiro eu dentro de você. Se você encontrá-los um por um e conectá-los, o eu que você pensou que estava perdido se revelará novamente."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Artist", emoji: "🎨",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            identity: "진정한 정체성은 완성된 그림이 아니라 계속 그려지고 있는 작품이에요. 지금까지의 당신도 하나의 작품이었고, 앞으로의 당신도 새로운 작품이 될 수 있어요.",
+                            lost_self: "예술가는 때로 작품을 덧칠하기도 해요. 하지만 그 아래 원래 그림이 완전히 사라지는 건 아니에요. 새로운 색을 더하면서 더 풍부한 자신을 만들어가세요.",
+                            conformity: "다른 사람의 스타일을 따라 하다 보니 자신만의 화풍을 잃어버렸군요. 하지만 진짜 예술가는 언제든 자신만의 스타일을 되찾을 수 있어요. 용기 있게 그려보세요.",
+                            others_expectations: "다른 사람들이 원하는 그림만 그리다 보니 정작 자신이 그리고 싶은 그림을 잊어버렸네요. 이제 다시 자신만의 캔버스에 자신만의 색을 칠해보세요.",
+                            original_self: "예전에 그렸던 그림들을 그리워한다는 건, 그 색깔들이 아직도 당신의 팔레트에 남아있다는 뜻이에요. 그 색들을 다시 섞어서 새로운 작품을 만들어보세요.",
+                            creativity: "창조성은 근육과 같아서 사용하지 않으면 굳어지지만, 다시 움직이기 시작하면 유연해져요. 작은 창작부터 시작해서 점점 큰 작품으로 나아가세요.",
+                            freedom: "예술의 본질은 자유로운 표현이에요. 틀에 갇혀있었다면 이제 그 틀을 부수고 자유롭게 표현해보세요. 자유로운 붓질이 진짜 당신을 드러낼 거예요.",
+                            authentic: "진정한 예술은 기교가 아니라 진심에서 나와요. 서툴러도 괜찮으니 진심을 담아서 표현해보세요. 그것이 가장 아름다운 예술이 될 거예요.",
+                            rediscovery: "자신만의 예술을 되찾고 싶다면, 과거에 자신이 좋아했던 색깔, 형태, 주제들을 다시 탐구해보세요. 그 안에서 새로운 영감을 찾을 수 있을 거예요.",
+                            mask: "가면도 하나의 예술 작품이었지만, 이제는 진짜 얼굴로 예술을 만들 때예요. 있는 그대로의 모습으로 가장 아름다운 작품을 만들어보세요.",
+                            general: "당신 자신이 바로 가장 소중한 예술 작품이에요. 지금까지의 모든 경험을 재료로 삼아서 더욱 풍부하고 깊이 있는 자신을 창조해 나가세요."
+                        },
+                        en: {
+                            identity: "True identity isn't a finished painting but a work that continues to be painted. The you so far was also one artwork, and the future you can become a new artwork.",
+                            lost_self: "Artists sometimes paint over their works. But the original painting underneath doesn't completely disappear. Add new colors while creating a richer self.",
+                            conformity: "Following others' styles made you lose your own artistic style. But a true artist can always regain their unique style. Courageously try painting.",
+                            others_expectations: "Painting only what others wanted made you forget what you wanted to paint. Now try painting your own colors on your own canvas again.",
+                            original_self: "Missing the paintings you used to create means those colors still remain on your palette. Mix those colors again to create new works.",
+                            creativity: "Creativity is like a muscle - it stiffens when not used, but becomes flexible when you start moving again. Start with small creations and gradually move to bigger works.",
+                            freedom: "The essence of art is free expression. If you were trapped in frameworks, now break those frames and express freely. Free brushstrokes will reveal the real you.",
+                            authentic: "True art comes not from technique but from sincerity. It's okay to be clumsy - express with sincerity. That will become the most beautiful art.",
+                            rediscovery: "If you want to regain your unique art, explore the colors, forms, and themes you used to love. You'll find new inspiration within them.",
+                            mask: "The mask was also an artwork, but now it's time to create art with your real face. Create the most beautiful work with yourself as you are.",
+                            general: "You yourself are the most precious artwork. Use all your experiences so far as materials to create a richer and deeper self."
+                        },
+                        pt: {
+                            identity: "Verdadeira identidade não é uma pintura acabada mas uma obra que continua sendo pintada. O você até agora também foi uma obra de arte, e o futuro você pode se tornar uma nova obra de arte.",
+                            lost_self: "Artistas às vezes pintam por cima de suas obras. Mas a pintura original por baixo não desaparece completamente. Adicione novas cores enquanto cria um eu mais rico.",
+                            conformity: "Seguir os estilos dos outros fez você perder seu próprio estilo artístico. Mas um verdadeiro artista sempre pode recuperar seu estilo único. Corajosamente tente pintar.",
+                            others_expectations: "Pintar apenas o que outros queriam fez você esquecer o que queria pintar. Agora tente pintar suas próprias cores em sua própria tela novamente.",
+                            original_self: "Sentir falta das pinturas que costumava criar significa que essas cores ainda permanecem em sua paleta. Misture essas cores novamente para criar novas obras.",
+                            creativity: "Criatividade é como um músculo - endurece quando não usado, mas se torna flexível quando você começa a se mover novamente. Comece com pequenas criações e gradualmente avance para obras maiores.",
+                            freedom: "A essência da arte é expressão livre. Se você estava preso em estruturas, agora quebre essas molduras e se expresse livremente. Pinceladas livres revelarão o verdadeiro você.",
+                            authentic: "Arte verdadeira vem não da técnica mas da sinceridade. Não há problema em ser desajeitado - expresse com sinceridade. Isso se tornará a arte mais bonita.",
+                            rediscovery: "Se você quer recuperar sua arte única, explore as cores, formas e temas que costumava amar. Você encontrará nova inspiração dentro deles.",
+                            mask: "A máscara também era uma obra de arte, mas agora é hora de criar arte com seu rosto real. Crie a obra mais bonita com você mesmo como você é.",
+                            general: "Você mesmo é a obra de arte mais preciosa. Use todas as suas experiências até agora como materiais para criar um eu mais rico e profundo."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Phoenix", emoji: "🔥",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            identity: "정체성을 잃었다고 느끼는 순간이 실은 새로운 자아로 태어날 수 있는 기회예요. 불사조처럼 재에서 다시 일어나는 것이 진정한 변화의 시작입니다.",
+                            lost_self: "잃어버린 게 아니라 변화하고 있는 거예요. 불사조도 죽었다가 다시 태어나죠. 예전의 당신은 새로운 당신을 위한 소중한 재료가 된 것입니다.",
+                            conformity: "다른 사람에게 맞춰 살다가 자신을 잃었다면, 이제 그 경험을 통해 더 단단한 자신으로 다시 태어날 수 있어요. 시련이 성장의 불꽃이 됩니다.",
+                            others_expectations: "타인의 기준에 얽매였던 과거는 이제 재가 되었어요. 그 재에서 누구의 기준도 아닌 자신만의 기준으로 살아가는 새로운 자아가 탄생할 거예요.",
+                            original_self: "예전 자신을 그리워하지 마세요. 그 모든 경험이 더 성숙하고 지혜로운 당신으로 거듭나게 해줄 테니까요. 과거는 현재를 위한 연료입니다.",
+                            creativity: "창조력이 사라진 게 아니라 더 큰 창조를 위해 잠시 휴면 상태였던 거예요. 이제 그 에너지가 폭발적으로 분출되어 전에 없던 새로운 작품들을 만들어낼 거예요.",
+                            freedom: "진정한 자유는 제약을 경험한 후에 얻어지는 거예요. 그동안의 답답함이 모여서 이제 더 강력한 해방의 불꽃으로 타오를 것입니다.",
+                            authentic: "진정성을 찾는 과정에서 겪는 혼란과 고통은 모두 새로운 탄생을 위한 과정이에요. 그 불길을 두려워하지 말고 그 안에서 새로운 자신을 발견하세요.",
+                            rediscovery: "재발견이 아니라 재창조예요. 과거의 자신을 기반으로 하되, 완전히 새로운 차원의 자신으로 거듭나는 것이 진정한 성장입니다.",
+                            mask: "가면을 벗는 것도 하나의 죽음이지만, 그 죽음은 진짜 얼굴로 사는 새로운 삶의 시작이에요. 용감하게 재탄생의 불길 속으로 들어가세요.",
+                            general: "당신이 지금 느끼는 모든 혼란과 상실감은 더 완전한 자아로 거듭나기 위한 필연적 과정이에요. 불사조의 마음으로 새롭게 태어나세요."
+                        },
+                        en: {
+                            identity: "The moment you feel you've lost your identity is actually an opportunity to be born as a new self. Rising from ashes like a phoenix is the true beginning of transformation.",
+                            lost_self: "You're not lost but transforming. Phoenix also dies and is reborn. Your former self has become precious material for your new self.",
+                            conformity: "If you lost yourself while conforming to others, now you can be reborn as a stronger self through that experience. Trials become flames of growth.",
+                            others_expectations: "Your past bound by others' standards has now become ashes. From those ashes, a new self will be born living by your own standards, not anyone else's.",
+                            original_self: "Don't long for your former self. All those experiences will help you be reborn as a more mature and wise you. The past is fuel for the present.",
+                            creativity: "Creativity didn't disappear but was in dormant state for greater creation. Now that energy will explosively burst out to create unprecedented new works.",
+                            freedom: "True freedom is gained after experiencing constraints. The frustration accumulated so far will now burn as a more powerful flame of liberation.",
+                            authentic: "The confusion and pain in the process of finding authenticity are all part of the process for new birth. Don't fear that fire and discover your new self within it.",
+                            rediscovery: "It's not rediscovery but recreation. Based on your past self but being reborn as a completely new dimension of yourself is true growth.",
+                            mask: "Taking off the mask is also a kind of death, but that death is the beginning of new life living with your real face. Bravely enter the flames of rebirth.",
+                            general: "All the confusion and sense of loss you're feeling now is a necessary process for being reborn as a more complete self. Be reborn with the heart of a phoenix."
+                        },
+                        pt: {
+                            identity: "O momento que você sente que perdeu sua identidade é na verdade uma oportunidade de nascer como um novo eu. Ressurgir das cinzas como uma fênix é o verdadeiro começo da transformação.",
+                            lost_self: "Você não está perdido mas se transformando. Fênix também morre e renasce. Seu eu anterior se tornou material precioso para seu novo eu.",
+                            conformity: "Se você se perdeu enquanto se conformava aos outros, agora pode renascer como um eu mais forte através dessa experiência. Provações se tornam chamas de crescimento.",
+                            others_expectations: "Seu passado preso aos padrões dos outros agora se tornou cinzas. Dessas cinzas, um novo eu nascerá vivendo por seus próprios padrões, não de mais ninguém.",
+                            original_self: "Não sinta saudade do seu eu anterior. Todas essas experiências ajudarão você a renascer como um você mais maduro e sábio. O passado é combustível para o presente.",
+                            creativity: "Criatividade não desapareceu mas estava em estado dormente para criação maior. Agora essa energia explodirá para criar obras novas sem precedentes.",
+                            freedom: "Verdadeira liberdade é ganha após experimentar limitações. A frustração acumulada até agora irá agora queimar como uma chama mais poderosa de libertação.",
+                            authentic: "A confusão e dor no processo de encontrar autenticidade são todas parte do processo para novo nascimento. Não tema esse fogo e descubra seu novo eu dentro dele.",
+                            rediscovery: "Não é redescoberta mas recriação. Baseado em seu eu passado mas renascer como uma dimensão completamente nova de si mesmo é verdadeiro crescimento.",
+                            mask: "Tirar a máscara também é um tipo de morte, mas essa morte é o começo de nova vida vivendo com seu rosto real. Corajosamente entre nas chamas do renascimento.",
+                            general: "Toda a confusão e sensação de perda que você está sentindo agora é um processo necessário para renascer como um eu mais completo. Renasça com o coração de uma fênix."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 13 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 14가 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 14 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 14 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 13 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

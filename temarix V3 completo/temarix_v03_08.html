@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V3 - Portal 08: The Box That Hides Memories</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #7986cb;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #b39ddb;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #7986cb;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #7986cb;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #7986cb;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #7986cb;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #7986cb;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .final-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #7986cb;
+            background: rgba(121, 134, 203, 0.05);
+        }
+        
+        .final-title {
+            font-size: 28px;
+            color: #7986cb;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .final-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        
+        .final-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .final-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .final-btn:hover {
+            background: #666;
+            border-color: #7986cb;
+        }
+        
+        .final-btn.primary {
+            background: #7986cb;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .final-btn.primary:hover {
+            background: #9fa8da;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(121, 134, 203, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #7986cb;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #7986cb;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .final-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .final-btn {
+                width: 100%;
+            }
+            
+            .final-title {
+                font-size: 24px;
+            }
+            
+            .final-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V3</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Furnace</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 08: The Box That Hides Memories</div>
+            <div class="portal-subtitle" id="portalSubtitle">Memories You Tried Not to Remember</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+            
+            <div class="final-section" id="finalSection">
+                <div class="final-title" id="finalTitle">📦 Portal 08 Complete</div>
+                <div class="final-message" id="finalMessage"></div>
+                <div class="final-buttons">
+                    <button class="final-btn primary" id="continueBtn">Move to Portal 09</button>
+                    <button class="final-btn" id="restartBtn">Start Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="What would you like to say to that memory in the box now? (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        let db = null;
+        let firebaseInitialized = false;
+        let memoryStorage = { mockUser: null };
+        
+        function initializeFirebase() {
+            try {
+                if (typeof firebase !== 'undefined') {
+                    const firebaseConfig = {
+                        apiKey: "AIzaSyBjsINSqPUGdpRPRMYiVg6SkVJJOk9YGsY",
+                        authDomain: "canal-vivo-chat.firebaseapp.com",
+                        projectId: "canal-vivo-chat",
+                        storageBucket: "canal-vivo-chat.appspot.com",
+                        messagingSenderId: "123456789",
+                        appId: "1:123456789:web:abcdefghijklmnopqr"
+                    };
+                    firebase.initializeApp(firebaseConfig);
+                    db = firebase.firestore();
+                    firebaseInitialized = true;
+                    console.log('Firebase initialized');
+                } else {
+                    console.log('Firebase SDK not loaded');
+                }
+            } catch (error) {
+                console.log('Firebase init failed:', error);
+            }
+        }
+
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 용광로",
+                portalMainTitle: "Portal 08: 기억을 감춘 상자",
+                portalSubtitle: "기억하지 않으려 했던 순간들",
+                portalIntro: "📦 당신이 기억하지 않으려 했던 순간이 있었나요?\n\n그 기억은 어떤 상자에 담겨, 지금 어디에 숨어 있나요?\n\n어떤 기억들은 너무 아프거나, 너무 무겁거나, 너무 복잡해서\n마음 깊은 곳 어딘가에 단단히 묻어두게 됩니다.\n\n\"그때 있었던 일은 떠올리는 것조차 싫어.\"\n\"마치 그 장면을 보면 내가 다시 무너질 것 같아서…\"\n\"그냥 뚜껑을 닫고 숨겨뒀어.\"\n\n하지만 감춰둔 기억도 살아 있습니다.\n그 상자 안에서 조용히 숨 쉬며, 때때로 문을 두드리죠.\n\n오늘은 그 상자 앞에 조심스럽게 서보는 시간입니다.",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "기억을 감춘다고 해서 사라지는 것은 아닙니다. 다만 그것은 더 깊은 어둠 속에서 당신을 기다리고 있을 뿐입니다.",
+                portalQuestion: "📦 그 상자 속 기억에게, 지금 당신이 전하고 싶은 말은 무엇인가요?",
+                finalTitle: "📦 Portal 08 완료",
+                finalMessage: "당신은 용기 있게 감춰둔 기억의 상자를 마주했습니다.\n\n그동안 피하고 싶었던 그 기억들이\n얼마나 무거웠는지, 얼마나 외로웠는지\n인정하게 되었죠.\n\n이제 그 상자를 다시 열 필요는 없지만,\n그것이 존재한다는 것을 받아들일 수 있게 되었습니다.\n\n다음 Portal에서는 부서진 침묵의 조각들을\n하나씩 모아보는 여정이 이어집니다.",
+                continueBtn: "Portal 09로 이동",
+                restartBtn: "다시 시작하기",
+                inputPlaceholder: "그 상자 속 기억에게 지금 어떤 말을 해주고 싶은지 말해보세요... (Enter로 전송)",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중..."
+            },
+            en: {
+                logoSubtitle: "Emotional Furnace",
+                portalMainTitle: "Portal 08: The Box That Hides Memories",
+                portalSubtitle: "Memories You Tried Not to Remember",
+                portalIntro: "📦 Have you ever had moments you tried not to remember?\n\nIn what kind of box are those memories kept, and where are they hiding now?\n\nSome memories are too painful, too heavy, or too complicated,\nso we bury them deep somewhere in our hearts.\n\n\"I hate even thinking about what happened then.\"\n\"It feels like I'd collapse again if I saw that scene...\"\n\"So I just closed the lid and hid it away.\"\n\nBut hidden memories are still alive.\nThey breathe quietly in that box, sometimes knocking on the door.\n\nToday is a time to carefully stand before that box.",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Hiding memories doesn't make them disappear. They are simply waiting for you in deeper darkness.",
+                portalQuestion: "📦 What would you like to say to that memory in the box now?",
+                finalTitle: "📦 Portal 08 Complete",
+                finalMessage: "You have courageously faced the box of hidden memories.\n\nYou've come to acknowledge how heavy\nand how lonely those memories\nyou wanted to avoid have been.\n\nNow you don't need to reopen that box,\nbut you can accept that it exists.\n\nIn the next Portal, a journey continues\nto gather the fragments of broken silence\none by one.",
+                continueBtn: "Move to Portal 09",
+                restartBtn: "Start Again",
+                inputPlaceholder: "What would you like to say to that memory in the box now? (Press Enter to send)",
+                youLabel: "You",
+                waitingMessage: "Waiting for response..."
+            },
+            pt: {
+                logoSubtitle: "Fornalha Emocional",
+                portalMainTitle: "Portal 08: A Caixa que Esconde Memórias",
+                portalSubtitle: "Memórias que Tentou Não Lembrar",
+                portalIntro: "📦 Você já teve momentos que tentou não lembrar?\n\nEm que tipo de caixa essas memórias estão guardadas, e onde estão se escondendo agora?\n\nAlgumas memórias são muito dolorosas, muito pesadas, ou muito complicadas,\nentão as enterramos bem fundo em algum lugar dos nossos corações.\n\n\"Eu odeio até mesmo pensar no que aconteceu então.\"\n\"Parece que eu desabaria de novo se visse aquela cena...\"\n\"Então eu apenas fechei a tampa e escondi.\"\n\nMas memórias escondidas ainda estão vivas.\nElas respiram silenciosamente naquela caixa, às vezes batendo na porta.\n\nHoje é um momento para ficar cuidadosamente diante daquela caixa.",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Esconder memórias não as faz desaparecer. Elas estão simplesmente esperando por você na escuridão mais profunda.",
+                portalQuestion: "📦 O que você gostaria de dizer para aquela memória na caixa agora?",
+                finalTitle: "📦 Portal 08 Completo",
+                finalMessage: "Você corajosamente enfrentou a caixa de memórias escondidas.\n\nVocê passou a reconhecer o quão pesadas\ne o quão solitárias foram essas memórias\nque você queria evitar.\n\nAgora você não precisa reabrir aquela caixa,\nmas pode aceitar que ela existe.\n\nNo próximo Portal, uma jornada continua\npara reunir os fragmentos do silêncio quebrado\num por um.",
+                continueBtn: "Ir para Portal 09",
+                restartBtn: "Começar Novamente",
+                inputPlaceholder: "O que você gostaria de dizer para aquela memória na caixa agora? (Enter para enviar)",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta..."
+            }
+        };
+        
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "그 상자는 단지 닫힌 게 아니야. 네 마음의 어두운 구석 어딘가에 묻혀 있었지.",
+                en: "That box isn't just closed. It was buried somewhere in the dark corners of your heart.",
+                pt: "Aquela caixa não está apenas fechada. Foi enterrada em algum lugar nos cantos escuros do seu coração."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "기억을 피하는 건 부끄러운 게 아니야. 그건 네가 너 자신을 지키려는 방식이었어.",
+                en: "Avoiding memories isn't shameful. It was your way of protecting yourself.",
+                pt: "Evitar memórias não é vergonhoso. Era sua maneira de se proteger."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "그 상자 안에는 아픔만 있는 게 아니야. 외면당한 너의 목소리도 함께 있었어.",
+                en: "That box doesn't only contain pain. Your neglected voice was also in there.",
+                pt: "Aquela caixa não contém apenas dor. Sua voz negligenciada também estava lá."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "기억을 감춘다고 해서, 그것이 사라지는 건 아니지. 다만 그것은 더 깊은 어둠 속에서 자라날 뿐이야.",
+                en: "Hiding memories doesn't make them disappear. They just grow in deeper darkness.",
+                pt: "Esconder memórias não as faz desaparecer. Elas apenas crescem na escuridão mais profunda."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그 상자는 어떤 색이었을까? 너무 검어서 볼 수 없던, 혹은 너무 밝아서 눈을 돌려야 했던.",
+                en: "What color was that box? Too black to see, or perhaps too bright that you had to look away?",
+                pt: "Que cor tinha aquela caixa? Muito preta para ver, ou talvez muito brilhante que você teve que desviar o olhar?"
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "그걸 다시 열면 무너질까 두렵겠지. 하지만 네가 강해져야만 열 수 있는 건 아니야.",
+                en: "You're afraid you'll collapse if you open it again. But you don't need to be strong to open it.",
+                pt: "Você tem medo de desabar se abri-la novamente. Mas você não precisa ser forte para abri-la."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "그 상자는 혼자 열 필요는 없어. 누군가와 함께 열면, 무섭던 그림자도 조금은 작아져.",
+                en: "You don't need to open that box alone. If you open it with someone, even scary shadows become smaller.",
+                pt: "Você não precisa abrir aquela caixa sozinho. Se você abrir com alguém, até sombras assustadoras se tornam menores."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "지금 넌 그 상자를 바라보고 있어. 그것만으로도, 이미 첫 걸음을 내디딘 거야.",
+                en: "You're looking at that box now. That alone means you've already taken the first step.",
+                pt: "Você está olhando para aquela caixa agora. Isso por si só significa que você já deu o primeiro passo."
+            }}
+        ];
+
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const emotionKeywords = {
+                sorry: ['sorry', 'apologize', 'regret', 'forgive'],
+                angry: ['angry', 'mad', 'hate', 'furious', 'rage'],
+                sad: ['sad', 'hurt', 'pain', 'lonely', 'cry'],
+                peaceful: ['peace', 'calm', 'quiet', 'rest', 'gentle'],
+                understanding: ['understand', 'accept', 'okay', 'fine'],
+                brave: ['brave', 'strong', 'courage', 'face', 'ready'],
+                thank: ['thank', 'grateful', 'appreciate'],
+                release: ['let go', 'release', 'free', 'goodbye']
+            };
+            
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0];
+        }
+        
+        const responseCharacters = [
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            sorry: "미안하다고 말할 필요는 없어. 그 기억도 네가 살아온 일부니까.",
+                            angry: "화가 나는 건 당연해. 그 감정도 묻어둘 필요 없어.",
+                            sad: "슬퍼해도 괜찮아. 그 눈물이 상자를 씻어줄 거야.",
+                            peaceful: "평온함을 찾았구나. 이제 그 상자와 함께 숨 쉴 수 있어.",
+                            understanding: "이해했다는 건 용기 있는 일이야. 받아들임이 치유의 시작이야.",
+                            brave: "용감하게 마주했구나. 이제 그 기억이 널 지배하지 않을 거야.",
+                            thank: "고마워하는 마음이 느껴져. 그 기억도 네 감사를 기다렸을지 몰라.",
+                            release: "놓아주는 것도 사랑의 한 형태야. 자유로워져도 괜찮아.",
+                            general: "너는 버린 게 아니라, 도망친 거야. 그리고 지금은… 돌아온 거야."
+                        },
+                        en: {
+                            sorry: "You don't need to say sorry. That memory is also part of how you've lived.",
+                            angry: "It's natural to be angry. You don't need to bury that emotion either.",
+                            sad: "It's okay to be sad. Those tears will wash the box clean.",
+                            peaceful: "You've found peace. Now you can breathe together with that box.",
+                            understanding: "Understanding is a courageous thing. Acceptance is the beginning of healing.",
+                            brave: "You've bravely faced it. Now that memory won't dominate you.",
+                            thank: "I feel your gratitude. That memory might have been waiting for your thanks.",
+                            release: "Letting go is also a form of love. It's okay to become free.",
+                            general: "You didn't abandon it, you ran away. And now... you've come back."
+                        },
+                        pt: {
+                            sorry: "Você não precisa pedir desculpas. Essa memória também é parte de como você viveu.",
+                            angry: "É natural estar com raiva. Você não precisa enterrar essa emoção também.",
+                            sad: "Está tudo bem estar triste. Essas lágrimas vão limpar a caixa.",
+                            peaceful: "Você encontrou paz. Agora pode respirar junto com aquela caixa.",
+                            understanding: "Compreender é uma coisa corajosa. A aceitação é o início da cura.",
+                            brave: "Você enfrentou corajosamente. Agora essa memória não vai te dominar.",
+                            thank: "Sinto sua gratidão. Essa memória pode ter estado esperando por seu agradecimento.",
+                            release: "Deixar ir também é uma forma de amor. Está tudo bem se tornar livre.",
+                            general: "Você não a abandonou, você fugiu. E agora... você voltou."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Kael", emoji: "🧙",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            sorry: "사과는 치유의 시작이야. 그 기억도 네 용서를 기다렸을지 몰라.",
+                            angry: "그 분노를 느껴봐. 그것도 진실이고, 묻어둘 필요 없어.",
+                            sad: "슬픔은 정직한 감정이야. 그 무게를 인정하는 게 첫걸음이야.",
+                            peaceful: "평화를 찾은 너의 마음이 보여. 이제 그 상자도 조용해질 거야.",
+                            understanding: "이해한다는 건 힘든 일이야. 하지만 넌 해냈어.",
+                            brave: "용기를 낸 걸 알아. 그 두려움과 맞선 너를 존경해.",
+                            thank: "감사의 마음이 전해져. 그것이 가장 강력한 치유의 힘이야.",
+                            release: "자유롭게 놓아주는 거야. 그것이 진정한 강함이야.",
+                            general: "그 두려움은 진짜였고, 그 떨림도 진짜였어. 감정은 정직하고, 지금 너도 그래."
+                        },
+                        en: {
+                            sorry: "Apology is the beginning of healing. That memory might have been waiting for your forgiveness.",
+                            angry: "Feel that anger. It's also truth, and doesn't need to be buried.",
+                            sad: "Sadness is an honest emotion. Acknowledging its weight is the first step.",
+                            peaceful: "I see your peaceful heart. Now that box will also become quiet.",
+                            understanding: "Understanding is difficult. But you've done it.",
+                            brave: "I know you've been brave. I respect you for facing that fear.",
+                            thank: "Your gratitude comes through. That's the most powerful healing force.",
+                            release: "You're freely letting it go. That's true strength.",
+                            general: "That fear was real, and that trembling was real too. Emotions are honest, and so are you now."
+                        },
+                        pt: {
+                            sorry: "O pedido de desculpas é o início da cura. Essa memória pode ter estado esperando por seu perdão.",
+                            angry: "Sinta essa raiva. Também é verdade, e não precisa ser enterrada.",
+                            sad: "A tristeza é uma emoção honesta. Reconhecer seu peso é o primeiro passo.",
+                            peaceful: "Vejo seu coração em paz. Agora aquela caixa também ficará quieta.",
+                            understanding: "Compreender é difícil. Mas você conseguiu.",
+                            brave: "Sei que você foi corajoso. Respeito você por enfrentar esse medo.",
+                            thank: "Sua gratidão se manifesta. Essa é a força de cura mais poderosa.",
+                            release: "Você está deixando ir livremente. Essa é a verdadeira força.",
+                            general: "Aquele medo era real, e aquele tremor também era real. As emoções são honestas, e você também é agora."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Enya", emoji: "🧑‍🚀",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            sorry: "미안하다는 말이 네 마음을 가볍게 해줄 거야. 용서는 자유로움이야.",
+                            angry: "그 화도 네 일부야. 감정을 숨기지 않아도 돼.",
+                            sad: "눈물을 흘려도 괜찮아. 그것도 네가 살아있다는 증거야.",
+                            peaceful: "평온함 속에서 답을 찾았구나. 이제 앞으로 나아갈 수 있어.",
+                            understanding: "받아들이는 마음이 보여. 그것이 가장 큰 성장이야.",
+                            brave: "용기 있게 마주한 너를 봐. 이제 두려워할 게 없어.",
+                            thank: "감사하는 마음이 따뜻해. 그 기억도 사랑받고 있다고 느낄 거야.",
+                            release: "자유롭게 날아가도 괜찮아. 놓아주는 것도 선택이야.",
+                            general: "그 상자가 여전히 열리지 않아도 괜찮아. 중요한 건, 지금 네가 그 앞에 있다는 거야."
+                        },
+                        en: {
+                            sorry: "Saying sorry will lighten your heart. Forgiveness is freedom.",
+                            angry: "That anger is also part of you. You don't have to hide emotions.",
+                            sad: "It's okay to shed tears. That's also proof that you're alive.",
+                            peaceful: "You've found answers in tranquility. Now you can move forward.",
+                            understanding: "I see your accepting heart. That's the greatest growth.",
+                            brave: "Look at you, courageously facing it. Now there's nothing to fear.",
+                            thank: "Your grateful heart is warm. That memory will feel loved too.",
+                            release: "It's okay to fly freely. Letting go is also a choice.",
+                            general: "It's okay if that box still won't open. What matters is that you're standing in front of it now."
+                        },
+                        pt: {
+                            sorry: "Pedir desculpas vai aliviar seu coração. O perdão é liberdade.",
+                            angry: "Essa raiva também é parte de você. Você não precisa esconder emoções.",
+                            sad: "Está tudo bem derramar lágrimas. Isso também é prova de que você está vivo.",
+                            peaceful: "Você encontrou respostas na tranquilidade. Agora pode seguir em frente.",
+                            understanding: "Vejo seu coração que aceita. Esse é o maior crescimento.",
+                            brave: "Olhe para você, enfrentando corajosamente. Agora não há nada a temer.",
+                            thank: "Seu coração grato é caloroso. Essa memória também se sentirá amada.",
+                            release: "Está tudo bem voar livremente. Deixar ir também é uma escolha.",
+                            general: "Está tudo bem se aquela caixa ainda não se abrir. O que importa é que você está de pé na frente dela agora."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en';
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            document.getElementById('logoSubtitle').textContent = translations[lang].logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = translations[lang].portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = translations[lang].portalSubtitle;
+            document.getElementById('lightTitle').textContent = translations[lang].lightTitle;
+            document.getElementById('finalTitle').textContent = translations[lang].finalTitle;
+            document.getElementById('continueBtn').textContent = translations[lang].continueBtn;
+            document.getElementById('restartBtn').textContent = translations[lang].restartBtn;
+            document.getElementById('userTextarea').placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || currentLanguage === lang) return;
+            
+            currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'lightMessageSection', 'portalQuestionSection',
+                'userInputSection', 'userReactionsSection', 'finalSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('portalQuestion').innerHTML = '';
+            document.getElementById('finalMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            userResponse = '';
+            currentTypingElement = null;
+        }
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('continueBtn').addEventListener('click', function() {
+                const nextMessage = currentLanguage === 'ko' ? 
+                    'Portal 09가 곧 준비됩니다!' :
+                    currentLanguage === 'en' ? 
+                    'Portal 09 will be ready soon!' :
+                    'Portal 09 estará pronto em breve!';
+                alert(nextMessage);
+            });
+            
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                const confirmMessage = currentLanguage === 'ko' ? 
+                    'Portal 08을 다시 시작하시겠습니까?' :
+                    currentLanguage === 'en' ? 
+                    'Do you want to restart Portal 08?' :
+                    'Deseja reiniciar o Portal 08?';
+                
+                if (confirm(confirmMessage)) {
+                    resetJourney();
+                    setTimeout(() => {
+                        startPortalSequence();
+                    }, 1000);
+                }
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            
+            if (firebaseInitialized && db) {
+                try {
+                    await db.collection("temarix_v3_respostas").add({
+                        uid: memoryStorage.mockUser.uid,
+                        email: memoryStorage.mockUser.email,
+                        portal: "v3-08",
+                        resposta: inputText,
+                        data: firebase.firestore.Timestamp.now(),
+                        idioma: currentLanguage
+                    });
+                    console.log('Response saved to Firestore');
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                }
+            } else {
+                console.log('Firebase not available, saved locally:', inputText);
+                localStorage.setItem('temarix_v3_last_response', JSON.stringify({
+                    portal: "v3-08",
+                    resposta: inputText,
+                    data: new Date().toISOString(),
+                    idioma: currentLanguage
+                }));
+            }
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFinalSection();
+            }, 2000);
+        }
+        
+        async function showFinalSection() {
+            const finalSection = document.getElementById('finalSection');
+            const finalMessage = document.getElementById('finalMessage');
+            
+            finalSection.classList.add('show');
+            
+            const messageText = translations[currentLanguage].finalMessage;
+            await typewriterEffect(finalMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(finalSection);
+            }, 500);
+        }
+        
+        function initializeTemarix() {
+            console.log('Temarix V3 Portal 08 initialized');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            await typewriterEffect(introElement, translations[currentLanguage].portalIntro, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            await typewriterEffect(questionEl, translations[currentLanguage].portalQuestion, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V3 Portal 08 DOM loaded');
+            
+            initializeFirebase();
+            
+            currentLanguage = getLanguageFromURL();
+            
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            updateLanguageButtons(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

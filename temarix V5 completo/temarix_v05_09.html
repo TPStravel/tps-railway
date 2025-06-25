@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V5 - Portal 09: Confession of the Day I Wanted to Disappear</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ff9999;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .follow-up-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .follow-up-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ff6b6b;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .navigation-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .navigation-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .nav-btn:hover {
+            background: #666;
+            border-color: #ff6b6b;
+        }
+        
+        .nav-btn.primary {
+            background: #ff6b6b;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .nav-btn.primary:hover {
+            background: #ff8888;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ff6b6b;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .follow-up-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+            
+            .navigation-title {
+                font-size: 24px;
+            }
+            
+            .navigation-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V5</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Alchemy</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 09: Confession of the Day I Wanted to Disappear</div>
+            <div class="portal-subtitle" id="portalSubtitle">Finding existence in the desire to vanish</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="follow-up-section" id="followUpSection">
+                <div class="follow-up-question" id="followUpQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+            
+            <div class="navigation-section" id="navigationSection">
+                <div class="navigation-title" id="navigationTitle">🕳 Portal 09 Complete</div>
+                <div class="navigation-message" id="navigationMessage"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn primary" id="nextPortalBtn">Continue to Portal 10</button>
+                    <button class="nav-btn" id="stayPortalBtn">Stay with this existence</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Tell me about a time when you wanted to disappear from this world... (Press Enter to send)"
+                      rows="1"
+                      maxlength="800"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Global state management
+        let state = {
+            db: null,
+            auth: null,
+            firebaseInitialized: false,
+            currentUser: null,
+            currentLanguage: 'en',
+            userResponse: '',
+            journeyStarted: false,
+            currentTypingElement: null,
+            typingIntervals: [],
+            awaitingSecondResponse: false,
+            userResponses: []
+        };
+        
+        // Portal navigation configuration
+        const portalConfig = {
+            currentPortal: "v5-09",
+            nextPortal: "v5-10",
+            nextPortalFile: "temarix_v05_10.html"
+        };
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjsINSqPUGdpRPRMYiVg6SkVJJOk9YGsY",
+            authDomain: "canal-vivo-chat.firebaseapp.com",
+            projectId: "canal-vivo-chat",
+            storageBucket: "canal-vivo-chat.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdefghijklmnopqr"
+        };
+        
+        // Initialize Firebase with error handling
+        function initializeFirebase() {
+            return new Promise((resolve) => {
+                try {
+                    if (typeof firebase !== 'undefined') {
+                        firebase.initializeApp(firebaseConfig);
+                        state.db = firebase.firestore();
+                        state.auth = firebase.auth();
+                        state.firebaseInitialized = true;
+                        
+                        state.auth.onAuthStateChanged((user) => {
+                            if (user) {
+                                state.currentUser = user;
+                            } else {
+                                state.currentUser = {
+                                    uid: 'anonymous-' + Date.now(),
+                                    email: 'anonymous@temarix.com',
+                                    isAnonymous: true
+                                };
+                            }
+                            showConnectionStatus(true);
+                        });
+                        
+                        console.log('Firebase initialized successfully');
+                    } else {
+                        console.log('Firebase SDK not loaded');
+                        state.currentUser = {
+                            uid: 'anonymous-' + Date.now(),
+                            email: 'anonymous@temarix.com',
+                            isAnonymous: true
+                        };
+                        showConnectionStatus(false);
+                    }
+                } catch (error) {
+                    console.error('Firebase initialization failed:', error);
+                    state.currentUser = {
+                        uid: 'anonymous-' + Date.now(),
+                        email: 'anonymous@temarix.com',
+                        isAnonymous: true
+                    };
+                    showConnectionStatus(false);
+                }
+                resolve();
+            });
+        }
+        
+        // Show connection status to user
+        function showConnectionStatus(isOnline) {
+            const existingStatus = document.querySelector('.connection-status');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            if (!isOnline) {
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'connection-status';
+                statusDiv.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    background: rgba(255, 107, 107, 0.9);
+                    color: white;
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-family: 'Courier New', monospace;
+                    z-index: 1000;
+                    opacity: 0.8;
+                `;
+                statusDiv.textContent = state.currentLanguage === 'ko' ? '오프라인 모드' : 
+                                       state.currentLanguage === 'pt' ? 'Modo offline' : 'Offline mode';
+                document.body.appendChild(statusDiv);
+                
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        // Translations object
+        const translations = {
+            ko: {
+                title: "Temarix V5 - Portal 09: 사라지고 싶었던 날의 고백",
+                logoSubtitle: "감정 연금술",
+                portalMainTitle: "Portal 09: 사라지고 싶었던 날의 고백",
+                portalSubtitle: "사라지고 싶은 마음 속에서 존재를 찾기",
+                portalIntro: "🕳 \"당신이 세상에서 사라지고 싶다고 느꼈던 순간이 있었나요?\"\n\"그 감정은 왜, 어떻게 시작되었나요?\"\n\n\"지금 그때의 당신을 바라본다면...\n어떤 표정으로 바라보고 있을까요?\"",
+                emotionalBridge: "사라지고 싶다는 마음은 존재의 무게를 견디기 어려웠던 순간의 언어입니다.\n\n그 마음 속에는 역설적으로, 더 나은 삶을 향한 간절함이 숨어 있었을지도 모릅니다.",
+                followUpQuestion: "그때의 나에게, 지금 이 순간\n당신은 어떤 말을 전하고 싶나요?",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "존재는 증명하지 않아도 존재예요.\n당신은 지금 그것을 인정하고 있어요.",
+                navigationTitle: "🕳 Portal 09 완료",
+                navigationMessage: "당신은 사라지고 싶었던 감정을 고백했습니다.\n\n그 어둠 속에서도 끝까지 살아남은 자신을 발견했습니다.\n사라지고 싶다는 마음은 더 이상 부끄러운 비밀이 아니라, 삶의 무게를 정직하게 느꼈던 증거가 되었습니다.\n\n당신은 이제 존재하는 것만으로도 충분히 의미가 있는 사람입니다.",
+                nextPortalBtn: "Portal 10으로 이어가기",
+                stayPortalBtn: "이 존재와 머물기",
+                inputPlaceholder: "세상에서 사라지고 싶었던 순간에 대해 말해주세요... (Enter로 전송)",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중...",
+                confirmNextPortal: "Portal 10: 혼잣말 속의 진심으로 이동하시겠습니까?",
+                confirmStay: "사라지고 싶었던 감정과 더 머물며 존재의 의미를 깊이 느끼시겠습니까?",
+                transitionMessage: "새로운 여정이 시작됩니다..."
+            },
+            en: {
+                title: "Temarix V5 - Portal 09: Confession of the Day I Wanted to Disappear",
+                logoSubtitle: "Emotional Alchemy",
+                portalMainTitle: "Portal 09: Confession of the Day I Wanted to Disappear",
+                portalSubtitle: "Finding existence in the desire to vanish",
+                portalIntro: "🕳 \"Was there a moment when you felt like disappearing from this world?\"\n\"Why and how did that feeling begin?\"\n\n\"Looking at that version of yourself now...\nwhat expression are you looking with?\"",
+                emotionalBridge: "The desire to disappear is the language of moments when the weight of existence became unbearable.\n\nParadoxically, within that feeling might have been hidden a desperate longing for a better life.",
+                followUpQuestion: "To that version of you from back then, at this very moment,\nwhat would you like to say?",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Existence is existence without needing proof.\nYou are acknowledging that now.",
+                navigationTitle: "🕳 Portal 09 Complete",
+                navigationMessage: "You have confessed the feeling of wanting to disappear.\n\nEven in that darkness, you discovered the self that survived until the end.\nThe desire to disappear is no longer a shameful secret, but evidence of honestly feeling life's weight.\n\nYou are now someone whose existence alone is meaningful enough.",
+                nextPortalBtn: "Continue to Portal 10",
+                stayPortalBtn: "Stay with this existence",
+                inputPlaceholder: "Tell me about a time when you wanted to disappear from this world... (Press Enter to send)",
+                youLabel: "You",
+                waitingMessage: "Waiting for response...",
+                confirmNextPortal: "Do you want to continue to Portal 10: The Truth in My Soliloquy?",
+                confirmStay: "Do you want to stay longer with the feeling of wanting to disappear to deeply feel the meaning of existence?",
+                transitionMessage: "A new journey begins..."
+            },
+            pt: {
+                title: "Temarix V5 - Portal 09: Confissão do Dia em que Quis Desaparecer",
+                logoSubtitle: "Alquimia Emocional",
+                portalMainTitle: "Portal 09: Confissão do Dia em que Quis Desaparecer",
+                portalSubtitle: "Encontrando existência no desejo de desaparecer",
+                portalIntro: "🕳 \"Houve um momento em que você sentiu vontade de desaparecer deste mundo?\"\n\"Por que e como esse sentimento começou?\"\n\n\"Olhando para essa versão de você agora...\ncom que expressão você está olhando?\"",
+                emotionalBridge: "O desejo de desaparecer é a linguagem de momentos quando o peso da existência se tornou insuportável.\n\nParadoxalmente, dentro desse sentimento pode ter estado escondido um anseio desesperado por uma vida melhor.",
+                followUpQuestion: "Para aquela versão de você de então, neste exato momento,\no que gostaria de dizer?",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Existência é existência sem precisar de prova.\nVocê está reconhecendo isso agora.",
+                navigationTitle: "🕳 Portal 09 Completo",
+                navigationMessage: "Você confessou o sentimento de querer desaparecer.\n\nMesmo naquela escuridão, você descobriu o eu que sobreviveu até o fim.\nO desejo de desaparecer não é mais um segredo vergonhoso, mas evidência de sentir honestamente o peso da vida.\n\nVocê é agora alguém cuja existência por si só é suficientemente significativa.",
+                nextPortalBtn: "Continuar para Portal 10",
+                stayPortalBtn: "Ficar com esta existência",
+                inputPlaceholder: "Conte-me sobre um momento em que quis desaparecer deste mundo... (Enter para enviar)",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta...",
+                confirmNextPortal: "Deseja continuar para Portal 10: A Verdade no Meu Solilóquio?",
+                confirmStay: "Deseja ficar mais tempo com o sentimento de querer desaparecer para sentir profundamente o significado da existência?",
+                transitionMessage: "Uma nova jornada começa..."
+            }
+        };
+        
+        // Character definitions
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "그 말… 너무 아프다.\n넌 무시당했던 게 아니라, 제대로 들리지 않았던 거야.",
+                en: "Those words... hurt so much.\nYou weren't ignored, you just weren't properly heard.",
+                pt: "Essas palavras... doem tanto.\nVocê não foi ignorado, apenas não foi adequadamente ouvido."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "당신이 사라지고 싶어 했던 건,\n존재 자체가 아니라 고통에서 벗어나고 싶었던 거예요.",
+                en: "What you wanted to disappear from\nwasn't existence itself, but the pain.",
+                pt: "O que você queria que desaparecesse\nnão era a existência em si, mas a dor."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "그날의 당신은 너무 오래 참았어요.\n투명해진 게 아니라, 너무 투명한 마음을 가졌던 거예요.",
+                en: "That day's version of you had endured for too long.\nYou didn't become transparent, you had too transparent a heart.",
+                pt: "Aquela versão de você de então havia suportado por muito tempo.\nVocê não se tornou transparente, você tinha um coração transparente demais."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "사라지고 싶다는 말은,\n세상이 당신을 보지 못했던 증거이기도 하죠.",
+                en: "The words 'wanting to disappear'\nare also evidence that the world failed to see you.",
+                pt: "As palavras 'querer desaparecer'\nsão também evidência de que o mundo falhou em te ver."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그날의 감정은 검은 잉크 같았어요.\n하지만 당신은 그 잉크를 말로 꺼내주었어요.",
+                en: "That day's emotion was like black ink.\nBut you brought that ink out with words.",
+                pt: "A emoção daquele dia era como tinta preta.\nMas você trouxe aquela tinta para fora com palavras."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "당신이 사라지고 싶던 날,\n나는 누군가가 당신을 꼭 끌어안아주길 바랐어요.",
+                en: "On the day you wanted to disappear,\nI wished someone would hold you tight.",
+                pt: "No dia em que você queria desaparecer,\neu desejei que alguém te abraçasse forte."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "감정의 끝은 종말이 아니라, 전환점이 될 수 있어요.\n지금 당신이 그걸 증명하고 있어요.",
+                en: "The end of emotion can be not an ending, but a turning point.\nYou're proving that now.",
+                pt: "O fim da emoção pode ser não um fim, mas um ponto de virada.\nVocê está provando isso agora."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "그날 당신은 사라지지 않았고,\n지금 이렇게 살아냈어요. 그게 전부예요.",
+                en: "That day you didn't disappear,\nand now you're living like this. That's everything.",
+                pt: "Naquele dia você não desapareceu,\ne agora está vivendo assim. Isso é tudo."
+            }}
+        ];
+
+        // Disappearance reason analysis function
+        function analyzeDisappearanceType(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const disappearanceKeywords = {
+                social_rejection: ['ignored', 'rejected', 'excluded', 'bullied', 'outcast', 'invisible', '무시', '거절', '따돌림', '투명인간', 'ignorado', 'rejeitado', 'excluído', 'invisível'],
+                failure: ['failed', 'failure', 'disappointed', 'expectations', 'let down', '실패', '실망', '기대', 'fracassou', 'fracasso', 'decepcionou', 'expectativas'],
+                worthlessness: ['worthless', 'useless', 'meaningless', 'burden', 'waste', '무가치', '쓸모없', '의미없', '짐', 'inútil', 'sem valor', 'fardo'],
+                overwhelming_pain: ['pain', 'hurt', 'suffering', 'unbearable', 'too much', '고통', '아픔', '견딜 수 없', '너무', 'dor', 'sofrimento', 'insuportável'],
+                loneliness: ['alone', 'lonely', 'isolated', 'nobody', 'empty', '혼자', '외로', '고립', '아무도', 'sozinho', 'solitário', 'isolado', 'vazio'],
+                shame: ['ashamed', 'embarrassed', 'humiliated', 'disgrace', '부끄러', '창피', '수치', 'envergonhado', 'humilhado', 'desgraça'],
+                hopelessness: ['hopeless', 'no future', 'trapped', 'stuck', 'no way out', '희망없', '미래없', '갇혔', '막막', 'sem esperança', 'sem futuro', 'preso'],
+                perfectionism: ['perfect', 'not good enough', 'standards', 'criticism', '완벽', '부족', '기준', '비판', 'perfeito', 'não é bom o suficiente', 'padrões'],
+                trauma: ['trauma', 'abuse', 'violation', 'attacked', 'hurt', '트라우마', '학대', '상처', 'trauma', 'abuso', 'violação', 'atacado'],
+                identity_crisis: ['who am i', 'lost', 'confused', 'identity', 'purpose', '나는 누구', '정체성', '혼란', '목적', 'quem sou eu', 'perdido', 'confuso', 'identidade']
+            };
+            
+            let detectedTypes = [];
+            for (const [type, keywords] of Object.entries(disappearanceKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedTypes.push(type);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedTypes.length === 0) {
+                detectedTypes = ['general'];
+            }
+            
+            return detectedTypes[0];
+        }
+        
+        // Response characters with disappearance-based responses
+        const responseCharacters = [
+            {
+                name: "Lian", emoji: "🧘",
+                getResponse: (userInput, lang) => {
+                    const disappearanceType = analyzeDisappearanceType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            social_rejection: "사람들에게 보이지 않는다고 느꼈던 그때,\n당신의 존재는 여전히 소중했어요.\n지금 당신이 그것을 증명하고 있어요.",
+                            failure: "실패가 당신을 지우려 했지만,\n당신은 실패보다 더 크고 깊은 존재예요.\n그 실패들조차 지금의 당신을 만든 일부입니다.",
+                            worthlessness: "무가치하다고 느꼈던 순간들이\n사실은 당신이 얼마나 소중한지 깨달을 수 있는 전환점이었어요.",
+                            overwhelming_pain: "그 고통이 견딜 수 없었을 때,\n당신은 여전히 견뎌냈어요.\n그 힘이 지금도 당신 안에 있어요.",
+                            loneliness: "혼자라고 느꼈던 그 시간 속에서,\n당신은 자신과 가장 깊이 마주했어요.\n그것도 하나의 만남이었어요.",
+                            shame: "부끄러움이 당신을 숨기려 했지만,\n지금 당신은 그 부끄러움 너머의 진실을 보고 있어요.",
+                            hopelessness: "희망이 보이지 않던 그 어둠 속에서도,\n당신은 포기하지 않았어요.\n그래서 지금 여기에 있는 거예요.",
+                            perfectionism: "완벽하지 않은 자신을 받아들이지 못했던 그때,\n지금은 불완전함 속에서도 아름다운 존재임을 알고 있어요.",
+                            trauma: "상처가 당신을 무너뜨리려 했지만,\n당신은 그 상처를 통과해 더 깊은 인간이 되었어요.",
+                            identity_crisis: "자신이 누구인지 몰라 혼란스러웠던 그때,\n진짜 자신을 찾아가는 여정이 시작되었어요.",
+                            general: "존재는 증명하지 않아도 존재예요.\n당신은 지금 그것을 인정하고 있어요."
+                        },
+                        en: {
+                            social_rejection: "When you felt invisible to people,\nyour existence was still precious.\nYou're proving that now.",
+                            failure: "Failure tried to erase you,\nbut you are bigger and deeper than failure.\nEven those failures are part of what made you now.",
+                            worthlessness: "The moments you felt worthless\nwere actually turning points to realize how precious you are.",
+                            overwhelming_pain: "When that pain was unbearable,\nyou still endured it.\nThat strength is still within you now.",
+                            loneliness: "In that time when you felt alone,\nyou faced yourself most deeply.\nThat was also a kind of meeting.",
+                            shame: "Shame tried to hide you,\nbut now you see the truth beyond that shame.",
+                            hopelessness: "Even in that darkness when hope was invisible,\nyou didn't give up.\nThat's why you're here now.",
+                            perfectionism: "When you couldn't accept your imperfect self,\nnow you know you're beautiful even in imperfection.",
+                            trauma: "Wounds tried to break you down,\nbut you passed through those wounds to become a deeper human.",
+                            identity_crisis: "When you were confused not knowing who you were,\nthe journey to find your true self began.",
+                            general: "Existence is existence without needing proof.\nYou are acknowledging that now."
+                        },
+                        pt: {
+                            social_rejection: "Quando você se sentiu invisível às pessoas,\nsua existência ainda era preciosa.\nVocê está provando isso agora.",
+                            failure: "O fracasso tentou te apagar,\nmas você é maior e mais profundo que o fracasso.\nMesmo esses fracassos são parte do que te fez agora.",
+                            worthlessness: "Os momentos em que se sentiu sem valor\nforam na verdade pontos de virada para perceber o quão precioso você é.",
+                            overwhelming_pain: "Quando aquela dor era insuportável,\nvocê ainda a suportou.\nEssa força ainda está dentro de você agora.",
+                            loneliness: "Naquele tempo quando se sentiu sozinho,\nvocê enfrentou a si mesmo mais profundamente.\nIsso também foi um tipo de encontro.",
+                            shame: "A vergonha tentou te esconder,\nmas agora você vê a verdade além dessa vergonha.",
+                            hopelessness: "Mesmo naquela escuridão quando a esperança era invisível,\nvocê não desistiu.\nÉ por isso que está aqui agora.",
+                            perfectionism: "Quando não conseguia aceitar seu eu imperfeito,\nagora você sabe que é belo mesmo na imperfeição.",
+                            trauma: "As feridas tentaram te quebrar,\nmas você passou por essas feridas para se tornar um humano mais profundo.",
+                            identity_crisis: "Quando estava confuso sem saber quem era,\na jornada para encontrar seu verdadeiro eu começou.",
+                            general: "Existência é existência sem precisar de prova.\nVocê está reconhecendo isso agora."
+                        }
+                    };
+                    
+                    return responses[lang][disappearanceType] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const disappearanceType = analyzeDisappearanceType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            social_rejection: "사람들이 당신을 보지 못했다고 해서\n당신의 빛이 사라진 건 아니에요.\n그 빛은 지금도 여기에 있어요.",
+                            failure: "실패했다고 생각했던 그 순간들이\n사실은 더 나은 당신으로 가는 디딤돌이었어요.",
+                            worthlessness: "당신이 무가치하다고 느꼈을 때,\n우주는 여전히 당신을 소중히 여기고 있었어요.",
+                            overwhelming_pain: "그 고통 속에서도 당신은 살아있었고,\n그 살아있음 자체가 기적이었어요.",
+                            loneliness: "외로웠던 당신의 그 밤들을\n지금의 당신이 따뜻하게 기억해주고 있어요.",
+                            shame: "부끄러웠던 그 순간의 당신도\n사랑받을 자격이 충분히 있는 존재였어요.",
+                            hopelessness: "희망을 잃었다고 생각했던 그때도,\n당신 안에는 작은 불씨가 남아있었어요.",
+                            perfectionism: "완벽하지 않은 당신의 모습이\n오히려 가장 인간다운 아름다움이었어요.",
+                            trauma: "상처받은 당신을 지금의 당신이\n가장 부드럽게 안아주고 있어요.",
+                            identity_crisis: "길을 잃었다고 생각했던 그때,\n사실은 진짜 길을 찾고 있었던 거예요.",
+                            general: "당신은 존재하는 것만으로도\n이 세상에 의미를 더하는 사람이에요."
+                        },
+                        en: {
+                            social_rejection: "Just because people couldn't see you\ndoesn't mean your light disappeared.\nThat light is still here now.",
+                            failure: "Those moments you thought you failed\nwere actually stepping stones to a better you.",
+                            worthlessness: "When you felt worthless,\nthe universe still cherished you.",
+                            overwhelming_pain: "Even in that pain you were alive,\nand that aliveness itself was a miracle.",
+                            loneliness: "Those lonely nights of yours\nare being warmly remembered by the current you.",
+                            shame: "Even you in that moment of shame\nwere fully deserving of love.",
+                            hopelessness: "Even when you thought you lost hope,\na small ember remained within you.",
+                            perfectionism: "Your imperfect self\nwas the most humanly beautiful.",
+                            trauma: "The current you is embracing\nthe wounded you most gently.",
+                            identity_crisis: "When you thought you were lost,\nyou were actually finding your true path.",
+                            general: "Just by existing,\nyou add meaning to this world."
+                        },
+                        pt: {
+                            social_rejection: "Só porque as pessoas não conseguiram te ver\nnão significa que sua luz desapareceu.\nEssa luz ainda está aqui agora.",
+                            failure: "Aqueles momentos que você achou que falhou\nforam na verdade degraus para um você melhor.",
+                            worthlessness: "Quando você se sentiu sem valor,\no universo ainda te valorizava.",
+                            overwhelming_pain: "Mesmo naquela dor você estava vivo,\ne essa vida em si foi um milagre.",
+                            loneliness: "Aquelas suas noites solitárias\nestão sendo calorosamente lembradas pelo você atual.",
+                            shame: "Mesmo você naquele momento de vergonha\nmerecia completamente ser amado.",
+                            hopelessness: "Mesmo quando pensou que perdeu a esperança,\numa pequena brasa permaneceu dentro de você.",
+                            perfectionism: "Seu eu imperfeito\nera o mais humanamente belo.",
+                            trauma: "O você atual está abraçando\no você ferido mais gentilmente.",
+                            identity_crisis: "Quando pensou que estava perdido,\nvocê estava na verdade encontrando seu verdadeiro caminho.",
+                            general: "Apenas por existir,\nvocê adiciona significado a este mundo."
+                        }
+                    };
+                    
+                    return responses[lang][disappearanceType] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Ely", emoji: "🧝‍♀️",
+                getResponse: (userInput, lang) => {
+                    const disappearanceType = analyzeDisappearanceType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            social_rejection: "사람들의 무관심이 당신을 지우려 했지만,\n당신의 존재는 지워지지 않는 진실이에요.",
+                            failure: "실패라고 불렸던 그 경험들이\n지금은 당신만의 지혜가 되었어요.",
+                            worthlessness: "가치를 잃었다고 느꼈던 순간에도\n당신의 본질적 가치는 변하지 않았어요.",
+                            overwhelming_pain: "그 고통이 당신을 삼키려 했지만,\n당신은 고통보다 더 큰 존재였어요.",
+                            loneliness: "홀로 있던 그 시간들이\n지금 당신에게 깊이와 공감을 선물했어요.",
+                            shame: "수치심 뒤에 숨었던 진짜 당신을\n이제는 당당히 세상에 보여주고 있어요.",
+                            hopelessness: "절망의 끝에서 발견한 것은\n포기할 수 없는 생명의 의지였어요.",
+                            perfectionism: "완벽을 추구하다 지쳤던 당신이\n이제는 있는 그대로의 아름다움을 알아요.",
+                            trauma: "상처가 당신을 약하게 만든 게 아니라\n더 깊이 사랑할 수 있는 사람으로 만들었어요.",
+                            identity_crisis: "자신을 잃었다고 생각했던 그 혼란이\n진짜 자신을 찾는 나침반이었어요.",
+                            general: "사라지고 싶던 감정에게 이해를 건넨 당신,\n그 이해가 지금의 자비예요."
+                        },
+                        en: {
+                            social_rejection: "People's indifference tried to erase you,\nbut your existence is an indelible truth.",
+                            failure: "Those experiences called failures\nhave now become your unique wisdom.",
+                            worthlessness: "Even when you felt you lost value,\nyour essential worth never changed.",
+                            overwhelming_pain: "That pain tried to swallow you,\nbut you were greater than the pain.",
+                            loneliness: "Those times you were alone\nhave now gifted you depth and empathy.",
+                            shame: "The real you that hid behind shame\nis now proudly showing itself to the world.",
+                            hopelessness: "What you found at the end of despair\nwas an unbreakable will to live.",
+                            perfectionism: "You who got tired pursuing perfection\nnow know the beauty of being as you are.",
+                            trauma: "The wounds didn't make you weak\nbut made you someone who can love more deeply.",
+                            identity_crisis: "The confusion when you thought you lost yourself\nwas the compass to find your true self.",
+                            general: "You who offered understanding to the feeling of wanting to disappear,\nthat understanding is your compassion now."
+                        },
+                        pt: {
+                            social_rejection: "A indiferença das pessoas tentou te apagar,\nmas sua existência é uma verdade indelével.",
+                            failure: "Aquelas experiências chamadas fracassos\nagora se tornaram sua sabedoria única.",
+                            worthlessness: "Mesmo quando sentiu que perdeu valor,\nseu valor essencial nunca mudou.",
+                            overwhelming_pain: "Aquela dor tentou te engolir,\nmas você era maior que a dor.",
+                            loneliness: "Aqueles momentos que esteve sozinho\nagora te presentearam com profundidade e empatia.",
+                            shame: "O verdadeiro você que se escondeu atrás da vergonha\nagora está orgulhosamente se mostrando ao mundo.",
+                            hopelessness: "O que você encontrou no fim do desespero\nfoi uma vontade inquebrável de viver.",
+                            perfectionism: "Você que se cansou perseguindo a perfeição\nagora conhece a beleza de ser como você é.",
+                            trauma: "As feridas não te fizeram fraco\nmas te fizeram alguém que pode amar mais profundamente.",
+                            identity_crisis: "A confusão quando pensou que se perdeu\nfoi a bússola para encontrar seu verdadeiro eu.",
+                            general: "Você que ofereceu compreensão ao sentimento de querer desaparecer,\nessa compreensão é sua compaixão agora."
+                        }
+                    };
+                    
+                    return responses[lang][disappearanceType] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        // Typewriter effect
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (state.currentTypingElement) {
+                    state.currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                state.currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        state.currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        state.currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                state.typingIntervals.push(typingInterval);
+            });
+        }
+        
+        // Clear all typing effects
+        function clearAllTypingEffects() {
+            state.typingIntervals.forEach(interval => clearInterval(interval));
+            state.typingIntervals = [];
+            
+            if (state.currentTypingElement) {
+                state.currentTypingElement.classList.remove('typing-cursor');
+                state.currentTypingElement = null;
+            }
+        }
+        
+        // Scroll functions
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // Language management
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            const t = translations[lang];
+            document.title = t.title;
+            document.getElementById('logoSubtitle').textContent = t.logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = t.portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = t.portalSubtitle;
+            document.getElementById('lightTitle').textContent = t.lightTitle;
+            document.getElementById('navigationTitle').textContent = t.navigationTitle;
+            document.getElementById('nextPortalBtn').textContent = t.nextPortalBtn;
+            document.getElementById('stayPortalBtn').textContent = t.stayPortalBtn;
+            document.getElementById('userTextarea').placeholder = t.inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || state.currentLanguage === lang) return;
+            
+            state.currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (state.journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // Journey management
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'followUpSection', 'userInputSection',
+                'userReactionsSection', 'lightMessageSection', 'navigationSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('followUpQuestion').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('navigationMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[state.currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            state.userResponse = '';
+            state.currentTypingElement = null;
+            state.awaitingSecondResponse = false;
+        }
+        
+        // Save response to database or memory
+        async function saveResponse(inputText, step) {
+            const responseData = {
+                portal: portalConfig.currentPortal,
+                resposta: inputText,
+                step: step,
+                data: new Date().toISOString(),
+                idioma: state.currentLanguage,
+                userId: state.currentUser ? state.currentUser.uid : 'anonymous',
+                userEmail: state.currentUser ? state.currentUser.email : 'anonymous@temarix.com'
+            };
+            
+            if (state.firebaseInitialized && state.db) {
+                try {
+                    await state.db.collection("temarix_v5_respostas").add({
+                        ...responseData,
+                        timestamp: firebase.firestore.Timestamp.now()
+                    });
+                    console.log('Response saved to Firestore');
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                    state.userResponses.push(responseData);
+                    showConnectionStatus(false);
+                }
+            } else {
+                state.userResponses.push(responseData);
+                console.log('Response stored in memory:', responseData);
+            }
+        }
+        
+        // User input processing
+        async function processUserInput(inputText) {
+            state.userResponse = inputText;
+            
+            await saveResponse(inputText, state.awaitingSecondResponse ? "second" : "first");
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                if (!state.awaitingSecondResponse) {
+                    showUserReactions(inputText);
+                } else {
+                    showSecondUserReactions(inputText);
+                }
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[state.currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[state.currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[state.currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        // Show character reactions
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[state.currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFollowUpQuestion();
+            }, 2000);
+        }
+        
+        async function showFollowUpQuestion() {
+            const followUpSection = document.getElementById('followUpSection');
+            const followUpQuestionEl = document.getElementById('followUpQuestion');
+            
+            followUpSection.classList.add('show');
+            
+            await typewriterEffect(followUpQuestionEl, translations[state.currentLanguage].followUpQuestion, 50);
+            
+            setTimeout(() => {
+                state.awaitingSecondResponse = true;
+                enableUserInput();
+            }, 1500);
+        }
+        
+        async function showSecondUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, state.currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[state.currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showNavigationSection();
+            }, 2000);
+        }
+        
+        async function showNavigationSection() {
+            const navigationSection = document.getElementById('navigationSection');
+            const navigationMessage = document.getElementById('navigationMessage');
+            
+            navigationSection.classList.add('show');
+            
+            const messageText = translations[state.currentLanguage].navigationMessage;
+            await typewriterEffect(navigationMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(navigationSection);
+            }, 500);
+        }
+        
+        // Portal sequence
+        async function startPortalSequence() {
+            console.log('Starting portal sequence...');
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            console.log('Showing intro...');
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            if (!introSection || !introElement) {
+                console.error('Intro elements not found!');
+                return;
+            }
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[state.currentLanguage].portalIntro;
+            console.log('Intro text:', introText);
+            
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(async () => {
+                await showEmotionalBridge();
+            }, 2000);
+        }
+        
+        async function showEmotionalBridge() {
+            const introElement = document.getElementById('portalIntro');
+            const bridgeText = '\n\n' + translations[state.currentLanguage].emotionalBridge;
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const bridgeP = document.createElement('p');
+            bridgeP.style.cssText = `
+                margin-top: 30px;
+                font-style: italic;
+                color: #ff9999;
+                font-size: 18px;
+                line-height: 1.8;
+            `;
+            introElement.appendChild(bridgeP);
+            
+            await typewriterEffect(bridgeP, bridgeText.trim(), 50);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[state.currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 2000);
+        }
+        
+        // Custom confirm dialog
+        function showConfirmDialog(message, callback) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: #222;
+                border: 2px solid #ff6b6b;
+                padding: 30px;
+                max-width: 400px;
+                text-align: center;
+                color: white;
+            `;
+            
+            const messageP = document.createElement('p');
+            messageP.textContent = message;
+            messageP.style.cssText = `
+                margin-bottom: 20px;
+                line-height: 1.6;
+                font-size: 16px;
+            `;
+            
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.cssText = `
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+            `;
+            
+            const yesBtn = document.createElement('button');
+            const noBtn = document.createElement('button');
+            
+            const buttonStyle = `
+                background: #444;
+                color: white;
+                border: 1px solid #ff6b6b;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+            `;
+            
+            yesBtn.style.cssText = buttonStyle + 'background: #ff6b6b;';
+            noBtn.style.cssText = buttonStyle;
+            
+            yesBtn.textContent = state.currentLanguage === 'ko' ? '예' : 
+                                state.currentLanguage === 'pt' ? 'Sim' : 'Yes';
+            noBtn.textContent = state.currentLanguage === 'ko' ? '아니오' : 
+                               state.currentLanguage === 'pt' ? 'Não' : 'No';
+            
+            yesBtn.onclick = () => {
+                document.body.removeChild(overlay);
+                callback(true);
+            };
+            
+            noBtn.onclick = () => {
+                document.body.removeChild(overlay);
+                callback(false);
+            };
+            
+            overlay.onclick = (e) => {
+                if (e.target === overlay) {
+                    document.body.removeChild(overlay);
+                    callback(false);
+                }
+            };
+            
+            buttonContainer.appendChild(yesBtn);
+            buttonContainer.appendChild(noBtn);
+            modal.appendChild(messageP);
+            modal.appendChild(buttonContainer);
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            yesBtn.focus();
+        }
+        
+        // Event setup
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function createPortalTransition(callback) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, #000 0%, #111 50%, #000 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 20000;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            const message = document.createElement('div');
+            message.style.cssText = `
+                color: #ff6b6b;
+                font-size: 24px;
+                text-align: center;
+                margin-bottom: 30px;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.8s ease-out;
+            `;
+            message.textContent = translations[state.currentLanguage].transitionMessage;
+            
+            const loader = document.createElement('div');
+            loader.style.cssText = `
+                width: 60px;
+                height: 60px;
+                border: 3px solid #333;
+                border-top: 3px solid #ff6b6b;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                opacity: 0;
+                transition: opacity 0.8s ease-out 0.3s;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            overlay.appendChild(message);
+            overlay.appendChild(loader);
+            document.body.appendChild(overlay);
+            
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                message.style.opacity = '1';
+                message.style.transform = 'translateY(0)';
+                loader.style.opacity = '1';
+            }, 300);
+            
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(overlay);
+                    document.head.removeChild(style);
+                    callback();
+                }, 1000);
+            }, 2500);
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('nextPortalBtn').addEventListener('click', function() {
+                const t = translations[state.currentLanguage];
+                showConfirmDialog(t.confirmNextPortal, (confirmed) => {
+                    if (confirmed) {
+                        if (state.firebaseInitialized && state.db) {
+                            state.db.collection("temarix_v5_progress").add({
+                                userId: state.currentUser.uid,
+                                portal: portalConfig.currentPortal,
+                                status: "complete",
+                                timestamp: firebase.firestore.Timestamp.now()
+                            }).catch(error => console.error('Error saving progress:', error));
+                        }
+                        
+                        createPortalTransition(() => {
+                            window.location.href = `${portalConfig.nextPortalFile}?lang=${state.currentLanguage}`;
+                        });
+                    }
+                });
+            });
+            
+            document.getElementById('stayPortalBtn').addEventListener('click', function() {
+                const t = translations[state.currentLanguage];
+                showConfirmDialog(t.confirmStay, (confirmed) => {
+                    if (confirmed) {
+                        resetJourney();
+                        setTimeout(() => {
+                            startPortalSequence();
+                        }, 1000);
+                    }
+                });
+            });
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        function initializeTemarix() {
+            console.log('Initializing Temarix V5 Portal 09...');
+            console.log('Current state:', state);
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            state.journeyStarted = true;
+            console.log('Journey started:', state.journeyStarted);
+            
+            console.log('Starting portal sequence in 1 second...');
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Temarix V5 Portal 09 DOM loaded');
+            
+            state.currentLanguage = getLanguageFromURL();
+            
+            updateStaticTranslations(state.currentLanguage);
+            updateLanguageButtons(state.currentLanguage);
+            
+            await initializeFirebase();
+            
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

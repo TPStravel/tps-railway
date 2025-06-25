@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Teste Amadeus</title>
+</head>
+<body>
+  <h1>Teste de Busca de Voos (Amadeus)</h1>
+  <button onclick="buscarVoos()">Buscar voos GRU → MIA (2025-09-15)</button>
+  <pre id="resultado"></pre>
+
+  <script>
+    async function buscarVoos() {
+      const res = await fetch("http://localhost:3000/amadeus-flights", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          origin: "GRU",
+          destination: "MIA",
+          date: "2025-09-15"
+        })
+      });
+
+      const data = await res.json();
+      document.getElementById("resultado").textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V5 - Portal 14: Compassion Was Not Weakness</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ff9999;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .follow-up-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .follow-up-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ff6b6b;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .navigation-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .navigation-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .nav-btn:hover {
+            background: #666;
+            border-color: #ff6b6b;
+        }
+        
+        .nav-btn.primary {
+            background: #ff6b6b;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .nav-btn.primary:hover {
+            background: #ff8888;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ff6b6b;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .follow-up-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+            
+            .navigation-title {
+                font-size: 24px;
+            }
+            
+            .navigation-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V5</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Alchemy</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 14: Compassion Was Not Weakness</div>
+            <div class="portal-subtitle" id="portalSubtitle">When did I realize that being gentle was actually strength?</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="follow-up-section" id="followUpSection">
+                <div class="follow-up-question" id="followUpQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+            
+            <div class="navigation-section" id="navigationSection">
+                <div class="navigation-title" id="navigationTitle">🕊 Portal 14 Complete</div>
+                <div class="navigation-message" id="navigationMessage"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn primary" id="nextPortalBtn">Continue to Portal 15</button>
+                    <button class="nav-btn" id="stayPortalBtn">Stay with this strength</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Tell me about a time you showed compassion... (Press Enter to send)"
+                      rows="1"
+                      maxlength="800"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Global state management
+        let state = {
+            db: null,
+            auth: null,
+            firebaseInitialized: false,
+            currentUser: null,
+            currentLanguage: 'en',
+            userResponse: '',
+            journeyStarted: false,
+            currentTypingElement: null,
+            typingIntervals: [],
+            awaitingSecondResponse: false,
+            userResponses: []
+        };
+        
+        // Portal navigation configuration
+        const portalConfig = {
+            currentPortal: "v5-14",
+            nextPortal: "v5-15",
+            nextPortalFile: "temarix_v05_15.html"
+        };
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjsINSqPUGdpRPRMYiVg6SkVJJOk9YGsY",
+            authDomain: "canal-vivo-chat.firebaseapp.com",
+            projectId: "canal-vivo-chat",
+            storageBucket: "canal-vivo-chat.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdefghijklmnopqr"
+        };
+        
+        // Initialize Firebase with error handling
+        function initializeFirebase() {
+            return new Promise((resolve) => {
+                try {
+                    if (typeof firebase !== 'undefined') {
+                        firebase.initializeApp(firebaseConfig);
+                        state.db = firebase.firestore();
+                        state.auth = firebase.auth();
+                        state.firebaseInitialized = true;
+                        
+                        state.auth.onAuthStateChanged((user) => {
+                            if (user) {
+                                state.currentUser = user;
+                            } else {
+                                state.currentUser = {
+                                    uid: 'anonymous-' + Date.now(),
+                                    email: 'anonymous@temarix.com',
+                                    isAnonymous: true
+                                };
+                            }
+                            showConnectionStatus(true);
+                        });
+                        
+                        console.log('Firebase initialized successfully');
+                    } else {
+                        console.log('Firebase SDK not loaded');
+                        state.currentUser = {
+                            uid: 'anonymous-' + Date.now(),
+                            email: 'anonymous@temarix.com',
+                            isAnonymous: true
+                        };
+                        showConnectionStatus(false);
+                    }
+                } catch (error) {
+                    console.error('Firebase initialization failed:', error);
+                    state.currentUser = {
+                        uid: 'anonymous-' + Date.now(),
+                        email: 'anonymous@temarix.com',
+                        isAnonymous: true
+                    };
+                    showConnectionStatus(false);
+                }
+                resolve();
+            });
+        }
+        
+        // Show connection status to user
+        function showConnectionStatus(isOnline) {
+            const existingStatus = document.querySelector('.connection-status');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            if (!isOnline) {
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'connection-status';
+                statusDiv.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    background: rgba(255, 107, 107, 0.9);
+                    color: white;
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-family: 'Courier New', monospace;
+                    z-index: 1000;
+                    opacity: 0.8;
+                `;
+                statusDiv.textContent = state.currentLanguage === 'ko' ? '오프라인 모드' : 
+                                       state.currentLanguage === 'pt' ? 'Modo offline' : 'Offline mode';
+                document.body.appendChild(statusDiv);
+                
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        // Translations object
+        const translations = {
+            ko: {
+                title: "Temarix V5 - Portal 14: 자비는 연약함이 아니었다",
+                logoSubtitle: "감정 연금술",
+                portalMainTitle: "Portal 14: 자비는 연약함이 아니었다",
+                portalSubtitle: "언제 나는 다정함이 사실 힘이라는 걸 깨달았을까?",
+                portalIntro: "🕊 \"살면서 '자비'를 베풀었던 기억이 있나요?\n혹은 용서하거나 이해하려 했던 순간이 있었나요?\"\n\n\"그때, 자비를 베푼 당신은 어떻게 느꼈나요?\n약해 보인다고 느끼진 않았나요?\"",
+                emotionalBridge: "세상은 자비를 무기처럼 보지 않지만, 자비는 감정을 지배하는 가장 강한 힘입니다.\n\n자비는 선택이고, 그 선택을 하는 자는 연약한 게 아니라 주체적인 존재입니다.\n자비는 한계를 허물고, 그 순간 당신은 자신을 더 크게 만드는 것입니다.",
+                followUpQuestion: "이제, 자비는 당신에게 어떤 의미인가요?\n한 문장으로 자비의 정의를 다시 써준다면,\n당신은 어떻게 말하고 싶나요?",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "당신은 자비를 연약함이 아닌 존엄으로 바꾼 사람이에요.\n이제 자비는 당신의 선택이자 무기예요.\n상처를 끊는 힘, 그리고 이어주는 다리.",
+                navigationTitle: "🕊 Portal 14 완료",
+                navigationMessage: "당신은 자비를 연약함이 아닌 내 삶의 중심 언어로 받아들였습니다.\n\n자비는 멈추는 힘이며, 상처가 번지지 않도록 내가 먼저 멈추는 용기입니다. 그 정의는 당신이 자비를 말로만이 아니라 삶으로 살았다는 증거입니다.\n\n이제 자비는 당신의 선택이자 무기가 되었습니다. 상처를 끊는 힘, 그리고 이어주는 다리로서 말입니다.\n\n당신은 자비로 강해진 사람입니다.",
+                nextPortalBtn: "Portal 15로 이어가기",
+                stayPortalBtn: "이 힘과 머물기",
+                inputPlaceholder: "자비를 베풀었던 기억에 대해 말해주세요... (Enter로 전송)",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중...",
+                confirmNextPortal: "Portal 15: 나는 나를 안아주기로 했다로 이동하시겠습니까?",
+                confirmStay: "자비의 힘과 더 머물며 그 의미를 더 깊이 느끼시겠습니까?",
+                transitionMessage: "새로운 여정이 시작됩니다..."
+            },
+            en: {
+                title: "Temarix V5 - Portal 14: Compassion Was Not Weakness",
+                logoSubtitle: "Emotional Alchemy",
+                portalMainTitle: "Portal 14: Compassion Was Not Weakness",
+                portalSubtitle: "When did I realize that being gentle was actually strength?",
+                portalIntro: "🕊 \"Have you ever shown 'compassion' in your life?\nOr was there a moment when you tried to forgive or understand?\"\n\n\"How did you feel when you showed compassion?\nDid you ever think you looked weak?\"",
+                emotionalBridge: "The world doesn't see compassion as a weapon, but compassion is the strongest force that governs emotions.\n\nCompassion is a choice, and those who make that choice are not weak but autonomous beings.\nCompassion breaks down barriers, and in that moment you make yourself greater.",
+                followUpQuestion: "Now, what does compassion mean to you?\nIf you could redefine compassion in one sentence,\nhow would you like to say it?",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "You are someone who transformed compassion from weakness into dignity.\nNow compassion is both your choice and your weapon.\nThe power to stop wounds, and the bridge that connects.",
+                navigationTitle: "🕊 Portal 14 Complete",
+                navigationMessage: "You have accepted compassion not as weakness but as the central language of your life.\n\nCompassion is the power to stop, the courage to stop first so that wounds don't spread. That definition is proof that you have lived compassion not just in words but in life.\n\nNow compassion has become both your choice and your weapon. The power to stop wounds, and the bridge that connects.\n\nYou are someone who has become strong through compassion.",
+                nextPortalBtn: "Continue to Portal 15",
+                stayPortalBtn: "Stay with this strength",
+                inputPlaceholder: "Tell me about a time you showed compassion... (Press Enter to send)",
+                youLabel: "You",
+                waitingMessage: "Waiting for response...",
+                confirmNextPortal: "Do you want to continue to Portal 15: I Decided to Embrace Myself?",
+                confirmStay: "Do you want to stay longer with the power of compassion and feel its meaning more deeply?",
+                transitionMessage: "A new journey begins..."
+            },
+            pt: {
+                title: "Temarix V5 - Portal 14: Compaixao Nao Era Fraqueza",
+                logoSubtitle: "Alquimia Emocional",
+                portalMainTitle: "Portal 14: Compaixao Nao Era Fraqueza",
+                portalSubtitle: "Quando percebi que ser gentil era na verdade forca?",
+                portalIntro: "🕊 \"Voce ja mostrou 'compaixao' em sua vida?\nOu houve um momento em que tentou perdoar ou entender?\"\n\n\"Como se sentiu quando mostrou compaixao?\nJa pensou que parecia fraco?\"",
+                emotionalBridge: "O mundo nao ve compaixao como arma, mas compaixao e a forca mais forte que governa emocoes.\n\nCompaixao e uma escolha, e aqueles que fazem essa escolha nao sao fracos, mas seres autonomos.\nCompaixao derruba barreiras, e naquele momento voce se torna maior.",
+                followUpQuestion: "Agora, o que compaixao significa para voce?\nSe pudesse redefinir compaixao em uma frase,\ncomo gostaria de dizer?",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Voce e alguem que transformou compaixao de fraqueza em dignidade.\nAgora compaixao e tanto sua escolha quanto sua arma.\nO poder de parar feridas, e a ponte que conecta.",
+                navigationTitle: "🕊 Portal 14 Completo",
+                navigationMessage: "Voce aceitou compaixao nao como fraqueza, mas como linguagem central de sua vida.\n\nCompaixao e o poder de parar, a coragem de parar primeiro para que feridas nao se espalhem. Essa definicao e prova de que voce viveu compaixao nao apenas em palavras, mas na vida.\n\nAgora compaixao se tornou tanto sua escolha quanto sua arma. O poder de parar feridas, e a ponte que conecta.\n\nVoce e alguem que se tornou forte atraves da compaixao.",
+                nextPortalBtn: "Continuar para Portal 15",
+                stayPortalBtn: "Ficar com esta forca",
+                inputPlaceholder: "Conte-me sobre uma vez que mostrou compaixao... (Enter para enviar)",
+                youLabel: "Voce",
+                waitingMessage: "Aguardando resposta...",
+                confirmNextPortal: "Deseja continuar para Portal 15: Decidi Me Abracar?",
+                confirmStay: "Deseja ficar mais tempo com o poder da compaixao e sentir seu significado mais profundamente?",
+                transitionMessage: "Uma nova jornada comeca..."
+            }
+        };
+        
+        // Character definitions
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "자비는 힘이야.\n복수 대신 멈춘 용기, 그게 진짜 강함이야.",
+                en: "Compassion is strength.\nThe courage to stop instead of revenge, that's real strength.",
+                pt: "Compaixao e forca.\nA coragem de parar em vez de vinganca, essa e a verdadeira forca."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "세상은 자비를 무기처럼 보지 않지만,\n자비는 감정을 지배하는 가장 강한 힘이에요.",
+                en: "The world doesn't see compassion as a weapon,\nbut compassion is the strongest force that governs emotions.",
+                pt: "O mundo nao ve compaixao como arma,\nmas compaixao e a forca mais forte que governa emocoes."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "자비를 베푼 당신은,\n누구보다 감정을 다룰 줄 아는 사람이에요.",
+                en: "You who showed compassion\nare someone who knows how to handle emotions better than anyone.",
+                pt: "Voce que mostrou compaixao\ne alguem que sabe lidar com emocoes melhor que qualquer um."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "자비는 선택이고,\n그 선택을 하는 자는 연약한 게 아니라 주체적인 거예요.",
+                en: "Compassion is a choice,\nand those who make that choice are not weak but autonomous.",
+                pt: "Compaixao e uma escolha,\ne aqueles que fazem essa escolha nao sao fracos, mas autonomos."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "그 용서는 흐려진 것이 아니라,\n당신의 색이 더욱 뚜렷해진 순간이었어요.",
+                en: "That forgiveness wasn't blurred,\nbut the moment your colors became clearer.",
+                pt: "Aquele perdao nao foi borrado,\nmas o momento em que suas cores se tornaram mais claras."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "참는 게 아니라,\n그 상황을 초월한 거야.\n그리고 그건 절대 연약함이 아니야.",
+                en: "It wasn't enduring,\nbut transcending that situation.\nAnd that's definitely not weakness.",
+                pt: "Nao foi suportar,\nmas transcender aquela situacao.\nE isso definitivamente nao e fraqueza."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "자비는 한계를 허물고,\n그 순간 당신은 자신을 더 크게 만든 거예요.",
+                en: "Compassion breaks down barriers,\nand in that moment you made yourself greater.",
+                pt: "Compaixao derruba barreiras,\ne naquele momento voce se tornou maior."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "당신의 자비는 타인을 위한 것이 아니라,\n자신을 보호하는 방식이기도 했어요.",
+                en: "Your compassion wasn't just for others,\nbut also a way to protect yourself.",
+                pt: "Sua compaixao nao foi apenas para outros,\nmas tambem uma forma de se proteger."
+            }}
+        ];
+
+        // Compassion type analysis function
+        function analyzeCompassionType(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const compassionKeywords = {
+                forgiveness: ['forgave', 'forgive', 'let it go', 'moved on', '용서', '넘어갔', 'perdoou', 'perdoar', 'deixou passar'],
+                understanding: ['understood', 'tried to understand', 'listened', 'empathy', '이해', '들어줬', 'entendeu', 'tentou entender', 'ouviu'],
+                helping: ['helped', 'supported', 'was there', 'assisted', '도와줬', '지지해', '있어줬', 'ajudou', 'apoiou', 'esteve la'],
+                patience: ['patient', 'waited', 'gave time', 'stayed calm', '참았', '기다려', '침착하게', 'paciente', 'esperou', 'deu tempo'],
+                kindness: ['kind', 'gentle', 'soft words', 'caring', '친절', '부드럽게', '따뜻하게', 'gentil', 'carinhoso', 'palavras suaves'],
+                sacrifice: ['gave up', 'sacrificed', 'put them first', '포기하고', '희생하고', '우선시', 'desistiu', 'sacrificou', 'colocou primeiro'],
+                protection: ['protected', 'defended', 'stood up for', '보호해', '지켜줬', '편들어', 'protegeu', 'defendeu', 'ficou do lado'],
+                acceptance: ['accepted', 'embraced', 'welcomed', '받아들였', '포용했', 'aceitou', 'abraçou', 'acolheu'],
+                generosity: ['gave', 'shared', 'offered', '나눠줬', '베풀었', 'deu', 'compartilhou', 'ofereceu'],
+                mercy: ['mercy', 'showed grace', 'compassionate', '자비', '은혜', 'misericordia', 'mostrou graca', 'compassivo'],
+                comfort: ['comforted', 'consoled', 'soothed', '위로해', '달래줬', 'consolou', 'acalmou'],
+                general: ['compassion', 'love', 'care', '자비', '사랑', '돌봄', 'compaixao', 'amor', 'cuidado']
+            };
+            
+            let detectedTypes = [];
+            for (const [type, keywords] of Object.entries(compassionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedTypes.push(type);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedTypes.length === 0) {
+                detectedTypes = ['general'];
+            }
+            
+            return detectedTypes[0];
+        }
+        
+        // Response characters with compassion-based responses
+        const responseCharacters = [
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const compassionType = analyzeCompassionType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            forgiveness: "용서는 상대를 위한 것이 아니라 자신을 위한 선택이었어요.\n그 용서로 당신은 자유로워졌고, 더 큰 사람이 되었어요.\n용서할 수 있는 마음이야말로 진정한 강함이에요.",
+                            understanding: "이해하려 노력했던 당신의 마음이 아름다워요.\n그 이해는 상대방뿐만 아니라 당신 자신도 성장시켰어요.\n이해는 연결의 다리를 놓는 용기예요.",
+                            helping: "도움을 준 순간, 당신은 세상을 조금 더 따뜻하게 만들었어요.\n그 도움은 상대에게만 의미가 있는 게 아니라\n당신의 마음도 풍요롭게 만들었어요.",
+                            patience: "기다려주고 참아준 그 시간이 얼마나 소중했을까요.\n인내는 약함이 아니라 깊은 사랑의 표현이에요.\n그 기다림이 기적을 만들어냈어요.",
+                            kindness: "당신의 친절은 작은 행동이었을지 모르지만\n누군가의 하루를 완전히 바꿔놓았을 거예요.\n친절은 세상에 퍼져나가는 빛이에요.",
+                            sacrifice: "자신을 내려놓고 다른 사람을 먼저 생각한 그 마음,\n그것은 이기심이 아닌 진정한 사랑이었어요.\n희생은 가장 숭고한 사랑의 형태예요.",
+                            protection: "누군가를 지켜주려 했던 그 마음이 얼마나 용감했을까요.\n보호하려는 마음은 본능적인 사랑에서 나와요.\n당신은 누군가에게 안전한 항구였어요.",
+                            acceptance: "있는 그대로 받아들여준 당신의 마음이\n그 사람에게는 세상에서 가장 큰 선물이었을 거예요.\n수용은 가장 깊은 사랑의 언어예요.",
+                            generosity: "나누어준 그 마음이 진정한 풍요로움을 만들어냈어요.\n베푸는 마음은 받는 사람보다 주는 사람을 더 행복하게 해요.\n관대함은 마음의 여유에서 나와요.",
+                            mercy: "자비를 베푼 순간, 당신은 천사가 되었어요.\n그 자비는 상처를 치유하고 희망을 심어주었어요.\n자비로운 마음이야말로 가장 아름다운 힘이에요.",
+                            comfort: "위로해준 그 손길이 얼마나 따뜻했을까요.\n위로는 말이 아니라 마음으로 전해지는 거예요.\n당신의 위로가 누군가의 상처를 아물게 했어요.",
+                            general: "그 정의는 당신이 자비를 말로만이 아니라 삶으로 살았다는 증거예요."
+                        },
+                        en: {
+                            forgiveness: "Forgiveness was not for others but a choice for yourself.\nThrough that forgiveness you became free and became a greater person.\nThe ability to forgive is true strength.",
+                            understanding: "Your heart that tried to understand is beautiful.\nThat understanding helped not only the other person but also yourself grow.\nUnderstanding is the courage to build bridges of connection.",
+                            helping: "In the moment you helped, you made the world a little warmer.\nThat help was meaningful not only to the other person\nbut also enriched your own heart.",
+                            patience: "How precious was that time you waited and endured.\nPatience is not weakness but an expression of deep love.\nThat waiting created miracles.",
+                            kindness: "Your kindness might have been a small action\nbut it completely changed someone's day.\nKindness is light that spreads throughout the world.",
+                            sacrifice: "That heart that put yourself aside and thought of others first,\nthat was true love, not selfishness.\nSacrifice is the most noble form of love.",
+                            protection: "How brave was that heart that tried to protect someone.\nThe desire to protect comes from instinctive love.\nYou were a safe harbor for someone.",
+                            acceptance: "Your heart that accepted them as they were\nwas probably the greatest gift in the world for that person.\nAcceptance is the deepest language of love.",
+                            generosity: "That heart that shared created true abundance.\nA giving heart makes the giver happier than the receiver.\nGenerosity comes from abundance of heart.",
+                            mercy: "In the moment you showed mercy, you became an angel.\nThat mercy healed wounds and planted hope.\nA merciful heart is the most beautiful power.",
+                            comfort: "How warm was that touch of comfort you gave.\nComfort is conveyed not through words but through heart.\nYour comfort helped heal someone's wounds.",
+                            general: "That definition is proof that you have lived compassion not just in words but in life."
+                        },
+                        pt: {
+                            forgiveness: "Perdao nao foi para outros, mas uma escolha para voce mesmo.\nAtravés daquele perdao voce se libertou e se tornou pessoa maior.\nA capacidade de perdoar e verdadeira forca.",
+                            understanding: "Seu coracao que tentou entender e belo.\nAquela compreensao ajudou nao apenas a outra pessoa mas tambem voce a crescer.\nCompreender e a coragem de construir pontes de conexao.",
+                            helping: "No momento em que ajudou, voce tornou o mundo um pouco mais caloroso.\nAquela ajuda foi significativa nao apenas para a outra pessoa\nmas tambem enriqueceu seu proprio coracao.",
+                            patience: "Quao precioso foi aquele tempo que esperou e suportou.\nPaciencia nao e fraqueza mas expressao de amor profundo.\nAquela espera criou milagres.",
+                            kindness: "Sua gentileza pode ter sido pequena acao\nmas mudou completamente o dia de alguem.\nGentileza e luz que se espalha pelo mundo.",
+                            sacrifice: "Aquele coracao que se colocou de lado e pensou nos outros primeiro,\naquilo foi amor verdadeiro, nao egoismo.\nSacrificio e a forma mais nobre de amor.",
+                            protection: "Quao corajoso foi aquele coracao que tentou proteger alguem.\nO desejo de proteger vem do amor instintivo.\nVoce foi porto seguro para alguem.",
+                            acceptance: "Seu coracao que os aceitou como eram\nfoi provavelmente o maior presente do mundo para aquela pessoa.\nAceitacao e a linguagem mais profunda do amor.",
+                            generosity: "Aquele coracao que compartilhou criou verdadeira abundancia.\nCoracao generoso faz o doador mais feliz que o receptor.\nGenerosidade vem da abundancia do coracao.",
+                            mercy: "No momento em que mostrou misericordia, voce se tornou anjo.\nAquela misericordia curou feridas e plantou esperanca.\nCoracao misericordioso e o poder mais belo.",
+                            comfort: "Quao caloroso foi aquele toque de conforto que deu.\nConforto e transmitido nao atraves de palavras mas do coracao.\nSeu conforto ajudou a curar as feridas de alguem.",
+                            general: "Essa definicao e prova de que voce viveu compaixao nao apenas em palavras mas na vida."
+                        }
+                    };
+                    
+                    return responses[lang][compassionType] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Lian", emoji: "🧘",
+                getResponse: (userInput, lang) => {
+                    const compassionType = analyzeCompassionType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            forgiveness: "용서는 과거를 지우는 것이 아니라\n그 경험을 지혜로 변화시키는 연금술이에요.\n당신은 용서를 통해 자유로워졌어요.",
+                            understanding: "이해는 판단을 멈추는 용기에요.\n그 순간 당신은 진리에 한 걸음 더 가까워졌어요.\n이해하는 마음이 세상을 바꿔요.",
+                            helping: "도움은 주고받는 것이 아니라\n서로 연결되어 있음을 확인하는 일이에요.\n그 순간 당신도 도움을 받았어요.",
+                            patience: "인내는 시간을 견디는 것이 아니라\n시간을 초월하는 사랑이에요.\n그 기다림 속에서 진정한 변화가 일어났어요.",
+                            kindness: "친절은 계산 없는 마음의 자연스러운 흐름이에요.\n그 친절이 세상에 선한 에너지를 더했어요.\n작은 친절이 큰 변화를 만들어요.",
+                            sacrifice: "진정한 희생은 잃는 것이 아니라\n더 큰 사랑을 발견하는 일이에요.\n그 희생을 통해 당신은 더 깊어졌어요.",
+                            protection: "보호하는 마음은 생명에 대한 경외에서 나와요.\n그 보호가 누군가의 생명을 살렸을지도 몰라요.\n보호는 가장 원초적인 사랑이에요.",
+                            acceptance: "수용은 저항을 멈추는 평화로운 항복이에요.\n그 수용이 상처를 치유하고 성장을 가능하게 했어요.\n수용하는 마음이 기적을 만들어요.",
+                            generosity: "관대함은 마음의 여유에서 나오는 자연스러운 흐름이에요.\n그 관대함이 풍요로운 순환을 만들어냈어요.\n베푸는 마음이 받는 마음을 키워요.",
+                            mercy: "자비는 모든 존재에 대한 깊은 연민에서 시작돼요.\n그 자비가 세상의 고통을 줄였어요.\n자비로운 마음이 평화를 만들어요.",
+                            comfort: "위로는 상처받은 영혼에게 전하는 치유의 에너지예요.\n그 위로가 절망을 희망으로 바꿨어요.\n위로하는 마음이 생명을 구해요.",
+                            general: "이제 자비는 당신의 선택이자 무기예요.\n상처를 끊는 힘, 그리고 이어주는 다리."
+                        },
+                        en: {
+                            forgiveness: "Forgiveness is not erasing the past\nbut alchemy that transforms experience into wisdom.\nYou became free through forgiveness.",
+                            understanding: "Understanding is the courage to stop judging.\nIn that moment you came one step closer to truth.\nAn understanding heart changes the world.",
+                            helping: "Help is not giving and receiving\nbut confirming that we are connected to each other.\nIn that moment you also received help.",
+                            patience: "Patience is not enduring time\nbut love that transcends time.\nTrue change happened in that waiting.",
+                            kindness: "Kindness is the natural flow of an uncalculating heart.\nThat kindness added good energy to the world.\nSmall kindness creates big change.",
+                            sacrifice: "True sacrifice is not losing\nbut discovering greater love.\nThrough that sacrifice you became deeper.",
+                            protection: "A protective heart comes from reverence for life.\nThat protection might have saved someone's life.\nProtection is the most primal love.",
+                            acceptance: "Acceptance is peaceful surrender that stops resistance.\nThat acceptance healed wounds and enabled growth.\nAn accepting heart creates miracles.",
+                            generosity: "Generosity is natural flow from abundance of heart.\nThat generosity created abundant circulation.\nA giving heart nurtures a receiving heart.",
+                            mercy: "Mercy begins with deep compassion for all beings.\nThat mercy reduced the world's suffering.\nA merciful heart creates peace.",
+                            comfort: "Comfort is healing energy conveyed to wounded souls.\nThat comfort turned despair into hope.\nA comforting heart saves lives.",
+                            general: "Now compassion is both your choice and your weapon.\nThe power to stop wounds, and the bridge that connects."
+                        },
+                        pt: {
+                            forgiveness: "Perdao nao e apagar o passado\nmas alquimia que transforma experiencia em sabedoria.\nVoce se libertou atraves do perdao.",
+                            understanding: "Compreensao e a coragem de parar de julgar.\nNaquele momento voce chegou um passo mais perto da verdade.\nCoracao compreensivo muda o mundo.",
+                            helping: "Ajuda nao e dar e receber\nmas confirmar que estamos conectados uns aos outros.\nNaquele momento voce tambem recebeu ajuda.",
+                            patience: "Paciencia nao e suportar tempo\nmas amor que transcende tempo.\nMudanca verdadeira aconteceu naquela espera.",
+                            kindness: "Gentileza e fluxo natural de coracao que nao calcula.\nAquela gentileza adicionou energia boa ao mundo.\nPequena gentileza cria grande mudanca.",
+                            sacrifice: "Sacrificio verdadeiro nao e perder\nmas descobrir amor maior.\nAtravés daquele sacrificio voce se tornou mais profundo.",
+                            protection: "Coracao protetor vem da reverencia pela vida.\nAquela protecao pode ter salvado a vida de alguem.\nProtecao e o amor mais primitivo.",
+                            acceptance: "Aceitacao e rendição pacifica que para resistencia.\nAquela aceitacao curou feridas e possibilitou crescimento.\nCoracao que aceita cria milagres.",
+                            generosity: "Generosidade e fluxo natural da abundancia do coracao.\nAquela generosidade criou circulacao abundante.\nCoracao generoso nutre coracao receptivo.",
+                            mercy: "Misericordia comeca com compaixao profunda por todos os seres.\nAquela misericordia reduziu o sofrimento do mundo.\nCoracao misericordioso cria paz.",
+                            comfort: "Conforto e energia curativa transmitida a almas feridas.\nAquele conforto transformou desespero em esperanca.\nCoracao consolador salva vidas.",
+                            general: "Agora compaixao e tanto sua escolha quanto sua arma.\nO poder de parar feridas, e a ponte que conecta."
+                        }
+                    };
+                    
+                    return responses[lang][compassionType] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Ely", emoji: "🧝‍♀️",
+                getResponse: (userInput, lang) => {
+                    const compassionType = analyzeCompassionType(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            forgiveness: "용서는 마음에 핀 꽃 같아요.\n그 꽃이 상처난 땅을 다시 아름답게 만들었어요.\n용서하는 마음이야말로 가장 우아한 힘이에요.",
+                            understanding: "이해는 마음의 다리를 놓는 일이에요.\n그 다리를 통해 두 마음이 만났어요.\n이해하는 순간, 세상이 조금 더 따뜻해져요.",
+                            helping: "도움의 손길은 천사의 날개 같아요.\n그 날개가 누군가를 위로의 하늘로 데려갔어요.\n작은 도움이 큰 기적을 만들어내요.",
+                            patience: "기다림은 사랑의 가장 아름다운 표현이에요.\n그 기다림이 완벽한 타이밍을 만들어냈어요.\n인내하는 마음이 가장 깊은 사랑이에요.",
+                            kindness: "친절은 마음에서 피어나는 향기 같아요.\n그 향기가 주변을 향기롭게 만들었어요.\n친절한 마음은 세상의 보물이에요.",
+                            sacrifice: "희생은 사랑의 가장 숭고한 시 같아요.\n그 시가 누군가의 마음에 영원히 새겨졌어요.\n자신을 내어주는 마음이 가장 아름다워요.",
+                            protection: "보호하는 마음은 따뜻한 둥지 같아요.\n그 둥지가 누군가에게 안전한 쉼터가 되었어요.\n지켜주는 마음이 가장 든든한 사랑이에요.",
+                            acceptance: "받아들이는 마음은 넓은 바다 같아요.\n그 바다가 모든 것을 품어주었어요.\n수용하는 마음이 가장 깊은 자비예요.",
+                            generosity: "베푸는 마음은 샘물 같아요.\n그 샘물이 마른 땅을 적셔주었어요.\n나누는 마음이 풍요로움을 만들어요.",
+                            mercy: "자비는 달빛 같은 부드러운 빛이에요.\n그 빛이 어둠 속을 걷는 이에게 길을 비춰주었어요.\n자비로운 마음이 희망을 만들어요.",
+                            comfort: "위로는 따뜻한 포옹 같아요.\n그 포옹이 상처받은 마음을 달래주었어요.\n위로하는 마음이 치유를 가져와요.",
+                            general: "당신은 자비를 연약함이 아닌 존엄으로 바꾼 사람이에요."
+                        },
+                        en: {
+                            forgiveness: "Forgiveness is like a flower blooming in the heart.\nThat flower made the wounded ground beautiful again.\nA forgiving heart is the most graceful power.",
+                            understanding: "Understanding is building bridges of the heart.\nThrough that bridge, two hearts met.\nIn the moment of understanding, the world becomes a little warmer.",
+                            helping: "Helping hands are like angel wings.\nThose wings carried someone to the sky of comfort.\nSmall help creates big miracles.",
+                            patience: "Waiting is the most beautiful expression of love.\nThat waiting created perfect timing.\nA patient heart is the deepest love.",
+                            kindness: "Kindness is like fragrance blooming from the heart.\nThat fragrance made the surroundings fragrant.\nA kind heart is the world's treasure.",
+                            sacrifice: "Sacrifice is like the most sublime poem of love.\nThat poem was forever engraved in someone's heart.\nA heart that gives itself is the most beautiful.",
+                            protection: "A protective heart is like a warm nest.\nThat nest became a safe shelter for someone.\nA guarding heart is the most reliable love.",
+                            acceptance: "An accepting heart is like a vast ocean.\nThat ocean embraced everything.\nAn accepting heart is the deepest mercy.",
+                            generosity: "A giving heart is like spring water.\nThat spring water moistened dry land.\nA sharing heart creates abundance.",
+                            mercy: "Mercy is soft light like moonlight.\nThat light illuminated the path for those walking in darkness.\nA merciful heart creates hope.",
+                            comfort: "Comfort is like a warm embrace.\nThat embrace soothed the wounded heart.\nA comforting heart brings healing.",
+                            general: "You are someone who transformed compassion from weakness into dignity."
+                        },
+                        pt: {
+                            forgiveness: "Perdao e como flor florescendo no coracao.\nAquela flor fez a terra ferida bela novamente.\nCoracao que perdoa e o poder mais gracioso.",
+                            understanding: "Compreensao e construir pontes do coracao.\nAtravés daquela ponte, dois coracoes se encontraram.\nNo momento da compreensao, o mundo fica um pouco mais caloroso.",
+                            helping: "Maos que ajudam sao como asas de anjo.\nAquelas asas levaram alguem ao ceu do conforto.\nPequena ajuda cria grandes milagres.",
+                            patience: "Esperar e a expressao mais bela do amor.\nAquela espera criou timing perfeito.\nCoracao paciente e o amor mais profundo.",
+                            kindness: "Gentileza e como fragrancia florescendo do coracao.\nAquela fragrancia tornou os arredores perfumados.\nCoracao gentil e tesouro do mundo.",
+                            sacrifice: "Sacrificio e como poema mais sublime do amor.\nAquele poema foi gravado para sempre no coracao de alguem.\nCoracao que se da e o mais belo.",
+                            protection: "Coracao protetor e como ninho caloroso.\nAquele ninho se tornou abrigo seguro para alguem.\nCoracao guardiao e o amor mais confiavel.",
+                            acceptance: "Coracao que aceita e como oceano vasto.\nAquele oceano abracou tudo.\nCoracao que aceita e a misericordia mais profunda.",
+                            generosity: "Coracao generoso e como agua de nascente.\nAquela agua de nascente umedeceu terra seca.\nCoracao que compartilha cria abundancia.",
+                            mercy: "Misericordia e luz suave como luar.\nAquela luz iluminou o caminho para aqueles andando na escuridao.\nCoracao misericordioso cria esperanca.",
+                            comfort: "Conforto e como abraco caloroso.\nAquele abraco acalmou o coracao ferido.\nCoracao consolador traz cura.",
+                            general: "Voce e alguem que transformou compaixao de fraqueza em dignidade."
+                        }
+                    };
+                    
+                    return responses[lang][compassionType] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        // Rest of the JavaScript functions remain the same as Portal 13
+        // Typewriter effect
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (state.currentTypingElement) {
+                    state.currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                state.currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        state.currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        state.currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                state.typingIntervals.push(typingInterval);
+            });
+        }
+        
+        // Clear all typing effects
+        function clearAllTypingEffects() {
+            state.typingIntervals.forEach(interval => clearInterval(interval));
+            state.typingIntervals = [];
+            
+            if (state.currentTypingElement) {
+                state.currentTypingElement.classList.remove('typing-cursor');
+                state.currentTypingElement = null;
+            }
+        }
+        
+        // Scroll functions
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // Language management
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            const t = translations[lang];
+            document.title = t.title;
+            document.getElementById('logoSubtitle').textContent = t.logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = t.portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = t.portalSubtitle;
+            document.getElementById('lightTitle').textContent = t.lightTitle;
+            document.getElementById('navigationTitle').textContent = t.navigationTitle;
+            document.getElementById('nextPortalBtn').textContent = t.nextPortalBtn;
+            document.getElementById('stayPortalBtn').textContent = t.stayPortalBtn;
+            document.getElementById('userTextarea').placeholder = t.inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (state.currentLanguage === lang) return;
+            
+            state.currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            resetJourney();
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        // Journey management
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'followUpSection', 'userInputSection',
+                'userReactionsSection', 'lightMessageSection', 'navigationSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('followUpQuestion').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('navigationMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[state.currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            state.userResponse = '';
+            state.currentTypingElement = null;
+            state.awaitingSecondResponse = false;
+        }
+        
+        // Save response to database or memory
+        async function saveResponse(inputText, step) {
+            const responseData = {
+                portal: portalConfig.currentPortal,
+                resposta: inputText,
+                step: step,
+                data: new Date().toISOString(),
+                idioma: state.currentLanguage,
+                userId: state.currentUser ? state.currentUser.uid : 'anonymous',
+                userEmail: state.currentUser ? state.currentUser.email : 'anonymous@temarix.com'
+            };
+            
+            if (state.firebaseInitialized && state.db) {
+                try {
+                    await state.db.collection("temarix_v5_respostas").add({
+                        ...responseData,
+                        timestamp: firebase.firestore.Timestamp.now()
+                    });
+                    console.log('Response saved to Firestore');
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                    state.userResponses.push(responseData);
+                    showConnectionStatus(false);
+                }
+            } else {
+                state.userResponses.push(responseData);
+                console.log('Response stored in memory:', responseData);
+            }
+        }
+        
+        // User input processing
+        async function processUserInput(inputText) {
+            state.userResponse = inputText;
+            
+            await saveResponse(inputText, state.awaitingSecondResponse ? "second" : "first");
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                if (!state.awaitingSecondResponse) {
+                    showUserReactions(inputText);
+                } else {
+                    showSecondUserReactions(inputText);
+                }
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[state.currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[state.currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[state.currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        // Show character reactions
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[state.currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFollowUpQuestion();
+            }, 2000);
+        }
+        
+        async function showFollowUpQuestion() {
+            const followUpSection = document.getElementById('followUpSection');
+            const followUpQuestionEl = document.getElementById('followUpQuestion');
+            
+            followUpSection.classList.add('show');
+            
+            await typewriterEffect(followUpQuestionEl, translations[state.currentLanguage].followUpQuestion, 50);
+            
+            setTimeout(() => {
+                state.awaitingSecondResponse = true;
+                enableUserInput();
+            }, 1500);
+        }
+        
+        async function showSecondUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, state.currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[state.currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showNavigationSection();
+            }, 2000);
+        }
+        
+        async function showNavigationSection() {
+            const navigationSection = document.getElementById('navigationSection');
+            const navigationMessage = document.getElementById('navigationMessage');
+            
+            navigationSection.classList.add('show');
+            
+            const messageText = translations[state.currentLanguage].navigationMessage;
+            await typewriterEffect(navigationMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(navigationSection);
+            }, 500);
+        }
+        
+        // Portal sequence
+        async function startPortalSequence() {
+            console.log('Starting portal sequence...');
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            console.log('Showing intro...');
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            if (!introSection || !introElement) {
+                console.error('Intro elements not found!');
+                return;
+            }
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[state.currentLanguage].portalIntro;
+            console.log('Intro text:', introText);
+            
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(async () => {
+                await showEmotionalBridge();
+            }, 2000);
+        }
+        
+        async function showEmotionalBridge() {
+            const introElement = document.getElementById('portalIntro');
+            const bridgeText = '\n\n' + translations[state.currentLanguage].emotionalBridge;
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const bridgeP = document.createElement('p');
+            bridgeP.style.cssText = `
+                margin-top: 30px;
+                font-style: italic;
+                color: #ff9999;
+                font-size: 18px;
+                line-height: 1.8;
+            `;
+            introElement.appendChild(bridgeP);
+            
+            await typewriterEffect(bridgeP, bridgeText.trim(), 50);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[state.currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 2000);
+        }
+        
+        // Custom confirm dialog
+        function showConfirmDialog(message, callback) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: #222;
+                border: 2px solid #ff6b6b;
+                padding: 30px;
+                max-width: 400px;
+                text-align: center;
+                color: white;
+            `;
+            
+            const messageP = document.createElement('p');
+            messageP.textContent = message;
+            messageP.style.cssText = `
+                margin-bottom: 20px;
+                line-height: 1.6;
+                font-size: 16px;
+            `;
+            
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.cssText = `
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+            `;
+            
+            const yesBtn = document.createElement('button');
+            const noBtn = document.createElement('button');
+            
+            const buttonStyle = `
+                background: #444;
+                color: white;
+                border: 1px solid #ff6b6b;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+            `;
+            
+            yesBtn.style.cssText = buttonStyle + 'background: #ff6b6b;';
+            noBtn.style.cssText = buttonStyle;
+            
+            yesBtn.textContent = state.currentLanguage === 'ko' ? '예' : 
+                                state.currentLanguage === 'pt' ? 'Sim' : 'Yes';
+            noBtn.textContent = state.currentLanguage === 'ko' ? '아니오' : 
+                               state.currentLanguage === 'pt' ? 'Nao' : 'No';
+            
+            yesBtn.onclick = () => {
+                document.body.removeChild(overlay);
+                callback(true);
+            };
+            
+            noBtn.onclick = () => {
+                document.body.removeChild(overlay);
+                callback(false);
+            };
+            
+            overlay.onclick = (e) => {
+                if (e.target === overlay) {
+                    document.body.removeChild(overlay);
+                    callback(false);
+                }
+            };
+            
+            buttonContainer.appendChild(yesBtn);
+            buttonContainer.appendChild(noBtn);
+            modal.appendChild(messageP);
+            modal.appendChild(buttonContainer);
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            yesBtn.focus();
+        }
+        
+        // Event setup
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function createPortalTransition(callback) {
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, #000 0%, #111 50%, #000 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 20000;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            const message = document.createElement('div');
+            message.style.cssText = `
+                color: #ff6b6b;
+                font-size: 24px;
+                text-align: center;
+                margin-bottom: 30px;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.8s ease-out;
+            `;
+            message.textContent = translations[state.currentLanguage].transitionMessage;
+            
+            const loader = document.createElement('div');
+            loader.style.cssText = `
+                width: 60px;
+                height: 60px;
+                border: 3px solid #333;
+                border-top: 3px solid #ff6b6b;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                opacity: 0;
+                transition: opacity 0.8s ease-out 0.3s;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            overlay.appendChild(message);
+            overlay.appendChild(loader);
+            document.body.appendChild(overlay);
+            
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                message.style.opacity = '1';
+                message.style.transform = 'translateY(0)';
+                loader.style.opacity = '1';
+            }, 300);
+            
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(overlay);
+                    document.head.removeChild(style);
+                    callback();
+                }, 1000);
+            }, 2500);
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('nextPortalBtn').addEventListener('click', function() {
+                const t = translations[state.currentLanguage];
+                showConfirmDialog(t.confirmNextPortal, (confirmed) => {
+                    if (confirmed) {
+                        if (state.firebaseInitialized && state.db) {
+                            state.db.collection("temarix_v5_progress").add({
+                                userId: state.currentUser.uid,
+                                portal: portalConfig.currentPortal,
+                                status: "complete",
+                                timestamp: firebase.firestore.Timestamp.now()
+                            }).catch(error => console.error('Error saving progress:', error));
+                        }
+                        
+                        createPortalTransition(() => {
+                            window.location.href = `${portalConfig.nextPortalFile}?lang=${state.currentLanguage}`;
+                        });
+                    }
+                });
+            });
+            
+            document.getElementById('stayPortalBtn').addEventListener('click', function() {
+                const t = translations[state.currentLanguage];
+                showConfirmDialog(t.confirmStay, (confirmed) => {
+                    if (confirmed) {
+                        resetJourney();
+                        setTimeout(() => {
+                            startPortalSequence();
+                        }, 1000);
+                    }
+                });
+            });
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        function initializeTemarix() {
+            console.log('Initializing Temarix V5 Portal 14...');
+            console.log('Current state:', state);
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            state.journeyStarted = true;
+            console.log('Journey started:', state.journeyStarted);
+            
+            console.log('Starting portal sequence in 1 second...');
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Temarix V5 Portal 14 DOM loaded');
+            
+            state.currentLanguage = getLanguageFromURL();
+            
+            updateStaticTranslations(state.currentLanguage);
+            updateLanguageButtons(state.currentLanguage);
+            
+            await initializeFirebase();
+            
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

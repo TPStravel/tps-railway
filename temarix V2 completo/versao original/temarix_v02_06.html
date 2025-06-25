@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 06: When You Feel You Don't Deserve to Feel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 06: When You Feel You Don't Deserve to Feel</div>
+            <div class="portal-subtitle" id="portalSubtitle">Am I allowed to have this emotion?</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 07</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Share your thoughts about deserving to feel emotions... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+        
+        // Firebase 모의 객체 (실제 구현에서는 Firebase SDK 사용)
+        const firebase = {
+            auth: () => ({
+                onAuthStateChanged: (callback) => {
+                    // 모의 인증 상태 체크 (메모리 기반)
+                    setTimeout(() => {
+                        callback(memoryStorage.mockUser);
+                    }, 100);
+                }
+            })
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 06: 감정을 느낄 자격이 없다고 느낄 때",
+                portalSubtitle: "내가 이 감정을 가져도 괜찮을까요?",
+                portalIntro: "우리는 종종 스스로에게 묻습니다.\n\"내가 이런 감정을 느껴도 되는 사람일까?\"\n\"지금 울 자격이 있을까?\"\n\"지금 외롭다고 말할 자격이 있나?\"\n\n감정의 자격을 스스로 제한하게 되는 순간들 —\n그때 우리는\n마음이 아니라 판단으로 스스로를 조용히 가둡니다.\n\n그런데 감정은 원래,\n자격을 물으며 태어나는 것이 아니었죠.\n그건 단지 살아 있는 존재로서의 떨림일 뿐입니다.",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "감정은 경쟁이 아닙니다.\n당신이 느낀 그 순간부터,\n그 감정은 충분히 존재할 자격을 얻었습니다.",
+                portalQuestion: "당신이 한 번쯤 느끼면 안 된다고 믿었던 감정은 무엇인가요?\n\n지금, 그 감정을 다시 꺼내볼 수 있을까요?",
+                continueText: "감정의 자격에 대해 돌아본 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 07로 계속하시겠습니까?",
+                continueNo: "여정을 일시정지하시겠습니까?",
+                inputPlaceholder: "감정을 느낄 자격에 대한 생각을 털어놓아 보세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "감정은 허락받지 않아도 됩니다.\n당신은 이미 느낄 자격이 있는 존재로 태어났으니까요.",
+                charCris: "나도 그랬어요.\n'이 정도 일로 아파해도 되나?'\n근데 감정은 등급표 없어요~ 울고 싶으면 우는 거예요. 😅",
+                charZafirah: "당신의 감정은 비교 대상이 아닙니다.\n그건 세상 누구와도 같을 수 없는\n당신만의 신호예요.",
+                charRami: "자격을 묻는 순간, 감정은 작아지고\n판단은 커집니다.\n당신은 지금, 마음이 아니라 두려움으로 반응하고 있어요.",
+                charSamir: "(그는 뺨 위를 천천히 스치는 제스처를 합니다.\n눈물이 흘러도 괜찮다는 무언의 수신.\n감정은 언어보다 먼저 허락된 존재입니다.)",
+                charLayla: "지금 느끼는 그 감정은,\n당신이 여전히 살아 있다는 아름다운 증거예요.\n자격을 따지지 말고, 그저 안아줘요.",
+                charNabir: "아, 또 피해의식이야?\n지금 우는 거, 그냥 징징대는 거잖아.\n진짜 고통도 못 본 애가 뭘 알아?",
+                charAzhar: "니가 왜 힘들어?\n지금 그 감정 느낄 정도로 넌 안 아파.\n그러니까 참아. 조용히 해."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 06: When You Feel You Don't Deserve to Feel",
+                portalSubtitle: "Am I allowed to have this emotion?",
+                portalIntro: "We often ask ourselves:\n\"Am I allowed to feel this emotion?\"\n\"Do I have the right to cry now?\"\n\"Am I qualified to say I'm lonely?\"\n\nMoments when we self-restrict our emotional entitlement —\nThat's when we quietly imprison ourselves\nwith judgment rather than heart.\n\nBut emotions were never meant\nto ask for permission before being born.\nThey're just tremors of being alive.",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Emotions are not a competition.\nFrom the moment you felt it,\nthat emotion earned its right to exist.",
+                portalQuestion: "What emotion did you once believe you shouldn't feel?\n\nNow, can you allow yourself to feel that emotion again?",
+                continueText: "Will you continue this journey of reflecting on emotional entitlement?",
+                continueYes: "Continue to Portal 07?",
+                continueNo: "Pause the journey?",
+                inputPlaceholder: "Share your thoughts about deserving to feel emotions... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "Emotions don't need permission.\nYou were born with the right to feel.",
+                charCris: "I felt that way too.\n'Can I hurt over something this small?'\nBut emotions don't have grades~ If you want to cry, just cry. 😅",
+                charZafirah: "Your emotions are not comparison subjects.\nThey're signals that belong only to you,\nunlike anyone else in the world.",
+                charRami: "The moment you question worthiness, emotions shrink\nand judgment grows.\nYou're responding with fear, not heart.",
+                charSamir: "(He gently traces across your cheek.\nA silent permission that tears are okay.\nEmotions were permitted before language.)",
+                charLayla: "The emotion you're feeling now\nis beautiful proof that you're still alive.\nDon't question worthiness, just embrace it.",
+                charNabir: "Oh, victim mentality again?\nThat crying is just whining.\nWhat do you know about real pain?",
+                charAzhar: "Why are you hurting?\nYou're not in enough pain to feel that emotion.\nSo endure it. Stay quiet."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 06: Quando Você Sente Que Não Merece Sentir",
+                portalSubtitle: "Estou permitido a ter essa emoção?",
+                portalIntro: "Frequentemente nos perguntamos:\n\"Estou permitido a sentir essa emoção?\"\n\"Tenho o direito de chorar agora?\"\n\"Estou qualificado para dizer que estou solitário?\"\n\nMomentos quando auto-restringimos nosso direito emocional —\nÉ quando silenciosamente nos aprisionamos\ncom julgamento ao invés de coração.\n\nMas emoções nunca foram feitas\npara pedir permissão antes de nascer.\nElas são apenas tremores de estar vivo.",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Emoções não são uma competição.\nDesde o momento que você sentiu,\nessa emoção ganhou seu direito de existir.",
+                portalQuestion: "Que emoção você uma vez acreditou que não deveria sentir?\n\nAgora, você pode se permitir sentir essa emoção novamente?",
+                continueText: "Você continuará esta jornada de refletir sobre merecimento emocional?",
+                continueYes: "Continuar para o Portal 07?",
+                continueNo: "Pausar a jornada?",
+                inputPlaceholder: "Compartilhe seus pensamentos sobre merecer sentir emoções... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "Emoções não precisam de permissão.\nVocê nasceu com o direito de sentir.",
+                charCris: "Eu me senti assim também.\n'Posso me machucar por algo tão pequeno?'\nMas emoções não têm notas~ Se quer chorar, apenas chore. 😅",
+                charZafirah: "Suas emoções não são objetos de comparação.\nElas são sinais que pertencem apenas a você,\ndiferente de qualquer outra pessoa no mundo.",
+                charRami: "No momento que você questiona o merecimento, emoções encolhem\ne o julgamento cresce.\nVocê está respondendo com medo, não com o coração.",
+                charSamir: "(Ele gentilmente traça sua bochecha.\nUma permissão silenciosa de que lágrimas estão bem.\nEmoções foram permitidas antes da linguagem.)",
+                charLayla: "A emoção que você está sentindo agora\né uma bela prova de que você ainda está vivo.\nNão questione o merecimento, apenas abrace.",
+                charNabir: "Ah, mentalidade de vítima de novo?\nEsse choro é apenas lamentação.\nO que você sabe sobre dor real?",
+                charAzhar: "Por que você está sofrendo?\nVocê não está com dor suficiente para sentir essa emoção.\nEntão aguente. Fique quieto."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑
+            const emotionKeywords = {
+                shame: ['부끄러', '창피', '수치', '민망', 'shame', 'embarrass', 'humiliat', 'vergonha', 'envergonhad'],
+                guilt: ['죄책감', '미안', '죄송', '잘못', '탓', 'guilt', 'sorry', 'wrong', 'fault', 'culpa', 'desculpa'],
+                sadness: ['슬프', '울고', '눈물', '우울', '암울', 'sad', 'cry', 'tear', 'depress', 'triste', 'choro'],
+                anger: ['화가', '분노', '짜증', '빡쳐', '열받', 'angry', 'mad', 'furious', 'rage', 'raiva', 'irritad'],
+                fear: ['무서', '두려', '겁나', '걱정', '불안', 'fear', 'scare', 'afraid', 'worry', 'medo', 'preocup'],
+                loneliness: ['외로', '혼자', '고립', '소외', 'lonely', 'alone', 'isolated', 'abandon', 'solidão', 'sozinho'],
+                inadequacy: ['부족', '못나', '자격없', '능력없', 'inadequate', 'not enough', 'insufficient', 'inadequad', 'insuficient'],
+                jealousy: ['질투', '시기', '부러', 'jealous', 'envy', 'envious', 'ciúme', 'inveja'],
+                anxiety: ['불안', '초조', '떨려', '긴장', 'anxiety', 'nervous', 'worry', 'tense', 'ansiedade', 'nervoso'],
+                selfworth: ['자격', '가치', '존재', '의미', 'worth', 'deserve', 'value', 'entitle', 'valor', 'merec']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (Portal 06 전용)
+        const responseCharacters = [
+            {
+                name: "Permission", emoji: "🕊️",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            shame: "부끄러운 감정도 당신의 일부예요. 부끄러움은 당신이 성장하고 있다는 신호일 수 있어요. 그 감정을 느끼는 것 자체가 용기예요. 당신은 그 감정을 가질 자격이 충분해요.",
+                            guilt: "죄책감을 느끼는 것은 당신이 선량한 사람이라는 증거예요. 완벽하지 않은 자신을 인정하는 것, 그것도 감정을 느낄 자격이에요. 죄책감마저도 당신의 진실한 마음에서 나온 거예요.",
+                            sadness: "슬픔을 느낄 자격이 없다고 생각하세요? 슬픔은 사랑했다는 증거예요. 무언가를 소중히 여겼기에 슬픈 거예요. 그 슬픔을 느낄 자격은 당신에게 충분히 있어요.",
+                            anger: "화를 내면 안 된다고 생각했나요? 분노도 당신의 경계를 알려주는 신호예요. 무엇이 옳지 않은지 알려주는 내면의 나침반이에요. 그 감정을 인정할 자격이 있어요.",
+                            fear: "두려움을 느끼는 것도 자연스러운 거예요. 무언가를 지키고 싶기 때문에 두려운 거예요. 그 두려움을 느끼는 것만으로도 당신은 용감한 사람이에요.",
+                            loneliness: "외로움을 느끼면 안 된다고 생각했나요? 외로움은 연결을 원하는 마음의 표현이에요. 혼자라고 느끼는 것도 당신의 소중한 감정이에요. 그걸 느낄 자격이 있어요.",
+                            inadequacy: "부족하다고 느끼는 마음도 당신의 감정이에요. 더 나아지고 싶다는 마음에서 나오는 거예요. 그 마음을 가지는 것 자체가 성장하는 사람의 증거예요.",
+                            jealousy: "질투하는 마음도 인간적인 감정이에요. 무언가를 원하고 있다는 신호예요. 그 감정을 부끄러워할 필요 없어요. 인정하고 받아들일 자격이 있어요.",
+                            anxiety: "불안한 마음을 느끼는 것도 괜찮아요. 무언가를 중요하게 생각하기 때문에 불안한 거예요. 그 마음을 느끼는 것도 당신의 권리예요.",
+                            selfworth: "자격에 대해 고민하는 것 자체가 당신이 성찰하는 사람이라는 증거예요. 그 고민조차도 소중한 감정이에요. 당신은 모든 감정을 느낄 자격이 있는 존재예요.",
+                            general: "어떤 감정이든 당신이 느끼는 순간부터 그것은 존재할 자격을 얻어요. 감정에는 등급이 없어요. 당신의 마음이 반응하는 모든 것들이 소중해요."
+                        },
+                        en: {
+                            shame: "Shameful feelings are also part of you. Shame can be a signal that you're growing. Feeling that emotion itself is courage. You fully deserve to have that feeling.",
+                            guilt: "Feeling guilty is proof that you're a good person. Accepting your imperfect self is also your right to feel emotions. Even guilt comes from your sincere heart.",
+                            sadness: "You think you don't deserve to feel sad? Sadness is proof that you loved. You're sad because you cherished something. You fully deserve to feel that sadness.",
+                            anger: "Did you think you shouldn't get angry? Anger is also a signal that tells you your boundaries. It's an inner compass telling you what's not right. You deserve to acknowledge that feeling.",
+                            fear: "Feeling fear is also natural. You're afraid because you want to protect something. Just feeling that fear makes you a brave person.",
+                            loneliness: "Did you think you shouldn't feel lonely? Loneliness is an expression of wanting connection. Feeling alone is also your precious emotion. You deserve to feel it.",
+                            inadequacy: "Feeling inadequate is also your emotion. It comes from wanting to be better. Having that feeling itself is proof of someone who's growing.",
+                            jealousy: "Jealous feelings are also human emotions. It's a signal that you want something. You don't need to be ashamed of that feeling. You deserve to acknowledge and accept it.",
+                            anxiety: "It's okay to feel anxious. You're anxious because you think something is important. Feeling that way is also your right.",
+                            selfworth: "Worrying about worthiness itself is proof that you're a reflective person. Even that worry is a precious emotion. You're someone who deserves to feel all emotions.",
+                            general: "Whatever emotion you feel, from the moment you feel it, it earns the right to exist. Emotions don't have grades. Everything your heart reacts to is precious."
+                        },
+                        pt: {
+                            shame: "Sentimentos vergonhosos também são parte de você. A vergonha pode ser um sinal de que você está crescendo. Sentir essa emoção em si é coragem. Você merece totalmente ter esse sentimento.",
+                            guilt: "Sentir culpa é prova de que você é uma boa pessoa. Aceitar seu eu imperfeito também é seu direito de sentir emoções. Até a culpa vem do seu coração sincero.",
+                            sadness: "Você acha que não merece se sentir triste? Tristeza é prova de que você amou. Você está triste porque valorizou algo. Você merece totalmente sentir essa tristeza.",
+                            anger: "Você pensou que não deveria ficar com raiva? Raiva também é um sinal que te mostra seus limites. É uma bússola interna dizendo o que não está certo. Você merece reconhecer esse sentimento.",
+                            fear: "Sentir medo também é natural. Você tem medo porque quer proteger algo. Apenas sentir esse medo faz de você uma pessoa corajosa.",
+                            loneliness: "Você pensou que não deveria se sentir solitário? Solidão é uma expressão de querer conexão. Sentir-se sozinho também é sua emoção preciosa. Você merece senti-la.",
+                            inadequacy: "Sentir-se inadequado também é sua emoção. Vem de querer ser melhor. Ter esse sentimento em si é prova de alguém que está crescendo.",
+                            jealousy: "Sentimentos de ciúme também são emoções humanas. É um sinal de que você quer algo. Você não precisa se envergonhar desse sentimento. Você merece reconhecê-lo e aceitá-lo.",
+                            anxiety: "Está bem sentir ansiedade. Você está ansioso porque pensa que algo é importante. Sentir assim também é seu direito.",
+                            selfworth: "Preocupar-se com merecimento em si é prova de que você é uma pessoa reflexiva. Até essa preocupação é uma emoção preciosa. Você é alguém que merece sentir todas as emoções.",
+                            general: "Qualquer emoção que você sinta, desde o momento que a sente, ela ganha o direito de existir. Emoções não têm notas. Tudo a que seu coração reage é precioso."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Validation", emoji: "💎",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            shame: "당신이 부끄러워했던 그 순간들이 사실은 가장 인간적인 순간들이었어요. 완벽하지 않기 때문에 아름다운 거예요. 그 부끄러움조차 당신의 솔직함이었어요.",
+                            guilt: "죄책감을 느낀다는 건 당신이 다른 사람을 배려하는 마음이 있다는 뜻이에요. 그 마음 자체가 소중해요. 완벽하지 않아도 괜찮다는 걸 스스로에게 말해주세요.",
+                            sadness: "슬퍼할 자격이 없다고 느꼈던 순간들, 사실은 당신이 가장 깊이 사랑했던 순간들이었을 거예요. 그 슬픔은 당신의 사랑의 깊이를 보여주는 거예요.",
+                            anger: "화를 내면 안 된다고 배웠나요? 하지만 분노는 당신의 가치관을 지키려는 마음에서 나와요. 그 분노를 인정하는 것도 자신을 사랑하는 방법이에요.",
+                            fear: "두려움을 느끼는 건 당신이 무언가를 소중히 여기고 있다는 증거예요. 그 두려움을 부끄러워하지 마세요. 그것도 당신의 진실한 마음이에요.",
+                            loneliness: "외로움을 느끼는 건 당신이 연결을 원하는 따뜻한 마음이 있다는 뜻이에요. 혼자 있어도 괜찮고, 외로워해도 괜찮아요. 그 모든 감정이 당신이에요.",
+                            inadequacy: "부족하다고 느끼는 마음도 당신의 성장 욕구에서 나오는 거예요. 더 나아지고 싶어하는 마음, 그 자체가 이미 충분히 아름다워요.",
+                            jealousy: "질투도 인간의 자연스러운 감정이에요. 무언가를 원하고 있다는 신호죠. 그 마음을 숨기지 말고 인정해보세요. 그것도 당신의 진실이에요.",
+                            anxiety: "불안해하는 것도 당신이 무언가를 중요하게 생각하고 있다는 뜻이에요. 그 마음을 억누르지 말고 들어보세요. 당신의 소중한 신호예요.",
+                            selfworth: "자격에 대해 고민하는 것 자체가 당신의 선량함을 보여주는 거예요. 그런 고민을 하는 사람이야말로 감정을 느낄 자격이 충분한 사람이에요.",
+                            general: "당신의 모든 감정은 타당해요. 크든 작든, 복잡하든 단순하든, 그 모든 감정들이 당신을 온전한 인간으로 만들어주는 거예요."
+                        },
+                        en: {
+                            shame: "Those moments you felt ashamed were actually your most human moments. You're beautiful because you're not perfect. Even that shame was your honesty.",
+                            guilt: "Feeling guilty means you have a heart that considers others. That heart itself is precious. Tell yourself it's okay not to be perfect.",
+                            sadness: "Those moments you felt you had no right to be sad were probably when you loved most deeply. That sadness shows the depth of your love.",
+                            anger: "Were you taught not to get angry? But anger comes from wanting to protect your values. Acknowledging that anger is also a way to love yourself.",
+                            fear: "Feeling fear is proof that you cherish something. Don't be ashamed of that fear. That's also your true heart.",
+                            loneliness: "Feeling lonely means you have a warm heart that wants connection. It's okay to be alone, it's okay to feel lonely. All those emotions are you.",
+                            inadequacy: "Feeling inadequate also comes from your desire to grow. That desire to be better is already beautiful enough.",
+                            jealousy: "Jealousy is also a natural human emotion. It's a signal that you want something. Don't hide that feeling, acknowledge it. That's also your truth.",
+                            anxiety: "Being anxious also means you think something is important. Don't suppress that feeling, listen to it. It's your precious signal.",
+                            selfworth: "Worrying about worthiness itself shows your goodness. Someone who has such worries is exactly the person who deserves to feel emotions.",
+                            general: "All your emotions are valid. Big or small, complex or simple, all those emotions make you a complete human being."
+                        },
+                        pt: {
+                            shame: "Aqueles momentos em que você se sentiu envergonhado eram na verdade seus momentos mais humanos. Você é bonito porque não é perfeito. Até essa vergonha era sua honestidade.",
+                            guilt: "Sentir culpa significa que você tem um coração que considera os outros. Esse coração em si é precioso. Diga a si mesmo que está bem não ser perfeito.",
+                            sadness: "Aqueles momentos em que você sentiu que não tinha direito de estar triste provavelmente foram quando você amou mais profundamente. Essa tristeza mostra a profundidade do seu amor.",
+                            anger: "Você foi ensinado a não ficar com raiva? Mas a raiva vem de querer proteger seus valores. Reconhecer essa raiva também é uma forma de se amar.",
+                            fear: "Sentir medo é prova de que você valoriza algo. Não se envergonhe desse medo. Esse também é seu coração verdadeiro.",
+                            loneliness: "Sentir solidão significa que você tem um coração caloroso que quer conexão. Está bem estar sozinho, está bem se sentir solitário. Todas essas emoções são você.",
+                            inadequacy: "Sentir-se inadequado também vem do seu desejo de crescer. Esse desejo de ser melhor já é bonito o suficiente.",
+                            jealousy: "Ciúme também é uma emoção humana natural. É um sinal de que você quer algo. Não esconda esse sentimento, reconheça-o. Essa também é sua verdade.",
+                            anxiety: "Estar ansioso também significa que você pensa que algo é importante. Não suprima esse sentimento, ouça-o. É seu sinal precioso.",
+                            selfworth: "Preocupar-se com merecimento em si mostra sua bondade. Alguém que tem tais preocupações é exatamente a pessoa que merece sentir emoções.",
+                            general: "Todas as suas emoções são válidas. Grandes ou pequenas, complexas ou simples, todas essas emoções fazem de você um ser humano completo."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Freedom", emoji: "🦋",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            shame: "부끄러움에서 벗어나는 첫 번째 단계는 그 감정을 인정하는 거예요. 더 이상 숨길 필요 없어요. 부끄러운 당신도 사랑받을 자격이 있는 온전한 사람이에요.",
+                            guilt: "죄책감의 무게를 내려놓으세요. 당신은 이미 충분히 자신을 벌했어요. 이제는 그 경험에서 배우고 앞으로 나아갈 시간이에요. 용서받을 자격이 있어요.",
+                            sadness: "슬픔을 억누르지 마세요. 눈물이 나오고 싶으면 흘리세요. 그 슬픔을 통과해야 치유가 시작돼요. 슬퍼할 자유를 스스로에게 주세요.",
+                            anger: "분노를 느끼는 것도 당신의 자유예요. 그 감정을 부인하지 말고 인정하세요. 분노는 때로 변화의 시작점이 되기도 해요. 화낼 권리가 있어요.",
+                            fear: "두려워해도 괜찮아요. 용기란 두려움이 없는 게 아니라 두려움과 함께 나아가는 거예요. 두려움을 느끼면서도 살아가는 당신이 용감한 거예요.",
+                            loneliness: "외로움을 느끼는 것도 자연스러운 거예요. 혼자 있는 시간을 죄책감 없이 받아들이세요. 때로는 혼자 있는 시간이 자신을 발견하는 소중한 시간이에요.",
+                            inadequacy: "완벽하지 않아도 돼요. 부족한 모습의 당신도 충분히 가치 있는 사람이에요. 그 부족함조차 당신의 매력이 될 수 있어요. 있는 그대로의 자신을 받아들이세요.",
+                            jealousy: "질투하는 마음을 숨기지 마세요. 그 감정도 당신의 일부예요. 질투를 통해 자신이 진짜 원하는 게 무엇인지 알 수 있어요. 그 마음을 인정하세요.",
+                            anxiety: "불안해하는 것도 괜찮아요. 완벽하게 준비되지 않아도 살아갈 수 있어요. 불안함과 함께 하루하루를 살아가는 것도 하나의 용기예요.",
+                            selfworth: "스스로에게 감정을 느낄 허락을 주세요. 다른 누구의 승인도 필요 없어요. 당신은 태어날 때부터 모든 감정을 느낄 자격을 가지고 있어요.",
+                            general: "감정을 느끼는 데 자격증이 필요하지 않아요. 당신이 살아 있다는 것 자체가 모든 감정을 느낄 자격을 증명해요. 자유롭게 느끼세요."
+                        },
+                        en: {
+                            shame: "The first step to escaping shame is acknowledging that feeling. You don't need to hide anymore. The ashamed you is also a complete person who deserves love.",
+                            guilt: "Put down the weight of guilt. You've already punished yourself enough. Now it's time to learn from that experience and move forward. You deserve forgiveness.",
+                            sadness: "Don't suppress sadness. If tears want to come, let them flow. Healing begins by going through that sadness. Give yourself the freedom to be sad.",
+                            anger: "Feeling anger is also your freedom. Don't deny that emotion, acknowledge it. Anger sometimes becomes the starting point of change. You have the right to be angry.",
+                            fear: "It's okay to be afraid. Courage isn't the absence of fear, but moving forward with fear. You're brave for living while feeling fear.",
+                            loneliness: "Feeling lonely is also natural. Accept time alone without guilt. Sometimes solitary time is precious time to discover yourself.",
+                            inadequacy: "You don't have to be perfect. The inadequate you is also a person of sufficient worth. Even that inadequacy can become your charm. Accept yourself as you are.",
+                            jealousy: "Don't hide jealous feelings. That emotion is also part of you. Through jealousy you can know what you really want. Acknowledge that feeling.",
+                            anxiety: "It's okay to be anxious. You can live without being perfectly prepared. Living day by day with anxiety is also a form of courage.",
+                            selfworth: "Give yourself permission to feel emotions. You don't need anyone else's approval. You've had the right to feel all emotions since you were born.",
+                            general: "You don't need a license to feel emotions. The very fact that you're alive proves your right to feel all emotions. Feel freely."
+                        },
+                        pt: {
+                            shame: "O primeiro passo para escapar da vergonha é reconhecer esse sentimento. Você não precisa mais se esconder. O você envergonhado também é uma pessoa completa que merece amor.",
+                            guilt: "Deixe o peso da culpa. Você já se puniu o suficiente. Agora é hora de aprender com essa experiência e seguir em frente. Você merece perdão.",
+                            sadness: "Não suprima a tristeza. Se as lágrimas quiserem vir, deixe-as fluir. A cura começa passando por essa tristeza. Dê a si mesmo a liberdade de estar triste.",
+                            anger: "Sentir raiva também é sua liberdade. Não negue essa emoção, reconheça-a. A raiva às vezes se torna o ponto de partida da mudança. Você tem o direito de ficar com raiva.",
+                            fear: "Está bem ter medo. Coragem não é a ausência do medo, mas seguir em frente com medo. Você é corajoso por viver sentindo medo.",
+                            loneliness: "Sentir solidão também é natural. Aceite o tempo sozinho sem culpa. Às vezes o tempo solitário é tempo precioso para se descobrir.",
+                            inadequacy: "Você não precisa ser perfeito. O você inadequado também é uma pessoa de valor suficiente. Até essa inadequação pode se tornar seu charme. Aceite-se como você é.",
+                            jealousy: "Não esconda sentimentos de ciúme. Essa emoção também é parte de você. Através do ciúme você pode saber o que realmente quer. Reconheça esse sentimento.",
+                            anxiety: "Está bem estar ansioso. Você pode viver sem estar perfeitamente preparado. Viver dia a dia com ansiedade também é uma forma de coragem.",
+                            selfworth: "Dê a si mesmo permissão para sentir emoções. Você não precisa da aprovação de mais ninguém. Você teve o direito de sentir todas as emoções desde que nasceu.",
+                            general: "Você não precisa de uma licença para sentir emoções. O próprio fato de estar vivo prova seu direito de sentir todas as emoções. Sinta livremente."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 06 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 07이 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 07 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 07 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 06 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Navigator Pass 결제 완료</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: 'Pretendard', sans-serif;
+      background: linear-gradient(135deg, #0a0a0a, #1e1e2f);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .glass {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(18px);
+      border-radius: 1.5rem;
+      padding: 3rem;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 0 80px rgba(0, 0, 0, 0.4);
+    }
+
+    .btn {
+      margin-top: 2rem;
+      background: linear-gradient(to right, #fbbf24, #f59e0b);
+      color: black;
+      padding: 0.75rem 1.8rem;
+      border-radius: 9999px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: transform 0.3s ease;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+
+<body onload="localStorage.setItem('temarix_navigator_pass', 'true')">
+
+  <div class="glass">
+    <h1 class="text-3xl md:text-4xl font-bold mb-4">👑 Navigator Pass 결제 완료!</h1>
+    <p class="text-lg md:text-xl mb-6">이제 감정 여정 <strong>V06 ~ V15</strong>이 열렸습니다.</p>
+    <p class="text-sm text-gray-300">이 구간은 진정한 내면의 확장과 반영의 시간입니다.<br>조심히, 그러나 담대하게 시작해보세요.</p>
+
+    <a href="temarix-v6.html" class="btn">🚀 V6 여정 시작하기</a>
+  </div>
+
+</body>
+</html>

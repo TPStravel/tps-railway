@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Language" content="ko,en,pt">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V1 - Portal 18</title>
+</head>
+<body>
+<!-- Temarix V2 - Portal 18: 다시 일어난 이유 -->
+<section class="portal portal-18" id="portal-18">
+  <!-- Temarix Logo - Fixed Left Top -->
+  <div class="temarix-logo">
+    <h1 class="logo-text">🌌 TEMARIX</h1>
+    <p class="slogan" data-i18n="common.slogan">당신 안에 숨은 이야기를 말 해 주세요</p>
+  </div>
+
+  <!-- Language Selector - Fixed Right Top -->
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="kr">KR</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="pt">PT</button>
+  </div>
+
+  <!-- Portal Header - Center Top -->
+  <div class="portal-header">
+    <h1 data-i18n="portal18.title">감정의 문지방 18</h1>
+    <h2 data-i18n="portal18.subtitle">다시 일어난 이유</h2>
+  </div>
+
+  <!-- Message Stream -->
+  <div class="message-stream" id="messageStream18">
+    <!-- Messages will be added here via JavaScript -->
+  </div>
+
+  <!-- User Input Area -->
+  <div class="input-area" id="inputArea18" style="display: none;">
+    <div class="input-container">
+      <textarea 
+        id="userInput18" 
+        rows="3" 
+        placeholder="다시 일어설 수 있었던 그 작은 이유를 적어보세요..."
+        data-i18n-placeholder="portal18.input.placeholder"
+      ></textarea>
+      <button class="submit-btn" onclick="submitResponse(18)">
+        <span data-i18n="portal18.submit">🌱 희망의 씨앗 나누기</span>
+      </button>
+      <p class="input-hint" data-i18n="portal18.input.hint">Enter 키를 눌러도 전달할 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- Next Portal Navigation -->
+  <div class="next-portal-nav" id="nextPortalNav18" style="display: none;">
+    <div class="nav-buttons">
+      <button class="nav-btn yes-btn" onclick="goToNextPortal(19)" data-i18n="common.yes">예</button>
+      <button class="nav-btn no-btn" onclick="stayInPortal(18)" data-i18n="common.no">아니요</button>
+    </div>
+  </div>
+
+  <!-- Back to Main -->
+  <div class="back-to-main">
+    <button onclick="window.location.href='portal4.html'" data-i18n="common.back_to_main">
+      🏠 메인 포탈로 돌아가기
+    </button>
+  </div>
+</section>
+
+<style>
+/* Portal Base Styles */
+.portal {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1b4b 0%, #2d1b69 100%);
+  color: white;
+  padding: 80px 20px 20px 20px;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Logo Glow Animation */
+@keyframes glowCycle {
+  0%, 100% { text-shadow: 0 0 8px rgba(255,255,255,0.2); }
+  50% { text-shadow: 0 0 25px rgba(255,255,255,0.7); }
+}
+
+/* Temarix Logo - Fixed Left Top */
+.temarix-logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.slogan {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Language Selector - Fixed Right Top */
+.lang-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 120px;
+  z-index: 1000;
+}
+
+.lang-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.lang-btn.active {
+  background: #9c27b0;
+  border-color: #9c27b0;
+}
+
+/* Portal Header - Center Top */
+.portal-header {
+  text-align: center;
+  margin: 40px 0 30px 0;
+  padding-top: 40px;
+}
+
+.portal-header h1 {
+  font-size: 2.2rem;
+  margin: 10px 0;
+  color: #ffd700;
+}
+
+.portal-header h2 {
+  font-size: 1.3rem;
+  color: #e1bee7;
+  font-weight: 300;
+}
+
+/* Message Stream */
+.message-stream {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.message-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.message-card.prologue {
+  border-left: 4px solid #e1bee7;
+}
+
+.message-card.ely {
+  border-left: 4px solid #ffd700;
+}
+
+.message-card.sora {
+  border-left: 4px solid #4dd0e1;
+}
+
+.message-card.noah {
+  border-left: 4px solid #9c27b0;
+}
+
+.message-card.enya {
+  border-left: 4px solid #ff9800;
+}
+
+.message-card.kaia {
+  border-left: 4px solid #607d8b;
+}
+
+.message-card.cris {
+  border-left: 4px solid #4caf50;
+}
+
+.message-card.kael {
+  border-left: 4px solid #f44336;
+}
+
+.message-card.mira {
+  border-left: 4px solid #9e9e9e;
+}
+
+.message-card.light {
+  border-left: 4px solid #ffffff;
+  background: rgba(255,255,255,0.15);
+}
+
+.message-card.question {
+  border-left: 4px solid #f48fb1;
+}
+
+.message-card.user-input {
+  border-left: 4px solid #81c784;
+  background: rgba(129, 199, 132, 0.1);
+}
+
+.character-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.ely .character-name { color: #ffd700; }
+.sora .character-name { color: #4dd0e1; }
+.noah .character-name { color: #9c27b0; }
+.enya .character-name { color: #ff9800; }
+.kaia .character-name { color: #607d8b; }
+.cris .character-name { color: #4caf50; }
+.kael .character-name { color: #f44336; }
+.mira .character-name { color: #9e9e9e; }
+
+.message-text {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  white-space: nowrap;
+  animation: blink-caret 1s step-end infinite;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: rgba(255,255,255,0.7); }
+}
+
+/* Input Area */
+.input-area {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.input-container textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.input-container textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #9c27b0, #e1bee7);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+}
+
+.input-hint {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+
+/* Next Portal Navigation */
+.next-portal-nav {
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+  border-color: #4caf50;
+}
+
+.yes-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.no-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.no-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Back to Main */
+.back-to-main {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.back-to-main button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-to-main button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .portal {
+    padding: 100px 15px 20px 15px;
+  }
+  
+  .temarix-logo {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .slogan {
+    font-size: 0.7rem;
+  }
+  
+  .lang-selector {
+    top: 15px;
+    right: 15px;
+    max-width: 100px;
+  }
+  
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .portal-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .portal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .message-card {
+    padding: 15px;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-btn {
+    width: 200px;
+  }
+}
+</style>
+
+<script>
+// Portal 18 Complete Data with Character Responses
+const portal18Data = {
+  kr: {
+    title: "감정의 문지방 18",
+    subtitle: "다시 일어난 이유",
+    prologue: "왜 다시 일어났는지 정확히는 몰라요. 그저, 멈춰 있으면 내가 사라질 것 같았어요. 그래서 아주 천천히… 한 번 더 숨을 쉬었죠. 그 순간의 작은 결심이 지금 이 모든 여정을 가능하게 했습니다. 당신을 다시 일으키게 한 그 작은 불씨는 무엇이었나요?",
+    ely: "당신이 다시 일어난 이유는, 그 안에 여전히 '살고 싶다'는 불씨가 있었기 때문이에요.",
+    sora: "한 발만 움직여도, 그건 이미 다시 시작된 거예요.",
+    noah: "그 순간의 작은 결심이 지금 이 모든 여정을 가능하게 했어요.",
+    enya: "나는 그 모습을 지켜보고 있었어요. 그 발걸음은 기적이었어요.",
+    kaia: "작지만, 분명한 의지가 있었어요. 당신은 그걸 '기억'하면 돼요.",
+    cris: "일어난 이유? 몰라~ 그냥 배고파서 일어난 걸 수도 있어. 그래도 살아 있잖아~ 🤪",
+    kael: "중요한 건 이유가 아니야. 일어났다는 '사실'이야. 그게 너야.",
+    mira: "혹시… 당신이 일어난 건 누군가에게 끝까지 '사라지지 않고 싶어서'였나요?",
+    light: "당신이 다시 일어난 건 이유가 아니라, 살아있음 자체가 이유였기 때문입니다.",
+    question: "그날 당신이 다시 일어났던 이유는 무엇이었나요?",
+    input: { 
+      placeholder: "다시 일어설 수 있었던 그 작은 이유를 적어보세요...",
+      hint: "Enter 키를 눌러도 전달할 수 있습니다"
+    },
+    submit: "🌱 희망의 씨앗 나누기",
+    slogan: "당신 안에 숨은 이야기를 말 해 주세요",
+    response_ely: "그 작은 불씨가 지금의 당신을 만들었군요. 그 희망을 잃지 마세요.",
+    response_sora: "그 한 걸음이 얼마나 소중했는지... 당신은 그때 이미 영웅이었어요.",
+    response_noah: "그 작은 이유가 이제 더 큰 목적으로 자라날 거예요. 당신 안의 생명력은 정말 놀라워요.\n\n👉 다음 문지방으로 함께 걸어가도 괜찮을까요?",
+    user_input_prefix: "다시 일어난 이유:",
+    yes: "예",
+    no: "아니요"
+  },
+  en: {
+    title: "Emotional Threshold 18",
+    subtitle: "The Reason I Rose Again",
+    prologue: "I don't know exactly why I got up again. I just felt like I would disappear if I stayed still. So very slowly... I took one more breath. That small decision in that moment made this entire journey possible. What was that small spark that made you rise again?",
+    ely: "The reason you rose again is because there was still a spark of 'wanting to live' inside you.",
+    sora: "Even moving just one step, that was already starting over.",
+    noah: "That small decision in that moment made this entire journey possible.",
+    enya: "I was watching that moment. That step was a miracle.",
+    kaia: "Small but clear will existed. You just need to 'remember' that.",
+    cris: "Reason for getting up? Don't know~ Maybe I just got up because I was hungry. But I'm still alive~ 🤪",
+    kael: "What matters isn't the reason. It's the 'fact' that you got up. That's you.",
+    mira: "Maybe... you got up because you wanted to 'not disappear' for someone until the end?",
+    light: "You rose again not because of a reason, but because being alive itself was the reason.",
+    question: "What was the reason you rose again that day?",
+    input: { 
+      placeholder: "Write about that small reason that allowed you to stand up again...",
+      hint: "You can also press Enter to submit"
+    },
+    submit: "🌱 Share Seeds of Hope",
+    slogan: "Please tell me the story hidden within you",
+    response_ely: "That small spark created who you are today. Don't lose that hope.",
+    response_sora: "How precious that one step was... You were already a hero then.",
+    response_noah: "That small reason will now grow into a greater purpose. The life force within you is truly amazing.\n\n👉 Shall we walk to the next threshold together?",
+    user_input_prefix: "The reason I rose again:",
+    yes: "Yes",
+    no: "No"
+  },
+  pt: {
+    title: "Limiar Emocional 18",
+    subtitle: "A Razão pela qual me Levantei Novamente",
+    prologue: "Não sei exatamente por que me levantei novamente. Apenas senti que desapareceria se ficasse parado. Então muito devagar... respirei mais uma vez. Essa pequena decisão naquele momento tornou toda essa jornada possível. Qual foi aquela pequena faísca que te fez se levantar novamente?",
+    ely: "A razão pela qual você se levantou novamente é porque ainda havia uma faísca de 'querer viver' dentro de você.",
+    sora: "Mesmo movendo apenas um passo, isso já era começar de novo.",
+    noah: "Essa pequena decisão naquele momento tornou toda essa jornada possível.",
+    enya: "Eu estava observando aquele momento. Esse passo foi um milagre.",
+    kaia: "Pequena mas clara vontade existia. Você só precisa 'lembrar' disso.",
+    cris: "Razão para levantar? Não sei~ Talvez eu tenha me levantado porque estava com fome. Mas ainda estou vivo~ 🤪",
+    kael: "O que importa não é a razão. É o 'fato' de que você se levantou. Esse é você.",
+    mira: "Talvez... você se levantou porque queria 'não desaparecer' para alguém até o fim?",
+    light: "Você se levantou novamente não por uma razão, mas porque estar vivo era em si a razão.",
+    question: "Qual foi a razão pela qual você se levantou novamente naquele dia?",
+    input: { 
+      placeholder: "Escreva sobre aquela pequena razão que permitiu você se levantar novamente...",
+      hint: "Você também pode pressionar Enter para enviar"
+    },
+    submit: "🌱 Compartilhar Sementes de Esperança",
+    slogan: "Por favor, me conte a história escondida dentro de você",
+    response_ely: "Aquela pequena faísca criou quem você é hoje. Não perca essa esperança.",
+    response_sora: "Quão precioso foi aquele passo... Você já era um herói então.",
+    response_noah: "Aquela pequena razão agora crescerá em um propósito maior. A força vital dentro de você é verdadeiramente incrível.\n\n👉 Vamos caminhar para o próximo limiar juntos?",
+    user_input_prefix: "A razão pela qual me levantei novamente:",
+    yes: "Sim",
+    no: "Não"
+  },
+  
+};
+
+// Current language and state for Portal 18
+let currentLang18 = 'kr';
+let userInputText18 = '';
+
+// Initialize Portal 18
+function initPortal18() {
+  displayInitialMessages18();
+  setupLanguageSwitching18();
+  setupEnterKeySubmission18();
+}
+
+// Display initial messages with typing effect
+async function displayInitialMessages18() {
+  const stream = document.getElementById('messageStream18');
+  const messages = [
+    { type: 'prologue', content: portal18Data[currentLang18].prologue },
+    { type: 'ely', name: '👑 Ely', content: portal18Data[currentLang18].ely },
+    { type: 'sora', name: '💧 Sora', content: portal18Data[currentLang18].sora },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: portal18Data[currentLang18].noah },
+    { type: 'enya', name: '🕯️ Enya', content: portal18Data[currentLang18].enya },
+    { type: 'kaia', name: '😶 Kaia', content: portal18Data[currentLang18].kaia },
+    { type: 'cris', name: '🃏 Cris', content: portal18Data[currentLang18].cris },
+    { type: 'kael', name: '💥 Kael', content: portal18Data[currentLang18].kael },
+    { type: 'mira', name: '🌫️ Mira', content: portal18Data[currentLang18].mira },
+    { type: 'light', content: portal18Data[currentLang18].light },
+    { type: 'question', content: portal18Data[currentLang18].question }
+  ];
+
+  for (let i = 0; i < messages.length; i++) {
+    const messageCard = createMessageCard18(messages[i]);
+    stream.appendChild(messageCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText18(messageCard.querySelector('.message-text'), messages[i].content);
+    await sleep18(1200);
+  }
+  
+  // Show input area after all messages
+  document.getElementById('inputArea18').style.display = 'block';
+}
+
+// Setup Enter key submission
+function setupEnterKeySubmission18() {
+  document.getElementById('userInput18').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitResponse(18);
+    }
+  });
+}
+
+// Display character responses after user input
+async function displayCharacterResponses18(userInput) {
+  const stream = document.getElementById('messageStream18');
+  
+  // Show user input first
+  const userCard = createMessageCard18({
+    type: 'user-input',
+    content: `${portal18Data[currentLang18].user_input_prefix}\n"${userInput}"`
+  });
+  stream.appendChild(userCard);
+  stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+  await typeText18(userCard.querySelector('.message-text'), userCard.querySelector('.message-text').textContent);
+  await sleep18(1500);
+  
+  // Character responses
+  const responses = [
+    { type: 'ely', name: '👑 Ely', content: `"${userInput}"... ${portal18Data[currentLang18].response_ely}` },
+    { type: 'sora', name: '💧 Sora', content: `${portal18Data[currentLang18].response_sora}` },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: `"${userInput}" ${portal18Data[currentLang18].response_noah}` }
+  ];
+
+  for (let i = 0; i < responses.length; i++) {
+    const responseCard = createMessageCard18(responses[i]);
+    stream.appendChild(responseCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText18(responseCard.querySelector('.message-text'), responses[i].content);
+    await sleep18(1500);
+  }
+  
+  // Show navigation buttons
+  document.getElementById('nextPortalNav18').style.display = 'block';
+}
+
+function createMessageCard18(message) {
+  const card = document.createElement('div');
+  card.className = `message-card ${message.type}`;
+  
+  let cardHTML = '';
+  if (message.name) {
+    cardHTML += `<div class="character-name">${message.name}</div>`;
+  }
+  cardHTML += `<div class="message-text">${message.content || ''}</div>`;
+  
+  card.innerHTML = cardHTML;
+  return card;
+}
+
+async function typeText18(element, text, speed = 80) {
+  return new Promise((resolve) => {
+    let i = 0;
+    element.textContent = '';
+    element.classList.add('typewriter');
+    
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+        element.classList.remove('typewriter');
+        resolve();
+      }
+    }, speed);
+  });
+}
+
+function sleep18(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setupLanguageSwitching18() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newLang = btn.dataset.lang;
+      if (portal18Data[newLang] && newLang !== currentLang18) {
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentLang18 = newLang;
+        document.getElementById('messageStream18').innerHTML = '';
+        document.getElementById('inputArea18').style.display = 'none';
+        document.getElementById('nextPortalNav18').style.display = 'none';
+        displayInitialMessages18();
+        updatePortalTexts18();
+      }
+    });
+  });
+}
+
+function updatePortalTexts18() {
+  // Update title and subtitle
+  document.querySelector('[data-i18n="portal18.title"]').textContent = portal18Data[currentLang18].title;
+  document.querySelector('[data-i18n="portal18.subtitle"]').textContent = portal18Data[currentLang18].subtitle;
+  
+  // Update slogan
+  document.querySelector('[data-i18n="common.slogan"]').textContent = portal18Data[currentLang18].slogan;
+  
+  // Update placeholder and hint
+  document.getElementById('userInput18').placeholder = portal18Data[currentLang18].input.placeholder;
+  document.querySelector('[data-i18n="portal18.input.hint"]').textContent = portal18Data[currentLang18].input.hint;
+  
+  // Update submit button
+  document.querySelector('[data-i18n="portal18.submit"]').textContent = portal18Data[currentLang18].submit;
+  
+  // Update navigation buttons
+  const yesBtn = document.querySelector('[data-i18n="common.yes"]');
+  const noBtn = document.querySelector('[data-i18n="common.no"]');
+  if (yesBtn) yesBtn.textContent = portal18Data[currentLang18].yes;
+  if (noBtn) noBtn.textContent = portal18Data[currentLang18].no;
+  
+  // Update back to main button
+  document.querySelector('[data-i18n="common.back_to_main"]').textContent = 
+    currentLang18 === 'kr' ? '🏠 메인 포탈로 돌아가기' :
+    currentLang18 === 'en' ? '🏠 Back to Main Portal' :
+    currentLang18 === 'pt' ? '🏠 Voltar ao Portal Principal' :
+    currentLang18 === 'es' ? '🏠 Volver al Portal Principal' :
+    currentLang18 === 'fr' ? '🏠 Retour au Portail Principal' :
+    currentLang18 === 'de' ? '🏠 Zurück zum Hauptportal' :
+    currentLang18 === 'it' ? '🏠 Torna al Portale Principale' :
+    currentLang18 === 'ru' ? '🏠 Вернуться к Главному Порталу' :
+    currentLang18 === 'ja' ? '🏠 メインポータルに戻る' :
+    currentLang18 === 'zh' ? '🏠 返回主门户' :
+    currentLang18 === 'ar' ? '🏠 العودة إلى البوابة الرئيسية' :
+    currentLang18 === 'hi' ? '🏠 मुख्य पोर्टल पर वापस जाएं' :
+    '🏠 메인 포탈로 돌아가기';
+}
+
+function submitResponse(portalNum) {
+  if (portalNum !== 18) return;
+  
+  const input = document.getElementById(`userInput${portalNum}`);
+  const response = input.value.trim();
+  
+  if (response) {
+    userInputText18 = response;
+    
+    // Hide input area
+    document.getElementById(`inputArea${portalNum}`).style.display = 'none';
+    
+    // Display character responses
+    displayCharacterResponses18(response);
+    
+    // Clear input
+    input.value = '';
+  } else {
+    // No alert, just focus on input
+    input.focus();
+    input.style.borderColor = '#f48fb1';
+    setTimeout(() => {
+      input.style.borderColor = 'rgba(255,255,255,0.3)';
+    }, 2000);
+  }
+}
+
+function stayInPortal(portalNum) {
+  document.getElementById(`nextPortalNav${portalNum}`).style.display = 'none';
+  document.getElementById(`inputArea${portalNum}`).style.display = 'block';
+  document.getElementById(`userInput${portalNum}`).focus();
+}
+
+function goToNextPortal(nextNumber) {
+  const nextUrl = `temarix_v1_${String(nextNumber).padStart(2, '0')}.html`;
+  window.location.href = nextUrl;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('portal-18')) {
+    initPortal18();
+  }
+});
+</script>
+</body>
+</html>

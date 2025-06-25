@@ -1,0 +1,14 @@
+<script>
+  if (!localStorage.getItem('temarix_journey_pass')) {
+    alert("🔒 이 여정은 Journey Pass 구독이 필요합니다.");
+    window.location.href = "temarix-portal.html";
+  }
+</script>
+
+
+
+🎯 Recomendada estrutura de arquivos:
+Acesso	Arquivo HTML	Condição
+🔓 V1 (aberto)	temarix-v1.html	Gratuito
+🔒 V2~V5 (Journey Pass)	temarix-v2.html, temarix-v3.html, ... v5	Exige temarix_journey_pass
+🔒 V6~V15 (Navigator)	temarix-v6.html até temarix-v15.html	Exige temarix_navigator_pass

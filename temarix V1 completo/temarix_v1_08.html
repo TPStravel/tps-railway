@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Language" content="ko,en,pt">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V1 - Portal 08</title>
+</head>
+<body>
+<!-- Temarix V1 - Portal 08: 선택의 갈림길 -->
+<section class="portal portal-08" id="portal-08">
+  <!-- Temarix Logo - Fixed Left Top -->
+  <div class="temarix-logo">
+    <h1 class="logo-text">🌌 TEMARIX</h1>
+    <p class="slogan" data-i18n="common.slogan">빛은 고요 속에서 피어난다.</p>
+  </div>
+
+  <!-- Language Selector - Fixed Right Top -->
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="kr">KR</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="pt">PT</button>
+  </div>
+
+  <!-- Portal Header - Center Top -->
+  <div class="portal-header">
+    <h1 data-i18n="portal08.title">감정의 문지방 08</h1>
+    <h2 data-i18n="portal08.subtitle">선택의 갈림길</h2>
+  </div>
+
+  <!-- Message Stream -->
+  <div class="message-stream" id="messageStream08">
+    <!-- Messages will be added here via JavaScript -->
+  </div>
+
+  <!-- User Input Area -->
+  <div class="input-area" id="inputArea08" style="display: none;">
+    <div class="input-container">
+      <textarea 
+        id="userInput08" 
+        rows="3" 
+        placeholder="지금 당신 앞에 놓인 가장 어려운 선택을 조용히 적어보세요..."
+        data-i18n-placeholder="portal08.input.placeholder"
+      ></textarea>
+      <button class="submit-btn" onclick="submitResponse(8)">
+        <span data-i18n="portal08.submit">🛤️ 선택을 마주하기</span>
+      </button>
+      <p class="input-hint" data-i18n="portal08.input.hint">Enter 키를 눌러도 전달할 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- Next Portal Navigation -->
+  <div class="next-portal-nav" id="nextPortalNav08" style="display: none;">
+    <div class="nav-buttons">
+      <button class="nav-btn yes-btn" onclick="goToNextPortal(9)" data-i18n="common.yes">예</button>
+      <button class="nav-btn no-btn" onclick="stayInPortal()" data-i18n="common.no">아니요</button>
+    </div>
+  </div>
+
+  <!-- Back to Main -->
+  <div class="back-to-main">
+    <button onclick="window.location.href='portal4.html'" data-i18n="common.back_to_main">
+      🏠 메인 포탈로 돌아가기
+    </button>
+  </div>
+</section>
+
+<style>
+/* Portal Base Styles */
+.portal {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1b4b 0%, #2d1b69 100%);
+  color: white;
+  padding: 80px 20px 20px 20px;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Logo Glow Animation */
+@keyframes glowCycle {
+  0%, 100% { text-shadow: 0 0 8px rgba(255,255,255,0.2); }
+  50% { text-shadow: 0 0 25px rgba(255,255,255,0.7); }
+}
+
+/* Temarix Logo - Fixed Left Top */
+.temarix-logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.slogan {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Language Selector - Fixed Right Top */
+.lang-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 120px;
+  z-index: 1000;
+}
+
+.lang-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.lang-btn.active {
+  background: #9c27b0;
+  border-color: #9c27b0;
+}
+
+/* Portal Header - Center Top */
+.portal-header {
+  text-align: center;
+  margin: 40px 0 30px 0;
+  padding-top: 40px;
+}
+
+.portal-header h1 {
+  font-size: 2.2rem;
+  margin: 10px 0;
+  color: #ffd700;
+}
+
+.portal-header h2 {
+  font-size: 1.3rem;
+  color: #e1bee7;
+  font-weight: 300;
+}
+
+/* Message Stream */
+.message-stream {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.message-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.message-card.prologue {
+  border-left: 4px solid #e1bee7;
+}
+
+.message-card.ely {
+  border-left: 4px solid #ffd700;
+}
+
+.message-card.sora {
+  border-left: 4px solid #4dd0e1;
+}
+
+.message-card.noah {
+  border-left: 4px solid #9c27b0;
+}
+
+.message-card.enya {
+  border-left: 4px solid #ff9800;
+}
+
+.message-card.kaia {
+  border-left: 4px solid #607d8b;
+}
+
+.message-card.cris {
+  border-left: 4px solid #4caf50;
+}
+
+.message-card.kael {
+  border-left: 4px solid #f44336;
+}
+
+.message-card.mira {
+  border-left: 4px solid #9e9e9e;
+}
+
+.message-card.light {
+  border-left: 4px solid #ffffff;
+  background: rgba(255,255,255,0.15);
+}
+
+.message-card.question {
+  border-left: 4px solid #f48fb1;
+}
+
+.message-card.user-input {
+  border-left: 4px solid #81c784;
+  background: rgba(129, 199, 132, 0.1);
+}
+
+.character-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.ely .character-name { color: #ffd700; }
+.sora .character-name { color: #4dd0e1; }
+.noah .character-name { color: #9c27b0; }
+.enya .character-name { color: #ff9800; }
+.kaia .character-name { color: #607d8b; }
+.cris .character-name { color: #4caf50; }
+.kael .character-name { color: #f44336; }
+.mira .character-name { color: #9e9e9e; }
+
+.message-text {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  white-space: nowrap;
+  animation: blink-caret 1s step-end infinite;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: rgba(255,255,255,0.7); }
+}
+
+/* Input Area */
+.input-area {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.input-container textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.input-container textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #9c27b0, #e1bee7);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+}
+
+.input-hint {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+
+/* Next Portal Navigation */
+.next-portal-nav {
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.nav-btn {
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.yes-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+  border-color: #4caf50;
+}
+
+.yes-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.no-btn {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border-color: rgba(255,255,255,0.3);
+}
+
+.no-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Back to Main */
+.back-to-main {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.back-to-main button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-to-main button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .portal {
+    padding: 100px 15px 20px 15px;
+  }
+  
+  .temarix-logo {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .slogan {
+    font-size: 0.7rem;
+  }
+  
+  .lang-selector {
+    top: 15px;
+    right: 15px;
+    max-width: 100px;
+  }
+  
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .portal-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .portal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .message-card {
+    padding: 15px;
+  }
+  
+  .nav-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .nav-btn {
+    width: 200px;
+  }
+}
+</style>
+
+<script>
+// Portal 08 Complete Data with Character Responses
+const portal08Data = {
+  kr: {
+    title: "감정의 문지방 08",
+    subtitle: "선택의 갈림길",
+    prologue: "인생은 선택의 연속입니다. 때로는 어느 길이 맞는지 알 수 없어 한참을 서 있기도 하죠. 그 갈림길에서 당신이 느끼는 두려움, 망설임, 그리고 용기… 모든 것이 소중합니다. 완벽한 선택은 없어도, 당신만의 선택은 있을 거예요.",
+    ely: "완벽한 선택은 없어요. 하지만 당신이 진심으로 내린 선택은 언제나 의미가 있어요.",
+    sora: "선택 앞에서 울어도 돼요. 그 눈물은 당신이 진심으로 고민하고 있다는 증거니까요.",
+    noah: "갈림길은 과거의 경험과 미래의 꿈이 만나는 순간이에요. 두려워하지 말고, 당신의 목소리를 들어보세요.",
+    enya: "어떤 길을 택하든, 나는 당신과 함께 걸을게요. 혼자가 아니에요.",
+    kaia: "선택을 미루는 것도 하나의 선택이죠. 그 안에서 찾은 답이 진짜일 수 있어요.",
+    cris: "나는 동전 던져서 결정해! 앞면이면 피자, 뒷면이면 치킨. 근데 왜 항상 배고픈 선택만 하지? 🍕🪙",
+    kael: "선택이 두려워? 그럼 선택 안 하면 더 후회할 걸. 일단 해봐, 틀려도 배우잖아.",
+    mira: "혹시… 당신이 정말 원하는 건 선택하는 것이 아니라, 누군가 대신 선택해주는 걸까요?",
+    light: "갈림길에 선 당신의 모습 자체가 이미 성장입니다. 선택은 결과가 아니라, 과정에서 의미를 찾는 거예요.",
+    question: "지금 당신 앞에 놓인 가장 어려운 선택은 무엇인가요?",
+    input: { 
+      placeholder: "지금 당신 앞에 놓인 가장 어려운 선택을 조용히 적어보세요...",
+      hint: "Enter 키를 눌러도 전달할 수 있습니다"
+    },
+    submit: "🛤️ 선택을 마주하기",
+    slogan: "당신 안에 숨은 이야기를 말 해 주세요",
+    response_ely: "그 어려운 선택을 마주하셨군요. 그건 당신이 더 나은 삶을 원한다는 용기입니다.",
+    response_sora: "저도 느껴졌어요, 그 갈림길에서의 고민... 어떤 선택을 하든 당신답게 하시면 돼요.",
+    response_noah: "깊이 고민하고 있는 선택이군요. 이제 마음의 목소리에 귀 기울여보세요.\n\n👉 다음 문지방으로 함께 가도 괜찮을까요?",
+    user_input_prefix: "당신이 마주한 어려운 선택:",
+    yes: "예",
+    no: "아니요"
+  },
+  en: {
+    title: "Emotional Threshold 08",
+    subtitle: "Crossroads of Choice",
+    prologue: "Life is a series of choices. Sometimes you stand for a long time, not knowing which path is right. The fear, hesitation, and courage you feel at those crossroads… all of it is precious. Even if there's no perfect choice, there will be a choice that's uniquely yours.",
+    ely: "There's no perfect choice. But a choice you make with sincerity always has meaning.",
+    sora: "It's okay to cry before a choice. Those tears are proof that you're truly contemplating.",
+    noah: "Crossroads are moments where past experiences meet future dreams. Don't be afraid, listen to your own voice.",
+    enya: "Whatever path you choose, I'll walk with you. You're not alone.",
+    kaia: "Delaying a choice is also a choice. The answer you find within that might be real.",
+    cris: "I flip a coin to decide! Heads for pizza, tails for chicken. But why do I always make food choices? 🍕🪙",
+    kael: "Afraid of choosing? Then you'll regret not choosing even more. Just try it, you'll learn even if you're wrong.",
+    mira: "Maybe... what you really want isn't to choose, but for someone else to choose for you?",
+    light: "Your very presence at the crossroads is already growth. Choice finds meaning in the process, not the result.",
+    question: "What is the most difficult choice before you right now?",
+    input: { 
+      placeholder: "Quietly write about the most difficult choice before you right now...",
+      hint: "You can also press Enter to submit"
+    },
+    submit: "🛤️ Face the Choice",
+    slogan: "Please tell me the story hidden within you",
+    response_ely: "You faced that difficult choice. That's the courage of wanting a better life.",
+    response_sora: "I felt it too, the worry at that crossroads... Whatever choice you make, just be yourself.",
+    response_noah: "A choice you're deeply contemplating. Now listen to the voice of your heart.\n\n👉 Shall we go to the next threshold together?",
+    user_input_prefix: "Your difficult choice that you faced:",
+    yes: "Yes",
+    no: "No"
+  },
+  pt: {
+    title: "Limiar Emocional 08",
+    subtitle: "Encruzilhada da Escolha",
+    prologue: "A vida é uma série de escolhas. Às vezes você fica parado por muito tempo, sem saber qual caminho é o certo. O medo, a hesitação e a coragem que você sente nessas encruzilhadas... tudo isso é precioso. Mesmo que não haja escolha perfeita, haverá uma escolha que é unicamente sua.",
+    ely: "Não há escolha perfeita. Mas uma escolha que você faz com sinceridade sempre tem significado.",
+    sora: "Está tudo bem chorar antes de uma escolha. Essas lágrimas são prova de que você está realmente contemplando.",
+    noah: "Encruzilhadas são momentos onde experiências passadas encontram sonhos futuros. Não tenha medo, escute sua própria voz.",
+    enya: "Qualquer caminho que você escolher, eu vou caminhar com você. Você não está sozinho.",
+    kaia: "Adiar uma escolha também é uma escolha. A resposta que você encontra dentro disso pode ser real.",
+    cris: "Eu jogo uma moeda para decidir! Cara para pizza, coroa para frango. Mas por que sempre faço escolhas de comida? 🍕🪙",
+    kael: "Com medo de escolher? Então você vai se arrepender ainda mais de não escolher. Apenas tente, você vai aprender mesmo se estiver errado.",
+    mira: "Talvez... o que você realmente quer não é escolher, mas que alguém escolha por você?",
+    light: "Sua própria presença na encruzilhada já é crescimento. A escolha encontra significado no processo, não no resultado.",
+    question: "Qual é a escolha mais difícil diante de você agora?",
+    input: { 
+      placeholder: "Escreva silenciosamente sobre a escolha mais difícil diante de você agora...",
+      hint: "Você também pode pressionar Enter para enviar"
+    },
+    submit: "🛤️ Enfrentar a Escolha",
+    slogan: "Por favor, me conte a história escondida dentro de você",
+    response_ely: "Você enfrentou essa escolha difícil. Essa é a coragem de querer uma vida melhor.",
+    response_sora: "Eu também senti, a preocupação nessa encruzilhada... Qualquer escolha que faça, seja você mesmo.",
+    response_noah: "Uma escolha que você está contemplando profundamente. Agora escute a voz do seu coração.\n\n👉 Vamos para o próximo limiar juntos?",
+    user_input_prefix: "Sua escolha difícil que você enfrentou:",
+    yes: "Sim",
+    no: "Não"
+  },
+  
+};
+
+// Current language and state for Portal 08
+let currentLang08 = 'kr';
+let userInputText08 = '';
+
+// Initialize Portal 08
+function initPortal08() {
+  displayInitialMessages08();
+  setupLanguageSwitching08();
+  setupEnterKeySubmission08();
+}
+
+// Display initial messages with typing effect
+async function displayInitialMessages08() {
+  const stream = document.getElementById('messageStream08');
+  const messages = [
+    { type: 'prologue', content: portal08Data[currentLang08].prologue },
+    { type: 'ely', name: '👑 Ely', content: portal08Data[currentLang08].ely },
+    { type: 'sora', name: '💧 Sora', content: portal08Data[currentLang08].sora },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: portal08Data[currentLang08].noah },
+    { type: 'enya', name: '🕯️ Enya', content: portal08Data[currentLang08].enya },
+    { type: 'kaia', name: '😶 Kaia', content: portal08Data[currentLang08].kaia },
+    { type: 'cris', name: '🃏 Cris', content: portal08Data[currentLang08].cris },
+    { type: 'kael', name: '💥 Kael', content: portal08Data[currentLang08].kael },
+    { type: 'mira', name: '🌫️ Mira', content: portal08Data[currentLang08].mira },
+    { type: 'light', content: portal08Data[currentLang08].light },
+    { type: 'question', content: portal08Data[currentLang08].question }
+  ];
+
+  for (let i = 0; i < messages.length; i++) {
+    const messageCard = createMessageCard08(messages[i]);
+    stream.appendChild(messageCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText08(messageCard.querySelector('.message-text'), messages[i].content);
+    await sleep08(1200);
+  }
+  
+  // Show input area after all messages
+  document.getElementById('inputArea08').style.display = 'block';
+}
+
+// Setup Enter key submission
+function setupEnterKeySubmission08() {
+  document.getElementById('userInput08').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitResponse(8);
+    }
+  });
+}
+
+// Display character responses after user input
+async function displayCharacterResponses08(userInput) {
+  const stream = document.getElementById('messageStream08');
+  
+  // Show user input first
+  const userCard = createMessageCard08({
+    type: 'user-input',
+    content: `${portal08Data[currentLang08].user_input_prefix}\n"${userInput}"`
+  });
+  stream.appendChild(userCard);
+  stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+  await typeText08(userCard.querySelector('.message-text'), userCard.querySelector('.message-text').textContent);
+  await sleep08(1500);
+  
+  // Character responses
+  const responses = [
+    { type: 'ely', name: '👑 Ely', content: `"${userInput}"... ${portal08Data[currentLang08].response_ely}` },
+    { type: 'sora', name: '💧 Sora', content: `${portal08Data[currentLang08].response_sora}` },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: `"${userInput}" ${portal08Data[currentLang08].response_noah}` }
+  ];
+
+  for (let i = 0; i < responses.length; i++) {
+    const responseCard = createMessageCard08(responses[i]);
+    stream.appendChild(responseCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText08(responseCard.querySelector('.message-text'), responses[i].content);
+    await sleep08(1500);
+  }
+  
+  // Show navigation buttons
+  document.getElementById('nextPortalNav08').style.display = 'block';
+}
+
+function createMessageCard08(message) {
+  const card = document.createElement('div');
+  card.className = `message-card ${message.type}`;
+  
+  let cardHTML = '';
+  if (message.name) {
+    cardHTML += `<div class="character-name">${message.name}</div>`;
+  }
+  cardHTML += `<div class="message-text">${message.content || ''}</div>`;
+  
+  card.innerHTML = cardHTML;
+  return card;
+}
+
+async function typeText08(element, text, speed = 80) {
+  return new Promise((resolve) => {
+    let i = 0;
+    element.textContent = '';
+    element.classList.add('typewriter');
+    
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+        element.classList.remove('typewriter');
+        resolve();
+      }
+    }, speed);
+  });
+}
+
+function sleep08(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setupLanguageSwitching08() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newLang = btn.dataset.lang;
+      if (portal08Data[newLang] && newLang !== currentLang08) {
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentLang08 = newLang;
+        document.getElementById('messageStream08').innerHTML = '';
+        document.getElementById('inputArea08').style.display = 'none';
+        document.getElementById('nextPortalNav08').style.display = 'none';
+        displayInitialMessages08();
+        updatePortalTexts08();
+      }
+    });
+  });
+}
+
+function updatePortalTexts08() {
+  // Update title and subtitle
+  document.querySelector('[data-i18n="portal08.title"]').textContent = portal08Data[currentLang08].title;
+  document.querySelector('[data-i18n="portal08.subtitle"]').textContent = portal08Data[currentLang08].subtitle;
+  
+  // Update slogan
+  document.querySelector('[data-i18n="common.slogan"]').textContent = portal08Data[currentLang08].slogan;
+  
+  // Update placeholder and hint
+  document.getElementById('userInput08').placeholder = portal08Data[currentLang08].input.placeholder;
+  document.querySelector('[data-i18n="portal08.input.hint"]').textContent = portal08Data[currentLang08].input.hint;
+  
+  // Update submit button
+  document.querySelector('[data-i18n="portal08.submit"]').textContent = portal08Data[currentLang08].submit;
+  
+  // Update navigation buttons
+  const yesBtn = document.querySelector('[data-i18n="common.yes"]');
+  const noBtn = document.querySelector('[data-i18n="common.no"]');
+  if (yesBtn) yesBtn.textContent = portal08Data[currentLang08].yes;
+  if (noBtn) noBtn.textContent = portal08Data[currentLang08].no;
+  
+  // Update back to main button
+  document.querySelector('[data-i18n="common.back_to_main"]').textContent = 
+    currentLang08 === 'kr' ? '🏠 메인 포탈로 돌아가기' :
+    currentLang08 === 'en' ? '🏠 Back to Main Portal' :
+    currentLang08 === 'pt' ? '🏠 Voltar ao Portal Principal' :
+    '🏠 메인 포탈로 돌아가기';
+}
+
+function submitResponse(portalNum) {
+  if (portalNum !== 8) return;
+  
+  const input = document.getElementById(`userInput0${portalNum}`);
+  const response = input.value.trim();
+  
+  if (response) {
+    userInputText08 = response;
+    
+    // Hide input area
+    document.getElementById(`inputArea0${portalNum}`).style.display = 'none';
+    
+    // Display character responses
+    displayCharacterResponses08(response);
+    
+    // Clear input
+    input.value = '';
+  } else {
+    // No alert, just focus on input
+    input.focus();
+    input.style.borderColor = '#f48fb1';
+    setTimeout(() => {
+      input.style.borderColor = 'rgba(255,255,255,0.3)';
+    }, 2000);
+  }
+}
+
+function stayInPortal() {
+  document.getElementById('nextPortalNav08').style.display = 'none';
+  document.getElementById('inputArea08').style.display = 'block';
+  document.getElementById('userInput08').focus();
+}
+
+function goToNextPortal(nextNumber) {
+  const nextUrl = `temarix_v1_${String(nextNumber).padStart(2, '0')}.html`;
+  window.location.href = nextUrl;
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('portal-08')) {
+    initPortal08();
+  }
+});
+</script>
+</body>
+</html>

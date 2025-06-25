@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix Emotion Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * {
+            font-family: 'Noto Sans KR', 'Inter', sans-serif;
+        }
+        
+        .glassmorphism {
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .emotion-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        
+        .emotion-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+        }
+        
+        .emotion-joy { border-left: 4px solid #fbbf24; background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(255, 255, 255, 0.05)); }
+        .emotion-sadness { border-left: 4px solid #3b82f6; background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(255, 255, 255, 0.05)); }
+        .emotion-anger { border-left: 4px solid #ef4444; background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(255, 255, 255, 0.05)); }
+        .emotion-anxiety { border-left: 4px solid #8b5cf6; background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(255, 255, 255, 0.05)); }
+        .emotion-love { border-left: 4px solid #ec4899; background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(255, 255, 255, 0.05)); }
+        .emotion-depression { border-left: 4px solid #6b7280; background: linear-gradient(135deg, rgba(107, 114, 128, 0.1), rgba(255, 255, 255, 0.05)); }
+        .emotion-peace { border-left: 4px solid #10b981; background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(255, 255, 255, 0.05)); }
+        
+        .filter-btn {
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .filter-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .floating-action {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        
+        .modal-backdrop {
+            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.6);
+        }
+        
+        .typing-effect {
+            border-right: 2px solid #fbbf24;
+            animation: typing 3s steps(40) infinite;
+        }
+        
+        @keyframes typing {
+            0%, 50% { border-color: transparent; }
+            51%, 100% { border-color: #fbbf24; }
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .emotion-icon-filter {
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+        
+        .like-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .like-btn:hover {
+            transform: scale(1.2);
+        }
+        
+        .like-btn.liked {
+            animation: heartbeat 0.6s ease-in-out;
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(1.1); }
+            75% { transform: scale(1.25); }
+            100% { transform: scale(1.2); }
+        }
+
+        /* Language Selector Styles */
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .language-dropdown {
+            position: relative;
+        }
+
+        .language-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 120px;
+            margin-top: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .language-dropdown.open .language-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .language-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .language-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .language-item.active {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white overflow-x-hidden">
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <div class="language-dropdown" id="languageDropdown">
+            <button class="glassmorphism rounded-full px-4 py-2 text-sm font-medium flex items-center gap-2 hover:scale-105 transition-transform" onclick="toggleLanguageMenu()">
+                <span id="currentFlag">🇰🇷</span>
+                <span id="currentLang">한국어</span>
+                <span class="text-xs">▼</span>
+            </button>
+            <div class="language-menu glassmorphism rounded-lg" id="languageMenu">
+                <div class="language-item" onclick="changeLanguage('ko')" data-lang="ko">
+                    <span>🇰🇷</span>
+                    <span>한국어</span>
+                </div>
+                <div class="language-item" onclick="changeLanguage('en')" data-lang="en">
+                    <span>🇺🇸</span>
+                    <span>English</span>
+                </div>
+                <div class="language-item" onclick="changeLanguage('pt')" data-lang="pt">
+                    <span>🇧🇷</span>
+                    <span>Português</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="relative z-10 p-6">
+        <div class="max-w-7xl mx-auto">
+            <!-- Main Header -->
+            <div class="glassmorphism rounded-3xl p-6 text-center">
+                <h1 class="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent">
+                    Temarix Emotion
+                </h1>
+                <p class="text-lg md:text-xl text-gray-200 typing-effect" id="subtitle">감정의 기억을 나누는 공간</p>
+                <p class="text-sm text-gray-300 mt-2" id="description">익명으로 당신의 감정 여정을 공유하고, 다른 이들의 마음과 연결되세요</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Emotion Filter Bar -->
+    <section class="relative z-10 px-6 mb-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="glassmorphism rounded-2xl p-4">
+                <div class="flex flex-wrap justify-center gap-3" id="emotionFilters">
+                    <!-- Emotion filters will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="relative z-10 px-6 pb-20">
+        <div class="max-w-7xl mx-auto">
+            <!-- Call to Action Section -->
+            <div class="glassmorphism rounded-3xl p-8 mb-8 text-center">
+                <div class="max-w-2xl mx-auto">
+                    <h2 class="text-2xl md:text-3xl font-bold mb-4 bg-gradient-to-r from-yellow-200 to-pink-200 bg-clip-text text-transparent" id="ctaTitle">
+                        당신의 감정 여정을 나누어주세요
+                    </h2>
+                    <p class="text-gray-300 mb-6 leading-relaxed" id="ctaDescription">
+                        감정의 깊은 곳에서 찾은 통찰과 깨달음을 익명으로 공유하세요.<br>
+                        당신의 이야기가 다른 누군가에게 위로와 희망이 될 수 있습니다.
+                    </p>
+                    <button class="bg-gradient-to-r from-yellow-400 to-pink-400 text-gray-900 font-semibold px-8 py-4 rounded-2xl text-lg hover:scale-105 transition-transform shadow-lg" onclick="openWriteModal()" id="writeButton">
+                        ✨ 나의 감정 기록하기
+                    </button>
+                    <div class="mt-4 text-sm text-gray-400" id="ctaSubtext">
+                        완전 익명 • 감정 중심 • 따뜻한 연결
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Display -->
+            <div class="glassmorphism rounded-2xl p-6 mb-8 text-center">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="flex flex-col items-center">
+                        <div class="text-2xl md:text-3xl font-bold text-yellow-300" id="total-posts">0</div>
+                        <div class="text-sm text-gray-300" id="statsShared">공유된 감정</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-2xl md:text-3xl font-bold text-pink-300" id="total-likes">0</div>
+                        <div class="text-sm text-gray-300" id="statsLikes">총 공감</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-2xl md:text-3xl font-bold text-blue-300" id="active-emotions">0</div>
+                        <div class="text-sm text-gray-300" id="statsEmotions">활성 감정</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="text-2xl md:text-3xl font-bold text-green-300">∞</div>
+                        <div class="text-sm text-gray-300" id="statsConnection">연결의 힘</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emotion Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="emotion-cards">
+                <!-- Sample cards will be inserted here -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="text-center py-16 hidden" id="empty-state">
+                <div class="glassmorphism rounded-3xl p-12 max-w-2xl mx-auto">
+                    <div class="text-8xl mb-6">🌙</div>
+                    <h3 class="text-2xl font-bold mb-4" id="emptyTitle">이 공간이 첫 번째 이야기를 기다리고 있어요</h3>
+                    <p class="text-gray-300 mb-8 leading-relaxed" id="emptyDescription">
+                        당신이 감정 여정에서 경험한 소중한 깨달음을<br>
+                        이곳에 남겨주세요. 익명으로 안전하게 공유할 수 있습니다.
+                    </p>
+                    <button class="bg-gradient-to-r from-yellow-400 to-pink-400 text-gray-900 font-semibold px-8 py-4 rounded-2xl text-lg hover:scale-105 transition-transform mb-4" onclick="openWriteModal()" id="emptyWriteButton">
+                        ✨ 첫 번째 감정 기록하기
+                    </button>
+                    <div class="text-sm text-gray-400" id="emptySubtext">
+                        감정 여정 V1~V15를 마친 후 이곳에서 당신의 이야기를 나누어보세요
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Action Button -->
+    <button class="floating-action fixed bottom-8 right-8 w-16 h-16 glassmorphism rounded-full flex items-center justify-center text-2xl z-20 hover:scale-110 transition-transform" onclick="openWriteModal()">
+        ✨
+    </button>
+
+    <!-- Write Modal -->
+    <div class="modal-backdrop fixed inset-0 z-50 flex items-center justify-center p-4 hidden" id="write-modal">
+        <div class="glassmorphism rounded-3xl p-8 w-full max-w-2xl mx-auto max-h-[90vh] overflow-y-auto">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold mb-2" id="modalTitle">감정의 기억을 남겨주세요</h2>
+                <p class="text-gray-300 text-sm" id="modalDescription">당신의 감정 여정이 다른 이들에게 위로가 될 수 있습니다</p>
+            </div>
+
+            <form id="emotion-form">
+                <div class="space-y-6">
+                    <!-- Emotion Selection -->
+                    <div>
+                        <label class="block text-sm font-medium mb-3" id="emotionLabel">어떤 감정을 경험하셨나요?</label>
+                        <div class="grid grid-cols-4 gap-3" id="emotionSelectors">
+                            <!-- Emotion selectors will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Title -->
+                    <div>
+                        <label class="block text-sm font-medium mb-2" id="titleLabel">감정에 제목을 지어주세요</label>
+                        <input type="text" id="emotion-title" class="w-full glassmorphism rounded-lg px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400" maxlength="50">
+                    </div>
+
+                    <!-- Content -->
+                    <div>
+                        <label class="block text-sm font-medium mb-2" id="contentLabel">감정의 여정을 들려주세요</label>
+                        <textarea id="emotion-content" class="w-full glassmorphism rounded-lg px-4 py-3 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 h-32 resize-none"></textarea>
+                    </div>
+                </div>
+
+                <div class="flex gap-4 mt-8">
+                    <button type="button" class="flex-1 glassmorphism rounded-lg py-3 font-medium hover:scale-105 transition-transform" onclick="closeWriteModal()" id="cancelButton">
+                        취소
+                    </button>
+                    <button type="submit" class="flex-1 bg-gradient-to-r from-yellow-400 to-pink-400 rounded-lg py-3 font-medium text-gray-900 hover:scale-105 transition-transform" id="submitButton">
+                        공유하기
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Multi-language support
+        const translations = {
+            ko: {
+                subtitle: "감정의 기억을 나누는 공간",
+                description: "익명으로 당신의 감정 여정을 공유하고, 다른 이들의 마음과 연결되세요",
+                ctaTitle: "당신의 감정 여정을 나누어주세요",
+                ctaDescription: "감정의 깊은 곳에서 찾은 통찰과 깨달음을 익명으로 공유하세요.<br>당신의 이야기가 다른 누군가에게 위로와 희망이 될 수 있습니다.",
+                writeButton: "✨ 나의 감정 기록하기",
+                ctaSubtext: "완전 익명 • 감정 중심 • 따뜻한 연결",
+                statsShared: "공유된 감정",
+                statsLikes: "총 공감",
+                statsEmotions: "활성 감정",
+                statsConnection: "연결의 힘",
+                emptyTitle: "이 공간이 첫 번째 이야기를 기다리고 있어요",
+                emptyDescription: "당신이 감정 여정에서 경험한 소중한 깨달음을<br>이곳에 남겨주세요. 익명으로 안전하게 공유할 수 있습니다.",
+                emptyWriteButton: "✨ 첫 번째 감정 기록하기",
+                emptySubtext: "감정 여정 V1~V15를 마친 후 이곳에서 당신의 이야기를 나누어보세요",
+                modalTitle: "감정의 기억을 남겨주세요",
+                modalDescription: "당신의 감정 여정이 다른 이들에게 위로가 될 수 있습니다",
+                emotionLabel: "어떤 감정을 경험하셨나요?",
+                titleLabel: "감정에 제목을 지어주세요",
+                titlePlaceholder: "예: 나는 나를 잃고 있었다",
+                contentLabel: "감정의 여정을 들려주세요",
+                contentPlaceholder: "당신이 느낀 감정과 깨달음을 자유롭게 적어주세요. 이 글이 다른 누군가에게 위로가 될 수 있습니다.",
+                cancelButton: "취소",
+                submitButton: "공유하기",
+                emotions: {
+                    all: "🌟 전체",
+                    joy: "😊 기쁨",
+                    sadness: "😢 슬픔",
+                    anger: "😠 분노",
+                    anxiety: "😨 불안",
+                    love: "💕 사랑",
+                    depression: "😔 우울",
+                    peace: "😌 평온"
+                },
+                emotionNames: {
+                    joy: "기쁨",
+                    sadness: "슬픔", 
+                    anger: "분노",
+                    anxiety: "불안",
+                    love: "사랑",
+                    depression: "우울",
+                    peace: "평온"
+                }
+            },
+            en: {
+                subtitle: "A space to share emotional memories",
+                description: "Anonymously share your emotional journey and connect with others' hearts",
+                ctaTitle: "Share your emotional journey",
+                ctaDescription: "Anonymously share the insights and realizations you found in the depths of your emotions.<br>Your story can bring comfort and hope to someone else.",
+                writeButton: "✨ Record my emotions",
+                ctaSubtext: "Completely anonymous • Emotion-focused • Warm connections",
+                statsShared: "Shared emotions",
+                statsLikes: "Total empathy",
+                statsEmotions: "Active emotions",
+                statsConnection: "Power of connection",
+                emptyTitle: "This space is waiting for the first story",
+                emptyDescription: "Please leave the precious insights you experienced<br>on your emotional journey here. You can share safely and anonymously.",
+                emptyWriteButton: "✨ Record first emotion",
+                emptySubtext: "After completing the emotional journey V1~V15, share your story here",
+                modalTitle: "Leave your emotional memory",
+                modalDescription: "Your emotional journey can be a comfort to others",
+                emotionLabel: "What emotions did you experience?",
+                titleLabel: "Give your emotion a title",
+                titlePlaceholder: "e.g., I was losing myself",
+                contentLabel: "Tell us about your emotional journey",
+                contentPlaceholder: "Feel free to write about the emotions and insights you felt. This writing can be a comfort to someone else.",
+                cancelButton: "Cancel",
+                submitButton: "Share",
+                emotions: {
+                    all: "🌟 All",
+                    joy: "😊 Joy",
+                    sadness: "😢 Sadness",
+                    anger: "😠 Anger",
+                    anxiety: "😨 Anxiety",
+                    love: "💕 Love",
+                    depression: "😔 Depression",
+                    peace: "😌 Peace"
+                },
+                emotionNames: {
+                    joy: "Joy",
+                    sadness: "Sadness",
+                    anger: "Anger", 
+                    anxiety: "Anxiety",
+                    love: "Love",
+                    depression: "Depression",
+                    peace: "Peace"
+                }
+            },
+            pt: {
+                subtitle: "Um espaço para compartilhar memórias emocionais",
+                description: "Compartilhe anonimamente sua jornada emocional e conecte-se com corações de outras pessoas",
+                ctaTitle: "Compartilhe sua jornada emocional",
+                ctaDescription: "Compartilhe anonimamente os insights e realizações que você encontrou nas profundezas de suas emoções.<br>Sua história pode trazer conforto e esperança para outra pessoa.",
+                writeButton: "✨ Registrar minhas emoções",
+                ctaSubtext: "Completamente anônimo • Focado em emoções • Conexões calorosas",
+                statsShared: "Emoções compartilhadas",
+                statsLikes: "Empatia total",
+                statsEmotions: "Emoções ativas",
+                statsConnection: "Poder da conexão",
+                emptyTitle: "Este espaço está esperando pela primeira história",
+                emptyDescription: "Por favor, deixe aqui os insights preciosos que você experimentou<br>em sua jornada emocional. Você pode compartilhar com segurança e anonimamente.",
+                emptyWriteButton: "✨ Registrar primeira emoção",
+                emptySubtext: "Após completar a jornada emocional V1~V15, compartilhe sua história aqui",
+                modalTitle: "Deixe sua memória emocional",
+                modalDescription: "Sua jornada emocional pode ser um conforto para outros",
+                emotionLabel: "Que emoções você experimentou?",
+                titleLabel: "Dê um título à sua emoção",
+                titlePlaceholder: "ex: Eu estava me perdendo",
+                contentLabel: "Conte-nos sobre sua jornada emocional",
+                contentPlaceholder: "Sinta-se livre para escrever sobre as emoções e insights que sentiu. Este texto pode ser um conforto para outra pessoa.",
+                cancelButton: "Cancelar",
+                submitButton: "Compartilhar",
+                emotions: {
+                    all: "🌟 Todas",
+                    joy: "😊 Alegria",
+                    sadness: "😢 Tristeza",
+                    anger: "😠 Raiva",
+                    anxiety: "😨 Ansiedade",
+                    love: "💕 Amor",
+                    depression: "😔 Depressão",
+                    peace: "😌 Paz"
+                },
+                emotionNames: {
+                    joy: "Alegria",
+                    sadness: "Tristeza",
+                    anger: "Raiva",
+                    anxiety: "Ansiedade",
+                    love: "Amor",
+                    depression: "Depressão",
+                    peace: "Paz"
+                }
+            }
+        };
+
+        // Current language state
+        let currentLanguage = 'ko';
+        let emotionPosts = JSON.parse(localStorage.getItem('temarix_emotions') || '[]');
+        let currentFilter = 'all';
+
+        // Language settings
+        const languageSettings = {
+            ko: { flag: '🇰🇷', name: '한국어' },
+            en: { flag: '🇺🇸', name: 'English' },
+            pt: { flag: '🇧🇷', name: 'Português' }
+        };
+
+        // Emotion emoji mapping
+        const emotionEmojis = {
+            joy: '😊',
+            sadness: '😢',
+            anger: '😠',
+            anxiety: '😨',
+            love: '💕',
+            depression: '😔',
+            peace: '😌'
+        };
+
+        // Language functions
+        function toggleLanguageMenu() {
+            const dropdown = document.getElementById('languageDropdown');
+            dropdown.classList.toggle('open');
+        }
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('temarix_language', lang);
+            
+            // Update language selector
+            document.getElementById('currentFlag').textContent = languageSettings[lang].flag;
+            document.getElementById('currentLang').textContent = languageSettings[lang].name;
+            
+            // Update active language item
+            document.querySelectorAll('.language-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.lang === lang);
+            });
+            
+            // Close dropdown
+            document.getElementById('languageDropdown').classList.remove('open');
+            
+            // Update page content
+            updatePageContent();
+            renderEmotionFilters();
+            renderEmotionCards();
+        }
+
+        function updatePageContent() {
+            const t = translations[currentLanguage];
+            
+            // Update all translatable elements
+            document.getElementById('subtitle').textContent = t.subtitle;
+            document.getElementById('description').textContent = t.description;
+            document.getElementById('ctaTitle').textContent = t.ctaTitle;
+            document.getElementById('ctaDescription').innerHTML = t.ctaDescription;
+            document.getElementById('writeButton').textContent = t.writeButton;
+            document.getElementById('ctaSubtext').textContent = t.ctaSubtext;
+            document.getElementById('statsShared').textContent = t.statsShared;
+            document.getElementById('statsLikes').textContent = t.statsLikes;
+            document.getElementById('statsEmotions').textContent = t.statsEmotions;
+            document.getElementById('statsConnection').textContent = t.statsConnection;
+            document.getElementById('emptyTitle').textContent = t.emptyTitle;
+            document.getElementById('emptyDescription').innerHTML = t.emptyDescription;
+            document.getElementById('emptyWriteButton').textContent = t.emptyWriteButton;
+            document.getElementById('emptySubtext').textContent = t.emptySubtext;
+            document.getElementById('modalTitle').textContent = t.modalTitle;
+            document.getElementById('modalDescription').textContent = t.modalDescription;
+            document.getElementById('emotionLabel').textContent = t.emotionLabel;
+            document.getElementById('titleLabel').textContent = t.titleLabel;
+            document.getElementById('contentLabel').textContent = t.contentLabel;
+            document.getElementById('cancelButton').textContent = t.cancelButton;
+            document.getElementById('submitButton').textContent = t.submitButton;
+            
+            // Update placeholders
+            document.getElementById('emotion-title').placeholder = t.titlePlaceholder;
+            document.getElementById('emotion-content').placeholder = t.contentPlaceholder;
+        }
+
+        function renderEmotionFilters() {
+            const container = document.getElementById('emotionFilters');
+            const t = translations[currentLanguage];
+            
+            const emotions = ['all', 'joy', 'sadness', 'anger', 'anxiety', 'love', 'depression', 'peace'];
+            
+            container.innerHTML = emotions.map(emotion => `
+                <button class="filter-btn ${currentFilter === emotion ? 'active' : ''} glassmorphism rounded-full px-4 py-2 text-sm font-medium" data-emotion="${emotion}">
+                    ${t.emotions[emotion]}
+                </button>
+            `).join('');
+            
+            // Add event listeners
+            container.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    container.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.emotion;
+                    renderEmotionCards();
+                });
+            });
+        }
+
+        function renderEmotionSelectors() {
+            const container = document.getElementById('emotionSelectors');
+            const t = translations[currentLanguage];
+            
+            const emotions = ['joy', 'sadness', 'anger', 'anxiety', 'love', 'depression', 'peace'];
+            
+            container.innerHTML = emotions.map(emotion => `
+                <label class="emotion-selector cursor-pointer glassmorphism rounded-lg p-3 text-center hover:scale-105 transition-transform">
+                    <input type="radio" name="emotion" value="${emotion}" class="hidden">
+                    <div class="text-2xl mb-1">${emotionEmojis[emotion]}</div>
+                    <div class="text-xs">${t.emotionNames[emotion]}</div>
+                </label>
+            `).join('');
+            
+            // Add event listeners for visual feedback
+            container.querySelectorAll('.emotion-selector').forEach(selector => {
+                selector.addEventListener('click', () => {
+                    container.querySelectorAll('.emotion-selector').forEach(s => {
+                        s.classList.remove('ring-2', 'ring-yellow-400', 'bg-yellow-400', 'bg-opacity-20');
+                    });
+                    selector.classList.add('ring-2', 'ring-yellow-400', 'bg-yellow-400', 'bg-opacity-20');
+                });
+            });
+        }
+
+        // Sample initial data
+        if (emotionPosts.length === 0) {
+            emotionPosts = [
+                {
+                    id: 1,
+                    title: {
+                        ko: "나는 나를 잃고 있었다",
+                        en: "I was losing myself",
+                        pt: "Eu estava me perdendo"
+                    },
+                    emotion: "anxiety",
+                    content: {
+                        ko: "생각보다 더 오래 내가 괜찮은 줄 알았다는 걸 깨달았다. 하지만 어느 순간부터 나 자신을 알아보지 못하고 있었다. 거울 속의 나는 낯설었고, 내 목소리도 이상했다. 하지만 이 감정을 인정하고 나니, 다시 나를 찾아갈 수 있을 것 같다.",
+                        en: "I realized that I thought I was okay for longer than I expected. But at some point, I couldn't recognize myself. The me in the mirror was unfamiliar, and my voice sounded strange. But after acknowledging these feelings, I think I can find myself again.",
+                        pt: "Percebi que pensei que estava bem por mais tempo do que esperava. Mas em algum momento, não conseguia me reconhecer. Eu no espelho era irreconhecível, e minha voz soava estranha. Mas depois de reconhecer esses sentimentos, acho que posso me encontrar novamente."
+                    },
+                    date: "2025-06-01",
+                    likes: 27,
+                    likedBy: []
+                },
+                {
+                    id: 2,
+                    title: {
+                        ko: "작은 것들의 소중함",
+                        en: "The preciousness of small things",
+                        pt: "A preciosidade das pequenas coisas"
+                    },
+                    emotion: "joy",
+                    content: {
+                        ko: "오늘 아침 커피 향이 유난히 좋았다. 창가로 들어오는 햇살도, 새들의 지저귐도 모든 것이 선명하게 느껴졌다. 행복이란 거창한 것이 아니라 이런 작은 순간들의 연속인 것 같다.",
+                        en: "The smell of coffee this morning was particularly good. The sunlight coming through the window and the chirping of birds - everything felt vivid. I think happiness is not something grand, but a series of these small moments.",
+                        pt: "O cheiro do café desta manhã estava particularmente bom. A luz do sol entrando pela janela e o chilrear dos pássaros - tudo parecia vívido. Acho que a felicidade não é algo grandioso, mas uma série desses pequenos momentos."
+                    },
+                    date: "2025-06-02",
+                    likes: 15,
+                    likedBy: []
+                },
+                {
+                    id: 3,
+                    title: {
+                        ko: "사라져가는 기억들",
+                        en: "Fading memories",
+                        pt: "Memórias que se desvanecem"
+                    },
+                    emotion: "sadness",
+                    content: {
+                        ko: "할머니의 목소리가 점점 기억나지 않는다. 사진을 보면서도 그때의 따뜻함을 완전히 되살릴 수 없어서 마음이 아프다. 시간이 흘러도 잊지 않겠다고 다짐했는데, 결국 인간의 기억은 한계가 있나보다.",
+                        en: "I can't remember my grandmother's voice anymore. Even when looking at photos, I can't fully revive the warmth of those times, and it hurts my heart. I promised myself I wouldn't forget even as time passed, but it seems human memory has its limits.",
+                        pt: "Não consigo mais me lembrar da voz da minha avó. Mesmo olhando fotos, não consigo reviver completamente o calor daqueles momentos, e isso dói no meu coração. Prometi a mim mesmo que não esqueceria mesmo com o passar do tempo, mas parece que a memória humana tem seus limites."
+                    },
+                    date: "2025-05-30",
+                    likes: 42,
+                    likedBy: []
+                }
+            ];
+            saveEmotions();
+        }
+
+        // Save emotions to localStorage
+        function saveEmotions() {
+            localStorage.setItem('temarix_emotions', JSON.stringify(emotionPosts));
+        }
+
+        // Generate unique ID
+        function generateId() {
+            return Date.now() + Math.random();
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            const timeTexts = {
+                ko: {
+                    today: '오늘',
+                    yesterday: '어제',
+                    daysAgo: (days) => `${days-1}일 전`
+                },
+                en: {
+                    today: 'Today',
+                    yesterday: 'Yesterday', 
+                    daysAgo: (days) => `${days-1} days ago`
+                },
+                pt: {
+                    today: 'Hoje',
+                    yesterday: 'Ontem',
+                    daysAgo: (days) => `${days-1} dias atrás`
+                }
+            };
+            
+            const t = timeTexts[currentLanguage];
+            
+            if (diffDays === 1) return t.today;
+            if (diffDays === 2) return t.yesterday;
+            if (diffDays <= 7) return t.daysAgo(diffDays);
+            return date.toLocaleDateString(currentLanguage === 'ko' ? 'ko-KR' : currentLanguage === 'en' ? 'en-US' : 'pt-BR');
+        }
+
+        // Get emotion class
+        function getEmotionClass(emotion) {
+            const classMap = {
+                joy: 'emotion-joy',
+                sadness: 'emotion-sadness',
+                anger: 'emotion-anger',
+                anxiety: 'emotion-anxiety',
+                love: 'emotion-love',
+                depression: 'emotion-depression',
+                peace: 'emotion-peace'
+            };
+            return classMap[emotion] || 'emotion-peace';
+        }
+
+        // Create emotion card HTML
+        function createEmotionCard(post) {
+            const t = translations[currentLanguage];
+            const title = post.title[currentLanguage] || post.title.ko;
+            const content = post.content[currentLanguage] || post.content.ko;
+            const summary = content.length > 80 ? content.substring(0, 80) + '...' : content;
+            
+            return `
+                <div class="emotion-card glassmorphism rounded-2xl p-6 ${getEmotionClass(post.emotion)}" data-emotion="${post.emotion}">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <span class="text-2xl emotion-icon-filter">${emotionEmojis[post.emotion]}</span>
+                            <div>
+                                <div class="text-sm text-gray-300">${t.emotionNames[post.emotion]}</div>
+                                <div class="text-xs text-gray-400">${formatDate(post.date)}</div>
+                            </div>
+                        </div>
+                        <button class="like-btn text-pink-300 hover:text-pink-200 flex items-center space-x-1" onclick="toggleLike(${post.id})">
+                            <span class="text-lg">💜</span>
+                            <span class="text-sm font-medium">${post.likes}</span>
+                        </button>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold mb-3 leading-tight">${title}</h3>
+                    <p class="text-gray-200 text-sm leading-relaxed">${summary}</p>
+                    
+                    ${content.length > 80 ? `
+                        <button class="text-yellow-300 text-xs mt-2 hover:text-yellow-200" onclick="showFullContent(${post.id})">
+                            ${currentLanguage === 'ko' ? '더 읽기' : currentLanguage === 'en' ? 'Read more' : 'Ler mais'}
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Render emotion cards
+        function renderEmotionCards() {
+            const container = document.getElementById('emotion-cards');
+            const emptyState = document.getElementById('empty-state');
+            
+            let filteredPosts = emotionPosts;
+            if (currentFilter !== 'all') {
+                filteredPosts = emotionPosts.filter(post => post.emotion === currentFilter);
+            }
+            
+            if (filteredPosts.length === 0) {
+                container.innerHTML = '';
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                // Sort by date (newest first)
+                filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                container.innerHTML = filteredPosts.map(createEmotionCard).join('');
+            }
+            
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('total-posts').textContent = emotionPosts.length;
+            document.getElementById('total-likes').textContent = emotionPosts.reduce((sum, post) => sum + post.likes, 0);
+            document.getElementById('active-emotions').textContent = new Set(emotionPosts.map(post => post.emotion)).size;
+        }
+
+        // Toggle like
+        function toggleLike(postId) {
+            const post = emotionPosts.find(p => p.id === postId);
+            if (post) {
+                post.likes += 1;
+                
+                // Add animation class
+                const likeBtn = document.querySelector(`button[onclick="toggleLike(${postId})"]`);
+                likeBtn.classList.add('liked');
+                setTimeout(() => likeBtn.classList.remove('liked'), 600);
+                
+                saveEmotions();
+                renderEmotionCards();
+            }
+        }
+
+        // Show full content modal
+        function showFullContent(postId) {
+            const post = emotionPosts.find(p => p.id === postId);
+            if (post) {
+                const content = post.content[currentLanguage] || post.content.ko;
+                alert(content); // Simple implementation - could be enhanced with a modal
+            }
+        }
+
+        // Modal functions
+        function openWriteModal() {
+            document.getElementById('write-modal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            renderEmotionSelectors();
+        }
+
+        function closeWriteModal() {
+            document.getElementById('write-modal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            document.getElementById('emotion-form').reset();
+            
+            // Reset emotion selector styles
+            document.querySelectorAll('.emotion-selector').forEach(selector => {
+                selector.classList.remove('ring-2', 'ring-yellow-400', 'bg-yellow-400', 'bg-opacity-20');
+            });
+        }
+
+        // Form submission
+        function initializeForm() {
+            const form = document.getElementById('emotion-form');
+            
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData(form);
+                const emotion = formData.get('emotion');
+                const title = document.getElementById('emotion-title').value.trim();
+                const content = document.getElementById('emotion-content').value.trim();
+                
+                if (!emotion || !title || !content) {
+                    const t = translations[currentLanguage];
+                    const errorMsg = {
+                        ko: '모든 필드를 입력해주세요.',
+                        en: 'Please fill in all fields.',
+                        pt: 'Por favor, preencha todos os campos.'
+                    };
+                    alert(errorMsg[currentLanguage]);
+                    return;
+                }
+                
+                // Create new post
+                const newPost = {
+                    id: generateId(),
+                    title: {
+                        ko: title,
+                        en: title,
+                        pt: title
+                    },
+                    emotion,
+                    content: {
+                        ko: content,
+                        en: content,
+                        pt: content
+                    },
+                    date: new Date().toISOString().split('T')[0],
+                    likes: 0,
+                    likedBy: []
+                };
+                
+                // Add to beginning of array (newest first)
+                emotionPosts.unshift(newPost);
+                saveEmotions();
+                renderEmotionCards();
+                closeWriteModal();
+                
+                // Show success feedback
+                showSuccessMessage();
+            });
+        }
+
+        // Show success message
+        function showSuccessMessage() {
+            const t = translations[currentLanguage];
+            const successMsg = {
+                ko: '감정이 성공적으로 공유되었습니다 ✨',
+                en: 'Emotion shared successfully ✨',
+                pt: 'Emoção compartilhada com sucesso ✨'
+            };
+            
+            const message = document.createElement('div');
+            message.className = 'fixed top-8 left-1/2 transform -translate-x-1/2 glassmorphism rounded-lg px-6 py-4 text-green-200 z-50 text-center';
+            message.textContent = successMsg[currentLanguage];
+            document.body.appendChild(message);
+            
+            setTimeout(() => {
+                message.remove();
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('write-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'write-modal') {
+                closeWriteModal();
+            }
+        });
+
+        // Close language menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.language-dropdown')) {
+                document.getElementById('languageDropdown').classList.remove('open');
+            }
+        });
+
+        // Add some dynamic background particles
+        function createParticles() {
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'fixed pointer-events-none opacity-30';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = '2px';
+                particle.style.height = '2px';
+                particle.style.background = 'white';
+                particle.style.borderRadius = '50%';
+                particle.style.animation = `float ${3 + Math.random() * 4}s ease-in-out infinite`;
+                particle.style.animationDelay = Math.random() * 2 + 's';
+                document.body.appendChild(particle);
+            }
+        }
+
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved language
+            const savedLang = localStorage.getItem('temarix_language') || 'ko';
+            changeLanguage(savedLang);
+            
+            initializeForm();
+            createParticles();
+        });
+    </script>
+</body>
+</html>

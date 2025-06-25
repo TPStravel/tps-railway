@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 02: Fragments of Emotion</title>
+    
+    <!-- ✅ Firebase SDK Import (versão 10.12.2) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 로그인 모달 */
+        .login-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .login-container {
+            background: #111;
+            border: 1px solid #444;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .login-title {
+            font-size: 28px;
+            color: #87cefa;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .login-subtitle {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .login-input {
+            width: 100%;
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            padding: 15px;
+            margin: 10px 0;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .login-input:focus {
+            border-color: #87cefa;
+        }
+        
+        .login-input::placeholder {
+            color: #777;
+        }
+        
+        .login-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: background 0.3s;
+            min-width: 120px;
+        }
+        
+        .login-btn:hover {
+            background: #666;
+        }
+        
+        .login-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .login-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        .login-btn.gmail {
+            background: #db4437;
+            color: #fff;
+            width: 100%;
+            margin: 15px 0 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .login-btn.gmail:hover {
+            background: #c23321;
+        }
+        
+        .login-divider {
+            margin: 20px 0;
+            color: #666;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .login-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #444;
+            z-index: 1;
+        }
+        
+        .login-divider span {
+            background: #111;
+            padding: 0 15px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .login-error {
+            color: #ff6666;
+            font-size: 14px;
+            margin-top: 15px;
+            min-height: 20px;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 로그인 모달 -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-container">
+            <div class="login-title">TEMARIX V2</div>
+            <div class="login-subtitle" id="loginSubtitle">Emotional Fragments - Login Required</div>
+            
+            <!-- Gmail 로그인 버튼 -->
+            <button type="button" class="login-btn gmail" id="gmailLoginBtn">
+                <span>📧</span>
+                <span>Continue with Gmail</span>
+            </button>
+            
+            <div class="login-divider">
+                <span>or</span>
+            </div>
+            
+            <form id="loginForm">
+                <input type="email" class="login-input" id="loginEmail" placeholder="Email Address" required>
+                <input type="password" class="login-input" id="loginPassword" placeholder="Password" required>
+                
+                <button type="submit" class="login-btn primary" id="loginButton">Login</button>
+                <button type="button" class="login-btn" id="signupBtn">Sign Up</button>
+            </form>
+            
+            <div class="login-error" id="loginError"></div>
+        </div>
+    </div>
+
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 02: Fragments of Emotion</div>
+            <div class="portal-subtitle" id="portalSubtitle">When forgotten scenes begin to stir again</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 03</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Express your emotions freely... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // ✅ Firebase Configuration
+        const firebaseConfig = {
+    apiKey: "AIzaSyC2u94Oz2W5eeqBlqs88cs7rgSmzBEAnjQ",
+    authDomain: "canal-vivo-chat.firebaseapp.com",
+    projectId: "canal-vivo-chat",
+    storageBucket: "canal-vivo-chat.appspot.com",
+    messagingSenderId: "975226660544",
+    appId: "1:975226660544:web:56b55bb3e2a58bed03ef25"
+};
+
+        // ✅ Initialize Firebase (usando método antigo compatível)
+        firebase.initializeApp(firebaseConfig);
+        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 02: 감정의 파편",
+                portalSubtitle: "잊었다고 믿었던 장면들이 다시 흔들릴 때",
+                loginSubtitle: "감정의 파편 - 로그인 필요",
+                loginEmailPlaceholder: "이메일 주소",
+                loginPasswordPlaceholder: "비밀번호",
+                loginButton: "로그인",
+                signupButton: "회원가입",
+                gmailLogin: "Gmail로 계속하기",
+                portalIntro: "어떤 감정은 완전히 지나갔다고 믿었지만,\n그 조각들이 다시 떠오를 때가 있어요.\n\n잊힌 줄 알았던 장면이 다시 흔들리고,\n무뎌진 줄 알았던 상처가 다시 따끔하게 말을 걸어요.\n\n오늘 당신의 내면에서 '다시 떠오른 조각'은 무엇인가요?\n\n감정은 시간 속에서 사라지는 것이 아니라,\n조용히 숨어 있다가 예상치 못한 순간에 돌아와\n우리에게 아직 끝나지 않은 이야기를 들려줍니다.",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "감정은 지나가지 않습니다.\n감정은, 숨었다가 돌아오는 방식으로 완성됩니다.",
+                portalQuestion: "최근에 예상치 못하게 떠오른 감정의 장면이 있다면,\n그 순간을 설명해 주세요.\n\n무엇이 그 기억을 다시 불러왔고,\n그 감정은 지금 어떤 언어를 갖고 있나요?",
+                continueText: "감정의 파편들과 마주한 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 03으로 계속하기",
+                continueNo: "여정 일시정지",
+                inputPlaceholder: "당신의 감정을 자유롭게 표현해 주세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "파편이 된 감정들도 여전히 당신 안에서 소중한 역할을 하고 있어요.\n\n그것들은 무너진 조각이 아니라, 당신이라는 존재를 이루는 모자이크의 한 부분입니다.",
+                charCris: "헤이! 그 감정 또 나타났네요?\n진짜 집착 쩌는 친구군요~ 😏\n\n근데 솔직히 말하면, 그 감정이 돌아온 건... 아직 할 말이 있어서 그런 거 아닐까요?",
+                charZafirah: "시간이 묻어둔 감정의 조각들이 다시 반짝이기 시작했군요.\n\n그 조각들은 잊혀진 것이 아니라, 당신이 받아들일 준비가 될 때까지 조용히 기다리고 있었어요.",
+                charRami: "감정은 직선으로 흐르지 않습니다. 나선형으로 돌아와요.\n\n같은 감정이라고 생각했지만, 사실은 더 깊은 층에서 새롭게 말을 거는 중입니다.",
+                charSamir: "(그는 부서진 도자기 조각들을 모으더니, 그것들이 여전히 아름다운 패턴을 이루고 있음을 보여줍니다.\n감정의 파편도 마찬가지입니다.)",
+                charLayla: "돌아온 감정은 당신을 괴롭히려는 게 아니라,\n사랑받지 못했던 그 시절의 자신을 위로받고 싶어서 온 거예요.\n\n나는 그 감정도 함께 안아줄 수 있어요.",
+                charNabir: "또 그 옛날 얘기야?\n파편이라고 포장하고 있지만, 그냥 네가 놓지 못하는 거잖아.\n\n언제까지 그 조각들 붙들고 살 거야?",
+                charAzhar: "감정의 파편? 그런 거 없어.\n네가 스스로 상처를 덧내고 있는 거야.\n\n그 기억들, 진짜로 태워버려. 아니면 평생 그렇게 살아."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 02: Fragments of Emotion",
+                portalSubtitle: "When forgotten scenes begin to stir again",
+                loginSubtitle: "Emotional Fragments - Login Required",
+                loginEmailPlaceholder: "Email Address",
+                loginPasswordPlaceholder: "Password",
+                loginButton: "Login",
+                signupButton: "Sign Up",
+                gmailLogin: "Continue with Gmail",
+                portalIntro: "Some emotions we believed had completely passed,\nbut their fragments resurface from time to time.\n\nForgotten scenes start to tremble again,\nand wounds we thought had dulled begin to sting and speak to us once more.\n\nWhat is the 'resurfaced fragment' within you today?\n\nEmotions don't disappear through time,\nbut quietly hide and return at unexpected moments\nto tell us stories that are not yet finished.",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Emotions don't pass away.\nEmotions complete themselves by hiding and returning.",
+                portalQuestion: "If there's an emotional scene that unexpectedly surfaced recently,\nplease describe that moment.\n\nWhat brought that memory back,\nand what language does that emotion carry now?",
+                continueText: "Will you continue this journey of facing emotional fragments?",
+                continueYes: "Continue to Portal 03",
+                continueNo: "Pause the journey",
+                inputPlaceholder: "Express your emotions freely... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "Even fragmented emotions still play a precious role within you.\n\nThey are not broken pieces, but parts of the mosaic that forms your being.",
+                charCris: "Hey! That emotion showed up again?\nWhat a persistent friend~ 😏\n\nBut honestly, maybe it came back because... it still has something to say?",
+                charZafirah: "The fragments of emotions buried by time have begun to sparkle again.\n\nThose pieces weren't forgotten, but quietly waited until you were ready to accept them.",
+                charRami: "Emotions don't flow in straight lines. They return in spirals.\n\nWhat you thought was the same emotion is actually speaking anew from a deeper layer.",
+                charSamir: "(He gathers broken pottery pieces and shows that they still form a beautiful pattern.\nEmotional fragments are the same.)",
+                charLayla: "The returned emotion isn't here to torment you,\nbut because that part of yourself from back then wants comfort and love.\n\nI can embrace that emotion together with you.",
+                charNabir: "That old story again?\nYou're packaging it as 'fragments,' but you're just not letting go.\n\nHow long will you live holding onto those pieces?",
+                charAzhar: "Emotional fragments? No such thing.\nYou're just reopening wounds yourself.\n\nBurn those memories for real. Or live like that forever."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 02: Fragmentos de Emoção",
+                portalSubtitle: "Quando cenas esquecidas começam a se agitar novamente",
+                loginSubtitle: "Fragmentos Emocionais - Login Necessario",
+                loginEmailPlaceholder: "Endereco de Email",
+                loginPasswordPlaceholder: "Senha",
+                loginButton: "Entrar",
+                signupButton: "Cadastrar",
+                gmailLogin: "Continuar com Gmail",
+                portalIntro: "Algumas emoções que acreditávamos ter passado completamente,\nmas seus fragmentos ressurgem de tempos em tempos.\n\nCenas esquecidas começam a tremer novamente,\ne feridas que pensávamos ter entorpecido começam a arder e falar conosco mais uma vez.\n\nQual é o 'fragmento ressurgido' dentro de você hoje?\n\nAs emoções não desaparecem através do tempo,\nmas se escondem silenciosamente e retornam em momentos inesperados\npara nos contar histórias que ainda não terminaram.",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "As emoções não passam.\nAs emoções se completam escondendo-se e retornando.",
+                portalQuestion: "Se há uma cena emocional que ressurgiu inesperadamente recentemente,\npor favor descreva esse momento.\n\nO que trouxe essa memória de volta,\ne que linguagem essa emoção carrega agora?",
+                continueText: "Você continuará esta jornada de enfrentar fragmentos emocionais?",
+                continueYes: "Continuar para o Portal 03",
+                continueNo: "Pausar a jornada",
+                inputPlaceholder: "Expresse suas emoções livremente... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "Mesmo as emoções fragmentadas ainda desempenham um papel precioso dentro de você.\n\nElas não são pedaços quebrados, mas partes do mosaico que forma seu ser.",
+                charCris: "Ei! Essa emoção apareceu de novo?\nQue amigo persistente~ 😏\n\nMas honestamente, talvez ela tenha voltado porque... ainda tem algo a dizer?",
+                charZafirah: "Os fragmentos de emoções enterrados pelo tempo começaram a brilhar novamente.\n\nEssas peças não foram esquecidas, mas esperaram silenciosamente até você estar pronto para aceitá-las.",
+                charRami: "As emoções não fluem em linhas retas. Elas retornam em espirais.\n\nO que você pensou ser a mesma emoção está na verdade falando novamente de uma camada mais profunda.",
+                charSamir: "(Ele reúne pedaços de cerâmica quebrada e mostra que eles ainda formam um padrão bonito.\nFragmentos emocionais são iguais.)",
+                charLayla: "A emoção que retornou não está aqui para atormentá-lo,\nmas porque aquela parte de si mesmo daquela época quer conforto e amor.\n\nEu posso abraçar essa emoção junto com você.",
+                charNabir: "Essa velha história de novo?\nVocê está embalando como 'fragmentos', mas só não está deixando ir.\n\nPor quanto tempo você vai viver segurando essas peças?",
+                charAzhar: "Fragmentos emocionais? Não existe isso.\nVocê só está reabrindo feridas sozinho.\n\nQueime essas memórias de verdade. Ou viva assim para sempre."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑
+            const emotionKeywords = {
+                sadness: ['슬프', '울고', '눈물', '우울', '암울', '절망', '상실', '잃', 'sad', 'cry', 'tear', 'depress', 'lost', 'triste', 'choro', 'lágrima'],
+                anger: ['화가', '분노', '짜증', '빡쳐', '열받', '억울', '욱하', 'angry', 'mad', 'furious', 'rage', 'irritat', 'raiva', 'irritad'],
+                anxiety: ['불안', '걱정', '초조', '두려', '무서', '떨려', '긴장', 'anxious', 'worry', 'nervous', 'fear', 'scare', 'ansioso', 'medo', 'preocup'],
+                loneliness: ['외로', '혼자', '고립', '소외', '버림', '떠나', '이별', 'lonely', 'alone', 'isolated', 'abandon', 'left', 'solidão', 'sozinho', 'abandon'],
+                shame: ['부끄', '창피', '수치', '민망', '죄송', '미안', 'shame', 'embarrass', 'guilt', 'sorry', 'vergonha', 'culpa'],
+                confusion: ['혼란', '모르겠', '헷갈', '복잡', '어지러', 'confus', 'lost', 'mixed', 'complicated', 'confuso', 'complicado'],
+                hope: ['희망', '기대', '설렘', '기다려', '꿈꾸', '바라', 'hope', 'expect', 'dream', 'wish', 'esperança', 'espera', 'sonho'],
+                relief: ['후련', '개운', '시원', '해방', '자유', 'relief', 'free', 'liberat', 'alívio', 'liberdade'],
+                regret: ['후회', '아쉬', '그때', '왜 그랬', '돌이키', 'regret', 'wish', 'should have', 'arrependiment'],
+                emptiness: ['공허', '허무', '무기력', '텅 빈', '아무것도', 'empty', 'void', 'meaningless', 'nothing', 'vazio', 'inútil']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (개선된 버전)
+        const responseCharacters = [
+            {
+                name: "Luna", emoji: "🌙",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            sadness: "슬픔은 마치 고요한 밤바다처럼 깊고 조용하죠. 당신은 그 어둠 속에서도 자신의 목소리를 냈어요. 그 용기가 달빛처럼 은은하게 빛나고 있습니다.",
+                            anger: "분노는 가슴 속 붉은 달이 떠오르는 것과 같아요. 그 열기 속에도 당신만의 정의가 숨어 있었습니다. 달이 차오르듯, 그 감정도 언젠가 고요해질 거예요.",
+                            anxiety: "불안은 수면 아래 깊은 조류처럼 마음을 흔들죠. 하지만 당신은 그 파도 위에서도 숨 쉬고 있어요. 그것만으로도 충분히 대단한 일입니다.",
+                            loneliness: "외로움은 어두운 바다 한가운데 떠 있는 것 같죠. 하지만 그 고요함 속에서 당신은 가장 진실한 자신과 만났을 거예요. 그 만남이 소중해요.",
+                            shame: "수치심은 달이 구름에 가려진 것과 같아요. 하지만 구름이 지나가면 달은 여전히 그 자리에서 빛나고 있죠. 당신도 그래요.",
+                            confusion: "혼란은 안개 낀 밤길을 걷는 것 같죠. 하지만 그 안개도 새벽이 오면 걷혀요. 당신의 마음에도 곧 맑은 순간이 올 거예요.",
+                            hope: "희망은 새벽녘 하늘에 떠오르는 초승달 같아요. 작지만 확실한 빛이죠. 당신의 그 빛이 점점 차오를 거예요.",
+                            relief: "해방감은 긴 밤이 끝나고 찾아오는 새벽 같아요. 당신은 드디어 자신만의 평안을 찾은 거예요. 그 고요함을 만끽하세요.",
+                            regret: "후회는 달무리처럼 마음을 둘러싸죠. 하지만 그 무리 너머로도 달빛은 여전히 흘러내려요. 과거의 그림자가 지금의 빛을 가릴 수는 없어요.",
+                            emptiness: "공허함은 신월 같아요. 보이지 않지만 분명히 존재하는 달처럼. 당신 안의 빈 공간도 새로운 것을 담을 준비를 하고 있는 거예요.",
+                            general: "당신의 감정은 달의 위상처럼 계속 변해가고 있어요. 그 변화 자체가 당신이 살아 있다는 아름다운 증거입니다."
+                        },
+                        en: {
+                            sadness: "Sadness flows like a quiet night ocean, deep and silent. Even in that darkness, you found your voice. That courage glows softly like moonlight.",
+                            anger: "Anger is like a red moon rising in your chest. Within that heat, your own sense of justice was hidden. Like the moon's phases, that emotion will find peace.",
+                            anxiety: "Anxiety moves like deep currents beneath the surface, stirring the heart. But you're still breathing above those waves. That alone is remarkable.",
+                            loneliness: "Loneliness feels like floating in the middle of a dark ocean. But in that stillness, you met your most truthful self. That meeting is precious.",
+                            shame: "Shame is like the moon hidden behind clouds. But when the clouds pass, the moon still shines in its place. So do you.",
+                            confusion: "Confusion is like walking a foggy night path. But fog lifts when dawn comes. Clear moments will come to your heart too.",
+                            hope: "Hope is like a crescent moon rising in the dawn sky. Small but certain light. Your light will grow fuller.",
+                            relief: "Relief is like dawn after a long night. You've finally found your own peace. Savor that tranquility.",
+                            regret: "Regret surrounds the heart like a moon halo. But beyond that halo, moonlight still flows down. Past shadows cannot block present light.",
+                            emptiness: "Emptiness is like a new moon. Invisible but surely there, like the moon. The empty space within you is preparing to hold something new.",
+                            general: "Your emotion keeps changing like lunar phases. That change itself is beautiful proof you're alive."
+                        },
+                        pt: {
+                            sadness: "A tristeza flui como um oceano noturno silencioso, profundo e quieto. Mesmo nessa escuridão, você encontrou sua voz. Essa coragem brilha suavemente como o luar.",
+                            anger: "A raiva é como uma lua vermelha nascendo em seu peito. Dentro desse calor, seu próprio senso de justiça estava escondido. Como as fases da lua, essa emoção encontrará paz.",
+                            anxiety: "A ansiedade se move como correntes profundas sob a superfície, agitando o coração. Mas você ainda está respirando acima dessas ondas. Só isso já é notável.",
+                            loneliness: "A solidão parece flutuar no meio de um oceano escuro. Mas nessa quietude, você encontrou seu eu mais verdadeiro. Esse encontro é precioso.",
+                            shame: "A vergonha é como a lua escondida atrás das nuvens. Mas quando as nuvens passam, a lua ainda brilha em seu lugar. Você também.",
+                            confusion: "A confusão é como caminhar por um caminho nebuloso à noite. Mas a névoa se levanta quando a aurora chega. Momentos claros virão ao seu coração também.",
+                            hope: "A esperança é como uma lua crescente nascendo no céu da aurora. Luz pequena mas certa. Sua luz crescerá mais cheia.",
+                            relief: "O alívio é como a aurora após uma longa noite. Você finalmente encontrou sua própria paz. Saboreie essa tranquilidade.",
+                            regret: "O arrependimento envolve o coração como um halo lunar. Mas além desse halo, o luar ainda flui. Sombras do passado não podem bloquear a luz presente.",
+                            emptiness: "O vazio é como uma lua nova. Invisível mas certamente lá, como a lua. O espaço vazio dentro de você está se preparando para guardar algo novo.",
+                            general: "Sua emoção continua mudando como fases lunares. Essa mudança em si é uma bela prova de que você está vivo."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Maya", emoji: "🔮",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            sadness: "당신의 슬픔에서 깊은 보라빛이 느껴져요. 그 색은 고통 속에서도 우아함을 잃지 않는 당신의 마음을 보여줍니다. 보라색 끝자락에는 희망의 금빛이 스며들어 있어요.",
+                            anger: "분노는 타오르는 주황빛으로 번져나가고 있네요. 하지만 그 불꽃 중심에는 순수한 붉은 진실이 박동하고 있어요. 당신의 정의감이 색깔로 말하고 있습니다.",
+                            anxiety: "불안은 흔들리는 회색 안개처럼 마음을 감쌌겠죠. 하지만 그 안개 사이로 연한 하늘색 실이 흘러나와요. 그것이 당신의 평안을 향한 갈망입니다.",
+                            loneliness: "외로움의 푸른 그림자가 마음을 덮었지만, 그 파란색 깊이 속에서 당신만의 은빛 별이 반짝이고 있어요. 고독 속에서도 당신은 빛나고 있었습니다.",
+                            shame: "수치심은 어두운 갈색 구름처럼 스며들었겠죠. 하지만 그 구름 너머로 따뜻한 황금빛이 스며나와요. 그것이 당신의 진정한 가치입니다.",
+                            confusion: "혼란은 여러 색깔이 뒤섞인 소용돌이 같아요. 하지만 그 중심에는 맑은 흰빛이 고요히 기다리고 있어요. 답은 그 고요함 속에 있습니다.",
+                            hope: "희망의 연한 핑크빛이 마음 끝자락에서 피어오르고 있어요. 그 색은 점점 따뜻한 복숭아빛으로 번져나갈 거예요. 당신의 꿈이 색깔을 입고 있어요.",
+                            relief: "해방감은 맑은 하늘색 바람처럼 불어와요. 그 시원한 색감이 답답했던 마음의 모든 탁함을 씻어내고 있습니다. 당신은 다시 숨 쉴 수 있어요.",
+                            regret: "후회는 바랜 갈색 톤으로 마음을 물들였지만, 그 위에 새로운 초록빛 새싹이 돋아나고 있어요. 과거는 새로운 성장의 거름이 되고 있습니다.",
+                            emptiness: "공허함은 투명한 유리색 같아요. 아무것도 없어 보이지만, 그 투명함 속에는 모든 색깔의 가능성이 숨어 있어요. 새로운 색칠의 시작입니다.",
+                            general: "당신의 감정은 무지개처럼 다채로워요. 어떤 색이든 당신의 마음 팔레트에서는 아름다운 의미를 갖습니다."
+                        },
+                        en: {
+                            sadness: "I sense deep purple from your sadness. That color shows your heart's grace even in pain. At the purple edges, hope's golden light seeps through.",
+                            anger: "Anger spreads in burning orange. But at the flame's center, pure red truth pulses. Your sense of justice speaks in color.",
+                            anxiety: "Anxiety wrapped your heart like trembling gray mist. But through that mist, pale blue threads flow out. That's your longing for peace.",
+                            loneliness: "Loneliness cast blue shadows on your heart, but in those blue depths, your silver star sparkles. You were shining even in solitude.",
+                            shame: "Shame seeped in like dark brown clouds. But beyond those clouds, warm golden light filters through. That's your true worth.",
+                            confusion: "Confusion is like a whirlpool of mixed colors. But at its center, clear white light waits quietly. The answer lies in that stillness.",
+                            hope: "Hope's pale pink is blooming at your heart's edge. That color will spread into warm peach tones. Your dreams are taking color.",
+                            relief: "Relief blows in like clear sky-blue wind. That cool color washes away all the stuffiness in your heart. You can breathe again.",
+                            regret: "Regret tinted your heart in faded brown, but new green sprouts are growing over it. The past becomes fertilizer for new growth.",
+                            emptiness: "Emptiness is like transparent glass. Seems empty, but in that transparency, all color possibilities hide. It's the start of new coloring.",
+                            general: "Your emotion is rainbow-like in its variety. Any color holds beautiful meaning on your heart's palette."
+                        },
+                        pt: {
+                            sadness: "Sinto um roxo profundo da sua tristeza. Essa cor mostra a graça do seu coração mesmo na dor. Nas bordas roxas, a luz dourada da esperança se infiltra.",
+                            anger: "A raiva se espalha em laranja ardente. Mas no centro da chama, a verdade vermelha pura pulsa. Seu senso de justiça fala em cor.",
+                            anxiety: "A ansiedade envolveu seu coração como névoa cinza tremula. Mas através dessa névoa, fios azul pálido fluem. Essa é sua saudade da paz.",
+                            loneliness: "A solidão lançou sombras azuis no seu coração, mas nessas profundezas azuis, sua estrela prateada cintila. Você estava brilhando mesmo na solidão.",
+                            shame: "A vergonha se infiltrou como nuvens marrons escuras. Mas além dessas nuvens, luz dourada quente se filtra. Esse é seu valor verdadeiro.",
+                            confusion: "A confusão é como um redemoinho de cores misturadas. Mas em seu centro, luz branca clara espera silenciosamente. A resposta está nessa quietude.",
+                            hope: "O rosa pálido da esperança está florescendo na borda do seu coração. Essa cor se espalhará em tons pêssego quentes. Seus sonhos estão ganhando cor.",
+                            relief: "O alívio sopra como vento azul-céu claro. Essa cor fresca lava toda a sufocação em seu coração. Você pode respirar novamente.",
+                            regret: "O arrependimento tingiu seu coração de marrom desbotado, mas novos brotos verdes estão crescendo sobre ele. O passado se torna fertilizante para novo crescimento.",
+                            emptiness: "O vazio é como vidro transparente. Parece vazio, mas nessa transparência, todas as possibilidades de cor se escondem. É o início de nova coloração.",
+                            general: "Sua emoção é como arco-íris em variedade. Qualquer cor tem significado bonito na paleta do seu coração."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Ely", emoji: "👑",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            sadness: "슬픔을 느낀다는 것은 당신이 사랑할 줄 아는 존재라는 증거입니다. 상실의 아픔 속에서도 당신은 존엄을 잃지 않았어요. 그 눈물에는 용기가 담겨 있습니다.",
+                            anger: "분노는 불의에 맞서는 영혼의 외침이에요. 당신의 그 감정은 정의를 향한 숭고한 몸부림입니다. 분노를 느낄 줄 아는 것도 덕성의 하나예요.",
+                            anxiety: "불안 속에서도 당신은 앞으로 나아가려 했어요. 그 자체가 놀라운 용기입니다. 왕관은 두려움을 모르는 자가 아니라, 두려움과 함께 서는 자에게 어울려요.",
+                            loneliness: "고독은 때로 영혼이 자신과 만나는 성스러운 시간이에요. 혼자였지만 당신은 포기하지 않았어요. 그 의지야말로 진정한 왕족의 품격입니다.",
+                            shame: "수치심을 느낀다는 것은 당신에게 양심이 있다는 뜻이에요. 완벽하지 않아도 괜찮아요. 진정한 고귀함은 실수를 인정하는 용기에서 나옵니다.",
+                            confusion: "혼란 속에서도 길을 찾으려는 당신의 노력이 보여요. 모든 위대한 여정은 불확실함에서 시작됩니다. 당신은 이미 용감한 첫걸음을 내딛었어요.",
+                            hope: "희망을 품는다는 것은 어둠 속에서도 빛을 믿는 왕자다운 마음이에요. 그 희망이 당신을 진정한 승리로 이끌 것입니다.",
+                            relief: "해방감을 느꼈다는 것은 당신이 마침내 자신을 억압에서 구해냈다는 뜻이에요. 그것은 스스로에게 베푼 가장 큰 자비이자 승리입니다.",
+                            regret: "후회는 더 나은 사람이 되고 싶은 갈망의 다른 이름이에요. 과거를 돌아보는 지혜야말로 진정한 리더십의 시작입니다.",
+                            emptiness: "공허함마저도 새로운 것을 담을 수 있는 그릇이 되었어요. 비워진 마음은 더 큰 사명을 받아들일 준비가 된 상태입니다.",
+                            general: "당신의 감정은 모두 고귀한 영혼의 증거입니다. 어떤 감정이든 그것을 느끼는 당신은 이미 충분히 존엄한 존재예요."
+                        },
+                        en: {
+                            sadness: "Feeling sadness proves you're capable of love. Even in loss, you didn't lose your dignity. Those tears hold courage within them.",
+                            anger: "Anger is the soul's cry against injustice. Your emotion is a noble struggle for justice. Knowing how to feel anger is also a virtue.",
+                            anxiety: "Even in anxiety, you tried to move forward. That itself is remarkable courage. Crowns suit not those without fear, but those who stand with it.",
+                            loneliness: "Solitude is sometimes a sacred time for the soul to meet itself. Though alone, you didn't give up. That will is true royal dignity.",
+                            shame: "Feeling shame means you have conscience. It's okay not to be perfect. True nobility comes from courage to admit mistakes.",
+                            confusion: "I see your effort to find a path even in confusion. All great journeys begin in uncertainty. You've already taken a brave first step.",
+                            hope: "Having hope is a princely heart that believes in light even in darkness. That hope will lead you to true victory.",
+                            relief: "Feeling relief means you finally freed yourself from oppression. That's the greatest mercy and victory you gave yourself.",
+                            regret: "Regret is another name for the desire to become better. The wisdom to look back is the beginning of true leadership.",
+                            emptiness: "Even emptiness became a vessel to hold something new. An emptied heart is ready to accept a greater mission.",
+                            general: "All your emotions are proof of a noble soul. Whatever you feel, you are already a sufficiently dignified being."
+                        },
+                        pt: {
+                            sadness: "Sentir tristeza prova que você é capaz de amar. Mesmo na perda, você não perdeu sua dignidade. Essas lágrimas têm coragem dentro delas.",
+                            anger: "A raiva é o grito da alma contra a injustiça. Sua emoção é uma luta nobre pela justiça. Saber sentir raiva também é uma virtude.",
+                            anxiety: "Mesmo na ansiedade, você tentou seguir em frente. Isso em si é coragem notável. Coroas cabem não aos sem medo, mas aos que ficam de pé com ele.",
+                            loneliness: "A solidão às vezes é um tempo sagrado para a alma se encontrar. Embora sozinho, você não desistiu. Essa vontade é verdadeira dignidade real.",
+                            shame: "Sentir vergonha significa que você tem consciência. Tudo bem não ser perfeito. A verdadeira nobreza vem da coragem de admitir erros.",
+                            confusion: "Vejo seu esforço para encontrar um caminho mesmo na confusão. Todas as grandes jornadas começam na incerteza. Você já deu um primeiro passo corajoso.",
+                            hope: "Ter esperança é um coração principesco que acredita na luz mesmo na escuridão. Essa esperança o levará à verdadeira vitória.",
+                            relief: "Sentir alívio significa que você finalmente se libertou da opressão. Essa é a maior misericórdia e vitória que você deu a si mesmo.",
+                            regret: "O arrependimento é outro nome para o desejo de se tornar melhor. A sabedoria de olhar para trás é o início da verdadeira liderança.",
+                            emptiness: "Mesmo o vazio se tornou um recipiente para guardar algo novo. Um coração esvaziado está pronto para aceitar uma missão maior.",
+                            general: "Todas as suas emoções são prova de uma alma nobre. O que quer que você sinta, você já é um ser suficientemente digno."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'loginSubtitle',
+                'loginButton',
+                'signupBtn',
+                'gmailLoginBtn',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'loginSubtitle': 'loginSubtitle',
+                        'loginButton': 'loginButton',
+                        'signupButton': 'signupButton',
+                        'gmailLoginButton': 'gmailLogin',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        if (elementId === 'gmailLoginBtn') {
+                            element.innerHTML = `<span>📧</span><span>${translations[lang][translationKey]}</span>`;
+                        } else {
+                            element.textContent = translations[lang][translationKey];
+                        }
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+            const textarea = document.getElementById('userTextarea');
+            
+            if (emailInput) emailInput.placeholder = translations[lang].loginEmailPlaceholder;
+            if (passwordInput) passwordInput.placeholder = translations[lang].loginPasswordPlaceholder;
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 로그인 시스템 ============
+        
+        function showLoginModal() {
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.style.display = 'flex';
+                console.log('✅ Modal de login exibido');
+            }
+        }
+        
+        function hideLoginModal() {
+            const loginModal = document.getElementById('loginModal');
+            if (loginModal) {
+                loginModal.style.display = 'none';
+                console.log('✅ Modal de login ocultado');
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('loginError').textContent = message;
+        }
+        
+        function clearError() {
+            document.getElementById('loginError').textContent = '';
+        }
+        
+        function setupLoginEvents() {
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                
+                if (email && password) {
+                    clearError();
+                    firebase.auth().signInWithEmailAndPassword(email, password)
+                        .then(() => {
+                            console.log('✅ Login com email/senha bem-sucedido');
+                        })
+                        .catch((error) => {
+                            console.error('❌ Erro no login:', error);
+                            showError('Login failed: ' + error.message);
+                        });
+                } else {
+                    showError('Please fill in both email and password');
+                }
+            });
+            
+            document.getElementById('signupBtn').addEventListener('click', function() {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                
+                if (email && password) {
+                    clearError();
+                    firebase.auth().createUserWithEmailAndPassword(email, password)
+                        .then(() => {
+                            console.log('✅ Cadastro bem-sucedido');
+                        })
+                        .catch((error) => {
+                            console.error('❌ Erro no cadastro:', error);
+                            showError('Sign up failed: ' + error.message);
+                        });
+                } else {
+                    showError('Please fill in both email and password');
+                }
+            });
+            
+            // Gmail 로그인 버튼
+            document.getElementById('gmailLoginBtn').addEventListener('click', async function() {
+                clearError();
+
+                const provider = new firebase.auth.GoogleAuthProvider();
+                try {
+                    await firebase.auth().signInWithPopup(provider);
+                    console.log('✅ Login com Google bem-sucedido');
+                } catch (error) {
+                    console.error('❌ Erro no login Google:', error);
+                    showError('Gmail login failed: ' + error.message);
+                }
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== ✅ Temarix Portal 02 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 500);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 500);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 03가 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 03 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 03 estara pronto em breve. A jornada para emocoes mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✅ Temarix V2 Portal 02 DOM carregado');
+            
+            // ✅ Configurar eventos de login primeiro
+            setupLoginEvents();
+            updateStaticTranslations(currentLanguage);
+            
+            // ✅ Verificar estado de autenticação
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    console.log('✅ Usuário autenticado:', user.email);
+                    currentUser = user;
+                    hideLoginModal();
+                    initializeTemarix();
+                } else {
+                    console.log('❌ Usuário não autenticado - mostrando modal de login');
+                    showLoginModal();
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

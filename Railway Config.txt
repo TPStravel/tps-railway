@@ -1,0 +1,51 @@
+✅ Estrutura com 2 contas Railway (Conta 1 + Conta 2)
+📂 Eu vou preparar para você:
+server-railway.zip
+Contendo:
+
+server-final.js
+
+package.json
+
+.env.example
+
+Pronto para subir em duas contas diferentes Railway
+
+tps-gpt.html adaptado
+
+Com código comentado explicando como trocar manualmente de conta
+
+(Opcional: posso incluir fallback automático depois)
+
+🧭 Como usar:
+📦 Backend (Railway)
+Crie Conta 1 Railway → Suba o ZIP
+
+Copie o link: https://backend1.up.railway.app
+
+Crie Conta 2 Railway → Suba o mesmo ZIP
+
+Copie o link: https://backend2.up.railway.app
+
+🖥️ Frontend (tps-gpt.html)
+Altere isso no HTML sempre que quiser trocar:
+
+js
+Copiar
+Editar
+// Backend principal
+const backendURL = 'https://backend1.up.railway.app/gpt-tps';
+
+// Troque por isso quando atingir 500h:
+const backendURL = 'https://backend2.up.railway.app/gpt-tps';
+🎁 Pronto para envio:
+Vou montar e te entregar agora os arquivos:
+
+server-railway.zip ✅
+
+tps-gpt-duas-contas.html ✅
+
+Aguarde um momento enquanto preparo.
+
+
+ngrok config add-authtoken 2yvNhPKghWhZOLOavITkAtP3CqC_5RAmwCUZpnVevmdgqMArH

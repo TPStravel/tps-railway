@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V5 - Portal 03</title>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ff9999;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ff6b6b;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ff6b6b;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .follow-up-section {
+            margin: 50px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .follow-up-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #ff6b6b;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ff6b6b;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ff6b6b;
+            background: rgba(255, 107, 107, 0.05);
+        }
+        
+        .navigation-title {
+            font-size: 28px;
+            color: #ff6b6b;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .navigation-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .nav-btn:hover {
+            background: #666;
+            border-color: #ff6b6b;
+        }
+        
+        .nav-btn.primary {
+            background: #ff6b6b;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .nav-btn.primary:hover {
+            background: #ff8888;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ff6b6b;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ff6b6b;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .follow-up-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-btn {
+                width: 100%;
+            }
+            
+            .navigation-title {
+                font-size: 24px;
+            }
+            
+            .navigation-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V5</div>
+            <div class="logo-subtitle" id="logoSubtitle">Emotional Alchemy</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 03: I Named Myself</div>
+            <div class="portal-subtitle" id="portalSubtitle">The journey of self-identity begins</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="follow-up-section" id="followUpSection">
+                <div class="follow-up-question" id="followUpQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+            
+            <div class="navigation-section" id="navigationSection">
+                <div class="navigation-title" id="navigationTitle">🪞 Portal 03 Complete</div>
+                <div class="navigation-message" id="navigationMessage"></div>
+                <div class="navigation-buttons">
+                    <button class="nav-btn primary" id="nextPortalBtn">Continue to Portal 04</button>
+                    <button class="nav-btn" id="stayPortalBtn">Stay with this moment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Among all the names the world has given you, what name do you truly want to give yourself? (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // Global state management
+        let state = {
+            db: null,
+            auth: null,
+            firebaseInitialized: false,
+            currentUser: null,
+            currentLanguage: 'en',
+            userResponse: '',
+            journeyStarted: false,
+            currentTypingElement: null,
+            typingIntervals: [],
+            awaitingSecondResponse: false,
+            userResponses: [] // Store responses in memory temporarily
+        };
+        
+        // Portal navigation configuration
+        const portalConfig = {
+            currentPortal: "v5-03",
+            nextPortal: "v5-04",
+            nextPortalFile: "temarix_v05_04.html" // Centralized file naming
+        };
+        
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjsINSqPUGdpRPRMYiVg6SkVJJOk9YGsY",
+            authDomain: "canal-vivo-chat.firebaseapp.com",
+            projectId: "canal-vivo-chat",
+            storageBucket: "canal-vivo-chat.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdefghijklmnopqr"
+        };
+        
+        // Initialize Firebase with error handling
+        function initializeFirebase() {
+            return new Promise((resolve) => {
+                try {
+                    if (typeof firebase !== 'undefined') {
+                        firebase.initializeApp(firebaseConfig);
+                        state.db = firebase.firestore();
+                        state.auth = firebase.auth();
+                        state.firebaseInitialized = true;
+                        
+                        // Check authentication state
+                        state.auth.onAuthStateChanged((user) => {
+                            if (user) {
+                                state.currentUser = user;
+                            } else {
+                                // Create anonymous user
+                                state.currentUser = {
+                                    uid: 'anonymous-' + Date.now(),
+                                    email: 'anonymous@temarix.com',
+                                    isAnonymous: true
+                                };
+                            }
+                            showConnectionStatus(true);
+                        });
+                        
+                        console.log('Firebase initialized successfully');
+                    } else {
+                        console.log('Firebase SDK not loaded');
+                        // Create anonymous user
+                        state.currentUser = {
+                            uid: 'anonymous-' + Date.now(),
+                            email: 'anonymous@temarix.com',
+                            isAnonymous: true
+                        };
+                        showConnectionStatus(false);
+                    }
+                } catch (error) {
+                    console.error('Firebase initialization failed:', error);
+                    // Create anonymous user
+                    state.currentUser = {
+                        uid: 'anonymous-' + Date.now(),
+                        email: 'anonymous@temarix.com',
+                        isAnonymous: true
+                    };
+                    showConnectionStatus(false);
+                }
+                resolve(); // Always resolve to continue execution
+            });
+        }
+        
+        // Show connection status to user
+        function showConnectionStatus(isOnline) {
+            // Remove existing status if any
+            const existingStatus = document.querySelector('.connection-status');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            if (!isOnline) {
+                const statusDiv = document.createElement('div');
+                statusDiv.className = 'connection-status';
+                statusDiv.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    background: rgba(255, 107, 107, 0.9);
+                    color: white;
+                    padding: 8px 15px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-family: 'Courier New', monospace;
+                    z-index: 1000;
+                    opacity: 0.8;
+                `;
+                statusDiv.textContent = state.currentLanguage === 'ko' ? '오프라인 모드' : 
+                                       state.currentLanguage === 'pt' ? 'Modo offline' : 'Offline mode';
+                document.body.appendChild(statusDiv);
+                
+                // Auto-hide after 5 seconds
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        // Translations object
+        const translations = {
+            ko: {
+                title: "Temarix V5 - Portal 03: 나는 나에게 이름을 붙였다",
+                logoSubtitle: "감정 연금술",
+                portalMainTitle: "Portal 03: 나는 나에게 이름을 붙였다",
+                portalSubtitle: "자기 정체성의 여정이 시작됩니다",
+                portalIntro: "🪞 \"세상이 붙인 수많은 이름들 속에서,\n당신은 자신에게 어떤 이름을 붙이고 싶었나요?\"\n\n\"비난, 조롱, 기대, 강요… 그런 이름들을 벗겨낸 후,\n당신이 진짜로 붙이고 싶은 이름은 무엇인가요?\"",
+                emotionalBridge: "당신 안에서 무언가 새로운 것이 깨어나고 있는 것을 느끼시나요?\n이제 그 새로운 존재에게 이름을 주어보세요...",
+                followUpQuestion: "지금 이 순간,\n자신에게 선언하듯 말하고 싶은 단어 하나가 있다면 무엇인가요?\n(예: 나는 다시 시작하는 사람이다 / 나는 감정을 믿는다 등)",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "마침내 당신은 스스로에게 이름을 주었고,\n그 이름은 오늘부터 살아 있는 생명이 될 거예요.",
+                navigationTitle: "🪞 Portal 03 완료",
+                navigationMessage: "당신은 세상이 붙인 이름을 벗어나\n자신만의 이름을 찾았습니다.\n\n그 이름은 마법 같은 힘을 가지고 있습니다.\n과거의 이름을 떠나보내고, 다시 시작하는 방식입니다.\n\n이제 당신은 '이름 없는 존재'가 아닙니다.\n당신은 스스로 명명한 존재입니다.",
+                nextPortalBtn: "Portal 04로 이어가기",
+                stayPortalBtn: "이 이름과 더 머물기",
+                inputPlaceholder: "세상이 붙인 수많은 이름들 속에서, 당신이 진짜로 붙이고 싶은 이름은 무엇인가요? (Enter로 전송)",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중...",
+                confirmNextPortal: "Portal 04: 감정은 나의 선생이었다로 이동하시겠습니까?",
+                confirmStay: "이 새로운 이름과 더 머물며 깊이 성찰하시겠습니까?",
+                transitionMessage: "새로운 여정이 시작됩니다..."
+            },
+            en: {
+                title: "Temarix V5 - Portal 03: I Named Myself",
+                logoSubtitle: "Emotional Alchemy",
+                portalMainTitle: "Portal 03: I Named Myself",
+                portalSubtitle: "The journey of self-identity begins",
+                portalIntro: "🪞 \"Among all the names the world has given you,\nwhat name do you want to give yourself?\"\n\n\"After stripping away the names of criticism, mockery, expectations, coercion...\nwhat is the name you truly want to give yourself?\"",
+                emotionalBridge: "Do you feel something new awakening within you?\nNow give a name to that new being...",
+                followUpQuestion: "At this moment,\nif you could declare one word to yourself,\nwhat would it be?\n(e.g., I am someone who starts again / I believe in emotions, etc.)",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Finally, you have given yourself a name,\nand that name will become a living being from today.",
+                navigationTitle: "🪞 Portal 03 Complete",
+                navigationMessage: "You have moved beyond the names the world gave you\nand found your own name.\n\nThat name holds magical power.\nIt's a way of letting go of past names and starting anew.\n\nYou are no longer a 'nameless being.'\nYou are a being who has named yourself.",
+                nextPortalBtn: "Continue to Portal 04",
+                stayPortalBtn: "Stay with this name",
+                inputPlaceholder: "Among all the names the world has given you, what name do you truly want to give yourself? (Press Enter to send)",
+                youLabel: "You",
+                waitingMessage: "Waiting for response...",
+                confirmNextPortal: "Do you want to continue to Portal 04: Emotions Were My Teacher?",
+                confirmStay: "Do you want to stay longer with this new name for deeper reflection?",
+                transitionMessage: "A new journey begins..."
+            },
+            pt: {
+                title: "Temarix V5 - Portal 03: Eu Me Nomeei",
+                logoSubtitle: "Alquimia Emocional",
+                portalMainTitle: "Portal 03: Eu Me Nomeei",
+                portalSubtitle: "A jornada da auto-identidade começa",
+                portalIntro: "🪞 \"Entre todos os nomes que o mundo lhe deu,\nque nome você quer dar a si mesmo?\"\n\n\"Depois de tirar os nomes de crítica, zombaria, expectativas, coerção...\nqual é o nome que você realmente quer se dar?\"",
+                emotionalBridge: "Você sente algo novo despertando dentro de você?\nAgora dê um nome a esse novo ser...",
+                followUpQuestion: "Neste momento,\nse você pudesse declarar uma palavra para si mesmo,\nqual seria?\n(ex: Eu sou alguém que recomeça / Eu acredito nas emoções, etc.)",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Finalmente, você se deu um nome,\ne esse nome se tornará um ser vivo a partir de hoje.",
+                navigationTitle: "🪞 Portal 03 Completo",
+                navigationMessage: "Você superou os nomes que o mundo lhe deu\ne encontrou seu próprio nome.\n\nEsse nome tem poder mágico.\nÉ uma forma de deixar ir os nomes do passado e começar de novo.\n\nVocê não é mais um 'ser sem nome.'\nVocê é um ser que se nomeou.",
+                nextPortalBtn: "Continuar para Portal 04",
+                stayPortalBtn: "Ficar com este nome",
+                inputPlaceholder: "Entre todos os nomes que o mundo lhe deu, que nome você realmente quer se dar? (Enter para enviar)",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta...",
+                confirmNextPortal: "Deseja continuar para Portal 04: As Emoções Foram Minhas Professoras?",
+                confirmStay: "Deseja ficar mais tempo com este novo nome para reflexão mais profunda?",
+                transitionMessage: "Uma nova jornada começa..."
+            }
+        };
+        
+        // Character definitions
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "그 이름은 마치 첫 숨 같아.\n스스로에게 처음으로 허락한 생명이야.",
+                en: "That name is like a first breath.\nThe first life you've allowed yourself.",
+                pt: "Esse nome é como uma primeira respiração.\nA primeira vida que você se permitiu."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "이제 그 단어가 당신을 가둬두지 않아요.\n당신은 스스로를 해방시켰어요.",
+                en: "Now that word doesn't imprison you.\nYou have liberated yourself.",
+                pt: "Agora essa palavra não te aprisiona.\nVocê se libertou."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "이름은 마법 같아요.\n그렇게 당신은 자신에게 축복을 건넨 거예요.",
+                en: "Names are like magic.\nThat's how you gave yourself a blessing.",
+                pt: "Nomes são como mágica.\nAssim você se deu uma bênção."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "새로운 이름은 과거의 이름을 떠나보내는 주문이기도 하지.\n과거를 묻지 않고, 다시 시작하는 방식.",
+                en: "A new name is also a spell to let go of past names.\nA way to start again without asking about the past.",
+                pt: "Um novo nome também é um feitiço para deixar ir os nomes do passado.\nUma forma de recomeçar sem questionar o passado."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "당신의 이름은 색이에요.\n어떤 이름이든, 그 자체로 풍경이 되죠.",
+                en: "Your name is a color.\nWhatever name it is, it becomes a landscape in itself.",
+                pt: "Seu nome é uma cor.\nQualquer que seja o nome, ele se torna uma paisagem por si só."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "세상이 만든 이름은 무기였고,\n당신이 만든 이름은 방패예요.\n드디어 당신은 방어할 수 있어요.",
+                en: "The names the world made were weapons,\nthe name you made is a shield.\nFinally you can defend yourself.",
+                pt: "Os nomes que o mundo fez eram armas,\no nome que você fez é um escudo.\nFinalmente você pode se defender."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "스스로 부르는 이름이\n나를 미래로 이끈다는 걸,\n이제 당신은 알게 되었죠.",
+                en: "You now know that the name you call yourself\nleads you to the future.",
+                pt: "Você agora sabe que o nome que você se chama\nte leva ao futuro."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "그 이름은, 자기 자신을 껴안는 첫 손짓이에요.",
+                en: "That name is the first gesture of embracing yourself.",
+                pt: "Esse nome é o primeiro gesto de abraçar a si mesmo."
+            }}
+        ];
+
+        // Emotion analysis function
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const emotionKeywords = {
+                empowerment: ['strong', 'brave', 'warrior', 'survivor', 'fighter', '강한', '용감한', '전사', '생존자', '싸우는', 'forte', 'corajoso', 'guerreiro', 'sobrevivente', 'lutador'],
+                creativity: ['creative', 'artist', 'dreamer', 'creator', 'maker', '창조적', '예술가', '꿈꾸는', '창작자', 'criativo', 'artista', 'sonhador', 'criador'],
+                healing: ['healer', 'recovering', 'growing', 'healing', 'mending', '치유하는', '회복하는', '성장하는', '치료하는', 'curador', 'recuperando', 'crescendo', 'curando'],
+                love: ['loving', 'caring', 'kind', 'compassionate', 'gentle', '사랑하는', '돌보는', '친절한', '자비로운', '부드러운', 'amoroso', 'cuidadoso', 'gentil', 'compassivo'],
+                wisdom: ['wise', 'thoughtful', 'understanding', 'patient', 'mindful', '지혜로운', '사려깊은', '이해하는', '인내하는', 'sábio', 'pensativo', 'compreensivo', 'paciente'],
+                freedom: ['free', 'independent', 'liberated', 'autonomous', 'unbound', '자유로운', '독립적인', '해방된', '자율적인', 'livre', 'independente', 'libertado', 'autônomo'],
+                connection: ['connected', 'bridge', 'connector', 'uniting', 'together', '연결된', '다리', '연결하는', '하나되는', 'conectado', 'ponte', 'conector', 'unindo'],
+                authentic: ['authentic', 'real', 'genuine', 'true', 'honest', '진정한', '진짜', '정직한', '참된', 'autêntico', 'real', 'genuíno', 'verdadeiro']
+            };
+            
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0];
+        }
+        
+        // Response characters with emotion-based responses
+        const responseCharacters = [
+            {
+                name: "Enya", emoji: "🧑‍🚀",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            empowerment: "감정은 나침반이야. 당신은 이제 그것을 '믿는다'고 선언했어. 그래서… 당신은 잃어버리지 않을 거예요.",
+                            creativity: "창조의 힘이 당신 안에서 깨어났어요. 그 이름은 새로운 세계를 만들 거예요.",
+                            healing: "치유는 시간이 아니라 선언이에요. 당신은 지금 그 선언을 했어요.",
+                            love: "사랑은 당신이 세상에 주는 첫 번째 선물이에요.",
+                            wisdom: "지혜는 경험에서 나오고, 당신은 그 경험을 이름으로 바꿨어요.",
+                            freedom: "자유는 허락이 아니라 선택이에요. 당신은 지금 선택했어요.",
+                            connection: "연결은 당신이 세상과 맺는 새로운 약속이에요.",
+                            authentic: "진정성은 가면을 벗는 것이 아니라, 진짜 얼굴을 드러내는 거예요.",
+                            general: "감정은 나침반이야. 당신은 이제 그것을 '믿는다'고 선언했어. 그래서… 당신은 잃어버리지 않을 거예요."
+                        },
+                        en: {
+                            empowerment: "Emotions are a compass. You have now declared that you 'believe' in them. So... you won't lose your way.",
+                            creativity: "The power of creation has awakened within you. That name will create a new world.",
+                            healing: "Healing is not about time, but declaration. You have made that declaration now.",
+                            love: "Love is the first gift you give to the world.",
+                            wisdom: "Wisdom comes from experience, and you've turned that experience into a name.",
+                            freedom: "Freedom is not permission, but choice. You have chosen now.",
+                            connection: "Connection is a new promise you make with the world.",
+                            authentic: "Authenticity isn't about removing masks, but revealing your true face.",
+                            general: "Emotions are a compass. You have now declared that you 'believe' in them. So... you won't lose your way."
+                        },
+                        pt: {
+                            empowerment: "Emoções são uma bússola. Você agora declarou que 'acredita' nelas. Então... você não vai se perder.",
+                            creativity: "O poder da criação despertou dentro de você. Esse nome criará um novo mundo.",
+                            healing: "Cura não é sobre tempo, mas declaração. Você fez essa declaração agora.",
+                            love: "Amor é o primeiro presente que você dá ao mundo.",
+                            wisdom: "Sabedoria vem da experiência, e você transformou essa experiência em um nome.",
+                            freedom: "Liberdade não é permissão, mas escolha. Você escolheu agora.",
+                            connection: "Conexão é uma nova promessa que você faz com o mundo.",
+                            authentic: "Autenticidade não é sobre remover máscaras, mas revelar seu rosto verdadeiro.",
+                            general: "Emoções são uma bússola. Você agora declarou que 'acredita' nelas. Então... você não vai se perder."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            empowerment: "그 선언은 목소리가 아니라 존재의 떨림이에요. 나는 지금, 그 울림을 느껴요.",
+                            creativity: "창조는 무에서 유를 만드는 게 아니라, 내면의 색을 세상에 펼치는 거예요.",
+                            healing: "치유의 이름을 부른 순간, 상처는 지혜가 되기 시작해요.",
+                            love: "사랑의 이름으로 자신을 부른 당신, 이제 세상도 당신을 사랑으로 부를 거예요.",
+                            wisdom: "지혜는 나이가 아니라 깊이에서 나와요. 당신은 그 깊이를 이름으로 만들었어요.",
+                            freedom: "자유는 날개가 아니라 뿌리예요. 당신은 이제 진짜 뿌리를 내렸어요.",
+                            connection: "연결의 이름을 가진 당신은 더 이상 혼자가 아니에요.",
+                            authentic: "진정함의 이름은 거울 앞에서도 부끄럽지 않은 이름이에요.",
+                            general: "그 선언은 목소리가 아니라 존재의 떨림이에요. 나는 지금, 그 울림을 느껴요."
+                        },
+                        en: {
+                            empowerment: "That declaration is not a voice but the trembling of existence. I can feel that resonance now.",
+                            creativity: "Creation is not making something from nothing, but spreading your inner colors to the world.",
+                            healing: "The moment you called the name of healing, wounds began to become wisdom.",
+                            love: "You who called yourself by the name of love, now the world will call you by love too.",
+                            wisdom: "Wisdom comes not from age but from depth. You've turned that depth into a name.",
+                            freedom: "Freedom is not wings but roots. You have now put down real roots.",
+                            connection: "You with the name of connection are no longer alone.",
+                            authentic: "The name of authenticity is one you're not ashamed of even in front of a mirror.",
+                            general: "That declaration is not a voice but the trembling of existence. I can feel that resonance now."
+                        },
+                        pt: {
+                            empowerment: "Essa declaração não é uma voz, mas o tremor da existência. Posso sentir essa ressonância agora.",
+                            creativity: "Criação não é fazer algo do nada, mas espalhar suas cores internas para o mundo.",
+                            healing: "No momento em que você chamou o nome da cura, as feridas começaram a se tornar sabedoria.",
+                            love: "Você que se chamou pelo nome do amor, agora o mundo também te chamará pelo amor.",
+                            wisdom: "Sabedoria não vem da idade, mas da profundidade. Você transformou essa profundidade em um nome.",
+                            freedom: "Liberdade não são asas, mas raízes. Você agora criou raízes reais.",
+                            connection: "Você com o nome de conexão não está mais sozinho.",
+                            authentic: "O nome da autenticidade é aquele do qual você não se envergonha nem diante de um espelho.",
+                            general: "Essa declaração não é uma voz, mas o tremor da existência. Posso sentir essa ressonância agora."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Kael", emoji: "🧙",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            empowerment: "마침내 당신은 스스로에게 이름을 주었고, 그 이름은 오늘부터 살아 있는 생명이 될 거예요.",
+                            creativity: "창조의 이름은 매일 새로운 세계를 낳을 거예요.",
+                            healing: "치유의 이름은 시간을 거슬러 과거의 상처까지 어루만질 거예요.",
+                            love: "사랑의 이름으로 자신을 부르는 순간, 당신은 사랑 그 자체가 되었어요.",
+                            wisdom: "지혜의 이름은 당신을 현자로 만들지 않고, 현자로 살게 할 거예요.",
+                            freedom: "자유의 이름은 당신을 어떤 감옥에서도 해방시킬 주문이에요.",
+                            connection: "연결의 이름은 보이지 않는 다리를 만들어 세상과 당신을 이어줄 거예요.",
+                            authentic: "진정성의 이름은 당신을 가짜에서 진짜로 변화시키는 연금술이에요.",
+                            general: "마침내 당신은 스스로에게 이름을 주었고, 그 이름은 오늘부터 살아 있는 생명이 될 거예요."
+                        },
+                        en: {
+                            empowerment: "Finally you have given yourself a name, and that name will become a living being from today.",
+                            creativity: "The name of creation will give birth to a new world every day.",
+                            healing: "The name of healing will reach back through time to soothe even past wounds.",
+                            love: "The moment you call yourself by the name of love, you became love itself.",
+                            wisdom: "The name of wisdom won't make you a sage, but will make you live as one.",
+                            freedom: "The name of freedom is a spell that will liberate you from any prison.",
+                            connection: "The name of connection will build invisible bridges linking you to the world.",
+                            authentic: "The name of authenticity is alchemy that transforms you from fake to real.",
+                            general: "Finally you have given yourself a name, and that name will become a living being from today."
+                        },
+                        pt: {
+                            empowerment: "Finalmente você se deu um nome, e esse nome se tornará um ser vivo a partir de hoje.",
+                            creativity: "O nome da criação dará à luz um novo mundo todos os dias.",
+                            healing: "O nome da cura alcançará o passado no tempo para curar até feridas antigas.",
+                            love: "No momento em que você se chama pelo nome do amor, você se tornou o próprio amor.",
+                            wisdom: "O nome da sabedoria não te fará um sábio, mas te fará viver como um.",
+                            freedom: "O nome da liberdade é um feitiço que te libertará de qualquer prisão.",
+                            connection: "O nome da conexão construirá pontes invisíveis ligando você ao mundo.",
+                            authentic: "O nome da autenticidade é alquimia que te transforma de falso para real.",
+                            general: "Finalmente você se deu um nome, e esse nome se tornará um ser vivo a partir de hoje."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        // Typewriter effect
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (state.currentTypingElement) {
+                    state.currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                state.currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        state.currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        state.currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                state.typingIntervals.push(typingInterval);
+            });
+        }
+        
+        // Clear all typing effects
+        function clearAllTypingEffects() {
+            state.typingIntervals.forEach(interval => clearInterval(interval));
+            state.typingIntervals = [];
+            
+            if (state.currentTypingElement) {
+                state.currentTypingElement.classList.remove('typing-cursor');
+                state.currentTypingElement = null;
+            }
+        }
+        
+        // Scroll functions
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // Language management
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            const t = translations[lang];
+            document.title = t.title;
+            document.getElementById('logoSubtitle').textContent = t.logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = t.portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = t.portalSubtitle;
+            document.getElementById('lightTitle').textContent = t.lightTitle;
+            document.getElementById('navigationTitle').textContent = t.navigationTitle;
+            document.getElementById('nextPortalBtn').textContent = t.nextPortalBtn;
+            document.getElementById('stayPortalBtn').textContent = t.stayPortalBtn;
+            document.getElementById('userTextarea').placeholder = t.inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || state.currentLanguage === lang) return;
+            
+            state.currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (state.journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // Journey management
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'followUpSection', 'userInputSection',
+                'userReactionsSection', 'lightMessageSection', 'navigationSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('followUpQuestion').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('navigationMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[state.currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            state.userResponse = '';
+            state.currentTypingElement = null;
+            state.awaitingSecondResponse = false;
+        }
+        
+        // Save response to database or memory
+        async function saveResponse(inputText, step) {
+            const responseData = {
+                portal: portalConfig.currentPortal,
+                resposta: inputText,
+                step: step,
+                data: new Date().toISOString(),
+                idioma: state.currentLanguage,
+                userId: state.currentUser ? state.currentUser.uid : 'anonymous',
+                userEmail: state.currentUser ? state.currentUser.email : 'anonymous@temarix.com'
+            };
+            
+            if (state.firebaseInitialized && state.db) {
+                try {
+                    await state.db.collection("temarix_v5_respostas").add({
+                        ...responseData,
+                        timestamp: firebase.firestore.Timestamp.now()
+                    });
+                    console.log('Response saved to Firestore');
+                } catch (error) {
+                    console.error('Error saving to Firestore:', error);
+                    // Store temporarily in memory and show offline status
+                    state.userResponses.push(responseData);
+                    showConnectionStatus(false);
+                }
+            } else {
+                // Store temporarily in memory if Firebase not available
+                state.userResponses.push(responseData);
+                console.log('Response stored in memory:', responseData);
+            }
+        }
+        
+        // User input processing
+        async function processUserInput(inputText) {
+            state.userResponse = inputText;
+            
+            await saveResponse(inputText, state.awaitingSecondResponse ? "second" : "first");
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                if (!state.awaitingSecondResponse) {
+                    showUserReactions(inputText);
+                } else {
+                    showSecondUserReactions(inputText);
+                }
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[state.currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[state.currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[state.currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        // Show character reactions
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[state.currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFollowUpQuestion();
+            }, 2000);
+        }
+        
+        async function showFollowUpQuestion() {
+            const followUpSection = document.getElementById('followUpSection');
+            const followUpQuestionEl = document.getElementById('followUpQuestion');
+            
+            followUpSection.classList.add('show');
+            
+            await typewriterEffect(followUpQuestionEl, translations[state.currentLanguage].followUpQuestion, 50);
+            
+            setTimeout(() => {
+                state.awaitingSecondResponse = true;
+                enableUserInput();
+            }, 1500);
+        }
+        
+        async function showSecondUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, state.currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[state.currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showNavigationSection();
+            }, 2000);
+        }
+        
+        async function showNavigationSection() {
+            const navigationSection = document.getElementById('navigationSection');
+            const navigationMessage = document.getElementById('navigationMessage');
+            
+            navigationSection.classList.add('show');
+            
+            const messageText = translations[state.currentLanguage].navigationMessage;
+            await typewriterEffect(navigationMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(navigationSection);
+            }, 500);
+        }
+        
+        // Portal sequence
+        async function startPortalSequence() {
+            console.log('Starting portal sequence...');
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            console.log('Showing intro...');
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            if (!introSection || !introElement) {
+                console.error('Intro elements not found!');
+                return;
+            }
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[state.currentLanguage].portalIntro;
+            console.log('Intro text:', introText);
+            
+            await typewriterEffect(introElement, introText, 60);
+            
+            // Add emotional bridge before showing characters
+            setTimeout(async () => {
+                await showEmotionalBridge();
+            }, 2000);
+        }
+        
+        async function showEmotionalBridge() {
+            const introElement = document.getElementById('portalIntro');
+            const bridgeText = '\n\n' + translations[state.currentLanguage].emotionalBridge;
+            
+            // Add bridge text with typing effect
+            await typewriterEffect({
+                innerHTML: '',
+                classList: { add: () => {}, remove: () => {} },
+                style: {},
+                textContent: '',
+                appendChild: () => {},
+                offsetTop: 0
+            }, '', 0); // Dummy element for delay
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Create new paragraph for bridge
+            const bridgeP = document.createElement('p');
+            bridgeP.style.cssText = `
+                margin-top: 30px;
+                font-style: italic;
+                color: #ff9999;
+                font-size: 18px;
+                line-height: 1.8;
+            `;
+            introElement.appendChild(bridgeP);
+            
+            await typewriterEffect(bridgeP, bridgeText.trim(), 50);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[state.currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 2000);
+        }
+        
+        // Custom confirm dialog with translated text
+        function showConfirmDialog(message, callback) {
+            // Create modal overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            // Create modal content
+            const modal = document.createElement('div');
+            modal.style.cssText = `
+                background: #222;
+                border: 2px solid #ff6b6b;
+                padding: 30px;
+                max-width: 400px;
+                text-align: center;
+                color: white;
+            `;
+            
+            const messageP = document.createElement('p');
+            messageP.textContent = message;
+            messageP.style.cssText = `
+                margin-bottom: 20px;
+                line-height: 1.6;
+                font-size: 16px;
+            `;
+            
+            const buttonContainer = document.createElement('div');
+            buttonContainer.style.cssText = `
+                display: flex;
+                gap: 15px;
+                justify-content: center;
+            `;
+            
+            const yesBtn = document.createElement('button');
+            const noBtn = document.createElement('button');
+            
+            const buttonStyle = `
+                background: #444;
+                color: white;
+                border: 1px solid #ff6b6b;
+                padding: 10px 20px;
+                cursor: pointer;
+                font-family: 'Courier New', monospace;
+                font-size: 14px;
+            `;
+            
+            yesBtn.style.cssText = buttonStyle + 'background: #ff6b6b;';
+            noBtn.style.cssText = buttonStyle;
+            
+            // Set button texts based on current language
+            const t = translations[state.currentLanguage];
+            yesBtn.textContent = state.currentLanguage === 'ko' ? '예' : 
+                                state.currentLanguage === 'pt' ? 'Sim' : 'Yes';
+            noBtn.textContent = state.currentLanguage === 'ko' ? '아니오' : 
+                               state.currentLanguage === 'pt' ? 'Não' : 'No';
+            
+            // Event handlers
+            yesBtn.onclick = () => {
+                document.body.removeChild(overlay);
+                callback(true);
+            };
+            
+            noBtn.onclick = () => {
+                document.body.removeChild(overlay);
+                callback(false);
+            };
+            
+            // Close on overlay click
+            overlay.onclick = (e) => {
+                if (e.target === overlay) {
+                    document.body.removeChild(overlay);
+                    callback(false);
+                }
+            };
+            
+            // Escape key handler
+            const escHandler = (e) => {
+                if (e.key === 'Escape') {
+                    document.body.removeChild(overlay);
+                    document.removeEventListener('keydown', escHandler);
+                    callback(false);
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+            
+            // Build and show modal
+            buttonContainer.appendChild(yesBtn);
+            buttonContainer.appendChild(noBtn);
+            modal.appendChild(messageP);
+            modal.appendChild(buttonContainer);
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            // Focus on Yes button
+            yesBtn.focus();
+        }
+        
+        // Event setup
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        // Smooth portal transition with visual effects
+        function createPortalTransition(callback) {
+            // Create transition overlay
+            const overlay = document.createElement('div');
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(45deg, #000 0%, #111 50%, #000 100%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 20000;
+                opacity: 0;
+                transition: opacity 1s ease-in-out;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            // Create transition message
+            const message = document.createElement('div');
+            message.style.cssText = `
+                color: #ff6b6b;
+                font-size: 24px;
+                text-align: center;
+                margin-bottom: 30px;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: all 0.8s ease-out;
+            `;
+            message.textContent = translations[state.currentLanguage].transitionMessage;
+            
+            // Create loading animation
+            const loader = document.createElement('div');
+            loader.style.cssText = `
+                width: 60px;
+                height: 60px;
+                border: 3px solid #333;
+                border-top: 3px solid #ff6b6b;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                opacity: 0;
+                transition: opacity 0.8s ease-out 0.3s;
+            `;
+            
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            overlay.appendChild(message);
+            overlay.appendChild(loader);
+            document.body.appendChild(overlay);
+            
+            // Start transition animation
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+            }, 10);
+            
+            setTimeout(() => {
+                message.style.opacity = '1';
+                message.style.transform = 'translateY(0)';
+                loader.style.opacity = '1';
+            }, 300);
+            
+            // Complete transition and redirect
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(overlay);
+                    document.head.removeChild(style);
+                    callback();
+                }, 1000);
+            }, 2500);
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            // Next portal button with transition
+            document.getElementById('nextPortalBtn').addEventListener('click', function() {
+                const t = translations[state.currentLanguage];
+                showConfirmDialog(t.confirmNextPortal, (confirmed) => {
+                    if (confirmed) {
+                        // Save completion status if Firebase available
+                        if (state.firebaseInitialized && state.db) {
+                            state.db.collection("temarix_v5_progress").add({
+                                userId: state.currentUser.uid,
+                                portal: portalConfig.currentPortal,
+                                status: "complete",
+                                timestamp: firebase.firestore.Timestamp.now()
+                            }).catch(error => console.error('Error saving progress:', error));
+                        }
+                        
+                        // Start transition animation
+                        createPortalTransition(() => {
+                            window.location.href = `${portalConfig.nextPortalFile}?lang=${state.currentLanguage}`;
+                        });
+                    }
+                });
+            });
+            
+            // Stay button
+            document.getElementById('stayPortalBtn').addEventListener('click', function() {
+                const t = translations[state.currentLanguage];
+                showConfirmDialog(t.confirmStay, (confirmed) => {
+                    if (confirmed) {
+                        resetJourney();
+                        setTimeout(() => {
+                            startPortalSequence();
+                        }, 1000);
+                    }
+                });
+            });
+        }
+        
+        // Get language from URL
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        // Initialize Temarix
+        function initializeTemarix() {
+            console.log('Initializing Temarix V5 Portal 03...');
+            console.log('Current state:', state);
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            state.journeyStarted = true;
+            console.log('Journey started:', state.journeyStarted);
+            
+            // Start portal sequence immediately
+            console.log('Starting portal sequence in 1 second...');
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        // Main initialization
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Temarix V5 Portal 03 DOM loaded');
+            
+            // Get initial language from URL
+            state.currentLanguage = getLanguageFromURL();
+            
+            // Update UI with selected language immediately
+            updateStaticTranslations(state.currentLanguage);
+            updateLanguageButtons(state.currentLanguage);
+            
+            // Initialize Firebase
+            await initializeFirebase();
+            
+            // Start the journey immediately
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

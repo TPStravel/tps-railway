@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 10: The Day I Wanted to Disappear Without Anyone Knowing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 10: The Day I Wanted to Disappear Without Anyone Knowing</div>
+            <div class="portal-subtitle" id="portalSubtitle">The last cry hidden within quiet wishes</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">🌙 Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 11</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Share about the day you wanted to disappear... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 10: 아무도 모르게 사라지고 싶었던 날",
+                portalSubtitle: "조용한 소망 속에 숨겨진 마지막 외침",
+                portalIntro: "어떤 날은 정말\n말도 없이, 흔적도 없이, 그냥 사라지고 싶습니다.\n누구도 찾지 않길 바라고,\n누구도 알아채지 않기를 바라며…\n\n하지만 정작 사라지고 싶은 마음의 밑바닥엔\n누군가가 붙잡아주길 바라는 조용한 바람이\n아주 작게 떨리고 있죠.\n\n혹시 당신도,\n그런 날이 있었나요?",
+                lightTitle: "🌙 빛의 한마디",
+                lightMessage: "사라지고 싶었던 그날,\n당신은 누구보다 절실히 존재하고 싶었던 사람입니다.",
+                portalQuestion: "당신은 언제,\n말없이 조용히 사라지고 싶었던 적이 있었나요?",
+                continueText: "사라지고 싶었던 그날을 돌아본 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 11로 계속하시겠습니까?",
+                continueNo: "여정을 일시정지하시겠습니까?",
+                inputPlaceholder: "사라지고 싶었던 그날에 대해 털어놓아 보세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "당신이 사라지고 싶었던 그날,\n당신의 존재는 더욱 선명하게 빛나고 있었습니다.",
+                charCris: "진심으로 사라지고 싶던 적, 나도 있어요.\n근데 웃긴 건 뭔지 아세요?\n그 마음 다 적은 다음날…\n아무도 모르고, 내가 다시 돌아왔어요. 😌",
+                charZafirah: "당신이 조용히 사라지려 했던 건\n살아있고 싶다는 마지막 외침이었을 거예요.",
+                charRami: "사라짐은 감정이 보내는 극단의 언어입니다.\n그 안에는 아직도 연결되고 싶은 내면이 숨겨져 있어요.",
+                charSamir: "(그는 조용히 뒤를 돌아\n누군가를 찾듯 주위를 살핍니다.\n'혹시라도 당신이 사라졌다면…'\n누군가는 분명 찾을 거라는 몸짓입니다.)",
+                charLayla: "나는 당신이 사라지고 싶었던 날도\n그 마음조차 사랑스럽다고 느낄 수 있어요.\n그만큼 당신은 살아 있으니까요.",
+                charNabir: "그래, 사라지면 어때?\n지금도 별로 존재감 없잖아.\n그 누구도 눈치 못 챘을걸?",
+                charAzhar: "사라지고 싶다고?\n차라리 폭발하고 떠나지 그랬어.\n이렇게 아무 말 없이 조용한 건…\n그게 더 무섭더라."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 10: The Day I Wanted to Disappear Without Anyone Knowing",
+                portalSubtitle: "The last cry hidden within quiet wishes",
+                portalIntro: "Some days you really want\nto just disappear without a word, without a trace.\nHoping no one will look for you,\nhoping no one will notice...\n\nBut at the bottom of that desire to disappear\nlies a quiet wish for someone to hold you back,\ntrembling so very softly.\n\nHave you ever had\nsuch days?",
+                lightTitle: "🌙 Word of Light",
+                lightMessage: "On that day you wanted to disappear,\nyou were someone who desperately wanted to exist more than anyone.",
+                portalQuestion: "When have you\nwanted to quietly disappear without saying anything?",
+                continueText: "Will you continue this journey of reflecting on the day you wanted to disappear?",
+                continueYes: "Continue to Portal 11?",
+                continueNo: "Pause the journey?",
+                inputPlaceholder: "Share about the day you wanted to disappear... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "On that day you wanted to disappear,\nyour existence was shining even more clearly.",
+                charCris: "I've sincerely wanted to disappear too.\nBut you know what's funny?\nThe day after I wrote down all those feelings...\nWithout anyone knowing, I came back. 😌",
+                charZafirah: "Your quiet attempt to disappear\nwas probably a final cry of wanting to live.",
+                charRami: "Disappearing is the extreme language emotions send.\nHidden within it is an inner self that still wants to connect.",
+                charSamir: "(He quietly turns around\nand looks around as if searching for someone.\n'If you had disappeared...'\nHis gesture says someone would surely look for you.)",
+                charLayla: "Even the day you wanted to disappear,\nI can find that feeling endearing.\nBecause it means you're so very alive.",
+                charNabir: "So what if you disappear?\nYou don't have much presence anyway.\nNobody would have noticed, right?",
+                charAzhar: "You wanted to disappear?\nYou should have just exploded and left.\nThis quiet, wordless thing...\nThat's more frightening."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 10: O Dia Que Quis Desaparecer Sem Ninguém Saber",
+                portalSubtitle: "O último grito escondido dentro de desejos silenciosos",
+                portalIntro: "Alguns dias você realmente quer\napenas desaparecer sem uma palavra, sem deixar rastro.\nEsperando que ninguém procure por você,\nesperando que ninguém perceba...\n\nMas no fundo desse desejo de desaparecer\nreside um desejo silencioso de que alguém te segure,\ntremendo tão suavemente.\n\nVocê já teve\ndias assim?",
+                lightTitle: "🌙 Palavra de Luz",
+                lightMessage: "Naquele dia que você queria desaparecer,\nvocê era alguém que desesperadamente queria existir mais que qualquer um.",
+                portalQuestion: "Quando você\nquis silenciosamente desaparecer sem dizer nada?",
+                continueText: "Você continuará esta jornada de refletir sobre o dia que quis desaparecer?",
+                continueYes: "Continuar para o Portal 11?",
+                continueNo: "Pausar a jornada?",
+                inputPlaceholder: "Compartilhe sobre o dia que quis desaparecer... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "Naquele dia que você queria desaparecer,\nsua existência estava brilhando ainda mais claramente.",
+                charCris: "Eu também já quis sinceramente desaparecer.\nMas sabe o que é engraçado?\nNo dia seguinte depois de escrever todos esses sentimentos...\nSem ninguém saber, eu voltei. 😌",
+                charZafirah: "Sua tentativa silenciosa de desaparecer\nprovavelmente foi um último grito de querer viver.",
+                charRami: "Desaparecer é a linguagem extrema que as emoções enviam.\nEscondido dentro dela está um eu interior que ainda quer se conectar.",
+                charSamir: "(Ele silenciosamente se vira\ne olha ao redor como se procurasse por alguém.\n'Se você tivesse desaparecido...'\nSeu gesto diz que alguém certamente procuraria por você.)",
+                charLayla: "Mesmo no dia que você quis desaparecer,\nposso achar esse sentimento carinhoso.\nPorque significa que você está tão vivo.",
+                charNabir: "E daí se você desaparecer?\nVocê não tem muita presença mesmo.\nNinguém teria notado, certo?",
+                charAzhar: "Você queria desaparecer?\nDeveria ter apenas explodido e ido embora.\nEssa coisa silenciosa, sem palavras...\nIsso é mais assustador."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑 (Portal 10 특화)
+            const emotionKeywords = {
+                disappear: ['사라지', '없어지', '지워', '소멸', 'disappear', 'vanish', 'erase', 'desaparecer', 'sumir'],
+                alone: ['혼자', '고독', '외로', '홀로', 'alone', 'lonely', 'solitary', 'sozinho', 'solitário'],
+                invisible: ['안 보이', '투명', '존재감', '흔적', 'invisible', 'transparent', 'trace', 'invisível', 'transparente'],
+                silence: ['조용히', '말없이', '침묵', '소리없이', 'silently', 'quietly', 'silence', 'silenciosamente', 'silêncio'],
+                exhaustion: ['지쳐', '힘들어', '버텨', '포기', 'exhausted', 'tired', 'give up', 'cansado', 'desistir'],
+                pain: ['아파', '아프', '상처', '슬퍼', 'hurt', 'pain', 'sad', 'dor', 'machucado', 'triste'],
+                escape: ['도망', '피하', '벗어나', '탈출', 'escape', 'run away', 'avoid', 'escapar', 'fugir'],
+                hopeless: ['절망', '무력', '막막', '답답', 'hopeless', 'helpless', 'despair', 'sem esperança', 'desespero'],
+                burden: ['부담', '짐', '무게', '책임', 'burden', 'weight', 'responsibility', 'fardo', 'peso'],
+                misunderstood: ['이해받지', '오해', '모르', '알아주지', 'misunderstood', 'not understood', 'incompreendido', 'mal entendido']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (Portal 10 전용)
+        const responseCharacters = [
+            {
+                name: "Searcher", emoji: "🔍",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            disappear: "사라진다고 해서 존재가 지워지는 건 아니에요. 당신이 사라지고 싶었던 그날, 누군가는 분명히 당신을 찾았을 거예요. 보이지 않는 곳에서라도 말이에요.",
+                            alone: "혼자라고 느꼈을 때가 가장 많은 사람들이 당신을 생각하고 있던 순간일지도 몰라요. 당신이 사라지면, 그 빈자리를 느낄 사람들이 있어요.",
+                            invisible: "투명해지고 싶었던 마음, 이해해요. 하지만 당신은 누군가에게는 가장 선명하게 보이는 존재였을 거예요. 그 사람들을 찾아보세요.",
+                            silence: "조용히 사라지려 했던 건, 누군가가 소란스럽게 찾아주기를 바랐던 마음의 반대편일지도 몰라요. 침묵도 하나의 신호였어요.",
+                            exhaustion: "너무 지쳐서 모든 걸 포기하고 싶었겠네요. 하지만 지금 여기 있다는 건, 당신이 포기하지 않았다는 증거예요. 그 힘이 어디서 왔는지 찾아봐요.",
+                            pain: "아픔이 너무 커서 존재 자체를 지우고 싶었군요. 그 아픔을 혼자 감당하려 했던 당신이 얼마나 용감했는지, 이제는 알아봐야 해요.",
+                            escape: "도망치고 싶었던 그곳에서 벗어나기 위해 스스로를 지우려 했군요. 하지만 진짜 탈출은 자신을 지우는 게 아니라 자신을 찾는 것일지도 몰라요.",
+                            hopeless: "절망 속에서 사라지는 게 유일한 답처럼 느껴졌겠네요. 하지만 그 절망을 넘어선 지금의 당신이, 그때의 당신에게 줄 수 있는 희망이 있어요.",
+                            burden: "짐이 되는 것 같아서 스스로를 없애려 했군요. 하지만 당신은 누군가에게 짐이 아니라 소중한 존재예요. 그 사람들을 찾아보세요.",
+                            misunderstood: "아무도 이해해주지 않아서 그냥 사라지고 싶었군요. 하지만 이해받지 못한다고 해서 존재 가치가 사라지는 건 아니에요. 진짜 이해는 지금부터 시작될 수 있어요.",
+                            general: "사라지고 싶었던 모든 이유들 뒤에는, 사실 더 깊이 존재하고 싶었던 마음이 숨어 있어요. 그 마음을 찾아서 끄집어내는 게 진짜 답일지도 몰라요."
+                        },
+                        en: {
+                            disappear: "Disappearing doesn't erase existence. On that day you wanted to disappear, someone surely looked for you, even from an invisible place.",
+                            alone: "When you felt most alone might have been when the most people were thinking of you. If you disappeared, there would be people who'd feel that empty space.",
+                            invisible: "I understand the desire to become invisible. But you were probably the most clearly visible person to someone. Try to find those people.",
+                            silence: "Wanting to disappear quietly might have been the opposite side of wanting someone to search for you loudly. Silence was also a signal.",
+                            exhaustion: "You must have been so tired that you wanted to give up everything. But being here now is proof that you didn't give up. Find where that strength came from.",
+                            pain: "The pain was so great you wanted to erase your very existence. Now you need to recognize how brave you were for trying to bear that pain alone.",
+                            escape: "You tried to erase yourself to escape from that place. But real escape might not be erasing yourself, but finding yourself.",
+                            hopeless: "In despair, disappearing felt like the only answer. But there's hope that the current you, who overcame that despair, can give to your past self.",
+                            burden: "You tried to remove yourself because you felt like a burden. But you're not a burden to someone - you're a precious existence. Find those people.",
+                            misunderstood: "You wanted to just disappear because no one understood you. But not being understood doesn't erase your worth. Real understanding can start now.",
+                            general: "Behind all the reasons you wanted to disappear, there was actually a heart that wanted to exist more deeply. Finding and bringing out that heart might be the real answer."
+                        },
+                        pt: {
+                            disappear: "Desaparecer não apaga a existência. Naquele dia que você quis desaparecer, alguém certamente procurou por você, mesmo de um lugar invisível.",
+                            alone: "Quando você se sentiu mais sozinho pode ter sido quando mais pessoas estavam pensando em você. Se você desaparecesse, haveria pessoas que sentiriam esse espaço vazio.",
+                            invisible: "Entendo o desejo de se tornar invisível. Mas você provavelmente era a pessoa mais claramente visível para alguém. Tente encontrar essas pessoas.",
+                            silence: "Querer desaparecer silenciosamente pode ter sido o lado oposto de querer que alguém procurasse por você ruidosamente. Silêncio também era um sinal.",
+                            exhaustion: "Você deve ter estado tão cansado que quis desistir de tudo. Mas estar aqui agora é prova de que você não desistiu. Encontre de onde veio essa força.",
+                            pain: "A dor era tão grande que você quis apagar sua própria existência. Agora você precisa reconhecer quão corajoso foi por tentar suportar essa dor sozinho.",
+                            escape: "Você tentou se apagar para escapar daquele lugar. Mas a verdadeira fuga pode não ser se apagar, mas se encontrar.",
+                            hopeless: "No desespero, desaparecer parecia a única resposta. Mas há esperança que o você atual, que superou esse desespero, pode dar ao seu eu passado.",
+                            burden: "Você tentou se remover porque se sentia um fardo. Mas você não é um fardo para alguém - você é uma existência preciosa. Encontre essas pessoas.",
+                            misunderstood: "Você quis apenas desaparecer porque ninguém te entendia. Mas não ser compreendido não apaga seu valor. Verdadeira compreensão pode começar agora.",
+                            general: "Por trás de todas as razões que você quis desaparecer, havia na verdade um coração que queria existir mais profundamente. Encontrar e trazer à tona esse coração pode ser a verdadeira resposta."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Anchor", emoji: "⚓",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            disappear: "당신이 사라지고 싶었던 그 순간에도, 당신을 이 세상에 붙잡고 있던 보이지 않는 끈들이 있었어요. 그것들이 무엇이었는지 천천히 찾아보세요.",
+                            alone: "혼자라고 느꼈지만, 당신의 존재는 누군가의 세상에 깊이 뿌리내리고 있었어요. 그 뿌리들을 확인해보세요.",
+                            invisible: "보이지 않는다고 해서 연결되지 않은 건 아니에요. 당신은 누군가의 마음에 확실히 자리 잡고 있었어요.",
+                            silence: "말 없이 사라지려 했지만, 당신의 침묵 자체가 누군가에게는 중요한 메시지였을 거예요. 그 의미를 찾아보세요.",
+                            exhaustion: "지쳐서 놓고 싶었지만, 무언가가 당신을 계속 붙잡고 있었죠. 그것이 무엇인지 알아보는 것이 중요해요.",
+                            pain: "아픔에서 벗어나고 싶어 사라지려 했지만, 그 아픔조차 당신이 살아있다는 증거였어요. 그 생명력을 인정해보세요.",
+                            escape: "탈출하려 했지만, 진짜 안전한 곳은 완전히 새로운 곳이 아니라 당신 자신 안에 있을지도 몰라요.",
+                            hopeless: "희망이 보이지 않아서 모든 걸 끝내려 했지만, 희망은 때로 가장 어두운 곳에서 싹트는 법이에요.",
+                            burden: "짐이 되고 싶지 않아서 스스로를 제거하려 했지만, 당신의 존재 자체가 누군가에게는 든든한 기둥이었을 거예요.",
+                            misunderstood: "이해받지 못한다고 사라지려 했지만, 완전한 이해는 시간이 필요한 법이에요. 그 시간을 기다려볼 가치가 있어요.",
+                            general: "사라지고 싶었던 모든 순간에도, 당신을 여기에 머물게 한 무언가가 있었어요. 그것을 찾는 것이 답의 시작일 거예요."
+                        },
+                        en: {
+                            disappear: "Even in that moment you wanted to disappear, there were invisible threads keeping you anchored to this world. Try to slowly find what those were.",
+                            alone: "Though you felt alone, your existence was deeply rooted in someone's world. Check those roots.",
+                            invisible: "Being invisible doesn't mean being disconnected. You were surely positioned in someone's heart.",
+                            silence: "You tried to disappear without words, but your silence itself would have been an important message to someone. Find that meaning.",
+                            exhaustion: "You were tired and wanted to let go, but something kept holding onto you. It's important to know what that was.",
+                            pain: "You tried to disappear to escape pain, but even that pain was proof you were alive. Acknowledge that life force.",
+                            escape: "You tried to escape, but the truly safe place might not be somewhere completely new, but within yourself.",
+                            hopeless: "You tried to end everything because you couldn't see hope, but hope sometimes sprouts in the darkest places.",
+                            burden: "You tried to remove yourself because you didn't want to be a burden, but your very existence would have been a strong pillar for someone.",
+                            misunderstood: "You tried to disappear because you weren't understood, but complete understanding takes time. It's worth waiting for that time.",
+                            general: "Even in all those moments you wanted to disappear, there was something that made you stay here. Finding that will be the beginning of the answer."
+                        },
+                        pt: {
+                            disappear: "Mesmo naquele momento que você quis desaparecer, havia fios invisíveis mantendo você ancorado neste mundo. Tente encontrar lentamente o que eram esses fios.",
+                            alone: "Embora você se sentisse sozinho, sua existência estava profundamente enraizada no mundo de alguém. Verifique essas raízes.",
+                            invisible: "Ser invisível não significa estar desconectado. Você certamente estava posicionado no coração de alguém.",
+                            silence: "Você tentou desaparecer sem palavras, mas seu silêncio em si teria sido uma mensagem importante para alguém. Encontre esse significado.",
+                            exhaustion: "Você estava cansado e queria desistir, mas algo continuava te segurando. É importante saber o que era isso.",
+                            pain: "Você tentou desaparecer para escapar da dor, mas mesmo essa dor era prova de que você estava vivo. Reconheça essa força vital.",
+                            escape: "Você tentou escapar, mas o lugar verdadeiramente seguro pode não ser em algum lugar completamente novo, mas dentro de você mesmo.",
+                            hopeless: "Você tentou acabar com tudo porque não conseguia ver esperança, mas a esperança às vezes brota nos lugares mais escuros.",
+                            burden: "Você tentou se remover porque não queria ser um fardo, mas sua própria existência teria sido um pilar forte para alguém.",
+                            misunderstood: "Você tentou desaparecer porque não foi compreendido, mas compreensão completa leva tempo. Vale a pena esperar por esse tempo.",
+                            general: "Mesmo em todos aqueles momentos que você quis desaparecer, havia algo que fez você ficar aqui. Encontrar isso será o começo da resposta."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Light", emoji: "💡",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            disappear: "사라지고 싶었던 그 마음이, 사실은 다시 태어나고 싶었던 마음의 다른 이름이었을지도 몰라요. 완전히 새로운 시작을 원했던 거죠.",
+                            alone: "혼자라고 느꼈던 그 순간들이 모여서, 지금의 독립적이고 강한 당신을 만들었어요. 그 고독이 선물해준 힘을 발견해보세요.",
+                            invisible: "보이지 않고 싶었던 건, 진짜 자신을 보여주기 전에 안전한 공간이 필요했던 거예요. 이제 그 진짜 모습을 드러낼 때가 왔어요.",
+                            silence: "조용히 사라지려 했던 건, 더 큰 목소리로 돌아오기 위한 준비 시간이었을지도 몰라요. 이제 말할 준비가 되었나요?",
+                            exhaustion: "너무 지쳐서 멈추고 싶었던 그 순간이, 새로운 에너지를 위한 필요한 휴식이었어요. 이제 다시 시작할 힘이 생겼을 거예요.",
+                            pain: "아픔에서 벗어나고 싶어했던 그 간절함이, 치유에 대한 깊은 의지였어요. 그 의지가 지금도 당신 안에서 작동하고 있어요.",
+                            escape: "도망치고 싶었던 곳에서 벗어나려는 시도가, 더 나은 곳을 찾으려는 용기였어요. 그 용기로 새로운 길을 만들어보세요.",
+                            hopeless: "절망 속에서도 끝을 생각했다는 건, 여전히 뭔가를 원하고 있었다는 뜻이에요. 그 원하는 것이 무엇인지 찾아보세요.",
+                            burden: "짐이 되지 않으려 했던 마음이, 사실은 다른 사람을 사랑하는 마음이었어요. 그 사랑을 올바른 방식으로 표현해보세요.",
+                            misunderstood: "이해받지 못해서 포기하려 했던 건, 진짜 소통에 대한 갈망이었어요. 그 갈망을 포기하지 말고 다른 방법을 시도해보세요.",
+                            general: "사라지고 싶었던 모든 이유들이, 사실은 더 나은 존재가 되고 싶었던 열망의 다른 표현이었어요. 그 열망을 긍정적인 방향으로 활용해보세요."
+                        },
+                        en: {
+                            disappear: "That desire to disappear might have been another name for wanting to be reborn. You wanted a completely new beginning.",
+                            alone: "Those moments you felt alone came together to create the independent and strong you of today. Discover the strength that solitude gifted you.",
+                            invisible: "Wanting to be invisible was needing a safe space before showing your real self. Now it's time to reveal that true appearance.",
+                            silence: "Trying to disappear quietly might have been preparation time to return with a bigger voice. Are you ready to speak now?",
+                            exhaustion: "That moment you were so tired you wanted to stop was necessary rest for new energy. You probably have the strength to start again now.",
+                            pain: "That desperation to escape pain was a deep will for healing. That will is still operating within you now.",
+                            escape: "The attempt to escape from where you wanted to run was courage to find a better place. Use that courage to create a new path.",
+                            hopeless: "Thinking of an end even in despair means you still wanted something. Find what that something is.",
+                            burden: "The heart that tried not to be a burden was actually a heart that loved others. Try expressing that love in the right way.",
+                            misunderstood: "Trying to give up because you weren't understood was a longing for real communication. Don't give up that longing and try other methods.",
+                            general: "All the reasons you wanted to disappear were actually different expressions of a desire to become a better being. Try using that desire in a positive direction."
+                        },
+                        pt: {
+                            disappear: "Esse desejo de desaparecer pode ter sido outro nome para querer renascer. Você queria um começo completamente novo.",
+                            alone: "Aqueles momentos que você se sentiu sozinho se juntaram para criar o você independente e forte de hoje. Descubra a força que a solidão te presenteou.",
+                            invisible: "Querer ser invisível era precisar de um espaço seguro antes de mostrar seu verdadeiro eu. Agora é hora de revelar essa aparência verdadeira.",
+                            silence: "Tentar desaparecer silenciosamente pode ter sido tempo de preparação para voltar com uma voz maior. Você está pronto para falar agora?",
+                            exhaustion: "Aquele momento que você estava tão cansado que quis parar foi descanso necessário para nova energia. Você provavelmente tem força para começar de novo agora.",
+                            pain: "Esse desespero para escapar da dor era uma vontade profunda de cura. Essa vontade ainda está operando dentro de você agora.",
+                            escape: "A tentativa de escapar de onde você queria fugir era coragem para encontrar um lugar melhor. Use essa coragem para criar um novo caminho.",
+                            hopeless: "Pensar em um fim mesmo no desespero significa que você ainda queria algo. Encontre o que é esse algo.",
+                            burden: "O coração que tentou não ser um fardo era na verdade um coração que amava outros. Tente expressar esse amor da maneira certa.",
+                            misunderstood: "Tentar desistir porque você não foi compreendido era um anseio por comunicação real. Não desista desse anseio e tente outros métodos.",
+                            general: "Todas as razões que você quis desaparecer eram na verdade diferentes expressões de um desejo de se tornar um ser melhor. Tente usar esse desejo em uma direção positiva."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 10 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 11이 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 11 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 11 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 10 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V2 - Portal 17: The Mind That Feels It Must Keep Performing to Survive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+        }
+        
+        /* 상단 헤더 */
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #fff;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        /* 언어 버튼 3개 */
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        /* 메인 콘텐츠 */
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            word-break: keep-all;
+            overflow-wrap: break-word;
+            hyphens: none;
+            min-height: 150vh;
+        }
+        
+        /* 텍스트 섹션들 */
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #87cefa;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #87cefa;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #87cefa;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .user-response strong {
+            color: #87cefa;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .continue-section {
+            margin: 50px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 200px;
+        }
+        
+        .continue-text {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            word-break: keep-all;
+        }
+        
+        .continue-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .continue-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 18px 35px;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+        
+        .continue-btn:hover {
+            background: #666;
+        }
+        
+        .continue-btn.primary {
+            background: #87cefa;
+            color: #000;
+        }
+        
+        .continue-btn.primary:hover {
+            background: #b0d4f1;
+        }
+        
+        /* 하단 고정 입력창 */
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #87cefa;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #87cefa;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        /* 스크롤바 스타일링 */
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        /* 애니메이션 */
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .continue-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .continue-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 상단 헤더 -->
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V2</div>
+            <div class="logo-subtitle" id="logoSubtitle">The Tremor of Emotion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 17: The Mind That Feels It Must Keep Performing to Survive</div>
+            <div class="portal-subtitle" id="portalSubtitle">Breaking free from the compulsion of perfection</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 메인 콘텐츠 영역 -->
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <!-- 포털 인트로 -->
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <!-- 캐릭터 응답 섹션 -->
+            <div class="character-responses-section" id="characterResponsesSection">
+                <!-- 8명의 캐릭터 응답이 순차적으로 표시됩니다 -->
+            </div>
+
+            <!-- 빛의 한마디 -->
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <!-- 질문 섹션 -->
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <!-- 사용자 입력 영역 -->
+            <div class="user-input-section" id="userInputSection">
+                <!-- 사용자 응답이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 사용자 응답 후 캐릭터 반응 -->
+            <div class="user-reactions-section" id="userReactionsSection">
+                <!-- 사용자 응답 후 3명의 캐릭터 반응이 여기에 표시됩니다 -->
+            </div>
+            
+            <!-- 계속하기 버튼 섹션 -->
+            <div class="continue-section" id="continueSection">
+                <div class="continue-text" id="continueText"></div>
+                <div class="continue-buttons">
+                    <button class="continue-btn primary" id="continueYesBtn">Continue to Portal 18</button>
+                    <button class="continue-btn" id="continueNoBtn">Pause the journey</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 하단 고정 입력창 -->
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="Express your emotions honestly about perfectionism... (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        // 메모리 기반 사용자 스토리지 (localStorage 대신)
+        let memoryStorage = {
+            mockUser: null
+        };
+
+        // 번역 데이터
+        const translations = {
+            ko: {
+                logoSubtitle: "감정의 떨림",
+                portalMainTitle: "Portal 17: 계속 잘해야만 살아남을 것 같은 마음",
+                portalSubtitle: "완벽함의 강박에서 벗어나는 곳",
+                portalIntro: "칭찬을 받아야 인정받는 것 같고,\n실수 한 번이면 모든 걸 잃을 것 같은 마음…\n그래서 우리는 끊임없이 괜찮은 사람으로 연기합니다.\n\n실수하지 않기 위해, 버림받지 않기 위해\n늘 조심하고, 계산하고, 스스로를 눌러가며\n'문제없는 사람'으로 살아가려 하죠.\n\n하지만 당신은,\n그렇게까지 계속 잘해야만\n살아남을 자격이 있는 존재인가요?",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "당신이 계속 잘하려고 애쓴 건\n살기 위해 버텨온 당신의 방식이었을 뿐입니다.\n이제 그 방식 대신, 자신을 믿는 선택도 가능합니다.",
+                portalQuestion: "당신은 언제부터,\n'잘해야만 살아남을 수 있다'고 믿게 되었나요?",
+                continueText: "완벽함의 강박을 탐구한 이 여정을 계속하시겠습니까?",
+                continueYes: "Portal 18로 계속하기",
+                continueNo: "여정을 일시정지하기",
+                inputPlaceholder: "완벽주의에 대한 당신의 감정을 솔직하게 표현해주세요... (Enter로 전송)",
+                youLabel: "당신",
+                languageChangeConfirm: "언어를 변경하면 여정이 처음부터 다시 시작됩니다.\n계속하시겠습니까?",
+                waitingMessage: "응답을 기다리는 중...",
+                // 캐릭터 대화
+                charEly: "당신의 존재는\n성취의 대가로 유지되는 것이 아닙니다.\n당신은 이미 존재할 자격을 지닌 사람입니다.",
+                charCris: "야~ 나도 그랬어요!\n'안 실수하면 버티는 거다'\n근데 결국 터지더라고요. 그때 알았어요 — 난 기계가 아니구나. 🤖",
+                charZafirah: "당신이 그렇게 애쓰는 건\n살기 위해서가 아니라\n누군가에게 잊히지 않기 위해서일지도 모릅니다.",
+                charRami: "완벽은 감정이 아니라 강박입니다.\n감정은 불완전함을 통해 존재감을 갖습니다.",
+                charSamir: "(그는 천천히 손으로 흙을 털어내듯,\n'지워도 괜찮다'는 몸짓을 보냅니다.\n그 흙 묻은 손에도 생명이 살아 있음을 보여주며.)",
+                charLayla: "실수했을 때의 당신도,\n여전히 충분히 사랑받을 수 있는 사람이에요.\n나는 그 모습까지도 껴안을 수 있어요.",
+                charNabir: "잘해. 계속. 멈추지 마.\n한 번만 삐끗하면 다 무너질 거 알잖아.\n넌 그런 존재야.",
+                charAzhar: "넌 그냥 멈추면 안 돼.\n쉴 틈 없어.\n그 순간, 다른 누군가가 널 밀어낼 거야."
+            },
+            en: {
+                logoSubtitle: "The Tremor of Emotion",
+                portalMainTitle: "Portal 17: The Mind That Feels It Must Keep Performing to Survive",
+                portalSubtitle: "Breaking free from the compulsion of perfection",
+                portalIntro: "Feeling like you need praise to be accepted,\nfeeling like one mistake will cost you everything...\nSo we constantly perform as 'good people.'\n\nTo avoid mistakes, to avoid abandonment,\nwe're always careful, calculating, suppressing ourselves\ntrying to live as 'problem-free people.'\n\nBut are you really someone who needs to keep being perfect\njust to deserve to survive?",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Your constant effort to be good was just\nyour way of surviving.\nNow, instead of that way, choosing to trust yourself is also possible.",
+                portalQuestion: "Since when did you start believing\nthat 'you can only survive by being good'?",
+                continueText: "Will you continue this journey of exploring the compulsion of perfectionism?",
+                continueYes: "Continue to Portal 18",
+                continueNo: "Pause the journey",
+                inputPlaceholder: "Express your emotions honestly about perfectionism... (Press Enter to send)",
+                youLabel: "You",
+                languageChangeConfirm: "Changing the language will restart the journey from the beginning.\nDo you want to continue?",
+                waitingMessage: "Waiting for response...",
+                charEly: "Your existence is not\nmaintained by the price of achievement.\nYou are already a person worthy of existence.",
+                charCris: "Hey~ I was like that too!\n'If I don't make mistakes, I can survive'\nBut eventually it exploded. That's when I realized — I'm not a machine. 🤖",
+                charZafirah: "Your effort might not be\nfor survival\nbut to not be forgotten by someone.",
+                charRami: "Perfection is not emotion but obsession.\nEmotion gains presence through imperfection.",
+                charSamir: "(He slowly brushes off dirt with his hands,\ngesturing 'it's okay to erase.'\nShowing that life exists even in those dirt-covered hands.)",
+                charLayla: "Even when you make mistakes,\nyou're still someone who can be fully loved.\nI can embrace even that version of you.",
+                charNabir: "Be good. Keep going. Don't stop.\nYou know everything will collapse with one slip.\nThat's what you are.",
+                charAzhar: "You just can't stop.\nNo time to rest.\nThe moment you do, someone else will push you out."
+            },
+            pt: {
+                logoSubtitle: "O Tremor da Emoção",
+                portalMainTitle: "Portal 17: A Mente Que Sente Que Deve Continuar Performando para Sobreviver",
+                portalSubtitle: "Libertando-se da compulsão da perfeição",
+                portalIntro: "Sentir que precisa de elogios para ser aceito,\nsentir que um erro custará tudo...\nEntão constantemente representamos como 'pessoas boas.'\n\nPara evitar erros, para evitar abandono,\nsempre cuidadosos, calculando, nos reprimindo\ntentando viver como 'pessoas sem problemas.'\n\nMas você é realmente alguém que precisa continuar sendo perfeito\napenas para merecer sobreviver?",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Seu esforço constante para ser bom foi apenas\nsua maneira de sobreviver.\nAgora, em vez dessa maneira, escolher confiar em si mesmo também é possível.",
+                portalQuestion: "Desde quando você começou a acreditar\nque 'só pode sobreviver sendo bom'?",
+                continueText: "Você continuará esta jornada de explorar a compulsão do perfeccionismo?",
+                continueYes: "Continuar para o Portal 18",
+                continueNo: "Pausar a jornada",
+                inputPlaceholder: "Expresse suas emoções honestamente sobre perfeccionismo... (Enter para enviar)",
+                youLabel: "Você",
+                languageChangeConfirm: "Mudar o idioma reiniciará a jornada desde o início.\nDeseja continuar?",
+                waitingMessage: "Aguardando resposta...",
+                charEly: "Sua existência não é\nmantida pelo preço da conquista.\nVocê já é uma pessoa digna de existir.",
+                charCris: "Ei~ Eu também era assim!\n'Se eu não cometer erros, posso sobreviver'\nMas eventualmente explodiu. Foi quando percebi — não sou uma máquina. 🤖",
+                charZafirah: "Seu esforço pode não ser\npara sobrevivência\nmas para não ser esquecido por alguém.",
+                charRami: "Perfeição não é emoção, mas obsessão.\nEmoção ganha presença através da imperfeição.",
+                charSamir: "(Ele lentamente escova a sujeira com as mãos,\ngestualizando 'está bem apagar.'\nMostrando que a vida existe mesmo nessas mãos sujas.)",
+                charLayla: "Mesmo quando você comete erros,\nvocê ainda é alguém que pode ser totalmente amado.\nPosso abraçar até essa versão de você.",
+                charNabir: "Seja bom. Continue. Não pare.\nVocê sabe que tudo vai desabar com um deslize.\nÉ isso que você é.",
+                charAzhar: "Você simplesmente não pode parar.\nSem tempo para descansar.\nNo momento que parar, alguém mais vai te empurrar para fora."
+            }
+        };
+        
+        // 캐릭터 데이터
+        const characters = [
+            { name: "Ely", emoji: "👑", key: "charEly" },
+            { name: "Cris", emoji: "🃏", key: "charCris" },
+            { name: "Zafirah", emoji: "🧕", key: "charZafirah" },
+            { name: "Rami", emoji: "🔮", key: "charRami" },
+            { name: "Samir", emoji: "🐪", key: "charSamir" },
+            { name: "Layla", emoji: "💠", key: "charLayla" },
+            { name: "Nabir", emoji: "🦂", key: "charNabir" },
+            { name: "Azhar", emoji: "🔥", key: "charAzhar" }
+        ];
+        
+        // ============ 감정 분석 시스템 ============
+        
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            // 감정 키워드 매핑 (Portal 17 특화)
+            const emotionKeywords = {
+                perfectionism: ['완벽', '잘해야', '실수', '틀리', '잘못', '완벽하', 'perfect', 'mistake', 'wrong', 'perfeito', 'erro'],
+                pressure: ['압박', '스트레스', '부담', '무겁', '힘들', 'pressure', 'stress', 'burden', 'pressão', 'estresse'],
+                fear: ['두려', '무서', '걱정', '불안', 'fear', 'scared', 'worry', 'afraid', 'medo', 'preocup'],
+                exhaustion: ['지쳤', '피곤', '힘들', '버티', '지친', 'tired', 'exhaust', 'weary', 'cansado', 'exausto'],
+                validation: ['인정', '칭찬', '인정받', '사랑받', 'validation', 'praise', 'recognition', 'reconhecimento', 'validação'],
+                shame: ['부끄', '창피', '수치', '미안', 'shame', 'embarrass', 'guilt', 'vergonha', 'culpa'],
+                relief: ['해방', '자유', '편해', '후련', 'relief', 'free', 'liberat', 'alívio', 'liberdade'],
+                anger: ['화가', '분노', '짜증', '억울', 'angry', 'mad', 'frustrat', 'raiva', 'irritad'],
+                sadness: ['슬프', '우울', '눈물', 'sad', 'depress', 'cry', 'triste', 'deprimido'],
+                emptiness: ['공허', '허무', '무기력', 'empty', 'meaningless', 'numb', 'vazio', 'sem sentido']
+            };
+            
+            // 감정 분석
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            // 감정이 감지되지 않으면 기본값 설정
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0]; // 첫 번째 감지된 감정 반환
+        }
+        
+        // 반응 캐릭터들 (Portal 17 전용)
+        const responseCharacters = [
+            {
+                name: "Mirror", emoji: "🪞",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            perfectionism: "거울 속의 당신은 완벽하지 않아도 아름다워요. 결함도, 상처도, 모든 것이 당신다운 모습이에요. 완벽함보다 진정성이 더 빛나요.",
+                            pressure: "압박감 속에서도 여전히 살아 숨쉬는 당신을 봅니다. 그 자체로 이미 충분한 성취예요. 더 이상 자신을 몰아붙이지 마세요.",
+                            fear: "두려움 뒤에 숨은 진짜 당신을 보고 있어요. 그 두려움조차 당신이 얼마나 간절히 살고 싶어하는지를 보여주는 증거예요.",
+                            exhaustion: "지친 모습도 당신의 진짜 얼굴이에요. 쉬어도 괜찮다고, 완벽하지 않아도 사랑받을 자격이 있다고 거울이 말해주고 있어요.",
+                            validation: "인정받고 싶었던 마음, 그 순수한 갈망을 봅니다. 하지만 가장 중요한 인정은 바로 당신 자신으로부터 나와야 해요.",
+                            shame: "부끄러움으로 고개 숙인 당신도 여전히 아름다워요. 완벽하지 않은 모습이야말로 가장 인간다운 모습이거든요.",
+                            relief: "해방감을 느끼는 당신의 표정이 이렇게 밝을 줄 몰랐어요. 진정한 자유를 맛본 얼굴이 이렇게 아름다운 거였군요.",
+                            anger: "화난 당신도 정당해요. 그동안 억눌러왔던 진짜 감정들이 드디어 목소리를 내는 거예요. 그 분노도 당신의 일부예요.",
+                            sadness: "슬픔에 젖은 당신의 모습에서 깊은 사랑을 봅니다. 슬플 수 있다는 것은 사랑할 수 있다는 증거니까요.",
+                            emptiness: "공허함 속에서도 당신은 여전히 존재해요. 그 빈 공간은 새로운 것들로 채워질 가능성의 공간이에요.",
+                            general: "거울 속 당신은 생각보다 많은 것을 견뎌냈고, 많은 것을 이뤄냈어요. 있는 그대로의 당신으로도 충분히 소중해요."
+                        },
+                        en: {
+                            perfectionism: "You in the mirror are beautiful even without perfection. Flaws, wounds, everything is uniquely you. Authenticity shines brighter than perfection.",
+                            pressure: "I see you still breathing and living despite the pressure. That itself is already enough achievement. Stop pushing yourself so hard.",
+                            fear: "I see the real you hidden behind fear. Even that fear shows how desperately you want to live.",
+                            exhaustion: "Your tired face is also your real face. The mirror tells you it's okay to rest, you deserve love even when not perfect.",
+                            validation: "I see that pure longing to be recognized. But the most important recognition must come from yourself.",
+                            shame: "You with your head down in shame are still beautiful. Being imperfect is the most human thing.",
+                            relief: "I didn't know your face could be this bright when feeling relief. This is what true freedom looks like.",
+                            anger: "Your anger is justified too. The real emotions you've suppressed are finally speaking up. That anger is also part of you.",
+                            sadness: "In your sad face, I see deep love. Being able to feel sad is proof you can love.",
+                            emptiness: "Even in emptiness, you still exist. That empty space is possibility waiting to be filled.",
+                            general: "You in the mirror have endured more than you think, achieved more than you know. You are precious just as you are."
+                        },
+                        pt: {
+                            perfectionism: "Você no espelho é lindo mesmo sem perfeição. Falhas, feridas, tudo é unicamente você. Autenticidade brilha mais que perfeição.",
+                            pressure: "Vejo você ainda respirando e vivendo apesar da pressão. Isso em si já é conquista suficiente. Pare de se pressionar tanto.",
+                            fear: "Vejo o verdadeiro você escondido atrás do medo. Mesmo esse medo mostra o quanto você quer viver.",
+                            exhaustion: "Seu rosto cansado também é seu rosto real. O espelho diz que está bem descansar, você merece amor mesmo quando não perfeito.",
+                            validation: "Vejo esse anseio puro de ser reconhecido. Mas o reconhecimento mais importante deve vir de si mesmo.",
+                            shame: "Você de cabeça baixa em vergonha ainda é bonito. Ser imperfeito é a coisa mais humana.",
+                            relief: "Não sabia que seu rosto podia ser tão brilhante ao sentir alívio. É assim que a verdadeira liberdade parece.",
+                            anger: "Sua raiva também é justificada. As emoções reais que você suprimiu finalmente estão falando. Essa raiva também é parte de você.",
+                            sadness: "Em seu rosto triste, vejo amor profundo. Poder sentir tristeza é prova de que pode amar.",
+                            emptiness: "Mesmo no vazio, você ainda existe. Esse espaço vazio é possibilidade esperando ser preenchida.",
+                            general: "Você no espelho suportou mais do que pensa, conquistou mais do que sabe. Você é precioso exatamente como é."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Heart", emoji: "💗",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            perfectionism: "완벽하려고 애쓰는 마음 뒤에는 사랑받고 싶은 순수한 마음이 있었어요. 그 마음이 얼마나 소중한지, 나는 알고 있어요.",
+                            pressure: "압박감으로 조여오는 가슴을 달래주고 싶어요. 당신의 마음은 그런 무게를 감당하기엔 너무 연약하고 소중해요.",
+                            fear: "두려워하는 마음도 사랑이에요. 잃고 싶지 않은 것들이 있다는 뜻이니까요. 그 사랑을 인정해 주세요.",
+                            exhaustion: "지친 마음아, 이제 좀 쉬어도 돼. 계속 뛰지 않아도, 멈춰 서 있어도 나는 여전히 당신을 사랑해.",
+                            validation: "인정받고 싶어하는 마음은 자연스러운 거예요. 하지만 가장 먼저 당신 자신이 당신의 마음을 인정해 주세요.",
+                            shame: "부끄러움으로 움츠러든 마음도 따뜻하게 품어줄게요. 완벽하지 않은 마음도 충분히 사랑스러워요.",
+                            relief: "해방감을 느끼는 마음이 이렇게 가벼울 수 있었구나. 진짜 자유를 찾은 마음은 이렇게 따뜻해요.",
+                            anger: "화가 난 마음도 정당해요. 그동안 참아온 것들에 대한 정당한 반응이에요. 그 감정도 소중히 여겨주세요.",
+                            sadness: "슬픈 마음은 깊이 사랑할 줄 아는 마음이에요. 그 슬픔만큼 당신은 따뜻한 사람이에요.",
+                            emptiness: "공허한 마음도 괜찮아요. 비어있다는 것은 새로운 사랑으로 채워질 준비가 됐다는 뜻이에요.",
+                            general: "당신의 모든 마음, 모든 감정을 사랑해요. 완벽하지 않아도, 흔들려도, 그 모든 것이 사랑스러워요."
+                        },
+                        en: {
+                            perfectionism: "Behind the heart trying to be perfect was a pure heart wanting to be loved. I know how precious that heart is.",
+                            pressure: "I want to soothe your chest tightening with pressure. Your heart is too tender and precious to bear such weight.",
+                            fear: "A fearful heart is also love. It means there are things you don't want to lose. Please acknowledge that love.",
+                            exhaustion: "Tired heart, you can rest now. Even if you don't keep running, even if you stop, I still love you.",
+                            validation: "Wanting recognition is natural. But first, you yourself need to acknowledge your own heart.",
+                            shame: "I'll warmly embrace your heart that shrinks with shame. An imperfect heart is also lovable enough.",
+                            relief: "I didn't know a heart feeling relief could be this light. A heart that found true freedom is this warm.",
+                            anger: "An angry heart is also justified. It's a rightful response to what you've endured. Please treasure that emotion too.",
+                            sadness: "A sad heart is a heart that knows how to love deeply. You are as warm as that sadness.",
+                            emptiness: "An empty heart is okay too. Being empty means you're ready to be filled with new love.",
+                            general: "I love all your hearts, all your emotions. Even imperfect, even shaking, all of it is lovable."
+                        },
+                        pt: {
+                            perfectionism: "Atrás do coração tentando ser perfeito havia um coração puro querendo ser amado. Sei como esse coração é precioso.",
+                            pressure: "Quero acalmar seu peito apertando com pressão. Seu coração é muito delicado e precioso para suportar tal peso.",
+                            fear: "Um coração temeroso também é amor. Significa que há coisas que você não quer perder. Por favor, reconheça esse amor.",
+                            exhaustion: "Coração cansado, você pode descansar agora. Mesmo se não continuar correndo, mesmo se parar, ainda te amo.",
+                            validation: "Querer reconhecimento é natural. Mas primeiro, você mesmo precisa reconhecer seu próprio coração.",
+                            shame: "Vou abraçar calorosamente seu coração que encolhe com vergonha. Um coração imperfeito também é adorável o suficiente.",
+                            relief: "Não sabia que um coração sentindo alívio podia ser tão leve. Um coração que encontrou verdadeira liberdade é assim caloroso.",
+                            anger: "Um coração com raiva também é justificado. É uma resposta justa ao que você suportou. Por favor, valorize essa emoção também.",
+                            sadness: "Um coração triste é um coração que sabe amar profundamente. Você é tão caloroso quanto essa tristeza.",
+                            emptiness: "Um coração vazio também está bem. Estar vazio significa estar pronto para ser preenchido com novo amor.",
+                            general: "Amo todos os seus corações, todas suas emoções. Mesmo imperfeito, mesmo tremendo, tudo é adorável."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Breath", emoji: "🌬️",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            perfectionism: "완벽해야 한다는 생각에 숨이 막혔죠? 이제 천천히 숨을 쉬어보세요. 불완전해도 숨쉴 자격이 있어요.",
+                            pressure: "압박감으로 숨이 가빠졌나요? 깊게 숨을 들이마시고, 천천히 내쉬세요. 당신만의 속도로 살아가도 괜찮아요.",
+                            fear: "두려움으로 숨이 얕아졌군요. 하지만 여전히 숨을 쉬고 있다는 것은 살아있다는 증거예요. 그것만으로도 용감해요.",
+                            exhaustion: "지쳐서 숨조차 가빠지죠. 잠깐 멈춰서 깊이 숨을 쉬어보세요. 쉬는 것도 살아가는 방법이에요.",
+                            validation: "인정받고 싶어서 숨을 참고 있었나요? 이제 자연스럽게 숨을 쉬세요. 있는 그대로도 충분해요.",
+                            shame: "부끄러움으로 숨을 죽이고 있었군요. 부끄러운 마음도 자연스러운 거예요. 편안히 숨쉬세요.",
+                            relief: "해방감과 함께 드디어 깊은 숨을 쉴 수 있게 됐네요. 이 자유로운 호흡을 만끽하세요.",
+                            anger: "분노로 숨이 거칠어졌나요? 그 감정도 자연스러운 거예요. 분노도 당신의 살아있는 증거니까요.",
+                            sadness: "슬픔으로 숨이 멎는 것 같죠? 하지만 여전히 숨쉬고 있어요. 슬픔 속에서도 생명은 계속돼요.",
+                            emptiness: "공허함 속에서도 숨은 계속 들어왔다 나갔다 해요. 그 숨결이 당신이 살아있다는 증거예요.",
+                            general: "당신의 모든 순간, 모든 숨결이 소중해요. 완벽하지 않아도 숨쉴 권리가 있어요."
+                        },
+                        en: {
+                            perfectionism: "Thoughts of needing to be perfect suffocated you? Now breathe slowly. You have the right to breathe even when imperfect.",
+                            pressure: "Did pressure make you breathless? Take a deep breath in, slowly exhale. It's okay to live at your own pace.",
+                            fear: "Fear made your breathing shallow. But still breathing is proof you're alive. That alone is brave.",
+                            exhaustion: "Exhaustion makes even breathing labored. Stop for a moment and breathe deeply. Resting is also a way of living.",
+                            validation: "Were you holding your breath wanting recognition? Now breathe naturally. You're enough as you are.",
+                            shame: "You were holding your breath in shame. Feeling ashamed is natural too. Breathe comfortably.",
+                            relief: "Finally you can breathe deeply with relief. Savor this freedom of breath.",
+                            anger: "Did anger make your breathing rough? That emotion is natural too. Anger is also proof you're alive.",
+                            sadness: "Sadness feels like it stops your breath? But you're still breathing. Life continues even in sadness.",
+                            emptiness: "Even in emptiness, breath keeps going in and out. That breath is proof you're alive.",
+                            general: "All your moments, all your breaths are precious. You have the right to breathe even when not perfect."
+                        },
+                        pt: {
+                            perfectionism: "Pensamentos de precisar ser perfeito te sufocaram? Agora respire devagar. Você tem direito de respirar mesmo quando imperfeito.",
+                            pressure: "A pressão te deixou sem fôlego? Respire fundo, expire devagar. Está bem viver no seu próprio ritmo.",
+                            fear: "O medo tornou sua respiração superficial. Mas ainda respirar é prova de que está vivo. Só isso já é corajoso.",
+                            exhaustion: "A exaustão torna até a respiração trabalhosa. Pare por um momento e respire profundamente. Descansar também é uma forma de viver.",
+                            validation: "Estava prendendo a respiração querendo reconhecimento? Agora respire naturalmente. Você é suficiente como é.",
+                            shame: "Estava prendendo a respiração em vergonha. Sentir vergonha também é natural. Respire confortavelmente.",
+                            relief: "Finalmente pode respirar profundamente com alívio. Saboreie essa liberdade da respiração.",
+                            anger: "A raiva tornou sua respiração áspera? Essa emoção também é natural. Raiva também é prova de que está vivo.",
+                            sadness: "Tristeza parece parar sua respiração? Mas você ainda está respirando. A vida continua mesmo na tristeza.",
+                            emptiness: "Mesmo no vazio, a respiração continua entrando e saindo. Essa respiração é prova de que está vivo.",
+                            general: "Todos seus momentos, todas suas respirações são preciosos. Você tem direito de respirar mesmo quando não perfeito."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en'; // 기본 언어를 영어로 설정
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        // ============ 여정 초기화 함수 ============
+        
+        function resetJourney() {
+            console.log('=== 여정 초기화 시작 ===');
+            
+            // 1. 모든 타이핑 효과 완전 정리
+            clearAllTypingEffects();
+            
+            // 추가 안전장치 - 모든 timer 정리
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            // 2. 모든 콘텐츠 섹션 완전 초기화
+            const sectionsToReset = [
+                'portalIntroSection',
+                'characterResponsesSection', 
+                'lightMessageSection',
+                'portalQuestionSection',
+                'userInputSection',
+                'userReactionsSection',
+                'continueSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    } else {
+                        const textElements = section.querySelectorAll('.portal-intro, .light-message, .portal-question, .continue-text');
+                        textElements.forEach(el => {
+                            el.innerHTML = '';
+                            el.textContent = '';
+                        });
+                    }
+                }
+            });
+            
+            // 3. 특정 요소들 개별 초기화
+            const portalIntro = document.getElementById('portalIntro');
+            const lightMessage = document.getElementById('lightMessage');
+            const portalQuestion = document.getElementById('portalQuestion');
+            const continueText = document.getElementById('continueText');
+            
+            if (portalIntro) portalIntro.innerHTML = '';
+            if (lightMessage) lightMessage.innerHTML = '';
+            if (portalQuestion) portalQuestion.innerHTML = '';
+            if (continueText) continueText.innerHTML = '';
+            
+            // 4. 텍스트영역 완전 초기화
+            const userTextarea = document.getElementById('userTextarea');
+            if (userTextarea) {
+                userTextarea.disabled = false;
+                userTextarea.value = '';
+                userTextarea.style.height = 'auto';
+                userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            }
+            
+            // 5. 스크롤 위치 초기화
+            const mainContent = document.getElementById('mainContent');
+            if (mainContent) {
+                mainContent.scrollTop = 0;
+            }
+            
+            // 6. 상태 변수 완전 초기화
+            userResponse = '';
+            currentTypingElement = null;
+            
+            console.log('=== 여정 초기화 완료 ===');
+        }
+        
+        // ============ 개선된 언어 변경 함수 ============
+        
+        function changeLanguage(lang) {
+            if (!translations[lang]) {
+                console.error('지원하지 않는 언어:', lang);
+                return;
+            }
+            
+            if (currentLanguage === lang) {
+                return;
+            }
+            
+            if (journeyStarted) {
+                const confirmMessage = translations[currentLanguage].languageChangeConfirm;
+                const shouldRestart = confirm(confirmMessage);
+                
+                if (!shouldRestart) {
+                    return;
+                }
+            }
+            
+            const previousLanguage = currentLanguage;
+            currentLanguage = lang;
+            
+            console.log(`언어 변경: ${previousLanguage} → ${currentLanguage}`);
+            
+            if (journeyStarted) {
+                resetJourney();
+            }
+            
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                setTimeout(() => {
+                    console.log(`새로운 언어(${currentLanguage})로 여정 재시작`);
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        // ============ UI 업데이트 함수들 ============
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            // 개별 요소 업데이트
+            const elements = [
+                'logoSubtitle',
+                'portalMainTitle', 
+                'portalSubtitle',
+                'lightTitle',
+                'continueYesBtn',
+                'continueNoBtn'
+            ];
+            
+            elements.forEach(elementId => {
+                const element = document.getElementById(elementId);
+                if (element && translations[lang]) {
+                    const key = elementId.replace('Btn', 'Button').replace('Subtitle', 'Subtitle');
+                    let translationKey = key;
+                    
+                    const keyMapping = {
+                        'logoSubtitle': 'logoSubtitle',
+                        'portalMainTitle': 'portalMainTitle',
+                        'portalSubtitle': 'portalSubtitle',
+                        'lightTitle': 'lightTitle',
+                        'continueYesButton': 'continueYes',
+                        'continueNoButton': 'continueNo'
+                    };
+                    
+                    translationKey = keyMapping[key] || key;
+                    
+                    if (translations[lang][translationKey]) {
+                        element.textContent = translations[lang][translationKey];
+                    }
+                }
+            });
+            
+            // placeholder 업데이트
+            const textarea = document.getElementById('userTextarea');
+            if (textarea) textarea.placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        // ============ 개선된 타이핑 효과 + 스크롤 추적 시스템 ============
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        
+                        setTimeout(() => {
+                            if (document.contains(element)) {
+                                scrollToFollowTyping(element);
+                            }
+                        }, 200);
+                        
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        // ============ 스마트 스크롤 시스템 ============
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        // ============ 언어 버튼 이벤트 설정 ============
+        
+        function setupLanguageButtons() {
+            const langButtons = document.querySelectorAll('.lang-btn');
+            
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const newLang = this.dataset.lang;
+                    changeLanguage(newLang);
+                });
+            });
+        }
+        
+        // ============ 메인 여정 시스템 ============
+        
+        function initializeTemarix() {
+            console.log('=== Temarix Portal 17 초기화 시작 ===');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        // ============ 여정 단계들 ============
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            const introText = translations[currentLanguage].portalIntro;
+            await typewriterEffect(introElement, introText, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const dialogueText = translations[currentLanguage][char.key];
+                await typewriterEffect(dialogueDiv, dialogueText, 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            const lightText = translations[currentLanguage].lightMessage;
+            await typewriterEffect(lightMessageEl, lightText, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].portalQuestion;
+            await typewriterEffect(questionEl, questionText, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        // ============ 사용자 입력 시스템 ============
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', handleTextareaKeydown);
+            
+            document.getElementById('continueYesBtn').addEventListener('click', function() {
+                processContinue('Y');
+            });
+            
+            document.getElementById('continueNoBtn').addEventListener('click', function() {
+                processContinue('N');
+            });
+        }
+        
+        function handleTextareaKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const inputValue = this.value.trim();
+                
+                if (inputValue) {
+                    processUserInput(inputValue);
+                }
+            }
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = `<strong>${youLabel}:</strong> "${text}"`;
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = `${char.emoji} ${char.name}`;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showContinueOption();
+            }, 2000);
+        }
+        
+        async function showContinueOption() {
+            const continueSection = document.getElementById('continueSection');
+            const continueText = document.getElementById('continueText');
+            
+            continueSection.classList.add('show');
+            
+            const questionText = translations[currentLanguage].continueText;
+            await typewriterEffect(continueText, questionText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(continueSection);
+            }, 500);
+        }
+        
+        function processContinue(input) {
+            if (input === 'Y') {
+                const message = currentLanguage === 'ko' ? 
+                    'Portal 18이 곧 준비됩니다. 계속해서 더 깊은 감정의 여정이 이어집니다.' :
+                    currentLanguage === 'en' ? 
+                    'Portal 18 will be ready soon. The journey into deeper emotions continues.' :
+                    'Portal 18 estará pronto em breve. A jornada para emoções mais profundas continua.';
+                alert(message);
+            } else if (input === 'N') {
+                const message = currentLanguage === 'ko' ? 
+                    '여정이 일시 중지되었습니다. 언제든 다시 돌아와 계속하세요.' :
+                    currentLanguage === 'en' ? 
+                    'The journey has been paused. Come back and continue anytime.' :
+                    'A jornada foi pausada. Volte e continue a qualquer momento.';
+                alert(message);
+            }
+        }
+        
+        // ============ 초기화 ============
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V2 Portal 17 DOM 로드 완료');
+            
+            // 자동 로그인 처리 (로그인 모달 제거)
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            memoryStorage.mockUser = currentUser;
+            
+            updateStaticTranslations(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>
+            

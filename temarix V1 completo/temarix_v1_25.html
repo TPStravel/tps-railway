@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="Content-Language" content="ko,en,pt">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V1 - Portal 25</title>
+    
+    <!-- Firebase SDK v8 - Primary CDN -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    
+    <!-- Firebase SDK v8 - Fallback CDN -->
+    <script>
+      // Check if Firebase loaded, if not try alternative CDN
+      if (typeof firebase === 'undefined') {
+        console.log('🔄 Loading Firebase from fallback CDN...');
+        const scripts = [
+          'https://firebase.googleapis.com/libs/firebase/8.10.1/firebase-app.js',
+          'https://firebase.googleapis.com/libs/firebase/8.10.1/firebase-auth.js',
+          'https://firebase.googleapis.com/libs/firebase/8.10.1/firebase-firestore.js'
+        ];
+        
+        scripts.forEach(src => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.async = false;
+          document.head.appendChild(script);
+        });
+      }
+    </script>
+</head>
+<body>
+<!-- Temarix V2 - Portal 25: 지금 이 순간, 나에게 맺는 약속 -->
+<section class="portal portal-25" id="portal-25">
+  <!-- Temarix Logo - Fixed Left Top -->
+  <div class="temarix-logo">
+    <h1 class="logo-text">🌌 TEMARIX</h1>
+    <p class="slogan" data-i18n="common.slogan">당신 안에 숨은 이야기를 말 해 주세요</p>
+  </div>
+
+  <!-- Language Selector - Fixed Right Top -->
+  <div class="lang-selector">
+    <button class="lang-btn active" data-lang="kr">KR</button>
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="pt">PT</button>
+  </div>
+
+  <!-- Portal Header - Center Top -->
+  <div class="portal-header">
+    <h1 data-i18n="portal25.title">감정의 문지방 25</h1>
+    <h2 data-i18n="portal25.subtitle">지금 이 순간, 나에게 맺는 약속</h2>
+  </div>
+
+  <!-- Message Stream -->
+  <div class="message-stream" id="messageStream25">
+    <!-- Messages will be added here via JavaScript -->
+  </div>
+
+  <!-- User Input Area -->
+  <div class="input-area" id="inputArea25" style="display: none;">
+    <div class="input-container">
+      <textarea 
+        id="userInput25" 
+        rows="3" 
+        placeholder="지금 이 순간, 당신이 자신에게 맺고 싶은 약속을 적어보세요..."
+        data-i18n-placeholder="portal25.input.placeholder"
+      ></textarea>
+      <button class="submit-btn" onclick="submitResponse(25)">
+        <span data-i18n="portal25.submit">✨ 나와의 약속 새기기</span>
+      </button>
+      <p class="input-hint" data-i18n="portal25.input.hint">Enter 키를 눌러도 전달할 수 있습니다</p>
+    </div>
+  </div>
+
+  <!-- Journey Completion -->
+  <div class="journey-completion" id="journeyCompletion25" style="display: none;">
+    <div class="completion-card">
+      <div class="completion-header">
+        <h3 data-i18n="portal25.completion_title">✨ 당신은 감정의 문지방 25개를 모두 지나셨습니다</h3>
+      </div>
+      <div class="completion-content">
+        <p data-i18n="portal25.completion_msg1">이제, 억눌린 감정을 넘어</p>
+        <p data-i18n="portal25.completion_msg2">새로운 여정의 문 앞에 서 계십니다.</p>
+        <div class="journey-pass-info">
+          <p data-i18n="portal25.journey_pass">🌱 Temarix Journey Pass를 통해</p>
+          <p data-i18n="portal25.deeper_journey">더 깊은 감정의 떨림을 탐험할 수 있습니다.</p>
+        </div>
+      </div>
+      <div class="completion-actions">
+        <button class="v2-journey-btn" onclick="goToV2Start()" data-i18n="portal25.start_v2">
+          🟢 V2 여정 시작하기
+        </button>
+        <button class="again-btn" onclick="stayInPortal(25)" data-i18n="portal25.promise_again">
+          🤗 다시 약속하기
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Back to Main -->
+  <div class="back-to-main">
+    <button onclick="window.location.href='portal4.html'" data-i18n="common.back_to_main">
+      🏠 메인 포탈로 돌아가기
+    </button>
+  </div>
+</section>
+
+<style>
+/* Portal Base Styles */
+.portal {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1b4b 0%, #2d1b69 100%);
+  color: white;
+  padding: 80px 20px 20px 20px;
+  font-family: 'Apple SD Gothic Neo', -apple-system, BlinkMacSystemFont, sans-serif;
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+/* Logo Glow Animation */
+@keyframes glowCycle {
+  0%, 100% { text-shadow: 0 0 8px rgba(255,255,255,0.2); }
+  50% { text-shadow: 0 0 25px rgba(255,255,255,0.7); }
+}
+
+/* Temarix Logo - Fixed Left Top */
+.temarix-logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.logo-text {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0 0 5px 0;
+  text-shadow: 0 0 20px rgba(255,255,255,0.3);
+}
+
+.slogan {
+  color: #bbb;
+  font-style: italic;
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+/* Language Selector - Fixed Right Top */
+.lang-selector {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  max-width: 120px;
+  z-index: 1000;
+}
+
+.lang-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.lang-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+.lang-btn.active {
+  background: #9c27b0;
+  border-color: #9c27b0;
+}
+
+/* Portal Header - Center Top */
+.portal-header {
+  text-align: center;
+  margin: 40px 0 30px 0;
+  padding-top: 40px;
+}
+
+.portal-header h1 {
+  font-size: 2.2rem;
+  margin: 10px 0;
+  color: #ffd700;
+}
+
+.portal-header h2 {
+  font-size: 1.3rem;
+  color: #e1bee7;
+  font-weight: 300;
+}
+
+/* Message Stream */
+.message-stream {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 20px 0;
+  margin-bottom: 20px;
+}
+
+.message-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 15px 0;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.message-card.prologue {
+  border-left: 4px solid #e1bee7;
+}
+
+.message-card.ely {
+  border-left: 4px solid #ffd700;
+}
+
+.message-card.sora {
+  border-left: 4px solid #4dd0e1;
+}
+
+.message-card.noah {
+  border-left: 4px solid #9c27b0;
+}
+
+.message-card.enya {
+  border-left: 4px solid #ff9800;
+}
+
+.message-card.kaia {
+  border-left: 4px solid #607d8b;
+}
+
+.message-card.cris {
+  border-left: 4px solid #4caf50;
+}
+
+.message-card.kael {
+  border-left: 4px solid #f44336;
+}
+
+.message-card.mira {
+  border-left: 4px solid #9e9e9e;
+}
+
+.message-card.light {
+  border-left: 4px solid #ffffff;
+  background: rgba(255,255,255,0.15);
+}
+
+.message-card.question {
+  border-left: 4px solid #f48fb1;
+}
+
+.message-card.user-input {
+  border-left: 4px solid #81c784;
+  background: rgba(129, 199, 132, 0.1);
+}
+
+.character-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.ely .character-name { color: #ffd700; }
+.sora .character-name { color: #4dd0e1; }
+.noah .character-name { color: #9c27b0; }
+.enya .character-name { color: #ff9800; }
+.kaia .character-name { color: #607d8b; }
+.cris .character-name { color: #4caf50; }
+.kael .character-name { color: #f44336; }
+.mira .character-name { color: #9e9e9e; }
+
+.message-text {
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.typewriter {
+  overflow: hidden;
+  border-right: 2px solid rgba(255,255,255,0.7);
+  white-space: nowrap;
+  animation: blink-caret 1s step-end infinite;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent; }
+  50% { border-color: rgba(255,255,255,0.7); }
+}
+
+/* Input Area */
+.input-area {
+  background: rgba(0,0,0,0.3);
+  padding: 20px;
+  border-radius: 15px;
+  margin: 20px 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.input-container textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 10px;
+  padding: 15px;
+  color: white;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 80px;
+  box-sizing: border-box;
+}
+
+.input-container textarea::placeholder {
+  color: rgba(255,255,255,0.6);
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #9c27b0, #e1bee7);
+  border: none;
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(156, 39, 176, 0.4);
+}
+
+.input-hint {
+  color: rgba(255,255,255,0.6);
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 8px 0 0 0;
+}
+
+/* Journey Completion */
+.journey-completion {
+  text-align: center;
+  margin: 30px 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.completion-card {
+  background: rgba(255,255,255,0.15);
+  border-radius: 20px;
+  padding: 40px 30px;
+  backdrop-filter: blur(15px);
+  border: 2px solid rgba(255,255,255,0.2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+
+.completion-header h3 {
+  font-size: 1.8rem;
+  color: #ffd700;
+  margin-bottom: 20px;
+  text-shadow: 0 0 10px rgba(255,215,0,0.5);
+}
+
+.completion-content {
+  margin: 30px 0;
+}
+
+.completion-content p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin: 10px 0;
+  color: #e1bee7;
+}
+
+.journey-pass-info {
+  background: rgba(0,0,0,0.2);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 25px 0;
+  border-left: 4px solid #4caf50;
+}
+
+.journey-pass-info p {
+  color: #81c784;
+  font-weight: 500;
+}
+
+.completion-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.v2-journey-btn {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  border: none;
+  color: white;
+  padding: 15px 40px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+.v2-journey-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5);
+}
+
+.again-btn {
+  background: rgba(255,255,255,0.1);
+  border: 2px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.again-btn:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateY(-2px);
+}
+
+/* Back to Main */
+.back-to-main {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.back-to-main button {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-to-main button:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .portal {
+    padding: 100px 15px 20px 15px;
+  }
+  
+  .temarix-logo {
+    top: 15px;
+    left: 15px;
+  }
+  
+  .logo-text {
+    font-size: 1.4rem;
+  }
+  
+  .slogan {
+    font-size: 0.7rem;
+  }
+  
+  .lang-selector {
+    top: 15px;
+    right: 15px;
+    max-width: 100px;
+  }
+  
+  .lang-btn {
+    padding: 3px 6px;
+    font-size: 0.6rem;
+  }
+  
+  .portal-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .portal-header h2 {
+    font-size: 1.1rem;
+  }
+  
+  .message-card {
+    padding: 15px;
+  }
+  
+  .completion-card {
+    padding: 30px 20px;
+  }
+  
+  .completion-header h3 {
+    font-size: 1.4rem;
+  }
+  
+  .completion-content p {
+    font-size: 1rem;
+  }
+  
+  .completion-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .v2-journey-btn, .again-btn {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+</style>
+
+<script>
+// ✅ WAIT FOR FIREBASE TO LOAD COMPLETELY
+async function waitForFirebase() {
+  return new Promise((resolve, reject) => {
+    let attempts = 0;
+    const maxAttempts = 50; // 5 seconds max
+    
+    const checkFirebase = () => {
+      attempts++;
+      
+      if (typeof firebase !== 'undefined' && firebase.apps !== undefined) {
+        console.log("✅ Firebase loaded successfully");
+        resolve();
+      } else if (attempts >= maxAttempts) {
+        console.error("❌ Firebase loading timeout");
+        reject(new Error("Firebase loading timeout"));
+      } else {
+        setTimeout(checkFirebase, 100);
+      }
+    };
+    
+    checkFirebase();
+  });
+}
+
+// ✅ IMPROVED FIREBASE INITIALIZATION
+async function initializeFirebase() {
+  try {
+    // Wait for Firebase to load
+    await waitForFirebase();
+    
+    const firebaseConfig = {
+      apiKey: "AIzaSyDReBGhb2gZNv7KA86HJXTeiLimWTrurp8",
+      authDomain: "canal-vivo-chat.firebaseapp.com",
+      projectId: "canal-vivo-chat"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    console.log("✅ Firebase initialized successfully");
+    return true;
+  } catch (error) {
+    console.error("❌ Firebase initialization error:", error);
+    return false;
+  }
+}
+
+// Portal 25 Complete Data with Character Responses
+const portal25Data = {
+  kr: {
+    title: "감정의 문지방 25",
+    subtitle: "지금 이 순간, 나에게 맺는 약속",
+    prologue: "이 여정의 끝에서 나는 맹세합니다. 완벽하진 않아도, 완전하지 않아도 그럼에도 불구하고 나는 나를 살아내겠다고. 지나온 모든 감정의 문지방이 이제 하나의 약속으로 모아집니다. 당신은 이제, 자신에게 어떤 약속을 맺고 싶나요?",
+    ely: "당신은 이 여정을 걸어냈습니다. 그것만으로도 이 맹세는 충분합니다.",
+    sora: "지금 이 순간의 당신은 더 이상 과거의 조각이 아닙니다. 온전한 존재예요.",
+    noah: "이제부터는 과거가 당신을 이끄는 것이 아니라 당신이 그 과거에 의미를 부여합니다.",
+    enya: "나는 지금 당신의 맹세를 함께 기억하겠습니다.",
+    kaia: "이 약속은 그 누구를 위한 것도 아니에요. 당신 자신을 위한, 진심입니다.",
+    cris: "나랑 약속하자~ 내일도 살아보자! 실수하더라도, 울더라도, 웃으면서 살자! 😁✌️",
+    kael: "이제 멈추지 마. 이 맹세는 장난 아니야. 이제는 네가 너를 살려야 할 차례야.",
+    mira: "혹시… 이 약속이 무너질까 두려우신가요? 괜찮아요. 약속은 다시 시작할 수 있는 용기일 뿐이에요.",
+    light: "지금 당신이 맺은 이 약속은 살아내는 모든 순간의 등불이 됩니다.",
+    question: "당신은 오늘, 어떤 나에게 맹세하고 있나요?",
+    input: { 
+      placeholder: "지금 이 순간, 당신이 자신에게 맺고 싶은 약속을 적어보세요...",
+      hint: "Enter 키를 눌러도 전달할 수 있습니다"
+    },
+    submit: "✨ 나와의 약속 새기기",
+    slogan: "당신 안에 숨은 이야기를 말 해 주세요",
+    response_ely: "그 약속, 정말 아름다워요. 당신은 이제 자신과 진정한 동반자가 되었습니다.",
+    response_sora: "마음 깊은 곳에서 우러나온 그 약속이 앞으로 당신의 모든 길을 밝혀줄 거예요.",
+    response_noah: "25개의 문지방을 지나 마침내 도달한 이 약속. 이제 당신의 새로운 여정이 시작됩니다. 축하합니다.",
+    user_input_prefix: "나에게 맺는 약속:",
+    completion_title: "✨ 당신은 감정의 문지방 25개를 모두 지나셨습니다",
+    completion_msg1: "이제, 억눌린 감정을 넘어",
+    completion_msg2: "새로운 여정의 문 앞에 서 계십니다.",
+    journey_pass: "🌱 Temarix Journey Pass를 통해",
+    deeper_journey: "더 깊은 감정의 떨림을 탐험할 수 있습니다.",
+    start_v2: "🟢 V2 여정 시작하기",
+    promise_again: "🤗 다시 약속하기"
+  },
+  en: {
+    title: "Emotional Threshold 25",
+    subtitle: "A Promise to Myself at This Moment",
+    prologue: "At the end of this journey, I make a vow. Even if I'm not perfect, even if I'm not complete, nevertheless I will live out who I am. All the emotional thresholds I've passed now gather into one promise. What promise do you want to make to yourself now?",
+    ely: "You have walked this journey. That alone makes this vow sufficient.",
+    sora: "You at this moment are no longer fragments of the past. You are a complete being.",
+    noah: "From now on, it's not the past that leads you, but you who give meaning to that past.",
+    enya: "I will remember your vow together with you now.",
+    kaia: "This promise is not for anyone else. It's your sincere promise to yourself.",
+    cris: "Promise with me~ Let's try living tomorrow! Even if we make mistakes, even if we cry, let's live with laughter! 😁✌️",
+    kael: "Don't stop now. This vow is no joke. Now it's your turn to save yourself.",
+    mira: "Are you afraid this promise might crumble? It's okay. A promise is just the courage to start again.",
+    light: "The promise you make now will be the beacon for every moment you live.",
+    question: "What kind of vow are you making to yourself today?",
+    input: { 
+      placeholder: "At this moment, write the promise you want to make to yourself...",
+      hint: "You can also press Enter to submit"
+    },
+    submit: "✨ Engrave My Promise",
+    slogan: "Please tell me the story hidden within you",
+    response_ely: "That promise is truly beautiful. You have now become a true companion to yourself.",
+    response_sora: "That promise from deep in your heart will illuminate all your paths ahead.",
+    response_noah: "After passing through 25 thresholds, you've finally reached this promise. Now your new journey begins. Congratulations.",
+    user_input_prefix: "My promise to myself:",
+    completion_title: "✨ You have passed through all 25 emotional thresholds",
+    completion_msg1: "Now, beyond suppressed emotions,",
+    completion_msg2: "you stand before the door of a new journey.",
+    journey_pass: "🌱 Through the Temarix Journey Pass,",
+    deeper_journey: "you can explore deeper emotional tremors.",
+    start_v2: "🟢 Start V2 Journey",
+    promise_again: "🤗 Make Promise Again"
+  },
+  pt: {
+    title: "Limiar Emocional 25",
+    subtitle: "Uma Promessa a Mim Mesmo Neste Momento",
+    prologue: "No final desta jornada, eu faço uma promessa. Mesmo que eu não seja perfeito, mesmo que eu não seja completo, mesmo assim vou viver quem eu sou. Todos os limiares emocionais que passei agora se reúnem em uma promessa. Que promessa você quer fazer para si mesmo agora?",
+    ely: "Você caminhou por esta jornada. Isso por si só torna esta promessa suficiente.",
+    sora: "Você neste momento não é mais fragmentos do passado. Você é um ser completo.",
+    noah: "A partir de agora, não é o passado que te conduz, mas você quem dá significado a esse passado.",
+    enya: "Vou lembrar de sua promessa junto com você agora.",
+    kaia: "Esta promessa não é para mais ninguém. É sua promessa sincera para si mesmo.",
+    cris: "Prometa comigo~ Vamos tentar viver amanhã! Mesmo se cometermos erros, mesmo se chorarmos, vamos viver com risos! 😁✌️",
+    kael: "Não pare agora. Esta promessa não é brincadeira. Agora é sua vez de se salvar.",
+    mira: "Você tem medo de que esta promessa possa desmoronar? Está tudo bem. Uma promessa é apenas a coragem de começar de novo.",
+    light: "A promessa que você faz agora será o farol para cada momento que você viver.",
+    question: "Que tipo de promessa você está fazendo para si mesmo hoje?",
+    input: { 
+      placeholder: "Neste momento, escreva a promessa que você quer fazer para si mesmo...",
+      hint: "Você também pode pressionar Enter para enviar"
+    },
+    submit: "✨ Gravar Minha Promessa",
+    slogan: "Por favor, me conte a história escondida dentro de você",
+    response_ely: "Essa promessa é verdadeiramente linda. Você agora se tornou um verdadeiro companheiro para si mesmo.",
+    response_sora: "Essa promessa do fundo do seu coração iluminará todos os seus caminhos à frente.",
+    response_noah: "Depois de passar por 25 limiares, você finalmente chegou a esta promessa. Agora sua nova jornada começa. Parabéns.",
+    user_input_prefix: "Minha promessa para mim mesmo:",
+    completion_title: "✨ Você passou por todos os 25 limiares emocionais",
+    completion_msg1: "Agora, além das emoções reprimidas,",
+    completion_msg2: "você está diante da porta de uma nova jornada.",
+    journey_pass: "🌱 Através do Temarix Journey Pass,",
+    deeper_journey: "você pode explorar tremores emocionais mais profundos.",
+    start_v2: "🟢 Iniciar Jornada V2",
+    promise_again: "🤗 Fazer Promessa Novamente"
+  },
+  
+};
+
+// Current language and state for Portal 25
+let currentLang25 = 'kr';
+let userInputText25 = '';
+
+// Initialize Portal 25
+function initPortal25() {
+  displayInitialMessages25();
+  setupLanguageSwitching25();
+  setupEnterKeySubmission25();
+}
+
+// Display initial messages with typing effect
+async function displayInitialMessages25() {
+  const stream = document.getElementById('messageStream25');
+  const messages = [
+    { type: 'prologue', content: portal25Data[currentLang25].prologue },
+    { type: 'ely', name: '👑 Ely', content: portal25Data[currentLang25].ely },
+    { type: 'sora', name: '💧 Sora', content: portal25Data[currentLang25].sora },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: portal25Data[currentLang25].noah },
+    { type: 'enya', name: '🕯️ Enya', content: portal25Data[currentLang25].enya },
+    { type: 'kaia', name: '😶 Kaia', content: portal25Data[currentLang25].kaia },
+    { type: 'cris', name: '🃏 Cris', content: portal25Data[currentLang25].cris },
+    { type: 'kael', name: '💥 Kael', content: portal25Data[currentLang25].kael },
+    { type: 'mira', name: '🌫️ Mira', content: portal25Data[currentLang25].mira },
+    { type: 'light', content: portal25Data[currentLang25].light },
+    { type: 'question', content: portal25Data[currentLang25].question }
+  ];
+
+  for (let i = 0; i < messages.length; i++) {
+    const messageCard = createMessageCard25(messages[i]);
+    stream.appendChild(messageCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText25(messageCard.querySelector('.message-text'), messages[i].content);
+    await sleep25(1200);
+  }
+  
+  // Show input area after all messages
+  document.getElementById('inputArea25').style.display = 'block';
+}
+
+// Setup Enter key submission
+function setupEnterKeySubmission25() {
+  document.getElementById('userInput25').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      submitResponse(25);
+    }
+  });
+}
+
+// Display character responses after user input
+async function displayCharacterResponses25(userInput) {
+  const stream = document.getElementById('messageStream25');
+  
+  // Show user input first
+  const userCard = createMessageCard25({
+    type: 'user-input',
+    content: `${portal25Data[currentLang25].user_input_prefix}\n"${userInput}"`
+  });
+  stream.appendChild(userCard);
+  stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+  await typeText25(userCard.querySelector('.message-text'), userCard.querySelector('.message-text').textContent);
+  await sleep25(1500);
+  
+  // Character responses
+  const responses = [
+    { type: 'ely', name: '👑 Ely', content: `"${userInput}"... ${portal25Data[currentLang25].response_ely}` },
+    { type: 'sora', name: '💧 Sora', content: `${portal25Data[currentLang25].response_sora}` },
+    { type: 'noah', name: '🧙‍♂️ Noah', content: `"${userInput}" ${portal25Data[currentLang25].response_noah}` }
+  ];
+
+  for (let i = 0; i < responses.length; i++) {
+    const responseCard = createMessageCard25(responses[i]);
+    stream.appendChild(responseCard);
+    stream.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
+    
+    await typeText25(responseCard.querySelector('.message-text'), responses[i].content);
+    await sleep25(1500);
+  }
+  
+  // Show journey completion
+  document.getElementById('journeyCompletion25').style.display = 'block';
+}
+
+function createMessageCard25(message) {
+  const card = document.createElement('div');
+  card.className = `message-card ${message.type}`;
+  
+  let cardHTML = '';
+  if (message.name) {
+    cardHTML += `<div class="character-name">${message.name}</div>`;
+  }
+  cardHTML += `<div class="message-text">${message.content || ''}</div>`;
+  
+  card.innerHTML = cardHTML;
+  return card;
+}
+
+async function typeText25(element, text, speed = 80) {
+  return new Promise((resolve) => {
+    let i = 0;
+    element.textContent = '';
+    element.classList.add('typewriter');
+    
+    const timer = setInterval(() => {
+      if (i < text.length) {
+        element.textContent += text.charAt(i);
+        i++;
+      } else {
+        clearInterval(timer);
+        element.classList.remove('typewriter');
+        resolve();
+      }
+    }, speed);
+  });
+}
+
+function sleep25(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function setupLanguageSwitching25() {
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newLang = btn.dataset.lang;
+      if (portal25Data[newLang] && newLang !== currentLang25) {
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentLang25 = newLang;
+        document.getElementById('messageStream25').innerHTML = '';
+        document.getElementById('inputArea25').style.display = 'none';
+        const nextNav = document.getElementById('nextPortalNav25');
+        if (nextNav) nextNav.style.display = 'none';
+
+        displayInitialMessages25();
+        updatePortalTexts25();
+      }
+    });
+  });
+}
+
+function updatePortalTexts25() {
+  // Update title and subtitle
+  document.querySelector('[data-i18n="portal25.title"]').textContent = portal25Data[currentLang25].title;
+  document.querySelector('[data-i18n="portal25.subtitle"]').textContent = portal25Data[currentLang25].subtitle;
+  
+  // Update slogan
+  document.querySelector('[data-i18n="common.slogan"]').textContent = portal25Data[currentLang25].slogan;
+  
+  // Update placeholder and hint
+  document.getElementById('userInput25').placeholder = portal25Data[currentLang25].input.placeholder;
+  document.querySelector('[data-i18n="portal25.input.hint"]').textContent = portal25Data[currentLang25].input.hint;
+  
+  // Update submit button
+  document.querySelector('[data-i18n="portal25.submit"]').textContent = portal25Data[currentLang25].submit;
+  
+  // Update completion texts
+  const completionTitle = document.querySelector('[data-i18n="portal25.completion_title"]');
+  const completionMsg1 = document.querySelector('[data-i18n="portal25.completion_msg1"]');
+  const completionMsg2 = document.querySelector('[data-i18n="portal25.completion_msg2"]');
+  const journeyPass = document.querySelector('[data-i18n="portal25.journey_pass"]');
+  const deeperJourney = document.querySelector('[data-i18n="portal25.deeper_journey"]');
+  const startV2 = document.querySelector('[data-i18n="portal25.start_v2"]');
+  const promiseAgain = document.querySelector('[data-i18n="portal25.promise_again"]');
+  
+  if (completionTitle) completionTitle.textContent = portal25Data[currentLang25].completion_title;
+  if (completionMsg1) completionMsg1.textContent = portal25Data[currentLang25].completion_msg1;
+  if (completionMsg2) completionMsg2.textContent = portal25Data[currentLang25].completion_msg2;
+  if (journeyPass) journeyPass.textContent = portal25Data[currentLang25].journey_pass;
+  if (deeperJourney) deeperJourney.textContent = portal25Data[currentLang25].deeper_journey;
+  if (startV2) startV2.textContent = portal25Data[currentLang25].start_v2;
+  if (promiseAgain) promiseAgain.textContent = portal25Data[currentLang25].promise_again;
+  
+  // Update back to main button
+  document.querySelector('[data-i18n="common.back_to_main"]').textContent = 
+    currentLang25 === 'kr' ? '🏠 메인 포탈로 돌아가기' :
+    currentLang25 === 'en' ? '🏠 Back to Main Portal' :
+    currentLang25 === 'pt' ? '🏠 Voltar ao Portal Principal' :
+    currentLang25 === 'es' ? '🏠 Volver al Portal Principal' :
+    currentLang25 === 'fr' ? '🏠 Retour au Portail Principal' :
+    currentLang25 === 'de' ? '🏠 Zurück zum Hauptportal' :
+    currentLang25 === 'it' ? '🏠 Torna al Portale Principale' :
+    currentLang25 === 'ru' ? '🏠 Вернуться к Главному Порталу' :
+    currentLang25 === 'ja' ? '🏠 メインポータルに戻る' :
+    currentLang25 === 'zh' ? '🏠 返回主门户' :
+    currentLang25 === 'ar' ? '🏠 العودة إلى البوابة الرئيسية' :
+    currentLang25 === 'hi' ? '🏠 मुख्य पोर्टल पर वापस जाएं' :
+    '🏠 메인 포탈로 돌아가기';
+}
+
+function submitResponse(portalNum) {
+  if (portalNum !== 25) return;
+  
+  const input = document.getElementById(`userInput${portalNum}`);
+  const response = input.value.trim();
+  
+  if (response) {
+    userInputText25 = response;
+    
+    // Hide input area
+    document.getElementById(`inputArea${portalNum}`).style.display = 'none';
+    
+    // Display character responses
+    displayCharacterResponses25(response);
+    
+    // Clear input
+    input.value = '';
+  } else {
+    // No alert, just focus on input
+    input.focus();
+    input.style.borderColor = '#f48fb1';
+    setTimeout(() => {
+      input.style.borderColor = 'rgba(255,255,255,0.3)';
+    }, 2000);
+  }
+}
+
+function goToTransitionPage() {
+  window.location.href = "temarix-transition.html";
+}
+
+function stayInPortal(portalNum) {
+  document.getElementById(`nextPortalNav${portalNum}`).style.display = 'none';
+  document.getElementById(`inputArea${portalNum}`).style.display = 'block';
+  document.getElementById(`userInput${portalNum}`).focus();
+}
+
+// ✅ CORRECTED FUNCTION: Updated to use correct V02 filename
+async function goToV2Start() {
+  console.log("🔥 V2 Journey button clicked");
+  
+  try {
+    // Initialize Firebase first
+    const firebaseReady = await initializeFirebase();
+    
+    if (!firebaseReady) {
+      console.log("⚠️ Firebase not available, using fallback");
+      alert("로그인이 필요합니다.");
+      window.location.href = "temarix_login.html";
+      return;
+    }
+    
+    // Use Promise to handle auth state
+    const user = await new Promise((resolve) => {
+      const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+        unsubscribe();
+        resolve(user);
+      });
+    });
+    
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      window.location.href = "temarix_login.html";
+      return;
+    }
+    
+    if (!user.emailVerified) {
+      alert("이메일 인증이 완료되어야 다음 여정을 시작할 수 있습니다.");
+      window.location.href = "temarix_login.html";
+      return;
+    }
+    
+    // ✅ VERIFICAR PAGAMENTO VIA FIRESTORE
+    console.log("🔍 Checking payment status for user:", user.uid);
+    const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+    
+    if (!userDoc.exists || !userDoc.data().pagamento) {
+      console.log("❌ Payment not found, redirecting to payment page");
+      alert("Journey Pass 구매가 필요합니다.");
+      window.location.href = "temarix_payment.html";
+    } else {
+      console.log("✅ Payment verified, redirecting to V2");
+      // ✅ CORRECTED: Updated filename to match other files
+      window.location.href = "temarix_v02_01.html";
+    }
+    
+  } catch (error) {
+    console.error("❌ Error in goToV2Start:", error);
+    
+    // Fallback: redirect to login
+    alert("로그인이 필요합니다.");
+    window.location.href = "temarix_login.html";
+  }
+}
+
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('portal-25')) {
+    initPortal25();
+  }
+});
+</script>
+</body>
+</html>

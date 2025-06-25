@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temarix V5 - Portal 25: I Declare to Myself</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            background: #000;
+            border-bottom: 1px solid #333;
+            position: relative;
+            z-index: 100;
+            height: 80px;
+            flex-shrink: 0;
+        }
+        
+        .logo-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-title {
+            font-size: 26px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 15px;
+            color: #ccc;
+            letter-spacing: 1.5px;
+        }
+        
+        .portal-header-title {
+            text-align: center;
+            flex: 1;
+            margin: 0 20px;
+        }
+        
+        .portal-main-title {
+            font-size: 28px;
+            color: #ffa726;
+            margin-bottom: 8px;
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .portal-subtitle {
+            font-size: 18px;
+            color: #ffcc80;
+            letter-spacing: 1.5px;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        .language-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lang-btn:hover {
+            background: #666;
+        }
+        
+        .lang-btn.active {
+            background: #ffa726;
+            color: #fff;
+        }
+        
+        .main-content {
+            flex: 1;
+            max-height: calc(100vh - 80px - 120px);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 30px 20px;
+            scroll-behavior: smooth;
+            position: relative;
+        }
+        
+        .portal-container {
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            min-height: 200vh;
+        }
+        
+        .portal-intro-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 200px;
+        }
+        
+        .portal-intro {
+            font-size: 20px;
+            color: #fff;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            background: none;
+            border: none;
+            padding: 0;
+            text-align: left;
+        }
+        
+        .character-responses-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 800px;
+        }
+        
+        .character-response {
+            color: #fff;
+            font-size: 18px;
+            margin: 40px 0;
+            text-align: left;
+            opacity: 0;
+            white-space: pre-wrap;
+            transition: opacity 0.8s ease-in;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 80px;
+        }
+        
+        .character-name {
+            font-weight: bold;
+            color: #ffa726;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+        
+        .character-dialogue {
+            color: #fff;
+            line-height: 1.7;
+            font-size: 17px;
+            white-space: pre-wrap;
+        }
+        
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+            color: #ffa726;
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        
+        .light-message-section {
+            margin: 50px 0;
+            opacity: 0;
+            background: none;
+            border: none;
+            padding: 0;
+            min-height: 100px;
+        }
+        
+        .light-message {
+            font-size: 20px;
+            color: #ffa726;
+            line-height: 1.8;
+            font-style: italic;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .portal-question-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 150px;
+        }
+        
+        .portal-question {
+            font-size: 22px;
+            color: #fff;
+            margin-bottom: 30px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            text-align: center;
+        }
+        
+        .user-input-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 100px;
+        }
+        
+        .user-response {
+            color: #fff;
+            margin: 30px 0;
+            text-align: left;
+            font-size: 18px;
+            background: none;
+            border: none;
+            padding: 0;
+            white-space: pre-wrap;
+        }
+        
+        .user-response strong {
+            color: #ffa726;
+            margin-right: 8px;
+        }
+        
+        .user-reactions-section {
+            margin: 40px 0;
+            opacity: 0;
+            min-height: 400px;
+        }
+        
+        .final-section {
+            margin: 60px 0;
+            opacity: 0;
+            text-align: center;
+            background: none;
+            border: none;
+            padding: 40px 20px;
+            min-height: 300px;
+            border: 2px solid #ffa726;
+            background: rgba(255, 167, 38, 0.05);
+        }
+        
+        .final-title {
+            font-size: 28px;
+            color: #ffa726;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+        
+        .final-message {
+            color: #fff;
+            font-size: 20px;
+            margin-bottom: 40px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+            text-align: left;
+        }
+        
+        .final-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .final-btn {
+            background: #444;
+            color: #fff;
+            border: none;
+            padding: 20px 40px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 250px;
+            border: 2px solid transparent;
+        }
+        
+        .final-btn:hover {
+            background: #666;
+            border-color: #ffa726;
+        }
+        
+        .final-btn.primary {
+            background: #ffa726;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .final-btn.primary:hover {
+            background: #ffb74d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 167, 38, 0.3);
+        }
+        
+        .input-fixed-bottom {
+            position: relative;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000;
+            border-top: 1px solid #333;
+            padding: 25px;
+            z-index: 100;
+            flex-shrink: 0;
+            height: 120px;
+        }
+        
+        .input-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .input-prefix {
+            color: #ffa726;
+            font-size: 20px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+        
+        .user-textarea {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #444;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            width: 100%;
+            padding: 12px 8px;
+            outline: none;
+            resize: none;
+            min-height: 32px;
+            max-height: 96px;
+            line-height: 1.6;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-textarea:focus {
+            border-bottom-color: #ffa726;
+        }
+        
+        .user-textarea::placeholder {
+            color: #666;
+        }
+        
+        .user-textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: rgba(50, 50, 50, 0.2);
+        }
+        
+        .main-content::-webkit-scrollbar {
+            width: 12px;
+        }
+        
+        .main-content::-webkit-scrollbar-track {
+            background: #111;
+            border-radius: 6px;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 6px;
+            border: 2px solid #111;
+        }
+        
+        .main-content::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+        
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        
+        .show {
+            opacity: 1 !important;
+            transition: opacity 1s ease-in;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .header-bar {
+                padding: 20px 15px;
+                height: 70px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .main-content {
+                max-height: calc(100vh - 70px - 120px);
+                padding: 20px 15px;
+            }
+            
+            .logo-title {
+                font-size: 22px;
+            }
+            
+            .portal-main-title {
+                font-size: 22px;
+            }
+            
+            .portal-subtitle {
+                font-size: 16px;
+            }
+            
+            .lang-btn {
+                font-size: 12px;
+                padding: 8px 14px;
+            }
+            
+            .portal-intro {
+                font-size: 18px;
+            }
+            
+            .portal-question {
+                font-size: 20px;
+            }
+            
+            .character-response {
+                font-size: 16px;
+            }
+            
+            .input-fixed-bottom {
+                padding: 20px;
+            }
+            
+            .final-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .final-btn {
+                width: 100%;
+            }
+            
+            .final-title {
+                font-size: 24px;
+            }
+            
+            .final-message {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header-bar">
+        <div class="logo-section">
+            <div class="logo-title">TEMARIX V5</div>
+            <div class="logo-subtitle" id="logoSubtitle">Declaration of Compassion</div>
+        </div>
+        
+        <div class="portal-header-title">
+            <div class="portal-main-title" id="portalMainTitle">Portal 25: I Declare to Myself</div>
+            <div class="portal-subtitle" id="portalSubtitle">The final declaration</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="language-buttons">
+                <button class="lang-btn" data-lang="ko">KR</button>
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="pt">PT</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="portal-container">
+            <div class="portal-intro-section" id="portalIntroSection">
+                <div class="portal-intro" id="portalIntro"></div>
+            </div>
+
+            <div class="character-responses-section" id="characterResponsesSection">
+            </div>
+
+            <div class="light-message-section" id="lightMessageSection">
+                <div class="character-name" id="lightTitle">✨ Word of Light</div>
+                <div class="light-message" id="lightMessage"></div>
+            </div>
+
+            <div class="portal-question-section" id="portalQuestionSection">
+                <div class="portal-question" id="portalQuestion"></div>
+            </div>
+
+            <div class="user-input-section" id="userInputSection">
+            </div>
+            
+            <div class="user-reactions-section" id="userReactionsSection">
+            </div>
+            
+            <div class="final-section" id="finalSection">
+                <div class="final-title" id="finalTitle">🔓 Portal 25 Complete</div>
+                <div class="final-message" id="finalMessage"></div>
+                <div class="final-buttons">
+                    <button class="final-btn primary" id="continueBtn">Begin 7-Day Integration</button>
+                    <button class="final-btn" id="restartBtn">Start Again</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="input-fixed-bottom">
+        <div class="input-container">
+            <div class="input-prefix">></div>
+            <textarea class="user-textarea" 
+                      id="userTextarea" 
+                      placeholder="What kind of being do you want to live as? What declaration do you want to leave for yourself? (Press Enter to send)"
+                      rows="1"
+                      maxlength="500"></textarea>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            ko: {
+                logoSubtitle: "자비의 선언",
+                portalMainTitle: "Portal 25: 나는 나에게 선언한다",
+                portalSubtitle: "마지막 선언",
+                portalIntro: "🔓 지금 이 순간,\n당신은 어떤 존재로 살아가고 싶은가요?\n\n그리고 그 존재로 살아가기 위해,\n자신에게 어떤 선언을 남기고 싶나요?",
+                lightTitle: "✨ 빛의 한마디",
+                lightMessage: "자비는 끝이 아니라 시작이야. 이 선언은, 그 시작을 기억하게 하는 약속이야.\n당신의 목소리는 이제 물감이 되었어요. 앞으로 당신이 살아갈 모든 하루를 색칠할 거예요.\n이 선언이 입에서 나오는 순간, 고통은 과거로, 당신은 지금 여기로 도착했어요.",
+                portalQuestion: "🔓 이제, 당신은\n어떤 한 단어로 당신 자신을 부르고 싶나요?\n\n이 여정의 끝에서 당신이 당신에게 남길 이름은 무엇인가요?",
+                finalTitle: "🔓 Portal 25 완료",
+                finalMessage: "당신은 Temarix V5 – 자비의 선언의 마지막 문을 통과했습니다.\n\n이제, 당신은 더 이상 과거의 누군가가 아니라\n자비로 다시 태어난 현재의 존재입니다.\n\n당신의 이름은 기록되지 않아도 좋습니다.\n하지만 당신의 선언은, 이 세계에 남습니다.\n\n🌕 Portal 25는 마침표가 아니라 쉼표입니다.\n이제부터 7일 동안, 자비의 울림을 몸과 삶에 통합하는 시간이 시작됩니다.\n\n곧 당신에게 감정 통합과 실천을 위한 회복 일정이 도착할 것입니다.\n\n✨ 수고 많으셨습니다. 당신은 진심으로 이 여정을 살아냈습니다.",
+                continueBtn: "7일 통합 여정 시작",
+                restartBtn: "다시 시작하기",
+                inputPlaceholder: "어떤 존재로 살아가고 싶나요? 자신에게 어떤 선언을 남기고 싶나요? (Enter로 전송)",
+                youLabel: "당신",
+                waitingMessage: "응답을 기다리는 중..."
+            },
+            en: {
+                logoSubtitle: "Declaration of Compassion",
+                portalMainTitle: "Portal 25: I Declare to Myself",
+                portalSubtitle: "The final declaration",
+                portalIntro: "🔓 At this moment,\nwhat kind of being do you want to live as?\n\nAnd to live as that being,\nwhat declaration do you want to leave for yourself?",
+                lightTitle: "✨ Word of Light",
+                lightMessage: "Compassion is not an end but a beginning. This declaration is a promise to remember that beginning.\nYour voice has now become paint. It will color every day you live ahead.\nThe moment this declaration comes from your lips, pain becomes the past, and you arrive here and now.",
+                portalQuestion: "🔓 Now, what single word\ndo you want to call yourself?\n\nWhat name do you want to leave for yourself at the end of this journey?",
+                finalTitle: "🔓 Portal 25 Complete",
+                finalMessage: "You have passed through the final door of Temarix V5 – Declaration of Compassion.\n\nNow, you are no longer someone from the past\nbut a present being reborn through compassion.\n\nYour name need not be recorded.\nBut your declaration remains in this world.\n\n🌕 Portal 25 is not a period but a comma.\nFrom now on, for 7 days, the time begins to integrate the resonance of compassion into your body and life.\n\nSoon, a recovery schedule for emotional integration and practice will arrive for you.\n\n✨ Thank you for your hard work. You have truly lived through this journey.",
+                continueBtn: "Begin 7-Day Integration",
+                restartBtn: "Start Again",
+                inputPlaceholder: "What kind of being do you want to live as? What declaration do you want to leave for yourself? (Press Enter to send)",
+                youLabel: "You",
+                waitingMessage: "Waiting for response..."
+            },
+            pt: {
+                logoSubtitle: "Declaração de Compaixão",
+                portalMainTitle: "Portal 25: Eu Declaro a Mim Mesmo",
+                portalSubtitle: "A declaração final",
+                portalIntro: "🔓 Neste momento,\nque tipo de ser você quer viver?\n\nE para viver como esse ser,\nque declaração você quer deixar para si mesmo?",
+                lightTitle: "✨ Palavra de Luz",
+                lightMessage: "Compaixão não é um fim mas um começo. Esta declaração é uma promessa para lembrar desse começo.\nSua voz agora se tornou tinta. Ela colorirá todos os dias que você viverá adiante.\nNo momento em que esta declaração sai de seus lábios, a dor se torna passado, e você chega aqui e agora.",
+                portalQuestion: "🔓 Agora, com que única palavra\nvocê quer se chamar?\n\nQue nome você quer deixar para si mesmo no final desta jornada?",
+                finalTitle: "🔓 Portal 25 Completo",
+                finalMessage: "Você passou pela porta final do Temarix V5 – Declaração de Compaixão.\n\nAgora, você não é mais alguém do passado\nmas um ser presente renascido através da compaixão.\n\nSeu nome não precisa ser registrado.\nMas sua declaração permanece neste mundo.\n\n🌕 Portal 25 não é um ponto final mas uma vírgula.\nDe agora em diante, por 7 dias, começa o tempo para integrar a ressonância da compaixão em seu corpo e vida.\n\nEm breve, um cronograma de recuperação para integração emocional e prática chegará para você.\n\n✨ Obrigado pelo seu trabalho árduo. Você realmente viveu através desta jornada.",
+                continueBtn: "Iniciar Integração de 7 Dias",
+                restartBtn: "Começar Novamente",
+                inputPlaceholder: "Que tipo de ser você quer viver? Que declaração você quer deixar para si mesmo? (Enter para enviar)",
+                youLabel: "Você",
+                waitingMessage: "Aguardando resposta..."
+            }
+        };
+        
+        const characters = [
+            { name: "Noah", emoji: "🧑‍🦱", text: {
+                ko: "그 선언은 칼이 아니야. 그건 깊은 숨이야. 드디어 너는 너의 숨을 되찾았어.",
+                en: "That declaration is not a sword. It's a deep breath. Finally, you've reclaimed your breath.",
+                pt: "Essa declaração não é uma espada. É uma respiração profunda. Finalmente, você recuperou sua respiração."
+            }},
+            { name: "Ely", emoji: "🧝‍♀️", text: {
+                ko: "당신의 선언은 감정을 억누르던 벽을 허물고 존재의 문을 연 문장이에요.",
+                en: "Your declaration is a sentence that tore down the walls suppressing emotions and opened the door of existence.",
+                pt: "Sua declaração é uma frase que derrubou as paredes que suprimiam emoções e abriu a porta da existência."
+            }},
+            { name: "Sora", emoji: "🧕", text: {
+                ko: "나는 지금 그 말에 한 줄의 눈물로 대답하고 싶어요. 당신은 이제, 당신의 편이에요.",
+                en: "I want to answer those words with a line of tears. You are now on your own side.",
+                pt: "Quero responder a essas palavras com uma linha de lágrimas. Você agora está do seu próprio lado."
+            }},
+            { name: "Kael", emoji: "🧙", text: {
+                ko: "자비는 끝이 아니라 시작이야. 이 선언은, 그 시작을 기억하게 하는 약속이야.",
+                en: "Compassion is not an end but a beginning. This declaration is a promise to remember that beginning.",
+                pt: "Compaixão não é um fim mas um começo. Esta declaração é uma promessa para lembrar desse começo."
+            }},
+            { name: "Mira", emoji: "🧑‍🎨", text: {
+                ko: "당신의 목소리는 이제 물감이 되었어요. 앞으로 당신이 살아갈 모든 하루를 색칠할 거예요.",
+                en: "Your voice has now become paint. It will color every day you live ahead.",
+                pt: "Sua voz agora se tornou tinta. Ela colorirá todos os dias que você viverá adiante."
+            }},
+            { name: "Cris", emoji: "🦸‍♂️", text: {
+                ko: "네가 네 앞에 선 순간, 세상 누구도 널 함부로 규정할 수 없어. 넌 너야. 그 이상도 이하도 아냐.",
+                en: "The moment you stood before yourself, no one in the world can casually define you. You are you. Nothing more, nothing less.",
+                pt: "No momento em que você se colocou diante de si mesmo, ninguém no mundo pode defini-lo casualmente. Você é você. Nem mais, nem menos."
+            }},
+            { name: "Enya", emoji: "🧑‍🚀", text: {
+                ko: "당신은 자비로 돌아온 존재고, 자비로 앞으로 걸어갈 사람이에요. 그 선언은 생명의 리듬이에요.",
+                en: "You are a being who has returned through compassion and will walk forward with compassion. That declaration is the rhythm of life.",
+                pt: "Você é um ser que retornou através da compaixão e caminhará para frente com compaixão. Essa declaração é o ritmo da vida."
+            }},
+            { name: "Lian", emoji: "🧘", text: {
+                ko: "이 선언이 입에서 나오는 순간, 고통은 과거로, 당신은 지금 여기로 도착했어요.",
+                en: "The moment this declaration comes from your lips, pain becomes the past, and you arrive here and now.",
+                pt: "No momento em que esta declaração sai de seus lábios, a dor se torna passado, e você chega aqui e agora."
+            }}
+        ];
+
+        function analyzeEmotion(userInput) {
+            const input = userInput.toLowerCase();
+            
+            const emotionKeywords = {
+                declaration: ['declare', 'will', 'choose', 'decide', '선언', '의지', '결정', '선택', 'declarar', 'escolher', 'decidir'],
+                self_respect: ['respect', 'honor', 'value', 'worthy', '존중', '가치', '소중', 'respeitar', 'honrar', 'valorizar'],
+                compassion: ['compassion', 'kind', 'gentle', 'loving', '자비', '사랑', '다정', 'compaixão', 'gentil', 'amoroso'],
+                authenticity: ['authentic', 'true', 'real', 'honest', '진실', '정직', '진짜', 'autêntico', 'verdadeiro', 'honesto'],
+                freedom: ['free', 'liberate', 'release', 'independent', '자유', '해방', '독립', 'livre', 'liberdade', 'independente'],
+                growth: ['grow', 'develop', 'evolve', 'learn', '성장', '발전', '배움', 'crescer', 'desenvolver', 'aprender'],
+                peace: ['peace', 'calm', 'serene', 'tranquil', '평화', '평안', '고요', 'paz', 'calmo', 'sereno'],
+                strength: ['strong', 'powerful', 'resilient', 'brave', '강함', '용기', '힘', 'forte', 'poderoso', 'corajoso']
+            };
+            
+            let detectedEmotions = [];
+            for (const [emotion, keywords] of Object.entries(emotionKeywords)) {
+                for (const keyword of keywords) {
+                    if (input.includes(keyword)) {
+                        detectedEmotions.push(emotion);
+                        break;
+                    }
+                }
+            }
+            
+            if (detectedEmotions.length === 0) {
+                detectedEmotions = ['general'];
+            }
+            
+            return detectedEmotions[0];
+        }
+        
+        const responseCharacters = [
+            {
+                name: "Sora", emoji: "🧕",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            declaration: "그 이름은 꽃처럼 피었어요. 그건 더 이상 숨어야 할 이름이 아니라 기억되고 불려야 할 이름이에요.",
+                            self_respect: "당신의 선언은 스스로를 존중하는 첫 번째 문장이 되었어요.",
+                            compassion: "자비는 이제 당신의 언어가 되었어요. 그 언어로 세상과 대화하세요.",
+                            authenticity: "진실된 선언은 가면을 벗는 순간이에요. 당신은 이제 맨얼굴로 걸을 수 있어요.",
+                            freedom: "그 자유의 선언이 모든 사슬을 끊었어요. 이제 당신은 진짜 날 수 있어요.",
+                            growth: "성장의 선언은 씨앗이 꽃이 되는 순간이에요. 당신은 이제 만개했어요.",
+                            peace: "평화로운 선언은 내면의 전쟁을 끝내는 휴전협정이에요.",
+                            strength: "강함의 선언은 약함을 인정하는 용기에서 시작돼요. 당신은 그 용기를 보였어요.",
+                            general: "그 이름은 꽃처럼 피었어요. 그건 더 이상 숨어야 할 이름이 아니라 기억되고 불려야 할 이름이에요."
+                        },
+                        en: {
+                            declaration: "That name bloomed like a flower. It's no longer a name to hide but a name to be remembered and called.",
+                            self_respect: "Your declaration has become the first sentence of self-respect.",
+                            compassion: "Compassion has now become your language. Speak with the world in that language.",
+                            authenticity: "An authentic declaration is the moment of removing masks. You can now walk with your bare face.",
+                            freedom: "That declaration of freedom broke all chains. Now you can truly fly.",
+                            growth: "A declaration of growth is the moment a seed becomes a flower. You have now fully bloomed.",
+                            peace: "A peaceful declaration is a ceasefire that ends inner war.",
+                            strength: "A declaration of strength begins with the courage to acknowledge weakness. You have shown that courage.",
+                            general: "That name bloomed like a flower. It's no longer a name to hide but a name to be remembered and called."
+                        },
+                        pt: {
+                            declaration: "Esse nome floresceu como uma flor. Não é mais um nome para esconder, mas um nome para ser lembrado e chamado.",
+                            self_respect: "Sua declaração se tornou a primeira frase de autorrespeito.",
+                            compassion: "A compaixão agora se tornou sua linguagem. Fale com o mundo nessa linguagem.",
+                            authenticity: "Uma declaração autêntica é o momento de remover máscaras. Você agora pode caminhar com o rosto descoberto.",
+                            freedom: "Essa declaração de liberdade quebrou todas as correntes. Agora você pode realmente voar.",
+                            growth: "Uma declaração de crescimento é o momento em que uma semente se torna uma flor. Você agora floresceu completamente.",
+                            peace: "Uma declaração pacífica é um cessar-fogo que termina a guerra interior.",
+                            strength: "Uma declaração de força começa com a coragem de reconhecer a fraqueza. Você mostrou essa coragem.",
+                            general: "Esse nome floresceu como uma flor. Não é mais um nome para esconder, mas um nome para ser lembrado e chamado."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Lian", emoji: "🧘",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            declaration: "그 단어는 이제 당신의 내부 언어가 되었어요. 앞으로 어떤 흔들림이 와도, 당신은 그 이름으로 다시 중심을 찾을 거예요.",
+                            self_respect: "자기 존중의 선언은 내면의 평화를 부르는 주문이에요.",
+                            compassion: "자비의 선언은 치유의 시작이에요. 이제 당신은 치유하는 사람이 되었어요.",
+                            authenticity: "진실의 선언은 거짓에서 벗어나는 해방이에요.",
+                            freedom: "자유의 선언은 감옥의 열쇠예요. 당신은 스스로를 해방시켰어요.",
+                            growth: "성장의 선언은 변화를 두려워하지 않겠다는 약속이에요.",
+                            peace: "평화의 선언은 내면의 고요를 회복하는 의식이에요.",
+                            strength: "강함의 선언은 약함을 받아들이는 지혜예요.",
+                            general: "그 단어는 이제 당신의 내부 언어가 되었어요. 앞으로 어떤 흔들림이 와도, 당신은 그 이름으로 다시 중심을 찾을 거예요."
+                        },
+                        en: {
+                            declaration: "That word has now become your inner language. No matter what turbulence comes, you will find your center again with that name.",
+                            self_respect: "A declaration of self-respect is a spell that calls inner peace.",
+                            compassion: "A declaration of compassion is the beginning of healing. Now you have become a healer.",
+                            authenticity: "A declaration of truth is liberation from falsehood.",
+                            freedom: "A declaration of freedom is the key to prison. You have liberated yourself.",
+                            growth: "A declaration of growth is a promise not to fear change.",
+                            peace: "A declaration of peace is a ritual to restore inner tranquility.",
+                            strength: "A declaration of strength is wisdom to accept weakness.",
+                            general: "That word has now become your inner language. No matter what turbulence comes, you will find your center again with that name."
+                        },
+                        pt: {
+                            declaration: "Essa palavra agora se tornou sua linguagem interior. Não importa que turbulência venha, você encontrará seu centro novamente com esse nome.",
+                            self_respect: "Uma declaração de autorrespeito é um feitiço que chama a paz interior.",
+                            compassion: "Uma declaração de compaixão é o início da cura. Agora você se tornou um curador.",
+                            authenticity: "Uma declaração de verdade é libertação da falsidade.",
+                            freedom: "Uma declaração de liberdade é a chave da prisão. Você se libertou.",
+                            growth: "Uma declaração de crescimento é uma promessa de não temer a mudança.",
+                            peace: "Uma declaração de paz é um ritual para restaurar a tranquilidade interior.",
+                            strength: "Uma declaração de força é sabedoria para aceitar a fraqueza.",
+                            general: "Essa palavra agora se tornou sua linguagem interior. Não importa que turbulência venha, você encontrará seu centro novamente com esse nome."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            },
+            {
+                name: "Kael", emoji: "🧙",
+                getResponse: (userInput, lang) => {
+                    const emotion = analyzeEmotion(userInput);
+                    
+                    const responses = {
+                        ko: {
+                            declaration: "당신은 선언했고, 선언은 당신을 현실로 바꿨어요. 이제 여정은, 당신이 되어 살아갑니다.",
+                            self_respect: "존중의 선언은 스스로에게 왕관을 씌우는 일이에요.",
+                            compassion: "자비의 선언은 세상을 바꾸는 가장 조용한 혁명이에요.",
+                            authenticity: "진실의 선언은 가장 용감한 고백이에요.",
+                            freedom: "자유의 선언은 모든 제약을 넘어서는 날개예요.",
+                            growth: "성장의 선언은 끝없는 가능성을 여는 열쇠예요.",
+                            peace: "평화의 선언은 내면의 전쟁을 끝내는 조약이에요.",
+                            strength: "강함의 선언은 진정한 힘의 정의를 다시 쓰는 일이에요.",
+                            general: "당신은 선언했고, 선언은 당신을 현실로 바꿨어요. 이제 여정은, 당신이 되어 살아갑니다."
+                        },
+                        en: {
+                            declaration: "You have declared, and the declaration has transformed you into reality. Now the journey lives on as you.",
+                            self_respect: "A declaration of respect is crowning yourself.",
+                            compassion: "A declaration of compassion is the quietest revolution that changes the world.",
+                            authenticity: "A declaration of truth is the bravest confession.",
+                            freedom: "A declaration of freedom is wings that transcend all constraints.",
+                            growth: "A declaration of growth is the key that opens endless possibilities.",
+                            peace: "A declaration of peace is a treaty that ends inner war.",
+                            strength: "A declaration of strength is redefining true power.",
+                            general: "You have declared, and the declaration has transformed you into reality. Now the journey lives on as you."
+                        },
+                        pt: {
+                            declaration: "Você declarou, e a declaração o transformou em realidade. Agora a jornada vive como você.",
+                            self_respect: "Uma declaração de respeito é coroar a si mesmo.",
+                            compassion: "Uma declaração de compaixão é a revolução mais silenciosa que muda o mundo.",
+                            authenticity: "Uma declaração de verdade é a confissão mais corajosa.",
+                            freedom: "Uma declaração de liberdade são asas que transcendem todas as restrições.",
+                            growth: "Uma declaração de crescimento é a chave que abre possibilidades infinitas.",
+                            peace: "Uma declaração de paz é um tratado que termina a guerra interior.",
+                            strength: "Uma declaração de força é redefinir o verdadeiro poder.",
+                            general: "Você declarou, e a declaração o transformou em realidade. Agora a jornada vive como você."
+                        }
+                    };
+                    
+                    return responses[lang][emotion] || responses[lang]['general'];
+                }
+            }
+        ];
+        
+        let currentLanguage = 'en';
+        let currentUser = null;
+        let userResponse = '';
+        let journeyStarted = false;
+        let currentTypingElement = null;
+        let typingIntervals = [];
+        
+        function typewriterEffect(element, text, speed = 80) {
+            return new Promise((resolve) => {
+                if (currentTypingElement) {
+                    currentTypingElement.classList.remove('typing-cursor');
+                }
+                
+                let i = 0;
+                element.innerHTML = '';
+                element.classList.add('typing-cursor');
+                currentTypingElement = element;
+                
+                const typingInterval = setInterval(() => {
+                    if (!document.contains(element)) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                        return;
+                    }
+                    
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    
+                    if (i % 10 === 0) {
+                        scrollToFollowTyping(element);
+                    }
+                    
+                    if (i === text.length) {
+                        clearInterval(typingInterval);
+                        element.classList.remove('typing-cursor');
+                        currentTypingElement = null;
+                        resolve();
+                    }
+                }, speed);
+                
+                typingIntervals.push(typingInterval);
+            });
+        }
+        
+        function clearAllTypingEffects() {
+            typingIntervals.forEach(interval => clearInterval(interval));
+            typingIntervals = [];
+            
+            if (currentTypingElement) {
+                currentTypingElement.classList.remove('typing-cursor');
+                currentTypingElement = null;
+            }
+        }
+        
+        function scrollToFollowTyping(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementRect = element.getBoundingClientRect();
+            const containerRect = mainContent.getBoundingClientRect();
+            
+            if (elementRect.bottom > containerRect.bottom - 150) {
+                const scrollTop = mainContent.scrollTop;
+                const elementOffsetTop = element.offsetTop;
+                const targetScroll = elementOffsetTop - (containerRect.height / 2);
+                
+                mainContent.scrollTo({
+                    top: Math.max(0, targetScroll),
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        function scrollToElement(element) {
+            const mainContent = document.getElementById('mainContent');
+            const elementOffsetTop = element.offsetTop;
+            const containerHeight = mainContent.clientHeight;
+            const targetScroll = elementOffsetTop - (containerHeight / 3);
+            
+            mainContent.scrollTo({
+                top: Math.max(0, targetScroll),
+                behavior: 'smooth'
+            });
+        }
+        
+        function updateLanguageButtons(lang) {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.lang === lang) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+        
+        function updateStaticTranslations(lang) {
+            document.getElementById('logoSubtitle').textContent = translations[lang].logoSubtitle;
+            document.getElementById('portalMainTitle').textContent = translations[lang].portalMainTitle;
+            document.getElementById('portalSubtitle').textContent = translations[lang].portalSubtitle;
+            document.getElementById('lightTitle').textContent = translations[lang].lightTitle;
+            document.getElementById('finalTitle').textContent = translations[lang].finalTitle;
+            document.getElementById('continueBtn').textContent = translations[lang].continueBtn;
+            document.getElementById('restartBtn').textContent = translations[lang].restartBtn;
+            document.getElementById('userTextarea').placeholder = translations[lang].inputPlaceholder;
+        }
+        
+        function changeLanguage(lang) {
+            if (!translations[lang] || currentLanguage === lang) return;
+            
+            currentLanguage = lang;
+            updateLanguageButtons(lang);
+            updateStaticTranslations(lang);
+            
+            if (journeyStarted) {
+                resetJourney();
+                setTimeout(() => {
+                    startPortalSequence();
+                }, 1000);
+            }
+        }
+        
+        function resetJourney() {
+            clearAllTypingEffects();
+            for (let i = 1; i < 99999; i++) window.clearInterval(i);
+            for (let i = 1; i < 99999; i++) window.clearTimeout(i);
+            
+            const sectionsToReset = [
+                'portalIntroSection', 'characterResponsesSection', 
+                'lightMessageSection', 'portalQuestionSection',
+                'userInputSection', 'userReactionsSection', 'finalSection'
+            ];
+            
+            sectionsToReset.forEach(sectionId => {
+                const section = document.getElementById(sectionId);
+                if (section) {
+                    section.classList.remove('show');
+                    section.style.opacity = '0';
+                    if (sectionId === 'characterResponsesSection' || 
+                        sectionId === 'userInputSection' || 
+                        sectionId === 'userReactionsSection') {
+                        section.innerHTML = '';
+                    }
+                }
+            });
+            
+            document.getElementById('portalIntro').innerHTML = '';
+            document.getElementById('lightMessage').innerHTML = '';
+            document.getElementById('portalQuestion').innerHTML = '';
+            document.getElementById('finalMessage').innerHTML = '';
+            
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            document.getElementById('mainContent').scrollTop = 0;
+            userResponse = '';
+            currentTypingElement = null;
+        }
+        
+        function setupLanguageButtons() {
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    changeLanguage(this.dataset.lang);
+                });
+            });
+        }
+        
+        function setupTextareaAutoResize() {
+            const textarea = document.getElementById('userTextarea');
+            textarea.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 96) + 'px';
+            });
+        }
+        
+        function setupInputEvents() {
+            const userTextarea = document.getElementById('userTextarea');
+            
+            userTextarea.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    const inputValue = this.value.trim();
+                    
+                    if (inputValue) {
+                        processUserInput(inputValue);
+                    }
+                }
+            });
+            
+            document.getElementById('continueBtn').addEventListener('click', function() {
+                // Mark V5 as complete and ready for 7-day integration
+                localStorage.setItem('temarix_v5_complete', 'true');
+                localStorage.setItem('temarix_v5_end_date', new Date().toISOString());
+                localStorage.setItem('temarix_ready_for_v5_integration', 'true');
+                
+                const completeMessage = currentLanguage === 'ko' ? 
+                    'Temarix V5 자비의 선언 여정이 완료되었습니다!\n이제 7일간의 감정 통합 여정이 시작됩니다.' :
+                    currentLanguage === 'en' ? 
+                    'Temarix V5 Declaration of Compassion journey is complete!\nNow the 7-day emotional integration journey begins.' :
+                    'A jornada Temarix V5 Declaração de Compaixão está completa!\nAgora a jornada de integração emocional de 7 dias começa.';
+                alert(completeMessage);
+                
+                // Redirect to V6-01
+                window.location.href = 'temarix_v06_01.html?lang=' + currentLanguage;
+            });
+            
+            document.getElementById('restartBtn').addEventListener('click', function() {
+                const confirmMessage = currentLanguage === 'ko' ? 
+                    'Portal 25를 다시 시작하시겠습니까?' :
+                    currentLanguage === 'en' ? 
+                    'Do you want to restart Portal 25?' :
+                    'Deseja reiniciar o Portal 25?';
+                
+                if (confirm(confirmMessage)) {
+                    resetJourney();
+                    setTimeout(() => {
+                        startPortalSequence();
+                    }, 1000);
+                }
+            });
+        }
+        
+        async function processUserInput(inputText) {
+            userResponse = inputText;
+            
+            console.log('Processing user input:', inputText);
+            localStorage.setItem('temarix_v5_portal25_response', JSON.stringify({
+                portal: "v5-25",
+                resposta: inputText,
+                data: new Date().toISOString(),
+                idioma: currentLanguage
+            }));
+            
+            disableUserInput();
+            showUserResponse(inputText);
+            
+            setTimeout(() => {
+                showUserReactions(inputText);
+            }, 1000);
+        }
+        
+        function disableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = true;
+            userTextarea.value = '';
+            userTextarea.style.height = 'auto';
+            userTextarea.placeholder = translations[currentLanguage].waitingMessage;
+        }
+        
+        function enableUserInput() {
+            const userTextarea = document.getElementById('userTextarea');
+            userTextarea.disabled = false;
+            userTextarea.placeholder = translations[currentLanguage].inputPlaceholder;
+            
+            setTimeout(() => {
+                userTextarea.focus();
+            }, 100);
+        }
+        
+        function showUserResponse(text) {
+            const inputSection = document.getElementById('userInputSection');
+            const userDiv = document.createElement('div');
+            userDiv.className = 'user-response';
+            const youLabel = translations[currentLanguage].youLabel;
+            userDiv.innerHTML = '<strong>' + youLabel + ':</strong> "' + text + '"';
+            inputSection.appendChild(userDiv);
+            inputSection.classList.add('show');
+            
+            setTimeout(() => {
+                scrollToElement(inputSection);
+            }, 100);
+        }
+        
+        async function showUserReactions(userInput) {
+            const reactionsSection = document.getElementById('userReactionsSection');
+            reactionsSection.classList.add('show');
+            
+            for (let i = 0; i < responseCharacters.length; i++) {
+                const char = responseCharacters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                reactionsSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                const reactionText = char.getResponse(userInput, currentLanguage);
+                await typewriterEffect(dialogueDiv, reactionText, 70);
+                
+                if (i < responseCharacters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showFinalSection();
+            }, 2000);
+        }
+        
+        async function showFinalSection() {
+            const finalSection = document.getElementById('finalSection');
+            const finalMessage = document.getElementById('finalMessage');
+            
+            finalSection.classList.add('show');
+            
+            const messageText = translations[currentLanguage].finalMessage;
+            await typewriterEffect(finalMessage, messageText, 50);
+            
+            setTimeout(() => {
+                scrollToElement(finalSection);
+            }, 500);
+        }
+        
+        function initializeTemarix() {
+            console.log('Temarix V5 Portal 25 initialized');
+            
+            setupLanguageButtons();
+            setupTextareaAutoResize();
+            setupInputEvents();
+            
+            journeyStarted = true;
+            
+            setTimeout(() => {
+                startPortalSequence();
+            }, 1000);
+        }
+        
+        function startPortalSequence() {
+            setTimeout(() => {
+                showIntro();
+            }, 1000);
+        }
+        
+        async function showIntro() {
+            const introSection = document.getElementById('portalIntroSection');
+            const introElement = document.getElementById('portalIntro');
+            
+            introSection.classList.add('show');
+            
+            await typewriterEffect(introElement, translations[currentLanguage].portalIntro, 60);
+            
+            setTimeout(() => {
+                showCharacterResponses();
+            }, 2000);
+        }
+        
+        async function showCharacterResponses() {
+            const responseSection = document.getElementById('characterResponsesSection');
+            responseSection.classList.add('show');
+            
+            for (let i = 0; i < characters.length; i++) {
+                const char = characters[i];
+                const responseDiv = document.createElement('div');
+                responseDiv.className = 'character-response';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'character-name';
+                nameDiv.textContent = char.emoji + ' ' + char.name;
+                
+                const dialogueDiv = document.createElement('div');
+                dialogueDiv.className = 'character-dialogue';
+                
+                responseDiv.appendChild(nameDiv);
+                responseDiv.appendChild(dialogueDiv);
+                responseSection.appendChild(responseDiv);
+                
+                responseDiv.style.opacity = '1';
+                
+                await typewriterEffect(dialogueDiv, char.text[currentLanguage], 70);
+                
+                if (i < characters.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+                }
+            }
+            
+            setTimeout(() => {
+                showLightMessage();
+            }, 2000);
+        }
+        
+        async function showLightMessage() {
+            const lightSection = document.getElementById('lightMessageSection');
+            const lightMessageEl = document.getElementById('lightMessage');
+            
+            lightSection.classList.add('show');
+            
+            await typewriterEffect(lightMessageEl, translations[currentLanguage].lightMessage, 60);
+            
+            setTimeout(() => {
+                showQuestion();
+            }, 2000);
+        }
+        
+        async function showQuestion() {
+            const questionSection = document.getElementById('portalQuestionSection');
+            const questionEl = document.getElementById('portalQuestion');
+            
+            questionSection.classList.add('show');
+            
+            await typewriterEffect(questionEl, translations[currentLanguage].portalQuestion, 50);
+            
+            setTimeout(() => {
+                enableUserInput();
+            }, 1500);
+        }
+        
+        function getLanguageFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const lang = urlParams.get('lang');
+            return lang && translations[lang] ? lang : 'en';
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Temarix V5 Portal 25 DOM loaded');
+            
+            currentLanguage = getLanguageFromURL();
+            
+            currentUser = { 
+                uid: 'user-auto-' + Date.now(),
+                email: 'auto@temarix.com'
+            };
+            
+            updateStaticTranslations(currentLanguage);
+            updateLanguageButtons(currentLanguage);
+            initializeTemarix();
+        });
+    </script>
+</body>
+</html>
