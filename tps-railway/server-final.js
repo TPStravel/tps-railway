@@ -1,56 +1,47 @@
-import express from "express";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-import rateLimit from "express-rate-limit";
+const express = require("express");
+const fetch = require("node-fetch");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const rateLimit = require("express-rate-limit");
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
+app.use(cors());
 app.use(express.json());
 
-// Limite de requisições por IP
-app.use(rateLimit({
-  windowMs: 60 * 1000, // 1 minuto
-  max: 60
-}));
+const limiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+});
+app.use(limiter);
 
-// GPT Endpoint principal
 app.post("/gpt-tps", async (req, res) => {
-  const { prompt } = req.body;
-  if (!prompt) return res.status(400).json({ error: "Prompt ausente." });
-
   try {
+    const { prompt } = req.body;
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://canalvivo.org",
-        "X-Title": "TPS - Travel Assistant"
       },
       body: JSON.stringify({
-        model: process.env.MODEL,
-        messages: [{ role: "user", content: prompt }]
-      })
+        model: "meta-llama/llama-3-8b-instruct:nitro",
+        messages: [{ role: "user", content: prompt }],
+      }),
     });
 
     const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || "❌ Resposta não recebida.";
-    res.json({ content });
-
-  } catch (error) {
-    console.error("Erro GPT:", error.message);
-    res.status(500).json({ error: "Erro interno ao processar GPT." });
+    const reply = data.choices?.[0]?.message?.content || "⚠️ Nenhuma resposta recebida.";
+    res.json({ content: reply });
+  } catch (err) {
+    console.error("Erro ao chamar OpenRouter:", err.message);
+    res.status(500).json({ message: "Erro no servidor." });
   }
 });
 
-// Fallback manual (opcional)
-app.get("/", (_, res) => {
-  res.send("🟢 Backend do TPS ativo.");
-});
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`✅ Servidor rodando em http://0.0.0.0:${PORT}`);
+app.listen(port, () => {
+  console.log(`✅ Servidor rodando em http://0.0.0.0:${port}`);
 });
