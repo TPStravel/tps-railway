@@ -1,137 +1,15 @@
 {
-  "name": "tps-travel-professional-system",
+  "name": "tps-railway",
   "version": "1.0.0",
-  "description": "Travel Professional System - Sistema completo de viagens com IA, respostas simbólicas e afiliados",
-  "main": "server-final.js",
   "type": "module",
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=8.0.0"
-  },
+  "main": "server.js",
   "scripts": {
-    "start": "node server-final.js",
-    "dev": "nodemon server-final.js",
-    "test": "node --test",
-    "build": "echo 'Build process completed'",
-    "postinstall": "echo 'TPS installation completed successfully'"
+    "start": "node server.js"
   },
-  "keywords": [
-    "travel",
-    "ai",
-    "affiliates",
-    "multilingual",
-    "professional",
-    "tourism",
-    "symbolic-responses",
-    "guided-journey"
-  ],
-  "author": "TPS Development Team",
-  "license": "MIT",
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
-    "helmet": "^7.1.0",
-    "compression": "^1.7.4",
     "dotenv": "^16.3.1",
-    "axios": "^1.6.2",
-    "node-fetch": "^3.3.2",
-    "express-rate-limit": "^7.1.5",
-    "morgan": "^1.10.0",
-    "uuid": "^9.0.1",
-    "moment": "^2.29.4",
-    "moment-timezone": "^0.5.43",
-    "lodash": "^4.17.21",
-    "validator": "^13.11.0",
-    "crypto": "^1.0.1",
-    "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3",
-    "multer": "^1.4.5-lts.1",
-    "sharp": "^0.32.6",
-    "nodemailer": "^6.9.7",
-    "express-validator": "^7.0.1",
-    "cookie-parser": "^1.4.6",
-    "express-session": "^1.17.3",
-    "connect-mongo": "^5.1.0",
-    "mongoose": "^8.0.3",
-    "redis": "^4.6.11",
-    "socket.io": "^4.7.4",
-    "ws": "^8.14.2",
-    "cheerio": "^1.0.0-rc.12",
-    "xml2js": "^0.6.2",
-    "csv-parser": "^3.0.0",
-    "node-cron": "^3.0.3",
-    "i18next": "^23.7.6",
-    "i18next-fs-backend": "^2.3.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.0.2",
-    "jest": "^29.7.0",
-    "supertest": "^6.3.3",
-    "@types/node": "^20.10.0",
-    "eslint": "^8.55.0",
-    "prettier": "^3.1.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tps-system/travel-professional-system.git"
-  },
-  "bugs": {
-    "url": "https://github.com/tps-system/travel-professional-system/issues"
-  },
-  "homepage": "https://tps-system.railway.app",
-  "railway": {
-    "start": "node server-final.js",
-    "build": "npm install",
-    "healthcheck": "/health"
-  },
-  "config": {
-    "port": 3000,
-    "timeout": 30000,
-    "max_payload": "50mb"
-  },
-  "optionalDependencies": {
-    "puppeteer": "^21.6.1",
-    "playwright": "^1.40.1"
-  },
-  "peerDependencies": {
-    "firebase-admin": "^11.11.1",
-    "firebase-functions": "^4.5.0"
-  },
-  "bundleDependencies": [],
-  "funding": {
-    "type": "individual",
-    "url": "https://github.com/sponsors/tps-system"
-  },
-  "cpu": [
-    "x64",
-    "arm64"
-  ],
-  "os": [
-    "linux",
-    "darwin",
-    "win32"
-  ],
-  "files": [
-    "server-final.js",
-    "resposta-simbolica.js",
-    "ai-llama.js",
-    "roteador-de-dialogo.js",
-    "jornada-guiada.js",
-    "data-viagens.js",
-    "public/",
-    "views/",
-    "assets/",
-    "locales/",
-    "docs/"
-  ],
-  "directories": {
-    "lib": "./lib",
-    "doc": "./docs",
-    "test": "./test"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead"
-  ]
+    "node-fetch": "^3.3.2"
+  }
 }
