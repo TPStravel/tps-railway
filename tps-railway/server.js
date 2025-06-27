@@ -449,9 +449,13 @@ app.get('/', (req, res) => {
     <script>
         // Configuração Firebase
         const firebaseConfig = {
-            apiKey: "your-api-key",
+            apiKey: "AIzaSyC2u94Oz2W5seqBlqs88cs7rgSmZBEAnjQ",
             authDomain: "canal-vivo-chat.firebaseapp.com",
-            projectId: "canal-vivo-chat"
+            projectId: "canal-vivo-chat",
+            storageBucket: "canal-vivo-chat.firebasestorage.app",
+            messagingSenderId: "975226660544",
+            appId: "1:975226660544:web:56b55bb3e2a58be035ef25",
+            measurementId: "G-SCFHQFVGHQ"
         };
         
         firebase.initializeApp(firebaseConfig);
