@@ -51,6 +51,33 @@ app.get("/", (_, res) => {
   res.send("🟢 Backend do TPS ativo.");
 });
 
+// Rota de teste da Amadeus
+app.get("/amadeus-test", async (req, res) => {
+  try {
+    const authResponse = await fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: process.env.AMADEUS_API_KEY,
+        client_secret: process.env.AMADEUS_API_SECRET,
+      })
+    });
+
+    const data = await authResponse.json();
+
+    if (data.access_token) {
+      res.status(200).json({ success: true, message: "Token gerado com sucesso ✅", token: data.access_token });
+    } else {
+      res.status(401).json({ success: false, message: "Erro ao gerar token", detalhes: data });
+    }
+
+  } catch (error) {
+    console.error("Erro Amadeus:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Servidor rodando em http://0.0.0.0:${PORT}`);
 });
