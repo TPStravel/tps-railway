@@ -1,7 +1,9 @@
 import express from "express";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
+import { callGPTWithFallback } from "./gpt-fallback-handler.js";
 import rateLimit from "express-rate-limit";
+import amadeusFlightsRoute from "./routes/amadeus-flights.js";
 
 dotenv.config();
 
@@ -22,28 +24,14 @@ app.post("/gpt-tps", async (req, res) => {
   if (!prompt) return res.status(400).json({ error: "Prompt ausente." });
 
   try {
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://canalvivo.org",
-        "X-Title": "TPS - Travel Assistant"
-      },
-      body: JSON.stringify({
-        model: process.env.MODEL,
-        messages: [{ role: "user", content: prompt }]
-      })
-    });
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || "❌ Resposta não recebida.";
-    res.json({ content });
-
+    const resposta = await callGPTWithFallback(prompt);
+    res.json({ content: resposta });
   } catch (error) {
-    console.error("Erro GPT:", error.message);
-    res.status(500).json({ error: "Erro interno ao processar GPT." });
+    console.error("Erro ao gerar resposta:", error);
+    res.status(500).json({ error: "Erro ao gerar resposta com fallback." });
   }
+});
+
 });
 
 // Fallback manual (opcional)
@@ -75,6 +63,43 @@ app.get("/amadeus-test", async (req, res) => {
   } catch (error) {
     console.error("Erro Amadeus:", error);
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+app.use("/amadeus-flights", amadeusFlightsRoute);
+// Teste de conexão com Amadeus - Geração de Token
+app.get("/amadeus-test", async (req, res) => {
+  try {
+    const authResponse = await fetch("https://test.api.amadeus.com/v1/security/oauth2/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: process.env.AMADEUS_API_KEY,
+        client_secret: process.env.AMADEUS_API_SECRET
+      })
+    });
+
+    const authData = await authResponse.json();
+    if (process.env.NODE_ENV !== 'production') {
+      console.log("🔑 Token Amadeus:", authData.access_token);
+    }
+
+    res.json({
+      success: true,
+      message: "Token gerado com sucesso ✅"
+      // token: authData.access_token // 🔐 Mantido apenas para debug local se quiser
+    });
+
+
+  } catch (error) {
+    console.error("Erro ao gerar token Amadeus:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
 });
 
