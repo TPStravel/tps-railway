@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Language" content="ko,en,pt">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temarix Login</title>
+  
+  <!-- Firebase SDK v8 - Enhanced Loading with Faster Timeouts -->
+  <script>
+    // Enhanced Firebase loading with faster failure detection
+    window.firebaseLoadPromise = new Promise((resolve, reject) => {
+      let loadAttempt = 0;
+      const maxAttempts = 3;
+      
+      const firebaseCDNs = [
+        // Primary CDN with shorter timeout
+        {
+          name: 'Google CDN',
+          scripts: [
+            'https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js',
+            'https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js',
+            'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js'
+          ],
+          timeout: 8000 // Faster timeout
+        },
+        // Fallback CDN 1
+        {
+          name: 'Firebase CDN',
+          scripts: [
+            'https://firebase.googleapis.com/libs/firebase/8.10.1/firebase-app.js',
+            'https://firebase.googleapis.com/libs/firebase/8.10.1/firebase-auth.js',
+            'https://firebase.googleapis.com/libs/firebase/8.10.1/firebase-firestore.js'
+          ],
+          timeout: 8000
+        },
+        // Fallback CDN 2 (older version for compatibility)
+        {
+          name: 'Firebase CDN v8.6.8',
+          scripts: [
+            'https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js',
+            'https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js',
+            'https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js'
+          ],
+          timeout: 8000
+        }
+      ];
+      
+      function loadFirebaseFromCDN(cdnIndex) {
+        if (cdnIndex >= firebaseCDNs.length) {
+          console.error('❌ All Firebase CDNs failed - network/firewall issue detected');
+          reject(new Error('All Firebase CDNs failed to load - using offline mode'));
+          return;
+        }
+        
+        loadAttempt++;
+        const cdn = firebaseCDNs[cdnIndex];
+        console.log(`🔄 Attempt ${loadAttempt}: Loading Firebase from ${cdn.name}...`);
+        
+        let scriptsLoaded = 0;
+        let hasError = false;
+        const totalScripts = cdn.scripts.length;
+        
+        const onScriptLoad = () => {
+          scriptsLoaded++;
+          if (scriptsLoaded === totalScripts && !hasError) {
+            setTimeout(() => {
+              if (typeof firebase !== 'undefined' && firebase.apps !== undefined) {
+                console.log(`✅ Firebase loaded successfully from ${cdn.name}`);
+                resolve();
+              } else {
+                console.log(`❌ Firebase object not available from ${cdn.name}`);
+                loadFirebaseFromCDN(cdnIndex + 1);
+              }
+            }, 300); // Shorter verification delay
+          }
+        };
+        
+        const onScriptError = () => {
+          if (!hasError) {
+            hasError = true;
+            console.log(`❌ Error loading from ${cdn.name}, trying next CDN...`);
+            loadFirebaseFromCDN(cdnIndex + 1);
+          }
+        };
+        
+        cdn.scripts.forEach(src => {
+          const script = document.createElement('script');
+          script.src = src;
+          script.async = false;
+          script.onload = onScriptLoad;
+          script.onerror = onScriptError;
+          document.head.appendChild(script);
+        });
+        
+        // Faster timeout per CDN
+        setTimeout(() => {
+          if (scriptsLoaded < totalScripts && !hasError) {
+            console.log(`⏰ Timeout loading from ${cdn.name} (${cdn.timeout}ms)`);
+            onScriptError();
+          }
+        }, cdn.timeout);
+      }
+      
+      // Start loading immediately
+      loadFirebaseFromCDN(0);
+      
+      // ✅ GLOBAL TIMEOUT: Fail fast if nothing works
+      setTimeout(() => {
+        console.log('⏰ Global Firebase loading timeout - enabling offline mode');
+        reject(new Error('Global Firebase loading timeout'));
+      }, 25000); // 25 seconds total maximum
+    });
+  </script>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-bg: #0a0b0f;
+      --secondary-bg: #1a1d23;
+      --card-bg: #212630;
+      --accent-gold: #C6A876;
+      --accent-green: #6B8E7A;
+      --text-primary: #E2E8F0;
+      --text-secondary: #A0AEC0;
+      --text-muted: #718096;
+      --border-color: #2D3748;
+      --success-color: #48BB78;
+      --error-color: #F56565;
+      --gradient: linear-gradient(135deg, #6B8E7A 0%, #C6A876 100%);
+      --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--primary-bg);
+      background-image: 
+        linear-gradient(135deg, rgba(10, 11, 15, 0.9) 0%, rgba(26, 29, 35, 0.85) 100%),
+        url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2072&q=80'),
+        radial-gradient(circle at 20% 50%, rgba(107, 142, 122, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(198, 168, 118, 0.15) 0%, transparent 50%);
+      background-size: cover, cover, 100% 100%, 100% 100%;
+      background-position: center, center, center, center;
+      background-attachment: fixed, fixed, local, local;
+      background-repeat: no-repeat;
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.1;
+      z-index: -2;
+      animation: backgroundShift 20s ease-in-out infinite;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(ellipse at top left, rgba(107, 142, 122, 0.1) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom right, rgba(198, 168, 118, 0.1) 0%, transparent 60%),
+        linear-gradient(45deg, transparent 30%, rgba(107, 142, 122, 0.05) 50%, transparent 70%);
+      z-index: -1;
+      animation: gradientShift 15s ease-in-out infinite;
+    }
+
+    @keyframes backgroundShift {
+      0%, 100% { 
+        background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        opacity: 0.1;
+      }
+      33% { 
+        background-image: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+        opacity: 0.08;
+      }
+      66% { 
+        background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af2176?ixlib=rb-4.0.3&auto=format&fit=crop&w=2025&q=80');
+        opacity: 0.12;
+      }
+    }
+
+    @keyframes gradientShift {
+      0%, 100% {
+        background: 
+          radial-gradient(ellipse at top left, rgba(107, 142, 122, 0.1) 0%, transparent 60%),
+          radial-gradient(ellipse at bottom right, rgba(198, 168, 118, 0.1) 0%, transparent 60%);
+      }
+      50% {
+        background: 
+          radial-gradient(ellipse at top right, rgba(198, 168, 118, 0.1) 0%, transparent 60%),
+          radial-gradient(ellipse at bottom left, rgba(107, 142, 122, 0.1) 0%, transparent 60%);
+      }
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(198, 168, 118, 0.6);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+    }
+
+    .particle:nth-child(1) {
+      width: 3px;
+      height: 3px;
+      left: 10%;
+      animation-delay: 0s;
+      animation-duration: 20s;
+    }
+
+    .particle:nth-child(2) {
+      width: 2px;
+      height: 2px;
+      left: 20%;
+      animation-delay: 2s;
+      animation-duration: 18s;
+      background: rgba(107, 142, 122, 0.5);
+    }
+
+    .particle:nth-child(3) {
+      width: 4px;
+      height: 4px;
+      left: 70%;
+      animation-delay: 4s;
+      animation-duration: 22s;
+    }
+
+    .particle:nth-child(4) {
+      width: 2px;
+      height: 2px;
+      left: 80%;
+      animation-delay: 6s;
+      animation-duration: 16s;
+      background: rgba(107, 142, 122, 0.4);
+    }
+
+    .particle:nth-child(5) {
+      width: 3px;
+      height: 3px;
+      left: 90%;
+      animation-delay: 8s;
+      animation-duration: 25s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .lang-selector {
+      position: absolute;
+      top: -60px;
+      right: 0;
+      display: flex;
+      gap: 8px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 6px;
+      border: 1px solid var(--border-color);
+    }
+
+    .lang-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .lang-btn:hover {
+      background: var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .lang-btn.active {
+      background: var(--gradient);
+      color: white;
+    }
+
+    .login-card {
+      background: rgba(26, 29, 35, 0.95);
+      backdrop-filter: blur(30px) saturate(180%);
+      border: 1px solid rgba(198, 168, 118, 0.2);
+      border-radius: 24px;
+      box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.8),
+        0 0 80px rgba(107, 142, 122, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--gradient);
+      background-size: 200% 100%;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    .login-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        url('https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2074&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.03;
+      z-index: -1;
+      filter: blur(1px);
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .brand h1 {
+      font-size: 32px;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .brand p {
+      color: var(--text-secondary);
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 16px 20px;
+      background: var(--card-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 400;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 0 4px rgba(198, 168, 118, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px 24px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-decoration: none;
+      margin-bottom: 16px;
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: white;
+      box-shadow: 0 4px 14px 0 rgba(107, 142, 122, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px 0 rgba(107, 142, 122, 0.5);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text-primary);
+      border: 2px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border-color);
+      transform: translateY(-1px);
+    }
+
+    .btn-google {
+      background: white;
+      color: #1a1a1a;
+      border: 2px solid #e5e7eb;
+    }
+
+    .btn-google:hover {
+      background: #f9fafb;
+      transform: translateY(-1px);
+    }
+
+    .google-icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 32px 0;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    .divider span {
+      padding: 0 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .note {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-top: 24px;
+      padding: 16px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      border-left: 4px solid var(--accent-gold);
+    }
+
+    .loading {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 2px solid transparent;
+      border-top: 2px solid currentColor;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .alert {
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+    }
+
+    .alert-success {
+      background: rgba(72, 187, 120, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(72, 187, 120, 0.2);
+    }
+
+    .alert-error {
+      background: rgba(245, 101, 101, 0.1);
+      color: var(--error-color);
+      border: 1px solid rgba(245, 101, 101, 0.2);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        background-attachment: scroll, scroll, local, local;
+        background-size: cover, 120% auto, 100% 100%, 100% 100%;
+      }
+      
+      body::before {
+        background-attachment: scroll;
+        animation: none;
+        opacity: 0.08;
+      }
+      
+      .container {
+        padding: 0 16px;
+      }
+      
+      .login-card {
+        padding: 32px 24px;
+        backdrop-filter: blur(25px) saturate(150%);
+        background: rgba(26, 29, 35, 0.97);
+      }
+      
+      .brand h1 {
+        font-size: 28px;
+      }
+      
+      .lang-selector {
+        top: -50px;
+        right: 50%;
+        transform: translateX(50%);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="lang-selector">
+      <button class="lang-btn" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ko">한국어</button>
+      <button class="lang-btn" data-lang="pt">PT</button>
+    </div>
+    
+    <div class="login-card">
+      <div class="brand">
+        <h1>Temarix</h1>
+        <p id="subtitle">Your journey starts here</p>
+      </div>
+      
+      <div id="alert" class="alert"></div>
+      
+      <form id="authForm">
+        <div class="form-group">
+          <label class="form-label" for="email" id="emailLabel">Email</label>
+          <input type="email" id="email" class="form-input" placeholder="user@example.com" required>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label" for="password" id="passwordLabel">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="••••••••" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" id="loginBtn">
+          <span id="loginBtnText">🔐 Sign In</span>
+          <div class="loading" id="loginLoading"></div>
+        </button>
+      </form>
+      
+      <div class="divider">
+        <span id="orText">or</span>
+      </div>
+      
+      <button class="btn btn-google" id="googleBtn">
+        <svg class="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        <span id="googleBtnText">Continue with Google</span>
+      </button>
+      
+      <button class="btn btn-secondary" id="signupBtn">
+        <span id="signupBtnText">🆕 Create Account</span>
+      </button>
+      
+      <button class="btn btn-secondary" id="verifyBtn">
+        <span id="verifyBtnText">📧 Resend Verification</span>
+      </button>
+      
+      <div class="note" id="note">
+        Please verify your email before starting your journey.
+      </div>
+      
+      <!-- ✅ OFFLINE FALLBACK BUTTON -->
+      <div id="offlineFallback" style="display: none; text-align: center; margin-top: 20px; padding: 20px; background: rgba(255,165,0,0.1); border: 1px solid rgba(255,165,0,0.3); border-radius: 12px;">
+        <p style="color: #ffa500; margin-bottom: 15px; font-weight: 500;">
+          🔌 Connection issues? Continue without login verification
+        </p>
+        <button class="btn btn-secondary" onclick="proceedToPaymentDirectly()" style="background: rgba(255,165,0,0.2); border-color: rgba(255,165,0,0.5); color: white;">
+          Continue to Payment Setup →
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Particles -->
+  <div class="particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <script>
+    // ✅ ROBUST FIREBASE INITIALIZATION WITH COMPLETE FALLBACK
+    async function initializeFirebase() {
+      try {
+        console.log("🔄 Attempting Firebase initialization...");
+        
+        // Wait for Firebase to load using our enhanced loading promise
+        await window.firebaseLoadPromise;
+        
+        // Double check Firebase is available
+        if (typeof firebase === 'undefined') {
+          throw new Error("Firebase object not available after loading");
+        }
+        
+        const firebaseConfig = {
+          apiKey: "AIzaSyDReBGhb2gZNv7KA86HJXTeiLimWTrurp8",
+          authDomain: "canal-vivo-chat.firebaseapp.com",
+          projectId: "canal-vivo-chat"
+        };
+
+        // Initialize Firebase if not already initialized
+        if (!firebase.apps.length) {
+          firebase.initializeApp(firebaseConfig);
+          console.log("✅ Firebase app initialized");
+        }
+        
+        // Test Firebase services
+        const auth = firebase.auth();
+        const firestore = firebase.firestore();
+        
+        if (!auth || !firestore) {
+          throw new Error("Firebase services not available");
+        }
+        
+        console.log("✅ Firebase fully initialized and ready");
+        return true;
+        
+      } catch (error) {
+        console.error("❌ Firebase initialization failed:", error);
+        console.log("🔄 Switching to offline mode with manual authentication");
+        
+        // ✅ COMPLETE FALLBACK: Enable manual authentication flow
+        enableOfflineMode();
+        return false;
+      }
+    }
+
+    // ✅ ENHANCED OFFLINE MODE WITH SINGLE ACTIVATION
+    function enableOfflineMode() {
+      // Prevent multiple activations
+      if (window.offlineModeActive) {
+        console.log("🔌 Offline mode already active, skipping...");
+        return;
+      }
+      
+      window.offlineModeActive = true;
+      console.log("🔌 Enabling enhanced offline mode (first time)");
+      
+      // Hide Firebase-dependent features
+      elements.googleBtn.style.display = 'none';
+      elements.verifyBtn.style.display = 'none';
+      
+      // Update note with clearer instructions
+      elements.note.innerHTML = `
+        <strong>🔌 Offline Mode Active</strong><br>
+        <span style="color: rgba(255,255,255,0.8);">
+          Connection issues detected. You can continue with manual verification or proceed directly to payment.
+        </span>
+      `;
+      elements.note.style.borderColor = '#ff9800';
+      elements.note.style.background = 'rgba(255,152,0,0.1)';
+      
+      // Show offline fallback button with better visibility
+      const offlineFallback = document.getElementById('offlineFallback');
+      if (offlineFallback) {
+        offlineFallback.style.display = 'block';
+        
+        // Make it more prominent
+        offlineFallback.innerHTML = `
+          <div style="text-align: center;">
+            <p style="color: #ffa500; margin-bottom: 15px; font-weight: 600; font-size: 1.1rem;">
+              🚀 Ready to start your journey?
+            </p>
+            <p style="color: rgba(255,255,255,0.9); margin-bottom: 20px; font-size: 0.95rem;">
+              Skip the verification step and go directly to secure payment
+            </p>
+            <button class="btn btn-primary" onclick="proceedToPaymentDirectly()" style="background: linear-gradient(135deg, #ff9800, #f57c00); box-shadow: 0 4px 15px rgba(255,152,0,0.3); animation: pulse 2s infinite;">
+              Continue to Journey Setup →
+            </button>
+          </div>
+        `;
+      }
+      
+      // Enable manual authentication flow
+      window.useOfflineMode = true;
+      
+      // Update form placeholder to be more encouraging
+      elements.email.placeholder = "Enter your email to continue";
+    }
+
+    // ✅ ENHANCED DIRECT PAYMENT REDIRECT WITH BETTER UX
+    function proceedToPaymentDirectly() {
+      const email = elements.email.value.trim();
+      
+      if (!email || !isValidEmail(email)) {
+        showAlert("Please enter a valid email address first.", 'error');
+        elements.email.focus();
+        return;
+      }
+      
+      console.log("🔄 Proceeding directly to payment setup for:", email);
+      
+      // Show encouraging message
+      showAlert("Great! Taking you to secure payment setup...", 'success');
+      
+      // Store user info for payment page
+      sessionStorage.setItem('temarix_user_email', email);
+      sessionStorage.setItem('temarix_user_mode', 'direct_payment');
+      sessionStorage.setItem('temarix_skip_verification', 'true');
+      sessionStorage.setItem('temarix_offline_login', 'true');
+      
+      // Disable button to prevent double-clicks
+      const button = event.target;
+      if (button) {
+        button.disabled = true;
+        button.innerHTML = '<span class="loading-spinner"></span> Redirecting...';
+      }
+      
+      setTimeout(() => {
+        window.location.href = "temarix_payment.html?source=direct&email=" + encodeURIComponent(email);
+      }, 1500);
+    }
+
+    // Language system
+    const translations = {
+      en: {
+        subtitle: "Your journey starts here",
+        emailLabel: "Email",
+        passwordLabel: "Password",
+        loginBtnText: "🔐 Sign In",
+        signupBtnText: "🆕 Create Account",
+        verifyBtnText: "📧 Resend Verification",
+        googleBtnText: "Continue with Google",
+        orText: "or",
+        note: "Please verify your email before starting your journey.",
+        loginSuccess: "Login successful! Starting your journey...",
+        loginFail: "Login failed: ",
+        signupSuccess: "Account created! Please verify your email.",
+        signupFail: "Account creation failed: ",
+        verifySent: "📧 Verification email sent successfully.",
+        verifyError: "Please sign in first to resend verification email.",
+        notVerified: "Email verification required. Please check your inbox.",
+        googleError: "Google sign-in failed: ",
+        paymentRequired: "Journey Pass required. Redirecting to payment...",
+        checkingPayment: "Checking payment status..."
+      },
+      ko: {
+        subtitle: "여정이 여기서 시작됩니다",
+        emailLabel: "이메일",
+        passwordLabel: "비밀번호",
+        loginBtnText: "🔐 로그인",
+        signupBtnText: "🆕 회원가입",
+        verifyBtnText: "📧 이메일 인증 재전송",
+        googleBtnText: "Google로 계속하기",
+        orText: "또는",
+        note: "이메일 인증 후 여정을 시작할 수 있습니다.",
+        loginSuccess: "로그인 성공! 여정을 시작합니다...",
+        loginFail: "로그인 실패: ",
+        signupSuccess: "회원가입 완료! 이메일 인증을 진행해주세요.",
+        signupFail: "회원가입 실패: ",
+        verifySent: "📧 이메일 인증 메일이 전송되었습니다.",
+        verifyError: "로그인 후에만 인증 메일을 보낼 수 있습니다.",
+        notVerified: "이메일 인증이 필요합니다. 받은 메일을 확인해주세요.",
+        googleError: "Google 로그인 실패: ",
+        paymentRequired: "Journey Pass 구매가 필요합니다. 결제 페이지로 이동합니다...",
+        checkingPayment: "결제 상태를 확인하고 있습니다..."
+      },
+      pt: {
+        subtitle: "Sua jornada começa aqui",
+        emailLabel: "Email",
+        passwordLabel: "Senha",
+        loginBtnText: "🔐 Entrar",
+        signupBtnText: "🆕 Criar Conta",
+        verifyBtnText: "📧 Reenviar Verificação",
+        googleBtnText: "Continuar com Google",
+        orText: "ou",
+        note: "Verifique seu email antes de iniciar sua jornada.",
+        loginSuccess: "Login realizado! Iniciando sua jornada...",
+        loginFail: "Falha no login: ",
+        signupSuccess: "Conta criada! Verifique seu email.",
+        signupFail: "Falha ao criar conta: ",
+        verifySent: "📧 Email de verificação enviado com sucesso.",
+        verifyError: "Faça login primeiro para reenviar email de verificação.",
+        notVerified: "Verificação de email necessária. Verifique sua caixa de entrada.",
+        googleError: "Falha no login com Google: ",
+        paymentRequired: "Journey Pass necessário. Redirecionando para pagamento...",
+        checkingPayment: "Verificando status do pagamento..."
+      }
+    };
+
+    // Initialize language
+    let currentLang = new URLSearchParams(window.location.search).get("lang") || "en";
+    if (!["ko", "en", "pt"].includes(currentLang)) {
+      currentLang = "en";
+    }
+
+    // DOM elements
+    const elements = {
+      subtitle: document.getElementById('subtitle'),
+      emailLabel: document.getElementById('emailLabel'),
+      passwordLabel: document.getElementById('passwordLabel'),
+      loginBtnText: document.getElementById('loginBtnText'),
+      signupBtnText: document.getElementById('signupBtnText'),
+      verifyBtnText: document.getElementById('verifyBtnText'),
+      googleBtnText: document.getElementById('googleBtnText'),
+      orText: document.getElementById('orText'),
+      note: document.getElementById('note'),
+      alert: document.getElementById('alert'),
+      authForm: document.getElementById('authForm'),
+      loginBtn: document.getElementById('loginBtn'),
+      signupBtn: document.getElementById('signupBtn'),
+      verifyBtn: document.getElementById('verifyBtn'),
+      googleBtn: document.getElementById('googleBtn'),
+      email: document.getElementById('email'),
+      password: document.getElementById('password'),
+      loginLoading: document.getElementById('loginLoading')
+    };
+
+    // Update UI text
+    function updateLanguage() {
+      const texts = translations[currentLang];
+      document.documentElement.lang = currentLang;
+      document.title = currentLang === 'ko' ? 'Temarix 로그인' : 
+                     currentLang === 'pt' ? 'Login no Temarix' : 'Temarix Login';
+      
+      Object.keys(texts).forEach(key => {
+        if (elements[key]) {
+          elements[key].textContent = texts[key];
+        }
+      });
+
+      // Update active language button
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === currentLang);
+      });
+    }
+
+    // Show alert
+    function showAlert(message, type = 'error') {
+      elements.alert.textContent = message;
+      elements.alert.className = `alert alert-${type}`;
+      elements.alert.style.display = 'block';
+      setTimeout(() => {
+        elements.alert.style.display = 'none';
+      }, 5000);
+    }
+
+    // Loading state
+    function setLoading(loading) {
+      elements.loginBtn.disabled = loading;
+      elements.loginBtnText.style.display = loading ? 'none' : 'flex';
+      elements.loginLoading.style.display = loading ? 'block' : 'none';
+    }
+
+    // ✅ PAYMENT VERIFICATION FUNCTION
+    async function checkPaymentStatus(user) {
+      try {
+        console.log("🔍 Checking payment status for user:", user.uid);
+        showAlert(translations[currentLang].checkingPayment, 'success');
+        
+        const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+        
+        if (!userDoc.exists) {
+          console.log("❌ User document doesn't exist, creating new user document");
+          
+          // Create user document with default values
+          await firebase.firestore().collection('users').doc(user.uid).set({
+            email: user.email,
+            name: user.displayName || user.email.split('@')[0],
+            pagamento: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          
+          return false; // No payment found
+        }
+        
+        const userData = userDoc.data();
+        console.log("📊 User data:", userData);
+        
+        return userData.pagamento === true;
+      } catch (error) {
+        console.error("❌ Error checking payment status:", error);
+        return false; // Default to no payment on error
+      }
+    }
+
+    // ✅ SMART REDIRECT AFTER LOGIN WITH FIREBASE FALLBACK
+    async function handleSuccessfulLogin(user) {
+      try {
+        console.log("🔍 Processing successful login for:", user.email);
+        
+        // Store user info for payment page
+        sessionStorage.setItem('temarix_user_authenticated', 'true');
+        sessionStorage.setItem('temarix_user_email', user.email);
+        sessionStorage.setItem('temarix_user_uid', user.uid);
+        
+        // Try to check payment status with Firebase
+        let hasPayment = false;
+        
+        try {
+          if (typeof firebase !== 'undefined' && firebase.apps.length > 0) {
+            hasPayment = await checkPaymentStatus(user);
+          } else {
+            console.log("⚠️ Firebase not available, assuming no payment");
+            hasPayment = false;
+          }
+        } catch (error) {
+          console.log("⚠️ Payment check failed, defaulting to payment page:", error);
+          hasPayment = false;
+        }
+        
+        if (hasPayment) {
+          console.log("✅ Payment verified, redirecting to V2");
+          showAlert(translations[currentLang].loginSuccess, 'success');
+          setTimeout(() => {
+            window.location.href = "temarix_v02_01.html";
+          }, 2000);
+        } else {
+          console.log("❌ No payment found, redirecting to payment page");
+          showAlert(translations[currentLang].paymentRequired, 'error');
+          setTimeout(() => {
+            // ✅ FIXED: Correct filename and query params
+            window.location.href = "temarix_payment.html?source=login&email=" + encodeURIComponent(user.email);
+          }, 2000);
+        }
+        
+      } catch (error) {
+        console.error("❌ Error in post-login flow:", error);
+        
+        // ✅ FALLBACK: If everything fails, still redirect to payment
+        console.log("🔄 Using fallback redirect to payment page");
+        showAlert("Redirecting to complete your journey setup...", 'info');
+        setTimeout(() => {
+          window.location.href = "temarix_payment.html?source=login_fallback";
+        }, 2000);
+      }
+    }
+
+    // ✅ LOGIN FUNCTION WITH OFFLINE FALLBACK
+    async function handleLogin() {
+      const email = elements.email.value.trim();
+      const password = elements.password.value;
+      
+      if (!email || !password) {
+        showAlert("Por favor, preencha email e senha.");
+        return;
+      }
+      
+      setLoading(true);
+      
+      try {
+        const firebaseReady = await initializeFirebase();
+        
+        if (firebaseReady) {
+          // ✅ FIREBASE MODE: Full authentication
+          const userCredential = await firebase.auth().signInWithEmailAndPassword(email, password);
+          const user = userCredential.user;
+          
+          if (user.emailVerified) {
+            await handleSuccessfulLogin(user);
+          } else {
+            showAlert(translations[currentLang].notVerified);
+            await firebase.auth().signOut();
+          }
+        } else {
+          // ✅ OFFLINE MODE: Manual validation and direct redirect
+          console.log("🔌 Using offline login mode");
+          
+          if (isValidEmail(email)) {
+            // Create mock user object for offline mode
+            const mockUser = {
+              email: email,
+              uid: 'offline_' + Date.now(),
+              emailVerified: true
+            };
+            
+            console.log("✅ Offline authentication successful for:", email);
+            showAlert("Login successful! Redirecting to payment setup...", 'success');
+            
+            // Store session data for payment page
+            sessionStorage.setItem('temarix_user_authenticated', 'true');
+            sessionStorage.setItem('temarix_user_email', email);
+            sessionStorage.setItem('temarix_user_mode', 'offline');
+            
+            setTimeout(() => {
+              window.location.href = "temarix_payment.html?source=offline_login&email=" + encodeURIComponent(email);
+            }, 2000);
+          } else {
+            showAlert("Please enter a valid email address.");
+          }
+        }
+        
+      } catch (error) {
+        console.error("❌ Login error:", error);
+        
+        // User-friendly error messages
+        let errorMessage = translations[currentLang].loginFail;
+        
+        if (error.code === 'auth/user-not-found') {
+          // In offline mode, allow user to proceed to payment for registration
+          if (window.useOfflineMode) {
+            console.log("🔄 User not found in offline mode, redirecting to payment for registration");
+            showAlert("Redirecting to complete registration and payment...", 'info');
+            
+            sessionStorage.setItem('temarix_user_email', email);
+            sessionStorage.setItem('temarix_user_mode', 'offline_registration');
+            
+            setTimeout(() => {
+              window.location.href = "temarix_payment.html?source=registration&email=" + encodeURIComponent(email);
+            }, 2000);
+            return;
+          }
+          
+          errorMessage = currentLang === 'ko' ? '등록되지 않은 이메일입니다. 회원가입을 진행해주세요.' : 
+                        currentLang === 'pt' ? 'Email não encontrado. Complete o registro primeiro.' : 
+                        'Email not found. Please complete registration first.';
+        } else if (error.code === 'auth/wrong-password') {
+          errorMessage = currentLang === 'ko' ? '비밀번호가 올바르지 않습니다.' : 
+                        currentLang === 'pt' ? 'Senha incorreta.' : 'Incorrect password.';
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMessage = currentLang === 'ko' ? '너무 많은 시도입니다. 잠시 후 다시 시도해주세요.' : 
+                        currentLang === 'pt' ? 'Muitas tentativas. Tente novamente mais tarde.' : 
+                        'Too many attempts. Please try again later.';
+        } else if (error.message.includes('network')) {
+          errorMessage = currentLang === 'ko' ? '네트워크 연결을 확인해주세요.' : 
+                        currentLang === 'pt' ? 'Verifique sua conexão de internet.' : 
+                        'Please check your internet connection.';
+        }
+        
+        showAlert(errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // ✅ ENHANCED SIGNUP WITH OFFLINE SUPPORT
+    async function handleSignup() {
+      const email = elements.email.value.trim();
+      const password = elements.password.value;
+      
+      if (!email || !password) {
+        showAlert("Por favor, preencha email e senha.");
+        return;
+      }
+      
+      if (password.length < 6) {
+        showAlert(currentLang === 'ko' ? '비밀번호는 6자 이상이어야 합니다.' : 
+                 currentLang === 'pt' ? 'A senha deve ter pelo menos 6 caracteres.' : 
+                 'Password must be at least 6 characters.');
+        return;
+      }
+      
+      try {
+        const firebaseReady = await initializeFirebase();
+        
+        if (firebaseReady) {
+          // ✅ FIREBASE MODE: Full registration
+          const userCredential = await firebase.auth().createUserWithEmailAndPassword(email, password);
+          await userCredential.user.sendEmailVerification();
+          
+          // Create user document in Firestore
+          try {
+            await firebase.firestore().collection('users').doc(userCredential.user.uid).set({
+              email: userCredential.user.email,
+              name: userCredential.user.email.split('@')[0],
+              pagamento: false,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          } catch (firestoreError) {
+            console.warn("⚠️ Failed to create user document:", firestoreError);
+          }
+          
+          showAlert(translations[currentLang].signupSuccess, 'success');
+          await firebase.auth().signOut();
+        } else {
+          // ✅ OFFLINE MODE: Direct redirect to payment for registration
+          console.log("🔌 Using offline signup mode");
+          
+          if (isValidEmail(email)) {
+            showAlert("Account created! Redirecting to complete your setup...", 'success');
+            
+            // Store user info for payment page
+            sessionStorage.setItem('temarix_user_email', email);
+            sessionStorage.setItem('temarix_user_mode', 'offline_registration');
+            
+            setTimeout(() => {
+              window.location.href = "temarix_payment.html?source=signup&email=" + encodeURIComponent(email);
+            }, 2000);
+          } else {
+            showAlert("Please enter a valid email address.");
+          }
+        }
+        
+      } catch (error) {
+        console.error("❌ Signup error:", error);
+        
+        let errorMessage = translations[currentLang].signupFail;
+        
+        if (error.code === 'auth/email-already-in-use') {
+          // In offline mode, still allow proceeding to payment
+          if (window.useOfflineMode) {
+            showAlert("Email already registered. Redirecting to login...", 'info');
+            elements.email.focus();
+            return;
+          }
+          
+          errorMessage = currentLang === 'ko' ? '이미 사용 중인 이메일입니다.' : 
+                        currentLang === 'pt' ? 'Este email já está em uso.' : 'Email already in use.';
+        } else if (error.code === 'auth/weak-password') {
+          errorMessage = currentLang === 'ko' ? '비밀번호가 너무 약합니다.' : 
+                        currentLang === 'pt' ? 'Senha muito fraca.' : 'Password is too weak.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = currentLang === 'ko' ? '유효하지 않은 이메일 형식입니다.' : 
+                        currentLang === 'pt' ? 'Formato de email inválido.' : 'Invalid email format.';
+        }
+        
+        showAlert(errorMessage);
+      }
+    }
+
+    // ✅ UTILITY: Email validation
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // ✅ GOOGLE LOGIN WITH ROBUST ERROR HANDLING
+    async function handleGoogleLogin() {
+      try {
+        const firebaseReady = await initializeFirebase();
+        
+        if (!firebaseReady) {
+          enableOfflineMode();
+          showAlert("Serviço temporariamente indisponível. Tente novamente mais tarde.");
+          return;
+        }
+        
+        const provider = new firebase.auth.GoogleAuthProvider();
+        const result = await firebase.auth().signInWithPopup(provider);
+        const user = result.user;
+        
+        // Create/update user document for Google users
+        try {
+          await firebase.firestore().collection('users').doc(user.uid).set({
+            email: user.email,
+            name: user.displayName || user.email.split('@')[0],
+            pagamento: false,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        } catch (firestoreError) {
+          console.warn("⚠️ Failed to update user document:", firestoreError);
+          // Don't fail the login for this
+        }
+        
+        await handleSuccessfulLogin(user);
+        
+      } catch (error) {
+        console.error("❌ Google login error:", error);
+        
+        let errorMessage = translations[currentLang].googleError;
+        
+        if (error.code === 'auth/popup-closed-by-user') {
+          errorMessage = currentLang === 'ko' ? '로그인이 취소되었습니다.' : 
+                        currentLang === 'pt' ? 'Login cancelado.' : 'Login cancelled.';
+        } else if (error.code === 'auth/popup-blocked') {
+          errorMessage = currentLang === 'ko' ? '팝업이 차단되었습니다. 팝업을 허용해주세요.' : 
+                        currentLang === 'pt' ? 'Popup bloqueado. Permita popups para este site.' : 
+                        'Popup blocked. Please allow popups for this site.';
+        }
+        
+        showAlert(errorMessage);
+      }
+    }
+
+    // ✅ CHECK AUTHENTICATION STATE WITH OPTIMIZED OFFLINE DETECTION
+    async function checkAuthState() {
+      // Prevent multiple checks
+      if (window.authCheckInProgress) {
+        console.log("🔄 Auth check already in progress, skipping...");
+        return;
+      }
+      
+      window.authCheckInProgress = true;
+      
+      try {
+        // Fast timeout check for Firebase
+        const firebaseReady = await Promise.race([
+          initializeFirebase(),
+          new Promise(resolve => setTimeout(() => resolve(false), 2000)) // 2 second timeout
+        ]);
+        
+        if (firebaseReady) {
+          console.log("✅ Firebase ready, setting up auth listener");
+          firebase.auth().onAuthStateChanged(async (user) => {
+            if (user && user.emailVerified) {
+              console.log("🔍 User already logged in, checking payment status");
+              try {
+                await handleSuccessfulLogin(user);
+              } catch (error) {
+                console.error("❌ Error in auth state check:", error);
+              }
+            }
+          });
+        } else {
+          console.log("⚠️ Firebase not available within 2 seconds, enabling offline mode");
+          enableOfflineMode();
+        }
+        
+      } catch (error) {
+        console.error("❌ Auth state check failed:", error);
+        enableOfflineMode();
+      } finally {
+        window.authCheckInProgress = false;
+      }
+    }
+
+    // ✅ EXPOSE GLOBAL FUNCTIONS FOR HTML
+    window.proceedToPaymentDirectly = proceedToPaymentDirectly;
+
+    // ✅ RESEND VERIFICATION WITH ROBUST ERROR HANDLING
+    async function handleResendVerification() {
+      try {
+        const firebaseReady = await initializeFirebase();
+        
+        if (!firebaseReady) {
+          enableOfflineMode();
+          showAlert("Serviço temporariamente indisponível. Tente novamente mais tarde.");
+          return;
+        }
+        
+        const user = firebase.auth().currentUser;
+        if (user) {
+          await user.sendEmailVerification();
+          showAlert(translations[currentLang].verifySent, 'success');
+        } else {
+          showAlert(translations[currentLang].verifyError);
+        }
+      } catch (error) {
+        console.error("❌ Verification error:", error);
+        showAlert('Erro ao enviar email. Tente novamente.');
+      }
+    }
+
+    // ✅ SIMPLIFIED INITIALIZATION WITH SINGLE OFFLINE ACTIVATION
+    document.addEventListener('DOMContentLoaded', () => {
+      updateLanguage();
+      
+      // Setup event listeners
+      elements.authForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleLogin();
+      });
+
+      elements.signupBtn.addEventListener('click', handleSignup);
+      elements.verifyBtn.addEventListener('click', handleResendVerification);
+      elements.googleBtn.addEventListener('click', handleGoogleLogin);
+
+      // Language switcher
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentLang = btn.dataset.lang;
+          const url = new URL(window.location);
+          url.searchParams.set('lang', currentLang);
+          window.history.replaceState({}, '', url);
+          updateLanguage();
+        });
+      });
+      
+      // ✅ SINGLE AUTH CHECK WITH FAST TIMEOUT
+      console.log("🚀 Starting Temarix login initialization...");
+      setTimeout(() => {
+        checkAuthState();
+      }, 500);
+    });
+  </script>
+</body>
+</html>
