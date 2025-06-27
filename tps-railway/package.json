@@ -1,7 +1,7 @@
 {
-  "name": "tps-railway-firebase",
-  "version": "6.0.0",
-  "description": "TPS com Firebase Auth + Pagamento + LLaMA AI",
+  "name": "tps-railway-simple",
+  "version": "7.0.0",
+  "description": "TPS simples com LLaMA AI - Sem Firebase",
   "main": "server.js",
   "type": "module",
   "engines": {
@@ -9,22 +9,20 @@
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node tps-railway/server.js",
+    "dev": "node tps-railway/server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "node-fetch": "^3.3.2",
-    "firebase-admin": "^12.0.0"
+    "node-fetch": "^3.3.2"
   },
   "keywords": [
     "travel",
     "ai",
-    "firebase",
-    "payment",
-    "llama"
+    "llama",
+    "railway"
   ],
   "author": "TPS Team",
   "license": "MIT"

@@ -1,44 +1,13 @@
-// server.js - TPS Completo: Firebase + Login + Pagamento + LLaMA AI
+// server.js - TPS Simples: LLaMA AI sem Firebase (para testar)
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
 import dotenv from "dotenv";
-import admin from "firebase-admin";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 8080;
-
-// ✅ CONFIGURAR FIREBASE ADMIN
-if (!admin.apps.length) {
-  try {
-    const serviceAccount = {
-      type: "service_account",
-      project_id: process.env.FIREBASE_PROJECT_ID,
-      private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
-      private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      client_email: process.env.FIREBASE_CLIENT_EMAIL,
-      client_id: process.env.FIREBASE_CLIENT_ID,
-      auth_uri: "https://accounts.google.com/o/oauth2/auth",
-      token_uri: "https://oauth2.googleapis.com/token",
-      auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
-      client_x509_cert_url: process.env.FIREBASE_CLIENT_CERT_URL
-    };
-
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      projectId: process.env.FIREBASE_PROJECT_ID
-    });
-
-    console.log("🔥 Firebase Admin inicializado");
-  } catch (error) {
-    console.error("❌ Erro Firebase:", error.message);
-  }
-}
-
-const db = admin.firestore();
-const auth = admin.auth();
 
 // ✅ MIDDLEWARE
 app.use(cors());
@@ -54,133 +23,13 @@ const affiliateLinks = {
   'tiqets': 'https://tp.media/r?marker=639764&trs=425649&p=2074&u=https%3A%2F%2Ftiqets.com&campaign_id=89'
 };
 
-// ✅ FUNÇÕES FIREBASE
-async function verifyUserToken(token) {
-  try {
-    const decodedToken = await auth.verifyIdToken(token);
-    return decodedToken;
-  } catch (error) {
-    console.error("❌ Token inválido:", error.message);
-    return null;
-  }
-}
-
-async function checkUserPayment(userId) {
-  try {
-    const userDoc = await db.collection('users').doc(userId).get();
-    if (!userDoc.exists) {
-      // Criar usuário se não existir
-      await db.collection('users').doc(userId).set({
-        createdAt: new Date(),
-        plan: 'free',
-        usageCount: 0,
-        maxUsage: 5, // 5 usos grátis
-        active: true
-      });
-      return { plan: 'free', usageCount: 0, maxUsage: 5, active: true };
-    }
-    return userDoc.data();
-  } catch (error) {
-    console.error("❌ Erro verificar pagamento:", error);
-    return null;
-  }
-}
-
-async function logGPTUsage(userId, prompt, response, model) {
-  try {
-    // Log da conversa
-    await db.collection("gpt_logs").add({
-      userId,
-      prompt: prompt.substring(0, 200), // Primeiros 200 chars
-      response: response.substring(0, 200),
-      model,
-      timestamp: new Date(),
-      tokens: Math.ceil((prompt.length + response.length) / 4)
-    });
-
-    // Atualizar contador do usuário
-    const userRef = db.collection('users').doc(userId);
-    await userRef.update({
-      usageCount: admin.firestore.FieldValue.increment(1),
-      lastUsed: new Date()
-    });
-
-    console.log(`📊 Log salvo para usuário: ${userId}`);
-  } catch (error) {
-    console.error("❌ Erro salvar log:", error);
-  }
-}
-
-// ✅ SISTEMA DE PAGAMENTO/AUTENTICAÇÃO
-app.post("/auth/verify", async (req, res) => {
-  try {
-    const { token } = req.body;
-    
-    if (!token) {
-      return res.status(400).json({ error: "Token necessário" });
-    }
-
-    const user = await verifyUserToken(token);
-    if (!user) {
-      return res.status(401).json({ error: "Token inválido" });
-    }
-
-    const paymentStatus = await checkUserPayment(user.uid);
-    
-    res.json({
-      success: true,
-      user: {
-        uid: user.uid,
-        email: user.email,
-        plan: paymentStatus?.plan || 'free',
-        usageCount: paymentStatus?.usageCount || 0,
-        maxUsage: paymentStatus?.maxUsage || 5,
-        active: paymentStatus?.active || true
-      }
-    });
-
-  } catch (error) {
-    console.error("❌ Erro verificação:", error);
-    res.status(500).json({ error: "Erro interno" });
-  }
-});
-
-// ✅ ENDPOINT GPT COM AUTENTICAÇÃO
+// ✅ ENDPOINT GPT (SIMPLES, SEM AUTENTICAÇÃO)
 app.post("/gpt-tps", async (req, res) => {
   try {
-    const { message, token } = req.body;
+    const { message } = req.body;
     
     if (!message) {
       return res.status(400).json({ error: "Mensagem necessária" });
-    }
-
-    // Verificar token se fornecido
-    let userId = 'anonymous';
-    let userPlan = 'free';
-    let canUse = true;
-
-    if (token) {
-      const user = await verifyUserToken(token);
-      if (user) {
-        userId = user.uid;
-        const paymentStatus = await checkUserPayment(userId);
-        
-        if (paymentStatus) {
-          userPlan = paymentStatus.plan;
-          
-          // Verificar limites
-          if (paymentStatus.plan === 'free' && paymentStatus.usageCount >= paymentStatus.maxUsage) {
-            canUse = false;
-          }
-        }
-      }
-    }
-
-    if (!canUse) {
-      return res.status(402).json({ 
-        error: "Limite de uso atingido. Faça upgrade para continuar.",
-        needsPayment: true
-      });
     }
 
     // Chamar LLaMA AI
@@ -232,19 +81,13 @@ INSTRUÇÕES:
 
     const reply = data.choices?.[0]?.message?.content || "❗ Resposta vazia da IA.";
     
-    // Log apenas se usuário autenticado
-    if (token && userId !== 'anonymous') {
-      await logGPTUsage(userId, message, reply, "llama-3.2-70b");
-    }
-    
-    console.log(`🤖 Resposta gerada para: ${userId} (${userPlan})`);
+    console.log(`🤖 Resposta gerada: ${reply.substring(0, 50)}...`);
     
     res.json({ 
       success: true,
       content: reply,
       model: "llama-3.2-70b",
-      timestamp: new Date().toISOString(),
-      userPlan
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
@@ -253,47 +96,6 @@ INSTRUÇÕES:
       error: "Erro interno do servidor",
       fallback: "Desculpe, tivemos um problema. Tente novamente em alguns segundos."
     });
-  }
-});
-
-// ✅ UPGRADE DE PLANO
-app.post("/payment/upgrade", async (req, res) => {
-  try {
-    const { token, plan } = req.body;
-    
-    const user = await verifyUserToken(token);
-    if (!user) {
-      return res.status(401).json({ error: "Token inválido" });
-    }
-
-    const plans = {
-      'basic': { maxUsage: 100, price: 'R$ 29/mês' },
-      'pro': { maxUsage: 500, price: 'R$ 79/mês' },
-      'unlimited': { maxUsage: 999999, price: 'R$ 199/mês' }
-    };
-
-    if (!plans[plan]) {
-      return res.status(400).json({ error: "Plano inválido" });
-    }
-
-    // Atualizar usuário
-    await db.collection('users').doc(user.uid).update({
-      plan: plan,
-      maxUsage: plans[plan].maxUsage,
-      upgradedAt: new Date(),
-      active: true
-    });
-
-    res.json({
-      success: true,
-      message: `Upgrade para ${plan} realizado com sucesso!`,
-      newPlan: plan,
-      maxUsage: plans[plan].maxUsage
-    });
-
-  } catch (error) {
-    console.error("❌ Erro upgrade:", error);
-    res.status(500).json({ error: "Erro no upgrade" });
   }
 });
 
@@ -313,7 +115,7 @@ app.get('/redirect/:partner', (req, res) => {
   res.redirect(302, targetUrl);
 });
 
-// ✅ PÁGINA PRINCIPAL COM LOGIN
+// ✅ PÁGINA PRINCIPAL - DESIGN CANAL VIVO
 app.get('/', (req, res) => {
   res.send(`
 <!DOCTYPE html>
@@ -322,196 +124,257 @@ app.get('/', (req, res) => {
     <title>TPS - Travel Professional System</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
             min-height: 100vh; 
             color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .header h1 { font-size: 3rem; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .auth-container { 
-            background: rgba(255, 255, 255, 0.1); 
-            border-radius: 20px; 
-            padding: 25px; 
-            margin-bottom: 30px; 
-            backdrop-filter: blur(10px);
+        
+        .logo {
+            font-size: 8rem;
+            font-weight: 300;
+            letter-spacing: -0.1em;
+            color: #4fc3f7;
+            text-shadow: 0 0 30px rgba(79, 195, 247, 0.3);
+            margin-bottom: 20px;
+            animation: pulse 2s ease-in-out infinite alternate;
         }
-        .chat-container {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 25px;
+        
+        @keyframes pulse {
+            from { text-shadow: 0 0 30px rgba(79, 195, 247, 0.3); }
+            to { text-shadow: 0 0 50px rgba(79, 195, 247, 0.6); }
+        }
+        
+        .brand {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            margin-bottom: 40px;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            font-weight: 300;
+            color: #4fc3f7;
+            margin-bottom: 20px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            color: #b0bec5;
             margin-bottom: 30px;
-            backdrop-filter: blur(10px);
-            display: none;
+            max-width: 500px;
+            line-height: 1.6;
         }
+        
+        .chat-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            max-width: 600px;
+            width: 90%;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
         .chat-area {
-            min-height: 400px;
-            max-height: 500px;
+            min-height: 300px;
+            max-height: 400px;
             overflow-y: auto;
             margin-bottom: 20px;
             padding: 15px;
-            background: rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+        
         .message {
             background: rgba(255, 255, 255, 0.1);
             padding: 12px 16px;
             border-radius: 12px;
             margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .message.user { background: rgba(0, 123, 255, 0.3); margin-left: 40px; }
-        .message.assistant { background: rgba(40, 167, 69, 0.3); margin-right: 40px; }
-        .input-area { display: flex; gap: 10px; }
+        
+        .message.user { 
+            background: rgba(79, 195, 247, 0.2); 
+            margin-left: 40px; 
+            border: 1px solid rgba(79, 195, 247, 0.3);
+        }
+        
+        .message.assistant { 
+            background: rgba(76, 175, 80, 0.2); 
+            margin-right: 40px; 
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .input-area { 
+            display: flex; 
+            gap: 15px; 
+            align-items: center;
+        }
+        
         .message-input {
             flex: 1;
-            padding: 12px 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            border: 2px solid rgba(79, 195, 247, 0.3);
+            border-radius: 25px;
+            background: rgba(255, 255, 255, 0.05);
             color: white;
             font-size: 16px;
+            outline: none;
+            transition: all 0.3s ease;
         }
-        .message-input::placeholder { color: rgba(255, 255, 255, 0.7); }
+        
+        .message-input:focus {
+            border-color: #4fc3f7;
+            box-shadow: 0 0 20px rgba(79, 195, 247, 0.3);
+        }
+        
+        .message-input::placeholder { 
+            color: rgba(255, 255, 255, 0.6); 
+        }
+        
         .btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
+            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
             border: none;
-            padding: 12px 20px;
-            border-radius: 20px;
+            padding: 15px 25px;
+            border-radius: 25px;
             color: white;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            margin: 5px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        .btn:hover { transform: translateY(-2px); }
-        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-        .user-info {
-            background: rgba(0, 255, 0, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #00ff00;
+        
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 20px rgba(79, 195, 247, 0.4);
         }
-        .hidden { display: none; }
+        
+        .btn:disabled { 
+            opacity: 0.6; 
+            cursor: not-allowed; 
+            transform: none;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+            max-width: 800px;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .footer {
+            margin-top: 50px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
         @media (max-width: 768px) {
+            .logo { font-size: 5rem; }
+            .brand { font-size: 2rem; }
+            .subtitle { font-size: 1.1rem; }
             .message.user { margin-left: 20px; }
             .message.assistant { margin-right: 20px; }
+            .input-area { flex-direction: column; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🧭 TPS</h1>
-            <h2>Travel Professional System</h2>
-            <p>Sistema Profissional de Viagens com IA</p>
+    <div class="logo">V</div>
+    
+    <div class="brand">TPS</div>
+    
+    <div class="subtitle">Travel Professional System</div>
+    
+    <div class="description">
+        Sistema profissional de viagens com Inteligência Artificial.<br>
+        Onde a tecnologia encontra sua alma viajante.
+    </div>
+
+    <div class="feature-grid">
+        <div class="feature">
+            <div class="feature-icon">🤖</div>
+            <h3>IA Especializada</h3>
+            <p>Consultoria de viagem com LLaMA AI</p>
         </div>
-
-        <div id="authContainer" class="auth-container">
-            <h3>🔐 Login Necessário</h3>
-            <p>Faça login para usar o sistema TPS com IA.</p>
-            <button class="btn" onclick="loginWithGoogle()">🚀 Login com Google</button>
-            <p style="margin-top: 15px; font-size: 0.9rem;">
-                ✅ 5 consultas grátis<br>
-                💎 Planos pagos disponíveis
-            </p>
+        <div class="feature">
+            <div class="feature-icon">✈️</div>
+            <h3>Parceiros Premium</h3>
+            <p>Trip.com, Booking, Kiwi, Tiqets</p>
         </div>
-
-        <div id="userInfo" class="user-info hidden">
-            <div id="userDetails"></div>
-            <button class="btn" onclick="logout()">🚪 Logout</button>
+        <div class="feature">
+            <div class="feature-icon">🌍</div>
+            <h3>Global</h3>
+            <p>Destinos em todo o mundo</p>
         </div>
-
-        <div id="chatContainer" class="chat-container">
-            <div class="chat-area" id="chatArea">
-                <div class="message assistant">
-                    <strong>🤖 TPS AI:</strong><br>
-                    Olá! Sou seu especialista em viagens com IA. Para onde você gostaria de viajar? ✈️
-                </div>
-            </div>
-
-            <div class="input-area">
-                <input type="text" class="message-input" id="messageInput" 
-                       placeholder="Digite sua pergunta sobre viagens...">
-                <button class="btn" id="sendButton" onclick="sendMessage()">
-                    📤 Enviar
-                </button>
-            </div>
+        <div class="feature">
+            <div class="feature-icon">💎</div>
+            <h3>Profissional</h3>
+            <p>Experiências transformadoras</p>
         </div>
     </div>
 
+    <div class="chat-container">
+        <div class="chat-area" id="chatArea">
+            <div class="message assistant">
+                <strong>🤖 TPS AI:</strong><br>
+                Olá! Sou seu especialista em viagens com IA. Para onde você gostaria de viajar? ✈️
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text" class="message-input" id="messageInput" 
+                   placeholder="Digite sua pergunta sobre viagens...">
+            <button class="btn" id="sendButton" onclick="sendMessage()">
+                📤 Enviar
+            </button>
+        </div>
+    </div>
+    
+    <div class="footer">
+        Powered by Canal Vivo • LLaMA AI • Railway
+    </div>
+
     <script>
-        // Configuração Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2u94Oz2W5seqBlqs88cs7rgSmZBEAnjQ",
-            authDomain: "canal-vivo-chat.firebaseapp.com",
-            projectId: "canal-vivo-chat",
-            storageBucket: "canal-vivo-chat.firebasestorage.app",
-            messagingSenderId: "975226660544",
-            appId: "1:975226660544:web:56b55bb3e2a58be035ef25",
-            measurementId: "G-SCFHQFVGHQ"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        
-        let currentUser = null;
-        let userToken = null;
-
-        // Verificar estado de autenticação
-        firebase.auth().onAuthStateChanged(async (user) => {
-            if (user) {
-                currentUser = user;
-                userToken = await user.getIdToken();
-                await verifyUser();
-                showChat();
-            } else {
-                showAuth();
-            }
-        });
-
-        async function loginWithGoogle() {
-            try {
-                const provider = new firebase.auth.GoogleAuthProvider();
-                await firebase.auth().signInWithPopup(provider);
-            } catch (error) {
-                console.error('Erro login:', error);
-                alert('Erro no login: ' + error.message);
-            }
-        }
-
-        async function logout() {
-            await firebase.auth().signOut();
-            showAuth();
-        }
-
-        async function verifyUser() {
-            try {
-                const response = await fetch('/auth/verify', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token: userToken })
-                });
-
-                const data = await response.json();
-                
-                if (data.success) {
-                    document.getElementById('userDetails').innerHTML = \`
-                        <strong>👤 \${data.user.email}</strong><br>
-                        📊 Plano: \${data.user.plan.toUpperCase()}<br>
-                        💬 Uso: \${data.user.usageCount}/\${data.user.maxUsage}
-                    \`;
-                }
-            } catch (error) {
-                console.error('Erro verificação:', error);
-            }
-        }
-
         async function sendMessage() {
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
@@ -529,19 +392,13 @@ app.get('/', (req, res) => {
                 const response = await fetch('/gpt-tps', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        message, 
-                        token: userToken 
-                    })
+                    body: JSON.stringify({ message })
                 });
 
                 const data = await response.json();
                 
                 if (data.success) {
                     addMessage(data.content, false);
-                    await verifyUser(); // Atualizar contador
-                } else if (data.needsPayment) {
-                    addMessage('❗ ' + data.error + '\\n\\n💎 Faça upgrade do seu plano para continuar!', false);
                 } else {
                     addMessage('❗ ' + (data.error || 'Erro desconhecido'), false);
                 }
@@ -567,25 +424,13 @@ app.get('/', (req, res) => {
             chatArea.scrollTop = chatArea.scrollHeight;
         }
 
-        function showAuth() {
-            document.getElementById('authContainer').style.display = 'block';
-            document.getElementById('userInfo').classList.add('hidden');
-            document.getElementById('chatContainer').style.display = 'none';
-        }
-
-        function showChat() {
-            document.getElementById('authContainer').style.display = 'none';
-            document.getElementById('userInfo').classList.remove('hidden');
-            document.getElementById('chatContainer').style.display = 'block';
-        }
-
         document.getElementById('messageInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 sendMessage();
             }
         });
 
-        console.log('🚀 TPS com Firebase Auth carregado!');
+        console.log('🚀 TPS com design Canal Vivo carregado!');
     </script>
 </body>
 </html>
@@ -596,13 +441,13 @@ app.get('/', (req, res) => {
 app.get('/api/status', (req, res) => {
   res.json({
     status: 'success',
-    message: 'TPS Railway com Firebase funcionando',
+    message: 'TPS Railway simples funcionando',
     timestamp: new Date().toISOString(),
-    version: '6.0.0-firebase',
+    version: '7.0.0-simple',
     features: {
-      firebase_auth: !!admin.apps.length,
+      firebase_auth: false,
       openrouter_ai: !!process.env.OPENROUTER_API_KEY,
-      payment_system: true,
+      payment_system: false,
       affiliate_links: Object.keys(affiliateLinks).length
     }
   });
@@ -612,7 +457,6 @@ app.get('/health', (req, res) => {
   res.status(200).json({ 
     status: 'healthy',
     timestamp: new Date().toISOString(),
-    firebase: !!admin.apps.length,
     openrouter: !!process.env.OPENROUTER_API_KEY
   });
 });
@@ -628,8 +472,7 @@ app.use((err, req, res, next) => {
 
 // ✅ INICIALIZAÇÃO
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 TPS Firebase v6.0 ativo na porta ${PORT}`);
-  console.log(`🔥 Firebase: ${admin.apps.length > 0 ? '✅' : '❌'}`);
+  console.log(`🚀 TPS Simples v7.0 ativo na porta ${PORT}`);
   console.log(`🤖 OpenRouter: ${process.env.OPENROUTER_API_KEY ? '✅' : '❌'}`);
   console.log(`💰 ${Object.keys(affiliateLinks).length} parceiros ativos`);
   console.log(`🌐 Acesso: https://app.canalvivo.org`);
