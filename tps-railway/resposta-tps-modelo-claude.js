@@ -399,18 +399,16 @@ function gerarRespostaTPS(mensagemUsuario) {
   }
 }
 
-// ===== EXPORTAR FUNCÕES =====
-if (typeof module !== 'undefined' && module.exports) {
-  module.exports = {
-    gerarRespostaTPS,
-    gerarRespostaEncantadora,
-    respostaCliqueCidade,
-    gerarRespostaHoteis,
-    gerarRespostaCarros,
-    renderVoosFormatados,
-    analisarConsultaUsuario
-  };
-}
+// ===== EXPORTAR FUNCÕES (ES6 MODULES) =====
+export {
+  gerarRespostaTPS,
+  gerarRespostaEncantadora,
+  respostaCliqueCidade,
+  gerarRespostaHoteis,
+  gerarRespostaCarros,
+  renderVoosFormatados,
+  analisarConsultaUsuario
+};
 
 // ===== EXEMPLO DE USO =====
 /*
