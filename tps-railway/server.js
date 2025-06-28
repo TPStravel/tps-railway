@@ -1,5 +1,5 @@
-// server.js - TPS-GPT Sistema Completo Integrado
-// 🎯 Combina: LLaMA AI + Respostas Simbólicas + Links Afiliados Reais
+// server.js - TPS-GPT Sistema Completo Integrado + Sistema Claude
+// 🎯 Combina: LLaMA AI + Respostas Simbólicas + Links Afiliados Reais + Sistema Claude
 import express from "express";
 import cors from "cors";
 import fetch from "node-fetch";
@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 import { analisarViagem } from './tps-travel-router.js';
 import { getMensagemSimbolica } from './resposta-simbolica.js';
 import { gerarLinksAfiliados, gerarLinksProtegidos, validarLinks } from './affiliate-links.js';
+import { gerarRespostaTPS, analisarConsultaUsuario } from './resposta-tps-modelo-claude.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -105,8 +106,8 @@ ${Object.keys(linksValidados).length > 0 ?
       });
     }
 
-    // ===== 5️⃣ FALLBACK: USAR LLaMA AI PARA PERGUNTAS GERAIS =====
-    console.log('🤖 Não é viagem, usando LLaMA AI...');
+    // ===== 5️⃣ FALLBACK: USAR SISTEMA CLAUDE + LLaMA AI PARA PERGUNTAS GERAIS =====
+    console.log('🤖 Não é viagem, usando Sistema Claude + LLaMA AI...');
     
     const respostaIA = await chamarLlamaAI(prompt, lang);
     
@@ -115,7 +116,7 @@ ${Object.keys(linksValidados).length > 0 ?
       type: 'general-ai',
       content: respostaIA,
       metadata: {
-        model: 'llama-3.2-70b',
+        model: 'claude-engine-llama-3.1-8b',
         language: lang,
         timestamp: new Date().toISOString()
       }
@@ -133,13 +134,34 @@ ${Object.keys(linksValidados).length > 0 ?
   }
 });
 
-// ===== FUNÇÃO: CHAMAR LLaMA AI =====
+// ===== FUNÇÃO: CHAMAR SISTEMA CLAUDE + LLaMA AI =====
 async function chamarLlamaAI(prompt, lang = 'pt') {
   try {
-    console.log('🧠 Conectando com LLaMA AI...');
+    console.log('🧠 Analisando consulta com Sistema Claude...');
     
-    // Definir idioma do sistema
-    const promptSistema = definirPromptSistema(lang);
+    // 1. Tentar resposta inteligente do Claude primeiro
+    const respostaClaude = gerarRespostaTPS(prompt);
+    
+    // 2. Se Claude gerou uma resposta específica (não genérica)
+    if (respostaClaude && !respostaClaude.includes("Para onde você gostaria")) {
+      console.log('✅ Resposta Claude encantadora gerada!');
+      return respostaClaude;
+    }
+    
+    // 3. Fallback para LLaMA apenas se necessário
+    console.log('🤖 Usando LLaMA AI para consulta geral...');
+    
+    const promptSistema = `Você é um consultor de viagens especialista e amigável do TPS.
+
+INSTRUÇÕES IMPORTANTES:
+- Seja caloroso, inspirador e conversacional
+- Use emojis relevantes
+- Mantenha respostas entre 100-300 palavras
+- Foque em experiências transformadoras
+- Se mencionar destinos específicos, sugira também voos, hotéis ou carros
+- Sempre termine perguntando como pode ajudar mais
+
+Responda em ${lang === 'pt' ? 'português brasileiro' : lang}.`;
     
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
@@ -152,17 +174,11 @@ async function chamarLlamaAI(prompt, lang = 'pt') {
       body: JSON.stringify({
         model: "meta-llama/llama-3.1-8b-instruct:free",
         messages: [
-          {
-            role: "system",
-            content: promptSistema
-          },
-          {
-            role: "user",
-            content: prompt
-          }
+          { role: "system", content: promptSistema },
+          { role: "user", content: prompt }
         ],
         temperature: 0.8,
-        max_tokens: 800
+        max_tokens: 600
       })
     });
 
@@ -180,6 +196,14 @@ async function chamarLlamaAI(prompt, lang = 'pt') {
 
   } catch (error) {
     console.error('❌ Erro ao chamar LLaMA:', error);
+    
+    // Fallback final para consultas de viagem
+    const analise = analisarConsultaUsuario(prompt);
+    if (analise.destino) {
+      console.log('🔄 Usando fallback Claude para viagem...');
+      return gerarRespostaTPS(prompt);
+    }
+    
     throw error;
   }
 }
@@ -275,18 +299,20 @@ app.get('/api/status', (req, res) => {
     status: 'success',
     message: 'TPS-GPT Sistema Completo funcionando',
     timestamp: new Date().toISOString(),
-    version: '8.0.0-integrated',
+    version: '8.1.0-claude-integrated',
     features: {
       travel_router: true,
       symbolic_responses: true,
       affiliate_links: true,
+      claude_engine: true,
       llama_ai: !!process.env.OPENROUTER_API_KEY,
       multilingual: true
     },
     modules: {
       'tps-travel-router': 'Análise inteligente de viagem',
       'resposta-simbolica': 'Mensagens emocionais multilíngues', 
-      'affiliate-links': 'Monetização com links reais'
+      'affiliate-links': 'Monetização com links reais',
+      'claude-engine': 'Sistema de respostas encantadoras'
     }
   });
 });
@@ -296,6 +322,7 @@ app.get('/health', (req, res) => {
     status: 'healthy',
     timestamp: new Date().toISOString(),
     openrouter: !!process.env.OPENROUTER_API_KEY,
+    claude_engine: true,
     modules_loaded: true
   });
 });
@@ -310,7 +337,8 @@ app.get('/api/affiliate-stats', (req, res) => {
       destinos_suportados: 25,
       idiomas_suportados: 12,
       conversao_media: '2.3%',
-      receita_estimada: 'R$ 0,00'
+      receita_estimada: 'R$ 0,00',
+      claude_responses: 'Ativo'
     };
     
     res.json({
@@ -364,7 +392,7 @@ app.get('/', (req, res) => {
     <div class="logo">TPS</div>
     <div class="title">Travel Professional System</div>
     <div class="description">
-        Sistema completo de viagens com IA avançada, respostas simbólicas emocionais e links afiliados reais para monetização.
+        Sistema completo de viagens com IA avançada, Sistema Claude de respostas encantadoras e links afiliados reais para monetização.
     </div>
     
     <div>
@@ -378,8 +406,8 @@ app.get('/', (req, res) => {
             <p>Detecta destinos e serviços automaticamente</p>
         </div>
         <div class="feature">
-            <h3>🎨 Respostas Simbólicas</h3>
-            <p>Mensagens emocionais em 12 idiomas</p>
+            <h3>🎨 Sistema Claude</h3>
+            <p>Respostas encantadoras com tabelas clicáveis</p>
         </div>
         <div class="feature">
             <h3>💰 Monetização</h3>
@@ -392,8 +420,8 @@ app.get('/', (req, res) => {
     </div>
     
     <div class="status">
-        <strong>✅ Sistema TPS-GPT v8.0 Integrado - Todos os módulos ativos</strong><br>
-        Análise de Viagem • Respostas Simbólicas • Links Afiliados • LLaMA AI
+        <strong>✅ Sistema TPS-GPT v8.1 + Claude Engine - Todos os módulos ativos</strong><br>
+        Análise de Viagem • Respostas Simbólicas • Links Afiliados • Claude Engine • LLaMA AI
     </div>
 </body>
 </html>
@@ -412,12 +440,13 @@ app.use((err, req, res, next) => {
 
 // ===== INICIALIZAÇÃO =====
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 TPS-GPT v8.0 Integrado ativo na porta ${PORT}`);
+  console.log(`🚀 TPS-GPT v8.1 + Claude Engine ativo na porta ${PORT}`);
   console.log(`🤖 OpenRouter: ${process.env.OPENROUTER_API_KEY ? '✅' : '❌'}`);
+  console.log(`🎯 Claude Engine: ✅`);
   console.log(`🌐 Acesso: https://app.canalvivo.org`);
   console.log(`📊 Status: /api/status`);
   console.log(`💰 Stats: /api/affiliate-stats`);
-  console.log(`✅ Módulos carregados: travel-router, resposta-simbolica, affiliate-links`);
+  console.log(`✅ Módulos carregados: travel-router, resposta-simbolica, affiliate-links, claude-engine`);
 });
 
 // ===== GRACEFUL SHUTDOWN =====
