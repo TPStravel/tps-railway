@@ -18,6 +18,18 @@ const __dirname = path.dirname(__filename);
 dotenv.config();
 
 const app = express();
+
+// ===== CORS Personalizado para Hostinger =====
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://canalvivo.org');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200); // Preflight OK
+  }
+  next();
+});
+
 const PORT = process.env.PORT || 8080;
 
 // ===== MIDDLEWARE =====
