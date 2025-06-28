@@ -150,7 +150,7 @@ async function chamarLlamaAI(prompt, lang = 'pt') {
         "X-Title": "TPS Travel Professional System"
       },
       body: JSON.stringify({
-        model: "meta-llama/llama-3.2-70b-instruct:free",
+        model: "meta-llama/llama-3.1-8b-instruct:free",
         messages: [
           {
             role: "system",
