@@ -1,6 +1,6 @@
 {
   "name": "tps-railway-simple",
-  "version": "7.0.0",
+  "version": "7.0.0", 
   "description": "TPS simples com LLaMA AI - Sem Firebase",
   "main": "server.js",
   "type": "module",
@@ -9,8 +9,8 @@
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "start": "node tps-railway/server.js",
-    "dev": "node tps-railway/server.js"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",

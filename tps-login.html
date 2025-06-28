@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPS v8.1 - Travel Professional System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: 
+                linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%),
+                url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=2835&q=80') center/cover fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .login-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: #f5f7fa;
+            border-radius: 16px;
+            padding: 6px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.8rem;
+            background: none;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .login-form {
+            display: none;
+            text-align: left;
+        }
+
+        .login-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            color: #555;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            margin: 0 1rem;
+        }
+
+        .google-login-btn {
+            width: 100%;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .google-login-btn:hover {
+            border-color: #4285f4;
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .google-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 1rem;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.9rem;
+            border-left: 4px solid #c62828;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: none;
+            font-size: 0.9rem;
+            border-left: 4px solid #2e7d32;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 1rem;
+            color: #667eea;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e0e0e0;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 0.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 2rem;
+                margin: 0.5rem;
+                border-radius: 20px;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+            
+            body {
+                background-attachment: scroll;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">TPS</div>
+        <div class="subtitle">Travel Professional System v8.1</div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+        <div class="loading" id="loading">
+            <div class="loading-spinner"></div>
+            <span>Processing...</span>
+        </div>
+
+        <div class="login-tabs">
+            <button class="tab-btn active" data-tab="signin">Sign In</button>
+            <button class="tab-btn" data-tab="signup">Sign Up</button>
+        </div>
+
+        <!-- Sign In Form -->
+        <div class="login-form active" id="signinForm">
+            <div class="form-group">
+                <label for="signinEmail">Email</label>
+                <input type="email" id="signinEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="signinPassword">Password</label>
+                <input type="password" id="signinPassword" placeholder="Enter your password" required>
+            </div>
+            <button class="login-btn" id="signinBtn">Sign In</button>
+            
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+            
+            <button class="google-login-btn" id="googleLoginBtn">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                <span>Continue with Google</span>
+            </button>
+            
+            <div class="forgot-password">
+                <a href="#" id="forgotPasswordLink">Forgot your password?</a><br>
+                <a href="#" id="resendVerificationLink" style="margin-top: 0.5rem; display: inline-block;">Resend verification email</a>
+            </div>
+        </div>
+
+        <!-- Sign Up Form -->
+        <div class="login-form" id="signupForm">
+            <div class="form-group">
+                <label for="signupName">Full Name</label>
+                <input type="text" id="signupName" placeholder="Enter your full name" required>
+            </div>
+            <div class="form-group">
+                <label for="signupEmail">Email</label>
+                <input type="email" id="signupEmail" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Create a password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+            </div>
+            <button class="login-btn" id="signupBtn">Create Account</button>
+            
+            <div class="divider">
+                <span>or continue with</span>
+            </div>
+            
+            <button class="google-login-btn" id="googleSignupBtn">
+                <svg class="google-icon" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                <span>Continue with Google</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        /*
+        🔐 TPS LOGIN SECURITY LOGIC:
+        
+        📧 Email/Password Accounts:
+        - ✅ Send verification email on signup
+        - ❌ Block login until email is verified
+        - 🔄 Allow resending verification email
+        
+        🌐 Google OAuth Accounts:
+        - ✅ Direct access (Google pre-verifies emails)
+        - 🚀 No additional verification needed
+        
+        🎯 Result: Secure and user-friendly hybrid authentication
+        */
+        
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail, sendEmailVerification, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
+        import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
+
+        // REAL Firebase configuration - canal-vivo-chat
+        const firebaseConfig = {
+            apiKey: "AIzaSyC2u94Oz2W5seqBIqs88cs7rgSmzBEAnjQ",
+            authDomain: "canal-vivo-chat.firebaseapp.com",
+            projectId: "canal-vivo-chat",
+            storageBucket: "canal-vivo-chat.appspot.com",
+            messagingSenderId: "975226660544",
+            appId: "1:975226660544:web:56b55bb3e2a58be035ef25",
+            measurementId: "G-SCFHQFYGHQ"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const googleProvider = new GoogleAuthProvider();
+
+        // Utility functions
+        function showLoading() {
+            document.getElementById('loading').style.display = 'block';
+        }
+
+        function hideLoading() {
+            document.getElementById('loading').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Validation functions
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 6;
+        }
+
+        // Firebase functions
+        async function createUserProfile(user, displayName = null) {
+            try {
+                const userRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userRef);
+                
+                if (!userDoc.exists()) {
+                    await setDoc(userRef, {
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: displayName || user.displayName || user.email.split('@')[0],
+                        hasPaid: false,
+                        plan: 'free',
+                        messagesUsed: 0,
+                        maxMessages: 10,
+                        createdAt: new Date().toISOString(),
+                        lastLogin: new Date().toISOString()
+                    });
+                    console.log('✅ New user profile created');
+                    return { hasPaid: false, plan: 'free' };
+                } else {
+                    await updateDoc(userRef, {
+                        lastLogin: new Date().toISOString()
+                    });
+                    console.log('✅ User profile updated');
+                    return userDoc.data();
+                }
+            } catch (error) {
+                console.error('Error creating user profile:', error);
+                return { hasPaid: false, plan: 'free' };
+            }
+        }
+
+        async function checkUserPaymentStatus(user) {
+            try {
+                const userRef = doc(db, 'users', user.uid);
+                const userDoc = await getDoc(userRef);
+                
+                if (userDoc.exists()) {
+                    return userDoc.data();
+                }
+                return { hasPaid: false, plan: 'free' };
+            } catch (error) {
+                console.error('Error checking payment status:', error);
+                return { hasPaid: false, plan: 'free' };
+            }
+        }
+
+        function redirectAfterLogin(userData) {
+            showLoading();
+            
+            setTimeout(() => {
+                if (userData.hasPaid && userData.plan !== 'free') {
+                    console.log('✅ Redirecting to TPS System (user has paid)');
+                    showSuccess('Redirecting to TPS System...');
+                    setTimeout(() => {
+                        window.location.href = 'tps-gpt.html';
+                    }, 1000);
+                } else {
+                    console.log('💳 Redirecting to Payment (user needs to pay)');
+                    showSuccess('Redirecting to Payment...');
+                    setTimeout(() => {
+                        window.location.href = 'tps-payment.html';
+                    }, 1000);
+                }
+            }, 1000);
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabName = btn.getAttribute('data-tab');
+                    
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    document.querySelectorAll('.login-form').forEach(form => form.classList.remove('active'));
+                    document.getElementById(tabName + 'Form').classList.add('active');
+                });
+            });
+
+            // Sign In
+            document.getElementById('signinBtn').addEventListener('click', async () => {
+                const email = document.getElementById('signinEmail').value.trim();
+                const password = document.getElementById('signinPassword').value;
+
+                if (!validateEmail(email)) {
+                    showError('Please enter a valid email address');
+                    return;
+                }
+
+                if (!validatePassword(password)) {
+                    showError('Password should be at least 6 characters');
+                    return;
+                }
+
+                showLoading();
+                
+                try {
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    
+                    // Check email verification for email/password accounts
+                    if (!userCredential.user.emailVerified) {
+                        hideLoading();
+                        showError('Please verify your email before logging in. Check your inbox for the verification link.');
+                        console.log('❌ Login blocked: Email not verified for', userCredential.user.email);
+                        
+                        // Sign out the user
+                        await auth.signOut();
+                        return;
+                    }
+                    
+                    // Email is verified, proceed with login
+                    const userData = await createUserProfile(userCredential.user);
+                    showSuccess('Welcome back!');
+                    console.log('✅ Email/Password login successful (verified):', userCredential.user.email);
+                    redirectAfterLogin(userData);
+                    
+                } catch (error) {
+                    hideLoading();
+                    console.error('Login error:', error);
+                    showError('Invalid email or password');
+                }
+            });
+
+            // Sign Up
+            document.getElementById('signupBtn').addEventListener('click', async () => {
+                const name = document.getElementById('signupName').value.trim();
+                const email = document.getElementById('signupEmail').value.trim();
+                const password = document.getElementById('signupPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (!name) {
+                    showError('Please enter your full name');
+                    return;
+                }
+
+                if (!validateEmail(email)) {
+                    showError('Please enter a valid email address');
+                    return;
+                }
+
+                if (!validatePassword(password)) {
+                    showError('Password should be at least 6 characters');
+                    return;
+                }
+
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match');
+                    return;
+                }
+
+                showLoading();
+                
+                try {
+                    // Create account
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    
+                    // Send email verification (required for email/password accounts)
+                    await sendEmailVerification(userCredential.user);
+                    
+                    hideLoading();
+                    showSuccess('Account created! Please check your email and verify before logging in.');
+                    console.log('✅ Account created, verification email sent to:', userCredential.user.email);
+                    
+                    // Switch to sign in tab
+                    document.querySelector('.tab-btn[data-tab="signin"]').click();
+                    
+                } catch (error) {
+                    hideLoading();
+                    console.error('Signup error:', error);
+                    if (error.code === 'auth/email-already-in-use') {
+                        showError('Email already in use. Please sign in instead.');
+                    } else {
+                        showError('Error creating account. Please try again.');
+                    }
+                }
+            });
+
+            // Google Login (OAuth - No email verification required)
+            document.getElementById('googleLoginBtn').addEventListener('click', async () => {
+                showLoading();
+                
+                try {
+                    const result = await signInWithPopup(auth, googleProvider);
+                    
+                    // Google accounts are pre-verified, no additional verification needed
+                    const userData = await createUserProfile(result.user);
+                    showSuccess('Welcome back!');
+                    console.log('✅ Google login successful (pre-verified):', result.user.email);
+                    redirectAfterLogin(userData);
+                    
+                } catch (error) {
+                    hideLoading();
+                    console.error('❌ Google login error:', error);
+                    showError(`Google login failed: ${error.code || 'Unknown error'}`);
+                }
+
+            });
+
+            // Google Signup (same as login)
+            document.getElementById('googleSignupBtn').addEventListener('click', async () => {
+                document.getElementById('googleLoginBtn').click();
+            });
+
+            // Forgot Password
+            document.getElementById('forgotPasswordLink').addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('signinEmail').value.trim();
+                
+                if (!email) {
+                    showError('Please enter your email address first');
+                    return;
+                }
+
+                if (!validateEmail(email)) {
+                    showError('Please enter a valid email address');
+                    return;
+                }
+
+                try {
+                    await sendPasswordResetEmail(auth, email);
+                    showSuccess('Password reset email sent!');
+                    console.log('📧 Password reset sent to:', email);
+                } catch (error) {
+                    console.error('Password reset error:', error);
+                    showError('Error sending reset email. Please try again.');
+                }
+            });
+
+            // Resend Verification Email
+            document.getElementById('resendVerificationLink').addEventListener('click', async (e) => {
+                e.preventDefault();
+                
+                const email = document.getElementById('signinEmail').value.trim();
+                const password = document.getElementById('signinPassword').value;
+                
+                if (!email || !password) {
+                    showError('Please enter your email and password first');
+                    return;
+                }
+
+                if (!validateEmail(email)) {
+                    showError('Please enter a valid email address');
+                    return;
+                }
+
+                try {
+                    // Sign in temporarily to get user object
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    
+                    if (userCredential.user.emailVerified) {
+                        showSuccess('Your email is already verified! You can sign in now.');
+                        return;
+                    }
+                    
+                    // Send verification email
+                    await sendEmailVerification(userCredential.user);
+                    
+                    // Sign out immediately
+                    await auth.signOut();
+                    
+                    showSuccess('Verification email sent! Please check your inbox.');
+                    console.log('📧 Verification email resent to:', email);
+                    
+                } catch (error) {
+                    console.error('Resend verification error:', error);
+                    showError('Error sending verification email. Please check your credentials.');
+                }
+            });
+
+            // Enter key handling
+            document.getElementById('signinEmail').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('signinPassword').focus();
+            });
+
+            document.getElementById('signinPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('signinBtn').click();
+            });
+
+            document.getElementById('signupName').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('signupEmail').focus();
+            });
+
+            document.getElementById('signupEmail').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('signupPassword').focus();
+            });
+
+            document.getElementById('signupPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('confirmPassword').focus();
+            });
+
+            document.getElementById('confirmPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') document.getElementById('signupBtn').click();
+            });
+        }
+
+        // Check for existing session on page load
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                console.log('🔄 Found existing session for:', user.email);
+                
+                // Check if this is a Google account (pre-verified) or email/password account
+                const isGoogleAccount = user.providerData.some(provider => provider.providerId === 'google.com');
+                
+                if (!isGoogleAccount && !user.emailVerified) {
+                    // Email/password account that hasn't been verified
+                    console.log('❌ Email not verified, redirecting to login');
+                    await auth.signOut();
+                    showError('Please verify your email before accessing the system.');
+                    setupEventListeners();
+                    hideLoading();
+                    return;
+                }
+                
+                // User is verified (either Google or verified email/password)
+                showLoading();
+                const userData = await checkUserPaymentStatus(user);
+                redirectAfterLogin(userData);
+            } else {
+                console.log('🚀 TPS Login initialized with real Firebase');
+                setupEventListeners();
+                hideLoading();
+            }
+        });
+    </script>
+</body>
+</html>

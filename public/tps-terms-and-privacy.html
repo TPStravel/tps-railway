@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-
-<html lang="pt-br">
+<html lang="en">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>TPS – Termos e Privacidade</title>
+<title>TPS – Terms and Privacy</title>
 <style>
     body { background-color: #121212; color: white; font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; overflow-y: auto; }
     .container { max-width: 900px; margin: auto; padding-bottom: 60px; }
@@ -39,28 +38,28 @@
 
 <div class="container">
 
-<h1 id="titulo">Bem-vindo ao TPS - Travel Personally Secretary</h1>
-<h2 id="sub1">Introdução</h2>
-<p id="p1">O <strong>TPS</strong> é uma plataforma personalizada que ajuda você a planejar suas viagens de forma eficiente e intuitiva. Com base nas suas preferências, histórico e estilo de viagem, entregamos recomendações de voos, hotéis, carros e seguros alinhadas ao que realmente importa para você.</p>
-<p id="p2"><strong>Objetivo:</strong> Oferecer uma experiência prática, simbólica e personalizada de viagem.</p>
-<p id="p3"><strong>Como funciona:</strong> O sistema coleta dados básicos (como destino, datas, tipo de viagem) e entrega resultados emocionalmente relevantes.</p>
-<h2 id="sub2">Termos de Uso</h2>
+<h1 id="titulo">Welcome to TPS - Travel Personally Secretary</h1>
+<h2 id="sub1">Introduction</h2>
+<p id="p1"><strong>TPS</strong> is a personalized platform that helps you plan your travels efficiently and intuitively. Based on your preferences, history, and travel style, we deliver flight, hotel, car, and insurance recommendations aligned with what really matters to you.</p>
+<p id="p2"><strong>Objective:</strong> To offer a practical, symbolic, and personalized travel experience.</p>
+<p id="p3"><strong>How it works:</strong> The system collects basic data (such as destination, dates, type of trip) and delivers emotionally relevant results.</p>
+<h2 id="sub2">Terms of Use</h2>
 <ul>
-<li id="li1"><strong>Coleta de Dados:</strong> Nome, e-mail, preferências, histórico de busca e uso.</li>
-<li id="li2"><strong>Uso dos Dados:</strong> Somente para melhorar sua experiência. Nunca compartilhamos com terceiros para fins comerciais.</li>
-<li id="li3"><strong>Cookies:</strong> Utilizados para lembrar suas escolhas e acelerar futuras buscas.</li>
-<li id="li4"><strong>Segurança:</strong> Seus dados são protegidos com criptografia e padrões de segurança.</li>
-<li id="li5"><strong>Limitações:</strong> O TPS é uma plataforma simbólica de apoio. Você é responsável pelas decisões finais de reserva e compra.</li>
+<li id="li1"><strong>Data Collection:</strong> Name, email, preferences, search and usage history.</li>
+<li id="li2"><strong>Data Usage:</strong> Only to improve your experience. We never share with third parties for commercial purposes.</li>
+<li id="li3"><strong>Cookies:</strong> Used to remember your choices and speed up future searches.</li>
+<li id="li4"><strong>Security:</strong> Your data is protected with encryption and security standards.</li>
+<li id="li5"><strong>Limitations:</strong> TPS is a symbolic support platform. You are responsible for final booking and purchase decisions.</li>
 </ul>
-<h2 id="sub3">Política de Privacidade</h2>
+<h2 id="sub3">Privacy Policy</h2>
 <ul>
-<li id="li6">Coletamos dados mínimos e apenas com seu consentimento.</li>
-<li id="li7">Não vendemos nem divulgamos informações pessoais.</li>
-<li id="li8">Você pode solicitar exclusão dos seus dados a qualquer momento.</li>
-<li id="li9">Seus dados são armazenados em servidores seguros.</li>
+<li id="li6">We collect minimal data and only with your consent.</li>
+<li id="li7">We do not sell or disclose personal information.</li>
+<li id="li8">You can request deletion of your data at any time.</li>
+<li id="li9">Your data is stored on secure servers.</li>
 </ul>
-<p id="p4">Ao continuar, você concorda com todos os termos acima.</p>
-<button class="btn" id="botao-continuar" onclick="aceitarTermos('tps-portal.html')">Aceitar e Continuar</button>
+<p id="p4">By continuing, you agree to all the terms above.</p>
+<button class="btn" id="botao-continuar" onclick="aceitarTermos('tps-main.html')">Accept and Continue</button>
 </div>
 <footer>© 2025 TPS - Travel Personally Secretary</footer>
 <script>
@@ -141,7 +140,7 @@
         li4: "Sécurité : Vos données sont protégées par chiffrement et normes de sécurité.",
         li5: "Limitations : TPS est une plateforme symbolique de support. Vous êtes responsable des décisions finales de réservation et d'achat.",
         li6: "Nous collectons des données minimales et seulement avec votre consentement.",
-        li7: "Nous ne vendons ni ne divulguons d'informations personnelles.",
+        li7: "Nous ne vendons ni ne divulgons d'informations personnelles.",
         li8: "Vous pouvez demander la suppression de vos données à tout moment.",
         li9: "Vos données sont stockées sur des serveurs sécurisés.",
         botao: "Accepter et Continuer"
@@ -309,11 +308,11 @@
     };
 
     // Detectar idioma da URL
-    const lang = new URLSearchParams(window.location.search).get('lang') || 'pt';
+    const lang = new URLSearchParams(window.location.search).get('lang') || 'en';
 
     // Função para aplicar traduções
     document.addEventListener("DOMContentLoaded", () => {
-      const t = traducoesTermos[lang] || traducoesTermos["pt"];
+      const t = traducoesTermos[lang] || traducoesTermos["en"];
       
       // Aplicar traduções aos elementos
       document.getElementById("titulo").innerText = t.titulo;
@@ -349,54 +348,55 @@
       url.searchParams.set("lang", newLang);
       window.location.href = url.toString();
     }
-  </script>
+</script>
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    // Importações do Firebase comentadas
+    // import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    // import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
-      authDomain: "canal-vivo-4cd4a.firebaseapp.com",
-      projectId: "canal-vivo-4cd4a",
-      storageBucket: "canal-vivo-4cd4a.appspot.com",
-      messagingSenderId: "1003445191655",
-      appId: "1:1003445191655:web:c6c7915bf02979c10af342"
-    };
+    // Configuração do Firebase comentada
+    // const firebaseConfig = {
+    //   apiKey: "AIzaSyBCZo9jhE9Fz7Lkn_VFObc135sPaacpZJU",
+    //   authDomain: "canal-vivo-4cd4a.firebaseapp.com",
+    //   projectId: "canal-vivo-4cd4a",
+    //   storageBucket: "canal-vivo-4cd4a.appspot.com",
+    //   messagingSenderId: "1003445191655",
+    //   appId: "1:1003445191655:web:c6c7915bf02979c10af342"
+    // };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    // const app = initializeApp(firebaseConfig);
+    // const db = getFirestore(app);
 
-    window.aceitarTermos = async function(proximaUrl) {
-      const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
+    // Função aceitarTermos para apenas redirecionar (Firebase temporariamente desabilitado)
+    window.aceitarTermos = function(proximaUrl) {
+      const lang = new URLSearchParams(window.location.search).get("lang") || "en";
       
-      // Salvar consentimento no localStorage
-      const consentData = {
-        accepted: true,
-        timestamp: new Date().toISOString(),
-        lang: lang
-      };
-      
-      // Usar variável em memória em vez de localStorage para compatibilidade
-      window.tpsConsent = consentData;
+      // const consentData = {
+      //     acceptedAt: new Date().toISOString(),
+      // };
+      // window.tpsConsent = consentData; 
       
       try {
-        await addDoc(collection(db, "consentimentos"), {
-          timestamp: new Date().toISOString(),
-          lang: lang || "pt",
-          consentido: true,
-          origem: window.location.pathname || "desconhecido"
-        });
+        // A linha de registro no Firebase está comentada para teste
+        // await addDoc(collection(db, "consentimentos"), {
+        //   timestamp: new Date().toISOString(),
+        //   lang: lang,
+        //   consentido: true,
+        //   origem: window.location.pathname || "desconhecido",
+        //   ...consentData 
+        // });
 
-       const nextUrl = new URL(proximaUrl, window.location.origin);
-       nextUrl.searchParams.set("lang", lang);
-       window.location.href = nextUrl.toString();
+        const nextUrl = new URL(proximaUrl, window.location.origin);
+        nextUrl.searchParams.set("lang", lang);
+        window.location.href = nextUrl.toString();
 
       } catch (e) {
-        alert("Erro ao registrar consentimento. Tente novamente.");
-        console.error(e);
+        // Este alerta só aparecerá se o erro for na parte de redirecionamento, não no Firebase
+        alert("Erro ao redirecionar. Tente novamente.");
+        console.error("Erro no redirecionamento:", e);
       }
     };
-  </script>
+</script>
 <div id="cookie-banner" style="display:none; position:fixed; bottom:20px; left:20px; right:20px; background:#222; color:#fff; padding:20px; border-radius:8px; z-index:9999;">
 <p id="cookie-text" style="margin:0 0 10px 0;"></p>
 <button id="cookie-btn" onclick="aceitarCookies()" style="padding: 8px 16px; background-color: #6f42c1; border: none; color: white; border-radius: 4px;">Aceitar</button>
@@ -418,8 +418,8 @@ const cookieTexts = {
 };
 
 function mostrarBannerCookies() {
-  const lang = new URLSearchParams(window.location.search).get("lang") || "pt";
-  const t = cookieTexts[lang] || cookieTexts["pt"];
+  const lang = new URLSearchParams(window.location.search).get("lang") || "en";
+  const t = cookieTexts[lang] || cookieTexts["en"];
   document.getElementById("cookie-text").innerText = t.text;
   document.getElementById("cookie-btn").innerText = t.button;
   document.getElementById("cookie-banner").style.display = "block";
