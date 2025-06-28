@@ -56,9 +56,15 @@ app.post("/gpt-tps", async (req, res) => {
     console.log(`🔍 Analisando: "${prompt}" (idioma: ${lang})`);
     
     // ===== 1️⃣ ANÁLISE TPS: VIAGEM OU PERGUNTA GERAL? =====
-    const planoViagem = analisarViagem(prompt, lang);
     
-    if (planoViagem && planoViagem.destino) {
+    let planoViagem;
+    try {
+      planoViagem = analisarViagem(prompt, lang);
+    } catch (e) {
+      console.error("❌ Erro ao analisar viagem:", e.message);
+    }
+    
+    if (planoViagem?.destino?.cidade) {
       console.log(`✈️ Plano de viagem detectado: ${planoViagem.destino.cidade}`);
       
       // ===== 2️⃣ GERAR RESPOSTA SIMBÓLICA =====
