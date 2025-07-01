@@ -1,464 +1,943 @@
-// server.js - TPS-GPT Sistema Completo Integrado + Sistema Claude
-// 🎯 Combina: LLaMA AI + Respostas Simbólicas + Links Afiliados Reais + Sistema Claude
-import express from "express";
-import cors from "cors";
-import fetch from "node-fetch";
-import dotenv from "dotenv";
-import path from "path";
+// 🎯 TPS Travel API - Amadeus Integration + Email Service v1.1.0
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import NodeCache from 'node-cache';
+import compression from 'compression';
+import nodemailer from 'nodemailer';
 import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-// ===== IMPORTAR MÓDULOS TPS =====
-import { analisarViagem } from './tps-travel-router.js';
-import { getMensagemSimbolica } from './resposta-simbolica.js';
-import { gerarLinksAfiliados, gerarLinksProtegidos, validarLinks } from './affiliate-links.js';
-import { gerarRespostaTPS, analisarConsultaUsuario } from './resposta-tps-modelo-claude.js';
+import { readFileSync } from 'fs';
 
+// ==================== CONFIGURAÇÃO ====================
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config();
+const __dirname = dirname(__filename);
 
 const app = express();
+const PORT = process.env.PORT || 8080;
 
-// ===== CORS Personalizado para Hostinger =====
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://canalvivo.org');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-api-key');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200); // Preflight OK
+// Cache - 10 minutos para dados da Amadeus
+const cache = new NodeCache({ stdTTL: 600 });
+
+// ==================== EMAIL CONFIGURATION ====================
+
+// Gmail transporter configuration
+const createEmailTransporter = () => {
+  return nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.GMAIL_USER,
+      pass: process.env.GMAIL_PASS
+    }
+  });
+};
+
+// Test email configuration on startup
+const testEmailConfiguration = async () => {
+  try {
+    if (process.env.GMAIL_USER && process.env.GMAIL_PASS) {
+      const transporter = createEmailTransporter();
+      await transporter.verify();
+      console.log('✅ Gmail SMTP service ready');
+    } else {
+      console.log('⚠️  Gmail credentials not configured');
+    }
+  } catch (error) {
+    console.log('❌ Gmail SMTP configuration error:', error.message);
   }
+};
+
+// ==================== MIDDLEWARE ====================
+
+// Segurança
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'", "https://api.amadeus.com"]
+    }
+  }
+}));
+
+// Compressão
+app.use(compression());
+
+// CORS
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' ? 
+    ['https://seu-dominio.com'] : 
+    ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+}));
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // máx 100 requests por IP
+  message: {
+    error: 'Too many requests. Try again in 15 minutes.',
+    retryAfter: '15 minutes'
+  }
+});
+app.use('/api/', limiter);
+
+// Body parser
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Servir arquivos estáticos
+app.use(express.static(join(__dirname, 'public')));
+
+// Middleware de log
+app.use((req, res, next) => {
+  const start = Date.now();
+  res.on('finish', () => {
+    const duration = Date.now() - start;
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - ${res.statusCode} - ${duration}ms`);
+  });
   next();
 });
 
-const PORT = process.env.PORT || 8080;
+// ==================== AMADEUS API CLASS ====================
 
-// ===== MIDDLEWARE =====
-app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.static('public'));
+class AmadeusAPI {
+  constructor() {
+    this.clientId = process.env.AMADEUS_API_KEY || 'YOUR_CLIENT_ID';
+    this.clientSecret = process.env.AMADEUS_API_SECRET || 'YOUR_CLIENT_SECRET';
+    this.baseURL = process.env.AMADEUS_ENV === 'production' ? 
+      'https://api.amadeus.com' : 
+      'https://test.api.amadeus.com';
+    this.accessToken = null;
+    this.tokenExpiry = null;
+  }
 
-// ===== ENDPOINT PRINCIPAL TPS-GPT =====
-app.post("/gpt-tps", async (req, res) => {
-  try {
-    console.log('🎯 Requisição TPS-GPT recebida:', req.body);
-    
-    // Compatibilidade: suporta tanto { message } quanto { messages: [{ content }] }
-    const prompt = req.body.message || req.body.messages?.[0]?.content;
-    const lang = req.body.lang || req.body.language || 'pt';
-    
-    if (!prompt) {
-      return res.status(400).json({ 
-        error: "Prompt/message é obrigatório",
-        format: "{ message: 'text' } ou { messages: [{ content: 'text' }] }"
-      });
+  // Obter token de acesso
+  async getAccessToken() {
+    if (this.accessToken && this.tokenExpiry && Date.now() < this.tokenExpiry) {
+      return this.accessToken;
     }
 
-    console.log(`🔍 Analisando: "${prompt}" (idioma: ${lang})`);
-    
-    // ===== 1️⃣ ANÁLISE TPS: VIAGEM OU PERGUNTA GERAL? =====
-    
-    let planoViagem;
     try {
-      planoViagem = analisarViagem(prompt, lang);
-    } catch (e) {
-      console.error("❌ Erro ao analisar viagem:", e.message);
-    }
-    
-    if (planoViagem?.destino?.cidade) {
-      console.log(`✈️ Plano de viagem detectado: ${planoViagem.destino.cidade}`);
-      
-      // ===== 2️⃣ GERAR RESPOSTA SIMBÓLICA =====
-      const mensagemSimbolica = getMensagemSimbolica(planoViagem.destino, lang);
-      
-      // ===== 3️⃣ GERAR LINKS AFILIADOS =====
-      const linksAfiliados = gerarLinksAfiliados(planoViagem.destino, planoViagem.servicos);
-      const linksProtegidos = gerarLinksProtegidos(planoViagem.destino, planoViagem.servicos);
-      const linksValidados = validarLinks({ ...linksAfiliados, ...linksProtegidos });
-      
-      // ===== 4️⃣ RESPOSTA FINAL TPS =====
-      const respostaCompleta = `${mensagemSimbolica}
-
-🔗 **Reserve sua viagem agora:**
-
-${Object.keys(linksValidados).length > 0 ? 
-  Object.entries(linksValidados).map(([nome, link]) => 
-    `• **${formatarNomeLink(nome)}**: [Clique aqui](${link})`
-  ).join('\n') 
-  : '• Explore opções personalizadas com nossos parceiros'
-}
-
-💡 *Clique nos links acima para garantir os melhores preços e apoiar o TPS.*`;
-
-      console.log(`✅ Resposta TPS gerada com ${Object.keys(linksValidados).length} links afiliados`);
-
-      return res.json({
-        success: true,
-        type: 'travel-plan',
-        content: respostaCompleta,
-        metadata: {
-          destino: planoViagem.destino,
-          servicos: planoViagem.servicos,
-          links_count: Object.keys(linksValidados).length,
-          language: lang,
-          timestamp: new Date().toISOString()
-        }
+      const response = await fetch(`${this.baseURL}/v1/security/oauth2/token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `grant_type=client_credentials&client_id=${this.clientId}&client_secret=${this.clientSecret}`
       });
-    }
 
-    // ===== 5️⃣ FALLBACK: USAR SISTEMA CLAUDE + LLaMA AI PARA PERGUNTAS GERAIS =====
-    console.log('🤖 Não é viagem, usando Sistema Claude + LLaMA AI...');
-    
-    const respostaIA = await chamarLlamaAI(prompt, lang);
-    
-    return res.json({
-      success: true,
-      type: 'general-ai',
-      content: respostaIA,
-      metadata: {
-        model: 'claude-engine-llama-3.1-8b',
-        language: lang,
-        timestamp: new Date().toISOString()
+      if (!response.ok) {
+        throw new Error(`Authentication error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      this.accessToken = data.access_token;
+      this.tokenExpiry = Date.now() + (data.expires_in * 1000) - 300000; // 5 min antes
+      
+      return this.accessToken;
+    } catch (error) {
+      console.error('❌ Error getting Amadeus token:', error);
+      throw error;
+    }
+  }
+
+  // Fazer requisição autenticada
+  async makeRequest(endpoint, params = {}) {
+    const token = await this.getAccessToken();
+    const queryString = new URLSearchParams(params).toString();
+    const url = `${this.baseURL}${endpoint}${queryString ? `?${queryString}` : ''}`;
+
+    const response = await fetch(url, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
       }
     });
 
-  } catch (error) {
-    console.error('❌ Erro no endpoint TPS-GPT:', error);
-    
-    return res.status(500).json({
-      success: false,
-      error: 'Erro interno do servidor',
-      fallback: 'Desculpe, tivemos um problema técnico. Tente novamente em alguns segundos.',
-      timestamp: new Date().toISOString()
-    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(`Amadeus API Error: ${response.status} - ${errorData.error_description || 'Unknown error'}`);
+    }
+
+    return response.json();
   }
-});
 
-// ===== FUNÇÃO: CHAMAR SISTEMA CLAUDE + LLaMA AI =====
-async function chamarLlamaAI(prompt, lang = 'pt') {
-  try {
-    console.log('🧠 Analisando consulta com Sistema Claude...');
-    
-    // 1. Tentar resposta inteligente do Claude primeiro
-    const respostaClaude = gerarRespostaTPS(prompt);
-    
-    // 2. Se Claude gerou uma resposta específica (não genérica)
-    if (respostaClaude && !respostaClaude.includes("Para onde você gostaria")) {
-      console.log('✅ Resposta Claude encantadora gerada!');
-      return respostaClaude;
+  // Buscar ofertas de voos
+  async searchFlights(params) {
+    const cacheKey = `flights_${JSON.stringify(params)}`;
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
+
+    try {
+      const data = await this.makeRequest('/v2/shopping/flight-offers', params);
+      cache.set(cacheKey, data);
+      return data;
+    } catch (error) {
+      console.error('❌ Error searching flights:', error);
+      throw error;
     }
-    
-    // 3. Fallback para LLaMA apenas se necessário
-    console.log('🤖 Usando LLaMA AI para consulta geral...');
-    
-    const promptSistema = `Você é um consultor de viagens especialista e amigável do TPS.
+  }
 
-INSTRUÇÕES IMPORTANTES:
-- Seja caloroso, inspirador e conversacional
-- Use emojis relevantes
-- Mantenha respostas entre 100-300 palavras
-- Foque em experiências transformadoras
-- Se mencionar destinos específicos, sugira também voos, hotéis ou carros
-- Sempre termine perguntando como pode ajudar mais
+  // Buscar hotéis
+  async searchHotels(params) {
+    const cacheKey = `hotels_${JSON.stringify(params)}`;
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
 
-Responda em ${lang === 'pt' ? 'português brasileiro' : lang}.`;
-    
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "Content-Type": "application/json",
-        "HTTP-Referer": "https://app.canalvivo.org",
-        "X-Title": "TPS Travel Professional System"
-      },
-      body: JSON.stringify({
-        model: "meta-llama/llama-3.1-8b-instruct:free",
-        messages: [
-          { role: "system", content: promptSistema },
-          { role: "user", content: prompt }
-        ],
-        temperature: 0.8,
-        max_tokens: 600
-      })
-    });
-
-    const data = await response.json();
-    
-    if (data.error) {
-      console.error("❌ Erro OpenRouter:", data.error);
-      throw new Error(data.error.message || 'Erro na API OpenRouter');
+    try {
+      const data = await this.makeRequest('/v1/reference-data/locations/hotels/by-city', params);
+      cache.set(cacheKey, data);
+      return data;
+    } catch (error) {
+      console.error('❌ Error searching hotels:', error);
+      throw error;
     }
+  }
 
-    const resposta = data.choices?.[0]?.message?.content || "❗ Resposta vazia da IA.";
-    
-    console.log(`✅ LLaMA respondeu: ${resposta.substring(0, 100)}...`);
-    return resposta;
+  // Buscar aeroportos
+  async searchAirports(params) {
+    const cacheKey = `airports_${JSON.stringify(params)}`;
+    const cached = cache.get(cacheKey);
+    if (cached) return cached;
 
-  } catch (error) {
-    console.error('❌ Erro ao chamar LLaMA:', error);
-    
-    // Fallback final para consultas de viagem
-    const analise = analisarConsultaUsuario(prompt);
-    if (analise.destino) {
-      console.log('🔄 Usando fallback Claude para viagem...');
-      return gerarRespostaTPS(prompt);
+    try {
+      const data = await this.makeRequest('/v1/reference-data/locations', params);
+      cache.set(cacheKey, data);
+      return data;
+    } catch (error) {
+      console.error('❌ Error searching airports:', error);
+      throw error;
     }
-    
-    throw error;
   }
 }
 
-// ===== FUNÇÃO: DEFINIR PROMPT DO SISTEMA POR IDIOMA =====
-function definirPromptSistema(lang) {
-  const prompts = {
-    pt: `Você é um especialista em viagens do TPS (Travel Professional System).
+const amadeus = new AmadeusAPI();
 
-INSTRUÇÕES:
-- Responda SEMPRE em português brasileiro
-- Seja especialista, mas amigável e conversacional
-- Inclua emojis relevantes 
-- Faça sugestões práticas de destinos, hotéis, atividades
-- Quando apropriado, sugira nossos parceiros de viagem
-- Mantenha respostas entre 150-400 palavras
-- Foque em experiências transformadoras de viagem
-- Se mencionar cidade específica, dê dicas locais detalhadas
-- Sempre termine com uma pergunta para manter engajamento`,
+// ==================== EMAIL HELPER FUNCTIONS ====================
 
-    en: `You are a travel expert from TPS (Travel Professional System).
+// Generate HTML email template
+const generateVerificationEmailHTML = (name, token, origin) => {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background-color: #f4f6f8;
+          margin: 0;
+          padding: 20px;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+        }
+        .header {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .logo {
+          font-size: 48px;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+        .header-subtitle {
+          font-size: 18px;
+          opacity: 0.9;
+        }
+        .content {
+          padding: 40px 30px;
+        }
+        .greeting {
+          font-size: 20px;
+          color: #333;
+          margin-bottom: 20px;
+        }
+        .message {
+          color: #666;
+          font-size: 16px;
+          margin-bottom: 30px;
+          line-height: 1.6;
+        }
+        .verification-box {
+          background: #f8f9fa;
+          border: 2px dashed #667eea;
+          border-radius: 12px;
+          padding: 30px;
+          text-align: center;
+          margin: 30px 0;
+        }
+        .verification-title {
+          color: #667eea;
+          font-size: 16px;
+          font-weight: 600;
+          margin-bottom: 15px;
+        }
+        .verification-code {
+          font-size: 32px;
+          font-weight: bold;
+          color: #333;
+          letter-spacing: 8px;
+          background: white;
+          padding: 15px 30px;
+          border-radius: 8px;
+          border: 1px solid #e1e5e9;
+          display: inline-block;
+          margin: 10px 0;
+        }
+        .verify-button {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+          padding: 15px 30px;
+          text-decoration: none;
+          border-radius: 8px;
+          display: inline-block;
+          font-weight: 600;
+          margin: 20px 0;
+          transition: transform 0.2s;
+        }
+        .verify-button:hover {
+          transform: translateY(-2px);
+        }
+        .footer {
+          background: #f8f9fa;
+          padding: 30px;
+          text-align: center;
+          border-top: 1px solid #e1e5e9;
+        }
+        .footer-text {
+          color: #666;
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+        .team-signature {
+          color: #333;
+          font-weight: 600;
+          margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+          .container {
+            margin: 10px;
+            border-radius: 12px;
+          }
+          .content {
+            padding: 30px 20px;
+          }
+          .verification-code {
+            font-size: 24px;
+            letter-spacing: 4px;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">TPS</div>
+          <div class="header-subtitle">Travel Professional System</div>
+        </div>
+        
+        <div class="content">
+          <div class="greeting">Hello ${name}! 👋</div>
+          
+          <div class="message">
+            Welcome to TPS Travel! We're excited to have you on board. To complete your registration and secure your account, please verify your email address.
+          </div>
+          
+          <div class="verification-box">
+            <div class="verification-title">🔐 Your Verification Code</div>
+            <div class="verification-code">${token}</div>
+            <div style="margin-top: 15px; color: #666; font-size: 14px;">
+              Copy this code and paste it in the verification field
+            </div>
+          </div>
+          
+          <div style="text-align: center;">
+            <a href="${origin}/verify-email.html?token=${token}" class="verify-button">
+              ✨ Verify Email Address
+            </a>
+          </div>
+          
+          <div class="message" style="margin-top: 30px; font-size: 14px; color: #888;">
+            If you didn't create this account, please ignore this email. This verification link will expire in 24 hours for security reasons.
+          </div>
+        </div>
+        
+        <div class="footer">
+          <div class="footer-text">
+            Need help? Contact our support team anytime.
+          </div>
+          <div class="team-signature">
+            Best regards,<br>
+            <strong>TPS Travel Team</strong>
+          </div>
+          <div style="margin-top: 20px; font-size: 12px; color: #999;">
+            This is an automated message. Please do not reply to this email.
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+};
 
-INSTRUCTIONS:
-- Always respond in English
-- Be expert but friendly and conversational
-- Include relevant emojis
-- Make practical suggestions for destinations, hotels, activities
-- When appropriate, suggest our travel partners
-- Keep responses between 150-400 words
-- Focus on transformative travel experiences
-- If mentioning specific cities, give detailed local tips
-- Always end with a question to maintain engagement`,
+// Generate welcome email template
+const generateWelcomeEmailHTML = (name) => {
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <style>
+        body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background-color: #f4f6f8;
+          margin: 0;
+          padding: 20px;
+          line-height: 1.6;
+        }
+        .container {
+          max-width: 600px;
+          margin: 0 auto;
+          background: white;
+          border-radius: 16px;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+          overflow: hidden;
+        }
+        .header {
+          background: linear-gradient(135deg, #4CAF50, #2E7D32);
+          color: white;
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .logo {
+          font-size: 48px;
+          font-weight: bold;
+          margin-bottom: 10px;
+        }
+        .content {
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .success-icon {
+          font-size: 64px;
+          margin-bottom: 20px;
+        }
+        .welcome-title {
+          font-size: 28px;
+          color: #333;
+          margin-bottom: 20px;
+          font-weight: bold;
+        }
+        .message {
+          color: #666;
+          font-size: 16px;
+          margin-bottom: 30px;
+          line-height: 1.6;
+        }
+        .cta-button {
+          background: linear-gradient(135deg, #667eea, #764ba2);
+          color: white;
+          padding: 15px 30px;
+          text-decoration: none;
+          border-radius: 8px;
+          display: inline-block;
+          font-weight: 600;
+          margin: 20px 0;
+        }
+        .footer {
+          background: #f8f9fa;
+          padding: 30px;
+          text-align: center;
+          border-top: 1px solid #e1e5e9;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <div class="logo">TPS</div>
+          <div>Email Verified Successfully!</div>
+        </div>
+        
+        <div class="content">
+          <div class="success-icon">🎉</div>
+          <div class="welcome-title">Welcome aboard, ${name}!</div>
+          
+          <div class="message">
+            Your email has been verified successfully! You now have full access to TPS Travel Professional System. Start planning your next adventure and discover all the amazing features we have to offer.
+          </div>
+          
+          <a href="#" class="cta-button">Start Exploring TPS</a>
+        </div>
+        
+        <div class="footer">
+          <div style="color: #333; font-weight: 600;">
+            Best regards,<br>
+            <strong>TPS Travel Team</strong>
+          </div>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+};
 
-    es: `Eres un experto en viajes del TPS (Travel Professional System).
+// ==================== ROTAS ====================
 
-INSTRUCCIONES:
-- Responde SIEMPRE en español
-- Sé experto pero amigable y conversacional
-- Incluye emojis relevantes
-- Haz sugerencias prácticas de destinos, hoteles, actividades
-- Cuando sea apropiado, sugiere nuestros socios de viaje
-- Mantén respuestas entre 150-400 palabras
-- Enfócate en experiencias de viaje transformadoras`,
-
-    fr: `Vous êtes un expert en voyages du TPS (Travel Professional System).
-
-INSTRUCTIONS:
-- Répondez TOUJOURS en français
-- Soyez expert mais amical et conversationnel
-- Incluez des emojis pertinents
-- Faites des suggestions pratiques de destinations, hôtels, activités
-- Le cas échéant, suggérez nos partenaires de voyage
-- Gardez les réponses entre 150-400 mots`,
-
-    de: `Sie sind ein Reiseexperte von TPS (Travel Professional System).
-
-ANWEISUNGEN:
-- Antworten Sie IMMER auf Deutsch
-- Seien Sie fachkundig, aber freundlich und gesprächig
-- Fügen Sie relevante Emojis hinzu
-- Machen Sie praktische Vorschläge für Reiseziele, Hotels, Aktivitäten
-- Schlagen Sie gegebenenfalls unsere Reisepartner vor`
-  };
-
-  return prompts[lang] || prompts['pt'];
-}
-
-// ===== FUNÇÃO: FORMATAR NOME DO LINK =====
-function formatarNomeLink(nome) {
-  const formatacao = {
-    'vooTrip': '✈️ Voos Trip.com',
-    'vooKiwi': '✈️ Voos Kiwi.com', 
-    'vooAviasales': '✈️ Comparar Voos',
-    'vooWayaway': '✈️ Voos + Cashback',
-    'hotelBooking': '🏨 Hotéis Booking.com',
-    'hotelTrip': '🏨 Hotéis Trip.com',
-    'hotelHotellook': '🏨 Comparar Hotéis',
-    'carroLocalrent': '🚗 Aluguel Local',
-    'transferPickups': '🚕 Transfer Aeroporto',
-    'transferKiwitaxi': '🚖 Táxi/Transfer',
-    'tiqets': '🎫 Ingressos Tiqets',
-    'wegotrip': '🎭 Tours Culturais',
-    'seguroEkta': '🛡️ Seguro Viagem EKTA',
-    'compensacaoVoo': '💰 Reembolso Voo Atrasado'
-  };
-
-  return formatacao[nome] || nome.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
-}
-
-// ===== ENDPOINT: STATUS E HEALTH CHECK =====
-app.get('/api/status', (req, res) => {
+// Rota raiz
+app.get('/', (req, res) => {
   res.json({
-    status: 'success',
-    message: 'TPS-GPT Sistema Completo funcionando',
-    timestamp: new Date().toISOString(),
-    version: '8.1.0-claude-integrated',
-    features: {
-      travel_router: true,
-      symbolic_responses: true,
-      affiliate_links: true,
-      claude_engine: true,
-      llama_ai: !!process.env.OPENROUTER_API_KEY,
-      multilingual: true
-    },
-    modules: {
-      'tps-travel-router': 'Análise inteligente de viagem',
-      'resposta-simbolica': 'Mensagens emocionais multilíngues', 
-      'affiliate-links': 'Monetização com links reais',
-      'claude-engine': 'Sistema de respostas encantadoras'
+    message: '🚀 TPS Travel API - Amadeus Integration + Email Service',
+    version: '1.1.0',
+    status: 'Backend do TPS ativo.',
+    documentation: '/api/status',
+    endpoints: {
+      status: '/api/status',
+      flights: '/api/flights/search',
+      hotels: '/api/hotels/search',
+      airports: '/api/airports/search',
+      email: {
+        verification: '/api/send-verification',
+        welcome: '/api/send-welcome',
+        general: '/api/send-email'
+      }
     }
   });
 });
 
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    openrouter: !!process.env.OPENROUTER_API_KEY,
-    claude_engine: true,
-    modules_loaded: true
-  });
+// Status da API
+app.get('/api/status', async (req, res) => {
+  try {
+    console.log('🔍 Checking API status...');
+    
+    // Testar conectividade com Amadeus
+    const token = await amadeus.getAccessToken();
+    const isAmadeusOnline = !!token;
+
+    // Check email service
+    const isEmailConfigured = !!(process.env.GMAIL_USER && process.env.GMAIL_PASS);
+
+    res.json({
+      status: 'online',
+      timestamp: new Date().toISOString(),
+      version: '1.1.0',
+      services: {
+        amadeus: isAmadeusOnline ? 'online' : 'offline',
+        email: isEmailConfigured ? 'configured' : 'not configured',
+        cache: cache.getStats(),
+        environment: process.env.NODE_ENV || 'development'
+      },
+      endpoints: {
+        flights: '/api/flights/search',
+        hotels: '/api/hotels/search',
+        airports: '/api/airports/search',
+        email: '/api/send-verification'
+      }
+    });
+  } catch (error) {
+    console.error('❌ Error checking status:', error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Error checking service status',
+      error: error.message
+    });
+  }
 });
 
-// ===== ENDPOINT: ESTATÍSTICAS DE LINKS =====
-app.get('/api/affiliate-stats', (req, res) => {
+// ==================== EMAIL ROUTES ====================
+
+// Send verification email
+app.post('/api/send-verification', async (req, res) => {
   try {
-    // Simular estatísticas (em produção, viria de banco de dados)
-    const stats = {
-      parceiros_ativos: 15,
-      links_gerados_hoje: 0,
-      destinos_suportados: 25,
-      idiomas_suportados: 12,
-      conversao_media: '2.3%',
-      receita_estimada: 'R$ 0,00',
-      claude_responses: 'Ativo'
+    const { email, name, token } = req.body;
+
+    // Validation
+    if (!email || !name || !token) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing required fields: email, name, token' 
+      });
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Invalid email address format' 
+      });
+    }
+
+    // Check if Gmail credentials are configured
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+      return res.status(500).json({
+        success: false,
+        error: 'Email service not configured. Please set GMAIL_USER and GMAIL_PASS environment variables.'
+      });
+    }
+
+    console.log('📧 Sending verification email to:', email);
+
+    const transporter = createEmailTransporter();
+    const origin = req.get('origin') || req.get('host') || 'https://your-domain.com';
+    
+    const mailOptions = {
+      from: `"TPS Travel System" <${process.env.GMAIL_USER}>`,
+      to: email,
+      subject: '🔐 TPS Travel - Verify Your Email Address',
+      html: readFileSync('./verification-template.html', 'utf8')
+        .replace('{{USER_NAME}}', name)
+        .replace('{{VERIFICATION_TOKEN}}', token)
+        .replace('{{USER_EMAIL}}', email)
+        .replace('{{VERIFICATION_LINK}}', origin + '/verify?token=' + token)
     };
+
+    const info = await transporter.sendMail(mailOptions);
+    
+    console.log('✅ Verification email sent successfully:', info.messageId);
+    
+    res.status(200).json({ 
+      success: true, 
+      message: 'Verification email sent successfully!',
+      messageId: info.messageId,
+      recipient: email
+    });
+
+  } catch (error) {
+    console.error('❌ Error sending verification email:', error);
+    
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to send verification email',
+      details: error.message
+    });
+  }
+});
+
+// Send welcome email
+app.post('/api/send-welcome', async (req, res) => {
+  try {
+    const { email, name } = req.body;
+
+    if (!email || !name) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing required fields: email, name' 
+      });
+    }
+
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+      return res.status(500).json({
+        success: false,
+        error: 'Email service not configured'
+      });
+    }
+
+    console.log('📧 Sending welcome email to:', email);
+
+    const transporter = createEmailTransporter();
+    
+    const mailOptions = {
+      from: `"TPS Travel System" <${process.env.GMAIL_USER}>`,
+      to: email,
+      subject: '🎉 Welcome to TPS Travel - Email Verified!',
+      html: generateWelcomeEmailHTML(name)
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    
+    console.log('✅ Welcome email sent successfully:', info.messageId);
+    
+    res.status(200).json({ 
+      success: true, 
+      message: 'Welcome email sent successfully!',
+      messageId: info.messageId
+    });
+
+  } catch (error) {
+    console.error('❌ Error sending welcome email:', error);
+    
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to send welcome email',
+      details: error.message
+    });
+  }
+});
+
+// General email sending endpoint
+app.post('/api/send-email', async (req, res) => {
+  try {
+    const { to, subject, html, text } = req.body;
+
+    if (!to || !subject || (!html && !text)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Missing required fields: to, subject, and (html or text)' 
+      });
+    }
+
+    if (!process.env.GMAIL_USER || !process.env.GMAIL_PASS) {
+      return res.status(500).json({
+        success: false,
+        error: 'Email service not configured'
+      });
+    }
+
+    console.log('📧 Sending custom email to:', to);
+
+    const transporter = createEmailTransporter();
+    
+    const mailOptions = {
+      from: `"TPS Travel System" <${process.env.GMAIL_USER}>`,
+      to: to,
+      subject: subject,
+      ...(html && { html }),
+      ...(text && { text })
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    
+    console.log('✅ Email sent successfully:', info.messageId);
+    
+    res.status(200).json({ 
+      success: true, 
+      message: 'Email sent successfully!',
+      messageId: info.messageId
+    });
+
+  } catch (error) {
+    console.error('❌ Error sending email:', error);
+    
+    res.status(500).json({ 
+      success: false, 
+      error: 'Failed to send email',
+      details: error.message
+    });
+  }
+});
+
+// ==================== AMADEUS ROUTES ====================
+
+// Buscar voos
+app.get('/api/flights/search', async (req, res) => {
+  try {
+    const { originLocationCode, destinationLocationCode, departureDate, returnDate, adults, travelClass } = req.query;
+
+    // Validação básica
+    if (!originLocationCode || !destinationLocationCode || !departureDate || !adults) {
+      return res.status(400).json({
+        error: 'Required parameters: originLocationCode, destinationLocationCode, departureDate, adults'
+      });
+    }
+
+    const searchParams = {
+      originLocationCode,
+      destinationLocationCode,
+      departureDate,
+      adults: parseInt(adults),
+      ...(returnDate && { returnDate }),
+      ...(travelClass && { travelClass }),
+      max: 10 // Limitar resultados
+    };
+
+    console.log('🛫 Searching flights:', searchParams);
+    const flights = await amadeus.searchFlights(searchParams);
     
     res.json({
       success: true,
-      estatisticas: stats,
-      timestamp: new Date().toISOString()
+      count: flights.data?.length || 0,
+      flights: flights.data || [],
+      meta: flights.meta || {}
     });
+
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('❌ Error searching flights:', error);
+    res.status(500).json({
+      error: 'Error searching flights',
+      message: error.message
+    });
   }
 });
 
-// ===== PÁGINA PRINCIPAL - REDIRECIONAR PARA TPS-GPT.HTML =====
-app.get('/', (req, res) => {
-  res.send(`
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <title>TPS - Travel Professional System</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh; 
-            color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-        }
-        .logo { font-size: 6rem; font-weight: 300; color: #4fc3f7; margin-bottom: 20px; }
-        .title { font-size: 2rem; font-weight: 700; margin-bottom: 40px; }
-        .description { font-size: 1.2rem; margin-bottom: 40px; max-width: 600px; line-height: 1.6; }
-        .btn { 
-            background: linear-gradient(135deg, #4fc3f7, #29b6f6);
-            border: none; padding: 20px 40px; border-radius: 30px; color: white;
-            font-weight: 600; font-size: 18px; cursor: pointer; text-decoration: none;
-            transition: all 0.3s ease; display: inline-block; margin: 10px;
-        }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(79, 195, 247, 0.4); }
-        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 40px; max-width: 800px; }
-        .feature { background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 15px; }
-        .status { margin-top: 40px; padding: 20px; background: rgba(76, 175, 80, 0.2); border-radius: 10px; }
-    </style>
-</head>
-<body>
-    <div class="logo">TPS</div>
-    <div class="title">Travel Professional System</div>
-    <div class="description">
-        Sistema completo de viagens com IA avançada, Sistema Claude de respostas encantadoras e links afiliados reais para monetização.
-    </div>
+// Buscar hotéis
+app.get('/api/hotels/search', async (req, res) => {
+  try {
+    const { cityCode, checkInDate, checkOutDate, adults, radius } = req.query;
+
+    if (!cityCode) {
+      return res.status(400).json({
+        error: 'Required parameter: cityCode (ex: PAR for Paris)'
+      });
+    }
+
+    const searchParams = {
+      cityCode,
+      ...(radius && { radius: parseInt(radius) })
+    };
+
+    console.log('🏨 Searching hotels:', searchParams);
+    const hotels = await amadeus.searchHotels(searchParams);
     
-    <div>
-        <a href="/tps-gpt.html" class="btn">🚀 Acessar TPS-GPT</a>
-        <a href="/api/status" class="btn">📊 Status do Sistema</a>
-    </div>
-    
-    <div class="features">
-        <div class="feature">
-            <h3>🧠 IA Inteligente</h3>
-            <p>Detecta destinos e serviços automaticamente</p>
-        </div>
-        <div class="feature">
-            <h3>🎨 Sistema Claude</h3>
-            <p>Respostas encantadoras com tabelas clicáveis</p>
-        </div>
-        <div class="feature">
-            <h3>💰 Monetização</h3>
-            <p>15+ parceiros com links afiliados reais</p>
-        </div>
-        <div class="feature">
-            <h3>🌍 Global</h3>
-            <p>25+ destinos principais suportados</p>
-        </div>
-    </div>
-    
-    <div class="status">
-        <strong>✅ Sistema TPS-GPT v8.1 + Claude Engine - Todos os módulos ativos</strong><br>
-        Análise de Viagem • Respostas Simbólicas • Links Afiliados • Claude Engine • LLaMA AI
-    </div>
-</body>
-</html>
-  `);
+    res.json({
+      success: true,
+      count: hotels.data?.length || 0,
+      hotels: hotels.data || [],
+      meta: hotels.meta || {}
+    });
+
+  } catch (error) {
+    console.error('❌ Error searching hotels:', error);
+    res.status(500).json({
+      error: 'Error searching hotels',
+      message: error.message
+    });
+  }
 });
 
-// ===== ERROR HANDLING =====
-app.use((err, req, res, next) => {
-  console.error('❌ Erro no servidor:', err);
-  res.status(500).json({ 
-    success: false,
-    error: 'Erro interno do servidor',
-    timestamp: new Date().toISOString()
+// Buscar aeroportos
+app.get('/api/airports/search', async (req, res) => {
+  try {
+    const { keyword, subType } = req.query;
+
+    if (!keyword) {
+      return res.status(400).json({
+        error: 'Required parameter: keyword (ex: Paris, PAR, CDG)'
+      });
+    }
+
+    const searchParams = {
+      keyword,
+      subType: subType || 'AIRPORT,CITY',
+      'page[limit]': 10,
+      'page[offset]': 0
+    };
+
+    console.log('✈️ Searching airports:', searchParams);
+    const airports = await amadeus.searchAirports(searchParams);
+    
+    res.json({
+      success: true,
+      count: airports.data?.length || 0,
+      airports: airports.data || [],
+      meta: airports.meta || {}
+    });
+
+  } catch (error) {
+    console.error('❌ Error searching airports:', error);
+    res.status(500).json({
+      error: 'Error searching airports',
+      message: error.message
+    });
+  }
+});
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString(),
+    version: '1.1.0'
   });
 });
 
-// ===== INICIALIZAÇÃO =====
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚀 TPS-GPT v8.1 + Claude Engine ativo na porta ${PORT}`);
-  console.log(`🤖 OpenRouter: ${process.env.OPENROUTER_API_KEY ? '✅' : '❌'}`);
-  console.log(`🎯 Claude Engine: ✅`);
-  console.log(`🌐 Acesso: https://app.canalvivo.org`);
-  console.log(`📊 Status: /api/status`);
-  console.log(`💰 Stats: /api/affiliate-stats`);
-  console.log(`✅ Módulos carregados: travel-router, resposta-simbolica, affiliate-links, claude-engine`);
+// Teste diagnóstico
+app.get('/test', (req, res) => {
+  console.log('🔥 TEST ROUTE CALLED!');
+  res.json({ 
+    message: 'Route working!', 
+    timestamp: new Date().toISOString(),
+    services: {
+      email: !!(process.env.GMAIL_USER && process.env.GMAIL_PASS),
+      amadeus: !!(process.env.AMADEUS_API_KEY && process.env.AMADEUS_API_SECRET)
+    }
+  });
 });
 
-// ===== GRACEFUL SHUTDOWN =====
+// ==================== ERROR HANDLERS ====================
+
+// Middleware de erro global
+app.use((error, req, res, next) => {
+  console.error('❌ Unhandled error:', error);
+  res.status(500).json({
+    error: 'Internal server error',
+    message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
+  });
+});
+
+// 404 Handler - SEMPRE POR ÚLTIMO!
+app.use('*', (req, res) => {
+  console.log(`⚠️ Route not found: ${req.method} ${req.originalUrl}`);
+  res.status(404).json({
+    error: 'Endpoint not found',
+    message: `${req.method} ${req.originalUrl} does not exist`,
+    availableEndpoints: [
+      '/',
+      '/health',
+      '/test',
+      '/api/status',
+      '/api/flights/search',
+      '/api/hotels/search',
+      '/api/airports/search',
+      '/api/send-verification',
+      '/api/send-welcome',
+      '/api/send-email'
+    ]
+  });
+});
+
+// ==================== INICIALIZAÇÃO ====================
+
+// Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('🔄 SIGTERM recebido, fechando servidor...');
+  console.log('🛑 SIGTERM received. Shutting down server...');
   process.exit(0);
 });
 
-process.on('uncaughtException', (err) => {
-  console.error('❌ Exceção não capturada:', err);
+process.on('SIGINT', () => {
+  console.log('🛑 SIGINT received. Shutting down server...');
+  process.exit(0);
 });
 
-process.on('unhandledRejection', (err) => {
-  console.error('❌ Promise rejeitada:', err);
+// Iniciar servidor
+const server = app.listen(PORT, '0.0.0.0', async () => {
+  console.log('🚀 ====================================');
+  console.log(`✅ TPS Server running on http://0.0.0.0:${PORT}`);
+  console.log('📋 Available endpoints:');
+  console.log(`   GET  / - Homepage`);
+  console.log(`   GET  /health - Health check`);
+  console.log(`   GET  /test - Diagnostic test`);
+  console.log(`   GET  /api/status - API status`);
+  console.log(`   GET  /api/flights/search - Search flights`);
+  console.log(`   GET  /api/hotels/search - Search hotels`);
+  console.log(`   GET  /api/airports/search - Search airports`);
+  console.log(`   POST /api/send-verification - Send verification email`);
+  console.log(`   POST /api/send-welcome - Send welcome email`);
+  console.log(`   POST /api/send-email - Send custom email`);
+  console.log('🚀 ====================================');
+  
+  // Test email configuration
+  await testEmailConfiguration();
 });
+
+export default app;

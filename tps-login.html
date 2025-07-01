@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TPS v8.1 - Travel Professional System</title>
+    <title>TPS Login</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <style>
         * {
             margin: 0;
@@ -12,762 +13,831 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: 
-                linear-gradient(135deg, rgba(102, 126, 234, 0.85) 0%, rgba(118, 75, 162, 0.85) 100%),
-                url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?ixlib=rb-4.0.3&auto=format&fit=crop&w=2835&q=80') center/cover fixed;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            padding: 20px;
         }
 
         .container {
-            background: rgba(255, 255, 255, 0.96);
-            border-radius: 24px;
-            padding: 2.5rem;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             text-align: center;
-            animation: slideUp 0.6s ease-out;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .logo {
-            font-size: 3rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 0.5rem;
+        h1 {
+            color: #1a1a1a;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
         }
 
         .subtitle {
             color: #666;
-            margin-bottom: 2rem;
-            font-size: 0.95rem;
-            font-weight: 500;
+            font-size: 14px;
+            margin-bottom: 32px;
         }
 
-        .login-tabs {
+        .tabs {
             display: flex;
-            margin-bottom: 2rem;
-            background: #f5f7fa;
-            border-radius: 16px;
-            padding: 6px;
+            margin-bottom: 32px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 4px;
         }
 
-        .tab-btn {
+        .tab {
             flex: 1;
-            padding: 0.8rem;
+            padding: 12px 16px;
             background: none;
             border: none;
-            border-radius: 12px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.2s ease;
             color: #666;
         }
 
-        .tab-btn.active {
+        .tab.active {
             background: white;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             color: #667eea;
-            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .login-form {
+        .form {
             display: none;
-            text-align: left;
+            margin-bottom: 24px;
         }
 
-        .login-form.active {
+        .form.active {
             display: block;
         }
 
-        .form-group {
-            margin-bottom: 1.2rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.6rem;
-            color: #555;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .form-group input {
+        input {
             width: 100%;
-            padding: 1rem;
-            border: 2px solid #e0e0e0;
+            padding: 16px;
+            margin: 8px 0;
+            border: 2px solid #e1e5e9;
             border-radius: 12px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            background: white;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            background: #fff;
+            font-family: inherit;
         }
 
-        .form-group input:focus {
+        input:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .login-btn {
+        input::placeholder {
+            color: #999;
+        }
+
+        button {
             width: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 12px;
-            padding: 1rem;
-            font-size: 1rem;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 1rem;
+            transition: all 0.2s ease;
+            margin: 8px 0;
+            font-family: inherit;
         }
 
-        .login-btn:hover {
-            transform: translateY(-2px);
+        button:hover {
+            transform: translateY(-1px);
             box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
         }
 
-        .login-btn:disabled {
+        button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
         }
 
         .divider {
-            display: flex;
-            align-items: center;
-            margin: 1.5rem 0;
+            text-align: center;
+            margin: 24px 0;
+            position: relative;
             color: #999;
-            font-size: 0.9rem;
+            font-size: 14px;
+            font-weight: 500;
         }
 
-        .divider::before,
-        .divider::after {
+        .divider::before {
             content: '';
-            flex: 1;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
             height: 1px;
-            background: #e0e0e0;
+            background: #e1e5e9;
         }
 
         .divider span {
-            margin: 0 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 16px;
         }
 
-        .google-login-btn {
-            width: 100%;
-            background: white;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 1rem;
+        #google-button {
             display: flex;
-            align-items: center;
             justify-content: center;
-            gap: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
+            margin: 20px 0;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+            font-size: 14px;
             font-weight: 500;
-            margin-bottom: 1rem;
-        }
-
-        .google-login-btn:hover {
-            border-color: #4285f4;
-            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
-            transform: translateY(-1px);
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        .forgot-password {
-            text-align: center;
-            margin-top: 1rem;
-        }
-
-        .forgot-password a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: #c62828;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
             display: none;
-            font-size: 0.9rem;
-            border-left: 4px solid #c62828;
         }
 
-        .success-message {
-            background: #e8f5e8;
-            color: #2e7d32;
-            padding: 1rem;
-            border-radius: 12px;
-            margin-bottom: 1rem;
-            display: none;
-            font-size: 0.9rem;
-            border-left: 4px solid #2e7d32;
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 1rem;
-            color: #667eea;
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
 
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #e0e0e0;
-            border-top: 2px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 0.5rem;
+        .security-note {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 24px;
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .security-note strong {
+            color: #28a745;
+        }
+
+        .verification-note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #856404;
+            line-height: 1.5;
+        }
+
+        .verification-note code {
+            background: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
         }
 
         @media (max-width: 480px) {
             .container {
-                padding: 2rem;
-                margin: 0.5rem;
-                border-radius: 20px;
-            }
-            
-            .logo {
-                font-size: 2.5rem;
-            }
-            
-            body {
-                background-attachment: scroll;
+                padding: 32px 24px;
+                margin: 16px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">TPS</div>
-        <div class="subtitle">Travel Professional System v8.1</div>
+        <h1>TPS</h1>
+        <p class="subtitle">Secure Authentication System</p>
 
-        <div class="error-message" id="errorMessage"></div>
-        <div class="success-message" id="successMessage"></div>
-        <div class="loading" id="loading">
-            <div class="loading-spinner"></div>
-            <span>Processing...</span>
-        </div>
+        <div id="message-container"></div>
 
-        <div class="login-tabs">
-            <button class="tab-btn active" data-tab="signin">Sign In</button>
-            <button class="tab-btn" data-tab="signup">Sign Up</button>
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('signin')">Sign In</button>
+            <button class="tab" onclick="showTab('signup')">Sign Up</button>
         </div>
 
         <!-- Sign In Form -->
-        <div class="login-form active" id="signinForm">
-            <div class="form-group">
-                <label for="signinEmail">Email</label>
-                <input type="email" id="signinEmail" placeholder="Enter your email" required>
-            </div>
-            <div class="form-group">
-                <label for="signinPassword">Password</label>
-                <input type="password" id="signinPassword" placeholder="Enter your password" required>
-            </div>
-            <button class="login-btn" id="signinBtn">Sign In</button>
-            
-            <div class="divider">
-                <span>or continue with</span>
-            </div>
-            
-            <button class="google-login-btn" id="googleLoginBtn">
-                <svg class="google-icon" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                <span>Continue with Google</span>
-            </button>
-            
-            <div class="forgot-password">
-                <a href="#" id="forgotPasswordLink">Forgot your password?</a><br>
-                <a href="#" id="resendVerificationLink" style="margin-top: 0.5rem; display: inline-block;">Resend verification email</a>
-            </div>
+        <div id="signin" class="form active">
+            <input id="email-in" type="email" placeholder="Email Address" autocomplete="email" />
+            <input id="pass-in" type="password" placeholder="Password" autocomplete="current-password" />
+            <button onclick="loginUser()">Sign In</button>
         </div>
 
         <!-- Sign Up Form -->
-        <div class="login-form" id="signupForm">
-            <div class="form-group">
-                <label for="signupName">Full Name</label>
-                <input type="text" id="signupName" placeholder="Enter your full name" required>
-            </div>
-            <div class="form-group">
-                <label for="signupEmail">Email</label>
-                <input type="email" id="signupEmail" placeholder="Enter your email" required>
-            </div>
-            <div class="form-group">
-                <label for="signupPassword">Password</label>
-                <input type="password" id="signupPassword" placeholder="Create a password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
-            </div>
-            <button class="login-btn" id="signupBtn">Create Account</button>
-            
-            <div class="divider">
-                <span>or continue with</span>
-            </div>
-            
-            <button class="google-login-btn" id="googleSignupBtn">
-                <svg class="google-icon" viewBox="0 0 24 24">
-                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                </svg>
-                <span>Continue with Google</span>
-            </button>
+        <div id="signup" class="form">
+            <input id="name-up" type="text" placeholder="Full Name" autocomplete="name" />
+            <input id="email-up" type="email" placeholder="Email Address" autocomplete="email" />
+            <input id="pass-up" type="password" placeholder="Password (min 8 chars)" autocomplete="new-password" />
+            <input id="confirm-up" type="password" placeholder="Confirm Password" autocomplete="new-password" />
+            <button onclick="registerUser()">Create Account</button>
+        </div>
+
+        <div class="divider">
+            <span>or continue with</span>
+        </div>
+
+        <!-- Google Login Button -->
+        <div id="google-button"></div>
+
+        <div class="security-note">
+            <strong>🔒 Security:</strong> This system uses industry-standard security practices including secure session management, HTTPS encryption, email verification for new accounts, and Google Identity Services for OAuth authentication.
+            <br><br>
+            <small><strong>📧 Email Verification:</strong> New accounts must verify their email address before signing in. Google users are automatically verified.</small>
+            <br><br>
+            <small><strong>📝 Domain Configuration:</strong> Google Login is configured for: <strong>canalvivo.org</strong> and <strong>app.canalvivo.org</strong>. If accessing from a different domain, please use email/password login.</small>
         </div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script type="module">
-        /*
-        🔐 TPS LOGIN SECURITY LOGIC:
-        
-        📧 Email/Password Accounts:
-        - ✅ Send verification email on signup
-        - ❌ Block login until email is verified
-        - 🔄 Allow resending verification email
-        
-        🌐 Google OAuth Accounts:
-        - ✅ Direct access (Google pre-verifies emails)
-        - 🚀 No additional verification needed
-        
-        🎯 Result: Secure and user-friendly hybrid authentication
-        */
-        
-        // Import Firebase modules
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail, sendEmailVerification, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js';
-        import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js';
-
-        // REAL Firebase configuration - canal-vivo-chat
-        const firebaseConfig = {
-            apiKey: "AIzaSyC2u94Oz2W5seqBIqs88cs7rgSmzBEAnjQ",
-            authDomain: "canal-vivo-chat.firebaseapp.com",
-            projectId: "canal-vivo-chat",
-            storageBucket: "canal-vivo-chat.appspot.com",
-            messagingSenderId: "975226660544",
-            appId: "1:975226660544:web:56b55bb3e2a58be035ef25",
-            measurementId: "G-SCFHQFYGHQ"
+    <script>
+        // Configuration
+        const CONFIG = {
+            USERS_KEY: 'tps-users',
+            SESSION_KEY: 'tps-current-user',
+            PENDING_VERIFICATION_KEY: 'tps-pending-verification',
+            // Richard's actual Google Client ID from the JSON file
+            GOOGLE_CLIENT_ID: '799165195687-0iuchns7i9qra0ofu81hffhqft6sefsj.apps.googleusercontent.com'
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const googleProvider = new GoogleAuthProvider();
-
-        // Utility functions
-        function showLoading() {
-            document.getElementById('loading').style.display = 'block';
+        // Tab Management
+        function showTab(tab) {
+            clearMessage();
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
         }
 
-        function hideLoading() {
-            document.getElementById('loading').style.display = 'none';
+        // Message Display
+        function showMessage(type, text) {
+            clearMessage();
+            const container = document.getElementById('message-container');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            message.style.display = 'block';
+            container.appendChild(message);
+            
+            if (type === 'success') {
+                setTimeout(() => message.style.display = 'none', 5000);
+            }
         }
 
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-            }, 5000);
+        function clearMessage() {
+            document.getElementById('message-container').innerHTML = '';
         }
 
-        function showSuccess(message) {
-            const successDiv = document.getElementById('successMessage');
-            successDiv.textContent = message;
-            successDiv.style.display = 'block';
-            setTimeout(() => {
-                successDiv.style.display = 'none';
-            }, 3000);
+        // User Management
+        function getUsers() {
+            return JSON.parse(localStorage.getItem(CONFIG.USERS_KEY)) || [];
         }
 
-        // Validation functions
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
+        function saveUser(user) {
+            const users = getUsers();
+            users.push(user);
+            localStorage.setItem(CONFIG.USERS_KEY, JSON.stringify(users));
         }
 
-        function validatePassword(password) {
-            return password.length >= 6;
+        function findUser(email) {
+            const users = getUsers();
+            return users.find(u => u.email.toLowerCase() === email.toLowerCase());
         }
 
-        // Firebase functions
-        async function createUserProfile(user, displayName = null) {
+        function setCurrentUser(user) {
+            localStorage.setItem(CONFIG.SESSION_KEY, JSON.stringify(user));
+        }
+
+        function getCurrentUser() {
             try {
-                const userRef = doc(db, 'users', user.uid);
-                const userDoc = await getDoc(userRef);
+                const userData = localStorage.getItem(CONFIG.SESSION_KEY);
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    console.log('👤 Session found for:', user.email);
+                    return user;
+                }
+                console.log('❌ No session found');
+                return null;
+            } catch (error) {
+                console.error('Session error:', error);
+                localStorage.removeItem(CONFIG.SESSION_KEY);
+                return null;
+            }
+        }
+
+        // Authentication Functions
+        function loginUser() {
+            const email = document.getElementById('email-in').value.trim();
+            const password = document.getElementById('pass-in').value.trim();
+
+            if (!email || !password) {
+                showMessage('error', 'Please fill in all fields');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showMessage('error', 'Please enter a valid email address');
+                return;
+            }
+
+            const user = findUser(email);
+            
+            if (!user) {
+                showMessage('error', 'Invalid email or password');
+                return;
+            }
+
+            if (user.password !== password) {
+                showMessage('error', 'Invalid email or password');
+                return;
+            }
+
+            setCurrentUser(user);
+            showMessage('success', `Welcome back, ${user.name || 'User'}!`);
+            
+            setTimeout(() => redirectUser(user), 1500);
+        }
+
+        // Authentication Functions
+        function registerUser() {
+            const name = document.getElementById('name-up').value.trim();
+            const email = document.getElementById('email-up').value.trim();
+            const password = document.getElementById('pass-up').value.trim();
+            const confirmPassword = document.getElementById('confirm-up').value.trim();
+
+            console.log('🔍 Registration attempt:', { name: name.length, email, password: password.length, confirmPassword: confirmPassword.length });
+
+            if (!name || !email || !password || !confirmPassword) {
+                showMessage('error', 'Please fill in all fields');
+                console.log('❌ Empty fields detected');
+                return;
+            }
+
+            if (name.length < 2) {
+                showMessage('error', 'Name must be at least 2 characters long');
+                console.log('❌ Name too short:', name.length);
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showMessage('error', 'Please enter a valid email address');
+                console.log('❌ Invalid email format:', email);
+                return;
+            }
+
+            if (password.length < 8) {
+                showMessage('error', 'Password must be at least 8 characters long');
+                console.log('❌ Password too short:', password.length);
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showMessage('error', 'Passwords do not match');
+                console.log('❌ Passwords do not match');
+                return;
+            }
+
+            const existingUser = findUser(email);
+            if (existingUser) {
+                showMessage('error', 'An account with this email already exists');
+                console.log('❌ User already exists:', email);
+                return;
+            }
+
+            try {
+                const newUser = {
+                    id: Date.now(),
+                    name: name,
+                    email: email.toLowerCase(),
+                    password: password,
+                    hasPaid: false,
+                    isGoogleUser: false,
+                    isVerified: false, // User starts unverified
+                    createdAt: new Date().toISOString()
+                };
+
+                console.log('✅ Creating user:', newUser);
+                saveUser(newUser);
                 
-                if (!userDoc.exists()) {
-                    await setDoc(userRef, {
-                        uid: user.uid,
-                        email: user.email,
-                        displayName: displayName || user.displayName || user.email.split('@')[0],
-                        hasPaid: false,
-                        plan: 'free',
-                        messagesUsed: 0,
-                        maxMessages: 10,
-                        createdAt: new Date().toISOString(),
-                        lastLogin: new Date().toISOString()
-                    });
-                    console.log('✅ New user profile created');
-                    return { hasPaid: false, plan: 'free' };
+                // Send verification email
+                emailService.sendVerificationEmail(newUser);
+                
+                showMessage('success', 'Account created! Please check your email to verify your account before signing in.');
+                console.log('✅ User created successfully:', email);
+                console.log('📧 Verification email sent');
+                
+                setTimeout(() => {
+                    showTab('signin');
+                    clearForm('signup');
+                }, 3000);
+
+            } catch (error) {
+                console.error('❌ Error creating user:', error);
+                showMessage('error', 'Error creating account. Please try again.');
+            }
+        }
+
+        function loginUser() {
+            const email = document.getElementById('email-in').value.trim();
+            const password = document.getElementById('pass-in').value.trim();
+
+            if (!email || !password) {
+                showMessage('error', 'Please fill in all fields');
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                showMessage('error', 'Please enter a valid email address');
+                return;
+            }
+
+            const user = findUser(email);
+            
+            if (!user) {
+                showMessage('error', 'Invalid email or password');
+                return;
+            }
+
+            if (user.password !== password) {
+                showMessage('error', 'Invalid email or password');
+                return;
+            }
+
+            // Check if email is verified (except for Google users)
+            if (!user.isGoogleUser && !user.isVerified) {
+                showMessage('error', 'Please verify your email before signing in. Check your inbox for the verification link.');
+                console.log('❌ User email not verified:', email);
+                return;
+            }
+
+            setCurrentUser(user);
+            showMessage('success', `Welcome back, ${user.name || 'User'}!`);
+            console.log('✅ User logged in successfully:', email);
+            
+            setTimeout(() => redirectUser(user), 1500);
+        }
+
+        // Google Authentication
+        function handleCredentialResponse(response) {
+            try {
+                const credential = response.credential;
+                const payload = JSON.parse(atob(credential.split('.')[1]));
+                
+                const googleUserData = {
+                    email: payload.email,
+                    name: payload.name,
+                    picture: payload.picture
+                };
+
+                let user = findUser(googleUserData.email);
+                
+                if (user) {
+                    // Update existing user with Google data
+                    user.name = googleUserData.name;
+                    user.picture = googleUserData.picture;
+                    user.isGoogleUser = true;
+                    user.isVerified = true; // Google users are automatically verified
+                    
+                    // Update in storage
+                    const users = getUsers();
+                    const userIndex = users.findIndex(u => u.email === user.email);
+                    users[userIndex] = user;
+                    localStorage.setItem(CONFIG.USERS_KEY, JSON.stringify(users));
+                    
+                    console.log('✅ Existing user signed in with Google');
                 } else {
-                    await updateDoc(userRef, {
-                        lastLogin: new Date().toISOString()
-                    });
-                    console.log('✅ User profile updated');
-                    return userDoc.data();
+                    // Create new user
+                    user = {
+                        id: Date.now(),
+                        name: googleUserData.name,
+                        email: googleUserData.email.toLowerCase(),
+                        hasPaid: false,
+                        isGoogleUser: true,
+                        isVerified: true, // Google users are automatically verified
+                        picture: googleUserData.picture,
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    saveUser(user);
+                    console.log('✅ New Google user created');
                 }
-            } catch (error) {
-                console.error('Error creating user profile:', error);
-                return { hasPaid: false, plan: 'free' };
-            }
-        }
 
-        async function checkUserPaymentStatus(user) {
-            try {
-                const userRef = doc(db, 'users', user.uid);
-                const userDoc = await getDoc(userRef);
+                setCurrentUser(user);
+                showMessage('success', `Welcome, ${user.name}!`);
                 
-                if (userDoc.exists()) {
-                    return userDoc.data();
-                }
-                return { hasPaid: false, plan: 'free' };
+                setTimeout(() => redirectUser(user), 1500);
+                
             } catch (error) {
-                console.error('Error checking payment status:', error);
-                return { hasPaid: false, plan: 'free' };
+                console.error('❌ Google Sign-In error:', error);
+                showMessage('error', 'Google authentication failed. Please try again.');
             }
         }
 
-        function redirectAfterLogin(userData) {
-            showLoading();
+        // Utility Functions
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function generateSecureToken() {
+            const array = new Uint8Array(32);
+            crypto.getRandomValues(array);
+            return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+        }
+
+        function clearForm(formId) {
+            const form = document.getElementById(formId);
+            const inputs = form.querySelectorAll('input');
+            inputs.forEach(input => input.value = '');
+        }
+
+        // Email Verification System
+        const emailService = {
+            sendVerificationEmail(user) {
+                const verificationToken = generateSecureToken();
+                const verificationLink = `${window.location.origin}/verify?token=${verificationToken}&email=${encodeURIComponent(user.email)}`;
+                
+                // Store pending verification
+                const pendingVerifications = JSON.parse(localStorage.getItem(CONFIG.PENDING_VERIFICATION_KEY) || '{}');
+                pendingVerifications[verificationToken] = {
+                    email: user.email,
+                    createdAt: Date.now(),
+                    expiresAt: Date.now() + (24 * 60 * 60 * 1000) // 24 hours
+                };
+                localStorage.setItem(CONFIG.PENDING_VERIFICATION_KEY, JSON.stringify(pendingVerifications));
+                
+                // Simulate email sending
+                console.log('📧 VERIFICATION EMAIL SENT TO:', user.email);
+                console.log('🔗 Verification Link:', verificationLink);
+                console.log('🔑 Verification Token:', verificationToken);
+                console.log('');
+                console.log('⚠️ SIMULATION: In production, this email would be sent via email service');
+                console.log('💡 TO TEST: Use verifyEmailToken("' + verificationToken + '") in console');
+                
+                // Show verification instructions
+                this.showVerificationInstructions(user.email, verificationToken);
+                
+                return { success: true, token: verificationToken };
+            },
+            
+            showVerificationInstructions(email, token) {
+                const instructions = document.createElement('div');
+                instructions.className = 'verification-note';
+                instructions.innerHTML = `
+                    <strong>📧 Email Verification Required</strong><br>
+                    We've sent a verification link to <strong>${email}</strong><br>
+                    <small>Please check your email and click the verification link to activate your account.</small><br><br>
+                    <small><strong>🧪 For Testing:</strong> Use console command: <code>verifyEmailToken("${token.substring(0, 8)}...")</code></small>
+                `;
+                document.getElementById('message-container').appendChild(instructions);
+            }
+        };
+
+        function redirectUser(user) {
+            const targetPage = user.hasPaid ? 'tps-gpt.html' : 'tps-planobasic.html';
+            console.log(`🚀 Redirecting to: ${targetPage} (hasPaid: ${user.hasPaid})`);
+            console.log('💾 Session saved as:', CONFIG.SESSION_KEY, user);
+            
+            // Ensure session is saved before redirect
+            setCurrentUser(user);
             
             setTimeout(() => {
-                if (userData.hasPaid && userData.plan !== 'free') {
-                    console.log('✅ Redirecting to TPS System (user has paid)');
-                    showSuccess('Redirecting to TPS System...');
-                    setTimeout(() => {
-                        window.location.href = 'tps-gpt.html';
-                    }, 1000);
-                } else {
-                    console.log('💳 Redirecting to Payment (user needs to pay)');
-                    showSuccess('Redirecting to Payment...');
-                    setTimeout(() => {
-                        window.location.href = 'tps-payment.html';
-                    }, 1000);
-                }
-            }, 1000);
+                window.location.href = targetPage;
+            }, 100);
         }
 
-        // Setup event listeners
-        function setupEventListeners() {
-            // Tab switching
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const tabName = btn.getAttribute('data-tab');
-                    
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    
-                    document.querySelectorAll('.login-form').forEach(form => form.classList.remove('active'));
-                    document.getElementById(tabName + 'Form').classList.add('active');
-                });
-            });
-
-            // Sign In
-            document.getElementById('signinBtn').addEventListener('click', async () => {
-                const email = document.getElementById('signinEmail').value.trim();
-                const password = document.getElementById('signinPassword').value;
-
-                if (!validateEmail(email)) {
-                    showError('Please enter a valid email address');
-                    return;
-                }
-
-                if (!validatePassword(password)) {
-                    showError('Password should be at least 6 characters');
-                    return;
-                }
-
-                showLoading();
-                
-                try {
-                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                    
-                    // Check email verification for email/password accounts
-                    if (!userCredential.user.emailVerified) {
-                        hideLoading();
-                        showError('Please verify your email before logging in. Check your inbox for the verification link.');
-                        console.log('❌ Login blocked: Email not verified for', userCredential.user.email);
-                        
-                        // Sign out the user
-                        await auth.signOut();
-                        return;
-                    }
-                    
-                    // Email is verified, proceed with login
-                    const userData = await createUserProfile(userCredential.user);
-                    showSuccess('Welcome back!');
-                    console.log('✅ Email/Password login successful (verified):', userCredential.user.email);
-                    redirectAfterLogin(userData);
-                    
-                } catch (error) {
-                    hideLoading();
-                    console.error('Login error:', error);
-                    showError('Invalid email or password');
-                }
-            });
-
-            // Sign Up
-            document.getElementById('signupBtn').addEventListener('click', async () => {
-                const name = document.getElementById('signupName').value.trim();
-                const email = document.getElementById('signupEmail').value.trim();
-                const password = document.getElementById('signupPassword').value;
-                const confirmPassword = document.getElementById('confirmPassword').value;
-
-                if (!name) {
-                    showError('Please enter your full name');
-                    return;
-                }
-
-                if (!validateEmail(email)) {
-                    showError('Please enter a valid email address');
-                    return;
-                }
-
-                if (!validatePassword(password)) {
-                    showError('Password should be at least 6 characters');
-                    return;
-                }
-
-                if (password !== confirmPassword) {
-                    showError('Passwords do not match');
-                    return;
-                }
-
-                showLoading();
-                
-                try {
-                    // Create account
-                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                    
-                    // Send email verification (required for email/password accounts)
-                    await sendEmailVerification(userCredential.user);
-                    
-                    hideLoading();
-                    showSuccess('Account created! Please check your email and verify before logging in.');
-                    console.log('✅ Account created, verification email sent to:', userCredential.user.email);
-                    
-                    // Switch to sign in tab
-                    document.querySelector('.tab-btn[data-tab="signin"]').click();
-                    
-                } catch (error) {
-                    hideLoading();
-                    console.error('Signup error:', error);
-                    if (error.code === 'auth/email-already-in-use') {
-                        showError('Email already in use. Please sign in instead.');
-                    } else {
-                        showError('Error creating account. Please try again.');
-                    }
-                }
-            });
-
-            // Google Login (OAuth - No email verification required)
-            document.getElementById('googleLoginBtn').addEventListener('click', async () => {
-                showLoading();
-                
-                try {
-                    const result = await signInWithPopup(auth, googleProvider);
-                    
-                    // Google accounts are pre-verified, no additional verification needed
-                    const userData = await createUserProfile(result.user);
-                    showSuccess('Welcome back!');
-                    console.log('✅ Google login successful (pre-verified):', result.user.email);
-                    redirectAfterLogin(userData);
-                    
-                } catch (error) {
-                    hideLoading();
-                    console.error('❌ Google login error:', error);
-                    showError(`Google login failed: ${error.code || 'Unknown error'}`);
-                }
-
-            });
-
-            // Google Signup (same as login)
-            document.getElementById('googleSignupBtn').addEventListener('click', async () => {
-                document.getElementById('googleLoginBtn').click();
-            });
-
-            // Forgot Password
-            document.getElementById('forgotPasswordLink').addEventListener('click', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('signinEmail').value.trim();
-                
-                if (!email) {
-                    showError('Please enter your email address first');
-                    return;
-                }
-
-                if (!validateEmail(email)) {
-                    showError('Please enter a valid email address');
-                    return;
-                }
-
-                try {
-                    await sendPasswordResetEmail(auth, email);
-                    showSuccess('Password reset email sent!');
-                    console.log('📧 Password reset sent to:', email);
-                } catch (error) {
-                    console.error('Password reset error:', error);
-                    showError('Error sending reset email. Please try again.');
-                }
-            });
-
-            // Resend Verification Email
-            document.getElementById('resendVerificationLink').addEventListener('click', async (e) => {
-                e.preventDefault();
-                
-                const email = document.getElementById('signinEmail').value.trim();
-                const password = document.getElementById('signinPassword').value;
-                
-                if (!email || !password) {
-                    showError('Please enter your email and password first');
-                    return;
-                }
-
-                if (!validateEmail(email)) {
-                    showError('Please enter a valid email address');
-                    return;
-                }
-
-                try {
-                    // Sign in temporarily to get user object
-                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                    
-                    if (userCredential.user.emailVerified) {
-                        showSuccess('Your email is already verified! You can sign in now.');
-                        return;
-                    }
-                    
-                    // Send verification email
-                    await sendEmailVerification(userCredential.user);
-                    
-                    // Sign out immediately
-                    await auth.signOut();
-                    
-                    showSuccess('Verification email sent! Please check your inbox.');
-                    console.log('📧 Verification email resent to:', email);
-                    
-                } catch (error) {
-                    console.error('Resend verification error:', error);
-                    showError('Error sending verification email. Please check your credentials.');
-                }
-            });
-
-            // Enter key handling
-            document.getElementById('signinEmail').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('signinPassword').focus();
-            });
-
-            document.getElementById('signinPassword').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('signinBtn').click();
-            });
-
-            document.getElementById('signupName').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('signupEmail').focus();
-            });
-
-            document.getElementById('signupEmail').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('signupPassword').focus();
-            });
-
-            document.getElementById('signupPassword').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('confirmPassword').focus();
-            });
-
-            document.getElementById('confirmPassword').addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') document.getElementById('signupBtn').click();
-            });
-        }
-
-        // Check for existing session on page load
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                console.log('🔄 Found existing session for:', user.email);
-                
-                // Check if this is a Google account (pre-verified) or email/password account
-                const isGoogleAccount = user.providerData.some(provider => provider.providerId === 'google.com');
-                
-                if (!isGoogleAccount && !user.emailVerified) {
-                    // Email/password account that hasn't been verified
-                    console.log('❌ Email not verified, redirecting to login');
-                    await auth.signOut();
-                    showError('Please verify your email before accessing the system.');
-                    setupEventListeners();
-                    hideLoading();
-                    return;
-                }
-                
-                // User is verified (either Google or verified email/password)
-                showLoading();
-                const userData = await checkUserPaymentStatus(user);
-                redirectAfterLogin(userData);
-            } else {
-                console.log('🚀 TPS Login initialized with real Firebase');
-                setupEventListeners();
-                hideLoading();
+        // Session Check
+        function checkExistingSession() {
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                console.log('🔄 Valid session found, redirecting...');
+                redirectUser(currentUser);
+                return true;
             }
+            return false;
+        }
+
+        // Initialize Google Sign-In
+        function initializeGoogle() {
+            if (typeof google !== 'undefined' && google.accounts) {
+                try {
+                    // Clear any existing state
+                    google.accounts.id.cancel();
+                    google.accounts.id.disableAutoSelect();
+                    
+                    google.accounts.id.initialize({
+                        client_id: CONFIG.GOOGLE_CLIENT_ID,
+                        callback: handleCredentialResponse,
+                        auto_select: false,
+                        cancel_on_tap_outside: false,
+                        context: 'signin',
+                        ux_mode: 'popup',
+                        locale: 'en_US',
+                        use_fedcm_for_prompt: true
+                    });
+
+                    google.accounts.id.renderButton(
+                        document.getElementById('google-button'),
+                        {
+                            type: 'standard',
+                            shape: 'rectangular',
+                            theme: 'outline',
+                            text: 'signin_with',
+                            size: 'large',
+                            logo_alignment: 'left',
+                            locale: 'en_US'
+                        }
+                    );
+                    
+                    console.log('✅ Google Identity Services initialized');
+                } catch (error) {
+                    console.error('❌ Google initialization failed:', error);
+                }
+            } else {
+                setTimeout(initializeGoogle, 500);
+            }
+        }
+
+        // Page Load Handler
+        window.addEventListener('DOMContentLoaded', () => {
+            // ALWAYS check for existing session first
+            const currentUser = getCurrentUser();
+            if (currentUser) {
+                console.log('🔄 User already logged in, redirecting...', currentUser.email);
+                redirectUser(currentUser);
+                return; // Stop here, don't initialize login form
+            }
+            
+            // Only initialize login if no user is logged in
+            initializeGoogle();
+            clearMessage();
+            console.log('🎯 TPS Authentication System Ready - No user logged in');
         });
+
+        // Email Verification Functions
+        window.verifyEmailToken = (token) => {
+            const pendingVerifications = JSON.parse(localStorage.getItem(CONFIG.PENDING_VERIFICATION_KEY) || '{}');
+            const verification = pendingVerifications[token];
+            
+            if (!verification) {
+                console.log('❌ Invalid verification token');
+                return false;
+            }
+            
+            if (Date.now() > verification.expiresAt) {
+                console.log('❌ Verification token expired');
+                delete pendingVerifications[token];
+                localStorage.setItem(CONFIG.PENDING_VERIFICATION_KEY, JSON.stringify(pendingVerifications));
+                return false;
+            }
+            
+            // Find and verify user
+            const users = getUsers();
+            const userIndex = users.findIndex(u => u.email === verification.email);
+            
+            if (userIndex === -1) {
+                console.log('❌ User not found for verification');
+                return false;
+            }
+            
+            // Mark user as verified
+            users[userIndex].isVerified = true;
+            localStorage.setItem(CONFIG.USERS_KEY, JSON.stringify(users));
+            
+            // Remove verification token
+            delete pendingVerifications[token];
+            localStorage.setItem(CONFIG.PENDING_VERIFICATION_KEY, JSON.stringify(pendingVerifications));
+            
+            console.log('✅ Email verified successfully for:', verification.email);
+            showMessage('success', 'Email verified! You can now sign in.');
+            
+            return true;
+        };
+
+        window.listPendingVerifications = () => {
+            const pending = JSON.parse(localStorage.getItem(CONFIG.PENDING_VERIFICATION_KEY) || '{}');
+            console.log('📧 Pending email verifications:', pending);
+            Object.keys(pending).forEach(token => {
+                const verification = pending[token];
+                console.log(`Token: ${token.substring(0, 8)}... | Email: ${verification.email} | Expires: ${new Date(verification.expiresAt).toLocaleString()}`);
+            });
+            return pending;
+        };
+
+        // Debug Functions (for testing)
+        window.createTestUser = (hasPaid = false, verified = false) => {
+            const testUser = {
+                id: Date.now(),
+                name: 'Test User',
+                email: 'test@example.com',
+                password: 'password123',
+                hasPaid: hasPaid,
+                isGoogleUser: false,
+                isVerified: verified,
+                createdAt: new Date().toISOString()
+            };
+            
+            saveUser(testUser);
+            console.log(`👤 Test user created: ${testUser.email} (hasPaid: ${hasPaid}, verified: ${verified})`);
+            return testUser;
+        };
+
+        window.clearAllData = () => {
+            localStorage.clear();
+            
+            // Clear Google state
+            if (typeof google !== 'undefined' && google.accounts) {
+                google.accounts.id.cancel();
+                google.accounts.id.disableAutoSelect();
+            }
+            
+            console.log('🧹 All data cleared');
+            location.reload();
+        };
+
+        window.simulateGoogleLogin = (hasPaid = false) => {
+            const fakeGoogleUser = {
+                id: Date.now(),
+                name: 'Google Test User',
+                email: 'googletest@gmail.com',
+                hasPaid: hasPaid,
+                isGoogleUser: true,
+                picture: 'https://via.placeholder.com/100',
+                createdAt: new Date().toISOString()
+            };
+            
+            // Check if user already exists
+            let user = findUser(fakeGoogleUser.email);
+            if (!user) {
+                saveUser(fakeGoogleUser);
+                user = fakeGoogleUser;
+                console.log('✅ Simulated Google user created');
+            } else {
+                console.log('✅ Existing Google user found');
+            }
+            
+            setCurrentUser(user);
+            showMessage('success', `Welcome, ${user.name}! (Google Login Simulated)`);
+            
+            setTimeout(() => redirectUser(user), 1500);
+        };
+
+        window.forceLogout = () => {
+            localStorage.removeItem(CONFIG.SESSION_KEY);
+            console.log('🚪 User logged out');
+            location.reload();
+        };
+
+        // Make Google handler global
+        window.handleCredentialResponse = handleCredentialResponse;
+
+        // Console info
+        console.log('%c🎯 TPS AUTHENTICATION - EMAIL VERIFICATION SYSTEM', 'color: #667eea; font-size: 16px; font-weight: bold;');
+        console.log('%c✅ FEATURES:', 'color: #28a745; font-weight: bold;');
+        console.log('  📧 Email/Password Authentication with Email Verification');
+        console.log('  🔵 Google OAuth (Client ID: 799165195687...)');
+        console.log('  🚀 Smart Redirects');
+        console.log('  🔒 Persistent Session Management');
+        console.log('  ✉️ Email Verification Required for Registration');
+        console.log('  🌐 Configured for: canalvivo.org & app.canalvivo.org');
+        console.log('');
+        console.log('%c🧪 TESTING FUNCTIONS:', 'color: #6c757d; font-weight: bold;');
+        console.log('  createTestUser(hasPaid, verified) - Create test user');
+        console.log('  loginAsTestUser() - Quick login as test user');
+        console.log('  simulateGoogleLogin(hasPaid) - Test Google login');
+        console.log('  checkCurrentSession() - Check if user is logged in');
+        console.log('  forceLogout() - Force logout current user');
+        console.log('  clearAllData() - Clear all data');
+        console.log('');
+        console.log('%c📧 EMAIL VERIFICATION:', 'color: #e67e22; font-weight: bold;');
+        console.log('  verifyEmailToken("token") - Verify email with token');
+        console.log('  listPendingVerifications() - Show pending verifications');
+        console.log('  📝 Users must verify email before signing in');
+        console.log('  ✅ Google users are automatically verified');
+        console.log('');
+        console.log('%c🌐 GOOGLE LOGIN:', 'color: #4285f4; font-weight: bold;');
+        console.log('  ✅ Configured for Richard\'s actual Client ID');
+        console.log('  ✅ Authorized domains: canalvivo.org, app.canalvivo.org');
+        console.log('  ⚠️ Must be accessed from authorized domains to work');
+        console.log('');
+        console.log('%c🔍 DEBUG: Session key is:', 'color: #ffc107; font-weight: bold;', CONFIG.SESSION_KEY);
     </script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 {
-  "name": "tps-railway-simple",
-  "version": "7.0.0", 
-  "description": "TPS simples com LLaMA AI - Sem Firebase",
-  "main": "server.js",
+  "name": "tps-backend",
+  "version": "1.0.0",
   "type": "module",
+  "description": "TPS Travel Professional System with Amadeus Integration",
+  "main": "server.js",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
@@ -13,15 +13,21 @@
     "dev": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
+    "amadeus": "^8.1.0",
+    "compression": "^1.8.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
-    "node-fetch": "^3.3.2"
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.1",
+    "helmet": "^8.1.0",
+    "node-cache": "^5.1.2",
+    "node-fetch": "^3.3.2",
+    "nodemailer": "^7.0.4"
   },
   "keywords": [
     "travel",
     "ai",
-    "llama",
+    "amadeus",
     "railway"
   ],
   "author": "TPS Team",
